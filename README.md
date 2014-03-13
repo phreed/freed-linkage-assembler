@@ -31,9 +31,14 @@ Adaptors to specific engineering environments are provided:
 References
 ==========
 
-http://clojure.org/
-https://github.com/Gozala/wisp
-http://jeditoolkit.com/try-wisp/
+  * http://clojure.org/
+  * https://github.com/Gozala/wisp
+  * http://jeditoolkit.com/try-wisp/
+  * http://nodejs.org/
+  * https://github.com/webgme/webgme
+  * http://www.isis.vanderbilt.edu/Projects/gme/
+  * http://www.freecadweb.org/
+  * http://brlcad.org/
 
 
 Inspiration
