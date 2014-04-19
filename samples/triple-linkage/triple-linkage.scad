@@ -1,11 +1,11 @@
 // This is a simple three linkage assembly.
-// Its primary purpose is to develop the 
+// Its primary purpose is to develop the
 // geometric assembler.
 
 module bar() {
 	minkowski() {
-			cube(size=[5.0,0.5,0.1], center=true);
-			cylinder(r=0.5, h=0.1);
+			cube(size=[6.0,0.5,0.1], center=true);
+			cylinder(r=0.25, h=0.1);
 	}
 }
 

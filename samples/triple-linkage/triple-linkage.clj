@@ -1,101 +1,79 @@
-(def triple-linkage
-  {
-   :component
-   { "ground"
+(def arm-component
      {:datums
       { "csys-1"
         { :type :csys
           :marker {:x 0.0 :y 0.0 :z 0.0 :pi 0.0 :i 1.0 :j 1.0 :k 1.0} }
         "axis-1"
         { :type :axis
-          :marker {:x 0.0 :y 0.0 :z 0.0 :pi 0.0 :i 0.0 :j 0.0 :k 1.0} }
+          :marker {:x 0.0 :y 0.0 :z 0.0 :i 0.0 :j 0.0 :k 1.0} }
+        "point-1"
+        { :type :point
+          :marker {:x 0.0 :y 1.0 :z 0.0} }
         "axis-2"
         { :type :axis
-          :marker {:x 10.0 :y 0.0 :z 0.0 :pi 0.0 :i 0.0 :j 0.0 :k 1.0} }
+          :marker {:x 10.0 :y 0.0 :z 0.0 :i 0.0 :j 0.0 :k 1.0} }
+        "point-2"
+        { :type :point
+          :marker {:x 10.0 :y 1.0 :z 0.0} }
         "plane-1"
         { :type :plane
-          :marker {:x 0.0 :y 0.0 :z 0.0 :pi 0.0 :i 0.0 :j 0.0 :k 1.0} } }
+          :marker {:x 0.0 :y 0.0 :z 0.0 :i 0.0 :j 0.0 :k 1.0} } }
 
       :joints
-      { "joint-0"
+      { "joint-fixed-0"
         { :type :fixed :specified true
-          :constraint ["csys-1"]
+          :constraint #{"csys-1"}
           :marker {:x 0.0 :y 0.0 :z 0.0 :pi 0.0 :i 1.0 :j 1.0 :k 1.0} }
-        "joint-1"
+        "joint-revolute-1"
         { :type :revolute :specified true
-          :constraint ["plane-1" "axis-1"]
+          :constraint #{"plane-1" "axis-1"}
+          :limit ["point_1" [:pi 0.0 0.5] ] ; :limit must conform
           :marker {:x 0.0 :y 0.0 :z 0.0 :pi 0.0 :i 1.0 :j 1.0 :k 1.0} }
-        "joint-2"
+        "joint-revolute-2"
         { :type :revolute :specified true
-          :constraint ["plane-1" "axis-2"]
-          :marker {:x 0.0 :y 0.0 :z 0.0 :pi 0.0 :i 1.0 :j 1.0 :k 1.0} } }
-      }
+          :constraint #{"plane-1" "axis-2"}
+          :guide ["point_2" [:pi 0.0 -0.5] ] ; :guide implies best effort
+          :marker {:x 0.0 :y 0.0 :z 0.0 :pi 0.0 :i 1.0 :j 1.0 :k 1.0} } } } )
 
-     "right-arm"
-     {:datums
-      { "csys-1"
-        { :type :csys
-          :marker {:x 0.0 :y 0.0 :z 0.0 :pi 0.0 :i 1.0 :j 1.0 :k 1.0} }
-        "axis-1"
-        { :type :axis
-          :marker {:x 0.0 :y 0.0 :z 0.0 :pi 0.0 :i 0.0 :j 0.0 :k 1.0} }
-        "axis-2"
-        { :type :axis
-          :marker {:x 10.0 :y 0.0 :z 0.0 :pi 0.0 :i 0.0 :j 0.0 :k 1.0} }
-        "plane-1"
-        { :type :plane
-          :marker {:x 0.0 :y 0.0 :z 0.0 :pi 0.0 :i 0.0 :j 0.0 :k 1.0} } }
-      :joints
-      { "joint-0"
-        { :type :fixed :specified true
-          :constraint ["csys-1"]
-          :marker {:x 0.0 :y 0.0 :z 0.0 :pi 0.0 :i 1.0 :j 1.0 :k 1.0} }
-        "joint-1"
-        { :type :revolute :specified true
-          :constraint ["plane-1" "axis-1"]
-          :marker {:x 0.0 :y 0.0 :z 0.0 :pi 0.0 :i 1.0 :j 1.0 :k 1.0} }
-        "joint-2"
-        { :type :revolute :specified true
-          :constraint ["plane-1" "axis-2"]
-          :marker {:x 0.0 :y 0.0 :z 0.0 :pi 0.0 :i 1.0 :j 1.0 :k 1.0} }
-        }
-      }
+(def ground-component arm-component)
+(def right-arm-component arm-component)
+(def left-arm-component arm-component)
 
-     "left-arm"
-     {:datums
-      { "csys-1"
-        { :type :csys
-          :marker {:x 0.0 :y 0.0 :z 0.0 :pi 0.0 :i 1.0 :j 1.0 :k 1.0} }
-        "axis-1"
-        { :type :axis
-          :marker {:x 0.0 :y 0.0 :z 0.0 :pi 0.0 :i 0.0 :j 0.0 :k 1.0} }
-        "axis-2"
-        { :type :axis
-          :marker {:x 10.0 :y 0.0 :z 0.0 :pi 0.0 :i 0.0 :j 0.0 :k 1.0} }
-        "plane-1"
-        { :type :plane
-          :marker {:x 0.0 :y 0.0 :z 0.0 :pi 0.0 :i 0.0 :j 0.0 :k 1.0} } }
-      :joints
-      { "joint-0"
-        { :type :fixed :specified true
-          :constraint ["csys-1"]
-          :marker {:x 0.0 :y 0.0 :z 0.0 :pi 0.0 :i 1.0 :j 1.0 :k 1.0} }
-        "joint-1"
-        { :type :revolute :specified true
-          :constraint ["plane-1" "axis-1"]
-          :marker {:x 0.0 :y 0.0 :z 0.0 :pi 0.0 :i 1.0 :j 1.0 :k 1.0} }
-        "joint-2"
-        { :type :revolute :specified true
-          :constraint ["plane-1" "axis-2"]
-          :marker {:x 0.0 :y 0.0 :z 0.0 :pi 0.0 :i 1.0 :j 1.0 :k 1.0} } }
-      }
-     }
-   :assembly
-   { "main"
+
+(def triple-linkage-assembly
      {:connections
-      {"right-rocker" [ ["ground" "joint-1"] ["right-arm" "joint-2"]]
-       "left-rocker"  [ ["ground" "joint-2"] ["left-arm" "joint-1"]]
-       "top-rocker" [ ["right-arm" "joint-1"] ["left-arm" "joint-2"]] } }
-     }
-   }
-  )
+      { :ground [ [ground-component "joint-fixed-0"] ]
+       "left-rocker"
+        [ [left-arm-component "joint-revolute-1"]
+          [ground-component "joint-revolute-2"] ]
+       "right-rocker"
+        [ [ground-component "joint-revolute-1"]
+          [right-arm-component "joint-revolute-2"]]
+       "top-rocker"
+        [ [right-arm-component "joint-revolute-1"]
+          [left-arm-component "joint-revolute-2"]] } } )
+
+(:use 'clojure.pprint)
+
+(clojure.pprint/pprint triple-linkage-assembly)
+
+(assoc-in triple-linkage-assembly [:connections "right-rocker"] "junk")
+(group-by :datums triple-linkage-assembly)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
