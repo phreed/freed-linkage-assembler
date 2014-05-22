@@ -1,3 +1,4 @@
+
 (def arm-component
      {:datums
       { "csys-1"
@@ -21,7 +22,7 @@
 
       :joints
       { "joint-fixed-0"
-        { :type :fixed :specified true
+        { :type :fixed :specified false
           :constraint #{"csys-1"}
           :marker {:x 0.0 :y 0.0 :z 0.0 :pi 0.0 :i 1.0 :j 1.0 :k 1.0} }
         "joint-revolute-1"
@@ -53,27 +54,25 @@
         [ [right-arm-component "joint-revolute-1"]
           [left-arm-component "joint-revolute-2"]] } } )
 
-(:use 'clojure.pprint)
 
-(clojure.pprint/pprint triple-linkage-assembly)
+
+(pprint triple-linkage-assembly)
+
+
+(defn merge-constraint-pair
+  "This function takes two constraints and merges
+  them into one."
+  [lhs rhs]
+  (cond ))
+
+(let [ {datums :datums joints :joints} ground-component]
+  (for [[joint-name joint-data] joints]
+    (reduce merge-constraint-pair
+            (get datums (get joint-data :constraint)))))
 
 (assoc-in triple-linkage-assembly [:connections "right-rocker"] "junk")
 (group-by :datums triple-linkage-assembly)
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+(match [ground-component]
+       )
