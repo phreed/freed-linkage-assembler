@@ -1,0 +1,31 @@
+
+Branch variables:
+  q_0, denoting a 2-way branch
+
+Plan fragment:
+  begin
+  1t-3r/p-p(?geom, ?point, ?line,
+    gmp(?M_2), gmp(?M_1),
+    ?lf, q_0);
+  R[1] = vec-diff(gmp(?M_2), ?point);
+  end;
+  R[] = line(?point, ?axis);
+  R[] = perp-base(gmp(?M_1), R[0]);
+  R[] = a-point(R[0]);
+  R[] = vec-diff(gmp(?M_1), R[1]);
+  R[] = sphere(?point, mag(R[0]));
+  R[] = plane(gmp(?M_1), R[1]);
+  R[] = circle(R[1], ?axis, mag(R[2]));
+  R[] = ellipse-perp-r(R[1], ?axis, mag(R[2]));
+  R[] = cylinder(R[1], ?axis, mag(R[2]));
+  R[] = line(gmp(?M_2), gmz(?M_2));
+  R[] = intersect(R[3], R[4], q_0);
+  unless point?(R[5])
+    error(perp-dist(R[3], R[4]),
+    estring[4]);
+  1r/p-p(?geom, ?point, R[5], gmp(?M_1),
+    ?axis, ?axis_1, ?axis_2);
+  1t-1r/p-p(?geom, ?point, ?line,
+    ?axis, ?axis_1, ?axis_2,
+    gmp(?M_2), gmp(?M_1), ?lf, q_0);
+
