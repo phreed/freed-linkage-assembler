@@ -16,7 +16,7 @@ Plan fragment:
   R[] = sphere(?point, mag(R[0]));
   R[] = plane(gmp(?M_1), R[1]);
   R[] = circle(R[1], ?axis, mag(R[2]));
-  R[] = ellipse-perp-r(R[1], ?axis, mag(R[2]));
+  R[] = ellipse-+-r(R[1], ?axis, mag(R[2]));
   R[] = cylinder(R[1], ?axis, mag(R[2]));
   R[] = line(gmp(?M_2), gmz(?M_2));
   R[] = intersect(R[3], R[4], q_0);
