@@ -1,4 +1,7 @@
+.lein-repl-history
 .nrepl-port
 repl-port
 target/
 *~
+*.swp
+junk

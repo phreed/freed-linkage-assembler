@@ -1,3 +1,6 @@
+(ns isis.geom.machine.functions
+  (:import (c3ga_pkg c3ga) ) )
+
 
 (defn a-point
   "Returns an 'arbitrary' point that lies on curve"
@@ -11,8 +14,8 @@
 
 (defn centerline
   "Returns the centerline of rotation of a curve that is constrained by a
-  rotational DOF, where curve in {screw, ellipse-perp}.
-  See the definition of screw and ellipse-perp."
+  rotational DOF, where curve in {screw, ellipse+r}.
+  See the definition of screw and ellipse+r."
   [object]
   )
 
@@ -127,7 +130,7 @@
 
 (defn line
   "Returns a line object with direction vector passing through point."
-  [point univector]
+  [point vector]
   )
 
 (defn line?
@@ -278,3 +281,4 @@
   "Multiply transform times vector-or transform."
   [transform vector-or-transform]
   )
+
