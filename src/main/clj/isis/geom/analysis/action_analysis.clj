@@ -1,18 +1,21 @@
-;;;; Action analysis : E.3.2
-;;;;
 (ns isis.geom.analysis.action-analysis
-  (:require (isis.geom.analysis analysis-utilities)
-            (isis.geom.machine functions) ) )
+  "Action analysis : E.3.2"
+  ( :require
+    (isis.geom.analysis [analysis-utilities
+                         :refer [find-geom-for-marker]])
+    (isis.geom.design [graph-state
+                       :refer [geom-status]])))
+
 
 (defn action-analyze
   "Return 'true' if the constraint can be satisfied.
   Applies the constraint and alters geom status in the constraint problem graph."
   [?constraint]
-  (let [marker (apply 'preconditions-satisfied? constraint)]
+  (let [marker (apply 'preconditions-satisfied? ?constraint)]
     (when marker
       (let [geom (find-geom-for-marker marker)
             old-status (geom-status geom)
-            pfte (pft-entry (tdof old-status) (rdof old-status) (c-type ?constraint)))
+            pfte (pft-entry (tdof old-status) (rdof old-status) (c-type ?constraint))
             new-status (and pfte (pft-entry-new-status pfte))]
         (when new-status
           (setf (geom-status geom) new-status)
@@ -40,5 +43,3 @@
                     (when (action-analyze c)
                       (remove-constraint joint c)
                       (go LOOP))))))
-
-

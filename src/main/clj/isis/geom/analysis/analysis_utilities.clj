@@ -1,57 +1,61 @@
 (ns isis.geom.analysis.analysis-utilities
+  "Algorithms : Utilities E.3.1"
   (:require isis.geom.machine.functions) )
 
-(def *invariant-position*
+(def ^:dynamic *invariant-position*
   "A list used to store the names of markers which have invariant positions"
-  nil )
+  (ref #{}) )
 
-(def *invariant-z*
+(def ^:dynamic *invariant-z*
   "A list used to store the names of markers which have invariant z-axes"
-  nil )
+  (ref #{}) )
 
-(def *invariant-x*
+(def ^:dynamic *invariant-x*
   "A list used to store the names of markers which have invariant x-axes"
-  nil )
+  (ref #{}) )
 
-(defn *clear-invariants*
+(defn ^:dynamic *clear-invariants!*
   "clear the invariant lists"
-  ()
-  nil )
+  []
+  (swap! @*invariant-position* #{})
+  (swap! @*invariant-z* #{})
+  (swap! @*invariant-x* #{}))
 
-(defn add-invariant
+(defn add-invariant!
   "Abstract away the addition of the invariant so
   programs do not have to reference a global variable."
   [?name ?type]
-  (ecase ?type
-         (:position (pushnew name *invariant-position*))
-         (:z (pushnew name *invariant-z*))
-         (:x (pushnew name *invariant-x*))))
+  (dosync
+   (case ?type
+     :position (alter *invariant-position* conj ?name)
+     :z (alter *invariant-z* conj ?name)
+     :x (alter *invariant-x* conj ?name))) )
 
 (defn invariant?
   "Abstract the testing of invariance so programs
   do not have to reference a global variable."
   [?name ?type]
-  (member ?name
-          (ecase ?type
-         (:position (pushnew name *invariant-position*))
-         (:z (pushnew name *invariant-z*))
-         (:x (pushnew name *invariant-x*)))) )
+  (find ?name
+        (case ?type
+          :position @*invariant-position*
+          :z @*invariant-z*
+          :x @*invariant-x*)) )
 
-(def *constraint-precondition*
+(def constraint-precondition
   "Associated with each constraint type is a function which
   checks the preconditions and returns the marker which
-  is underconstrainted."
+  is underconstrained."
   {:coincident (fn [?m-1 ?m-2] (when (invariant? ?m-1 :position) ?m-2))
    :in-line-fp (fn [?m-1 ?m-2]
-                    (cond ((invariant? ?m-1 :position) ?m-2)
-                          ((and (invariant? ?m-2 :position)
+                    (cond (invariant? ?m-1 :position)  ?m-2
+                          (and (invariant? ?m-2 :position)
                                 (invariant? ?m-2 :z))
-                           ?m-1)))
+                           ?m-1))
    :in-plane-fp (fn [?m-1 ?m-2]
-                    (cond ((invariant? ?m-1 :position) ?m-2)
-                          ((and (invariant? ?m-2 :position)
-                                (invariant? ?m-2 :z))
-                           ?m-1)))
+                    (cond (invariant? ?m-1 :position)  ?m-2
+                          (and (invariant? ?m-2 :position)
+                               (invariant? ?m-2 :z))
+                           ?m-1))
    :parallel-z (fn [?m-1 ?m-2] (when (invariant? ?m-1 :position) ?m-2))
    :offset-z (fn [?m-1 ?m-2] (when (invariant? ?m-1 :position) ?m-2))
    :offset-x (fn [?m-1 ?m-2]
@@ -65,39 +69,37 @@
                            ?m-2)) })
 
 
-(def *constraint-postcondition*
+(def constraint-postcondition
   "Associated with each constraint type is a function which
   checks the postconditions for after the constraint has been satisfied."
-  {:coincident (fn [?m-1 ?m-2] (declare (ignore ?m-1)
-                                        (add-invariant ?m-2 :position)))
-   :in-line-fp (fn [?m-1 ?m-2] (declare (ignore ?m-1 ?m-2)))
-   :in-plane-fp (fn [?m-1 ?m-2] (declare (ignore ?m-1 ?m-2)))
-   :parallel-z (fn [?m-1 ?m-2] (declare (ignore ?m-1)
-                                        (add-invariant ?m-2 :z)))
-   :offset-z (fn [?m-1 ?m-2] (declare (ignore ?m-1 ?m-2)))
-   :offset-x (fn [?m-1 ?m-2] (declare (ignore ?m-1))
-                                        (add-invariant ?m-2 :z))
-   :helical (fn [?m-1 ?m-2] (declare (ignore ?m-1 ?m-2))) } )
+  {:coincident (fn [_ ?m-2] (add-invariant! ?m-2 :position))
+   :in-line-fp (fn [_ _])
+   :in-plane-fp (fn [_ _])
+   :parallel-z (fn [_ ?m-2] (add-invariant! ?m-2 :z))
+   :offset-z (fn [_ _])
+   :offset-x (fn [_ ?m-2] (add-invariant! ?m-2 :z))
+   :helical (fn [_ _]) } )
 
 
 (defn precondition-satisfied?
   [?constraint ?m-1 ?m-2]
-  (funcall (cdr (assoc ?constraint *constraint-precondition)) ?m-1 ?m-2))
+  ((get constraint-precondition ?constraint) ?m-1 ?m-2))
 
 (defn assert-preconditions
   [?constraint ?m-1 ?m-2]
-  (funcall (cdr (assoc ?constraint *constraint-postcondition)) ?m-1 ?m-2))
+  ((get constraint-postcondition ?constraint) ?m-1 ?m-2))
 
-(defn c-type "The constraint type." [constraint] (first constraint))
-(defn c-m1 "The first marker of the constraint." [constraint] (second constraint))
-(defn c-m2 "The second marker of the constraint." [constraint] (third constraint))
+(defn c-type "The constraint type." [?constraint] (nth ?constraint 0))
+(defn c-m1 "The first marker of the constraint." [?constraint] (nth ?constraint 1))
+(defn c-m2 "The second marker of the constraint." [?constraint] (nth ?constraint 2))
 
 (defn find-geom-for-marker
   "If marker is not one of m13-1 m13-3 m23-3, consider it a grounded marker."
-  [?m] (case ?m
-         (m13-1 m13-3) 'l13
-         (m23-3 m23-3) 'l23
-         else 'l12 ))
+  [?m]
+  (case ?m
+    (m13-1 m13-3) 'l13
+    (m23-2 m23-3) 'l23
+    else 'l12 ))
 
-(defun tdof "The TDOF component of the geom ?status." [status] (first status))
-(defun rdof "The RDOF component of the geom ?status." [status] (second status))
+(defn tdof "The TDOF component of the geom ?status." [?status] (nth ?status 0))
+(defn rdof "The RDOF component of the geom ?status." [?status] (nth ?status 1))
