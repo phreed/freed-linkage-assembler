@@ -174,7 +174,7 @@
 (defn pc-check
   "For use with curve in {screw ellipse+r}.
   If translation and rotation are both non-null,
-  return 'true' if the stranslation and rotation are
+  return 'true' if the translation and rotation are
   consistent with curve parameters, and 'false' otherwise.
   If one of translation or rotation is nil, then
   return a value that is consistent with curve parameters.

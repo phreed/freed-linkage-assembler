@@ -1,4 +1,4 @@
-
+"
 ---
 PFT entry: ALL
 ---
@@ -447,7 +447,6 @@ Initial status:
 
 Plan fragment:
   begin
-  begin
   R[0] = cross-prod(gmz(?M_1), gmz(?M_2));
   R[1] = vec-angle(gmz(?M_1), gmz(?M_2), R[0]);
 
@@ -467,3 +466,4 @@ Explanation:
   and the geom is rotated about an axis equal to the
   cross product of the two z-axes.
 
+"

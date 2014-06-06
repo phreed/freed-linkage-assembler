@@ -1,4 +1,3 @@
-
 (ns isis.geom.pft.coincident_slice
   (:require isis.geom.machine.auxiliary-procs
             isis.geom.analysis.analysis-utilities))
@@ -42,7 +41,7 @@
   )
 
 
-
+"
 ---
 PFT entry: (1,0,coincident)
 ---
@@ -475,3 +474,4 @@ Explanation:
   vector is measured and the ?geom is moved.
   No checks are required.
 
+"

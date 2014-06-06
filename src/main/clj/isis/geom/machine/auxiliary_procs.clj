@@ -1,5 +1,5 @@
 (ns isis.geom.machine.auxiliary-procs
-  (:require isis.geom.machine.functions))
+  (:require (isis.geom.machine functions [:refer vec-scale])))
 
 (defn unit-vec
   "Returns a unit vector with the same direction as ?vector."

@@ -1,4 +1,4 @@
-
+"
 ---
 PFT entry: ALL
 ---
@@ -182,5 +182,4 @@ Explanation:
   Geom ?geom has one translational and one rotational degree of freedom.
   These are reduced to a single coupled degree of freedom by the helical constraint.
 
-
-
+"

@@ -1,7 +1,9 @@
-(ns isis.geometric-assembler.core)
+(ns isis.geometric-assembler.core
+  (:require isis.geom.design.solving-loops))
 
 
 (defn -main []
+  "This program proves the capablity of dof analysis in solving loops."
   (println " java version = "(System/getProperty "java.vm.version"))
 
   (let [ mv (c3ga_pkg.mv.)]
@@ -14,6 +16,10 @@
          e1+e2 (c3ga_pkg.c3ga/add e1 e2)]
     (println "e1 + e2 = " (.toString e1+e2)))
 
+  (println "count all relevant triple-loops: " (count (all-triple-loops)))
+
+  ;; validate all permutations of the triple-loop
+  (loop-test (all-triple-loops))
   )
 
 

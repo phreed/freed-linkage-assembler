@@ -1,25 +1,25 @@
-(ns isis.geom.analysis.analysis-utilities
+(ns isis.geom.analysis.utilities
   "Algorithms : Utilities E.3.1"
   (:require isis.geom.machine.functions) )
 
-(def ^:dynamic *invariant-position*
+(def invariant-position
   "A list used to store the names of markers which have invariant positions"
-  (ref #{}) )
+  (atom #{}) )
 
-(def ^:dynamic *invariant-z*
+(def invariant-z
   "A list used to store the names of markers which have invariant z-axes"
-  (ref #{}) )
+  (atom #{}) )
 
-(def ^:dynamic *invariant-x*
+(def invariant-x
   "A list used to store the names of markers which have invariant x-axes"
-  (ref #{}) )
+  (atom #{}) )
 
-(defn ^:dynamic *clear-invariants!*
+(defn clear-invariants!
   "clear the invariant lists"
   []
-  (swap! @*invariant-position* #{})
-  (swap! @*invariant-z* #{})
-  (swap! @*invariant-x* #{}))
+  (swap! invariant-position #{})
+  (swap! invariant-z #{})
+  (swap! invariant-x #{}))
 
 (defn add-invariant!
   "Abstract away the addition of the invariant so
@@ -27,19 +27,19 @@
   [?name ?type]
   (dosync
    (case ?type
-     :position (alter *invariant-position* conj ?name)
-     :z (alter *invariant-z* conj ?name)
-     :x (alter *invariant-x* conj ?name))) )
+     :position (swap! invariant-position conj ?name)
+     :z (swap! invariant-z conj ?name)
+     :x (swap! invariant-x conj ?name))) )
 
 (defn invariant?
   "Abstract the testing of invariance so programs
   do not have to reference a global variable."
   [?name ?type]
-  (find ?name
+  (contains? ?name
         (case ?type
-          :position @*invariant-position*
-          :z @*invariant-z*
-          :x @*invariant-x*)) )
+          :position @invariant-position
+          :z @invariant-z
+          :x @invariant-x)) )
 
 (def constraint-precondition
   "Associated with each constraint type is a function which
@@ -81,7 +81,7 @@
    :helical (fn [_ _]) } )
 
 
-(defn precondition-satisfied?
+(defn preconditions-satisfied?
   [?constraint ?m-1 ?m-2]
   ((get constraint-precondition ?constraint) ?m-1 ?m-2))
 

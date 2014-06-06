@@ -1,4 +1,3 @@
-
 (ns isis.geom.pft.assembly-plan
   (:require (isis.geom.pft coincident-slice
                            helical-slice

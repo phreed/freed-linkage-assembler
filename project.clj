@@ -8,7 +8,8 @@
   ;; :java-source-paths ["src/main/java"]
   :dependencies [[org.clojure/clojure "1.6.0"]
                  [org.clojure/core.match "0.2.1"]
-                 [lein-kibit "0.0.8"]]
+                 [lein-kibit "0.0.8"]
+                 [org.clojure/tools.logging "0.2.6"]]
   :main isis.geometric-assembler.core
   :target-path "target/%s"
   :profiles {
