@@ -1,12 +1,32 @@
+;; there are a set of named geoms.
+;; each geom has a set of joints.
+;; each joint has a marker.
+;; each joint has a set of constraints.
+;; each geom has a set of invarients.
+;; each marker has a set of invarients.
 
-(def e1 (c3ga_pkg.c3ga/vectorE1))
-(def e2 (c3ga_pkg.c3ga/vectorE2))
-e1
+(defn geom
+  [name & {:as opts}]
+  (ref (merge {:name name :constraints {} :markers {} } opts)))
 
-(def mv (c3ga_pkg.mv.))
-(.set mv 25.0)
-mv
+(defn make-marker
+  "Creates a marker in the appropriate coordinate frame."
+  [& {:as opts}]
+  (merge {:position [0.0 0.0 0.0] :z-axis [0.0 0.0 1.0] :x-axis [1.0 0.0 0.0]} opts))
 
-(.toString mv)
+(def brick-graph
+  {:geoms (ref {}) })
 
-(.toString (c3ga_pkg.c3ga/add e1 e2))
+
+(let [geoms (brick-graph :geoms)]
+  (dosync
+   (let [markers {'m1 (make-marker)
+                  'm2 (make-marker {:position [1.0 0.0 0.0]})
+                  'm3 (make-marker {:position [0.0 1.0 0.0]}) }
+        joints {'j1 {:type :ball-joint (markers 'm1)}}
+               {'j2 {:type :ball-joint (markers 'm2)}}
+               {'j3 {:type :ball-joint (markers 'm2)}} ]
+   (alter geoms update-in ['ground] (geom 'ground :markers markers :joints joints))
+  ) )
+
+

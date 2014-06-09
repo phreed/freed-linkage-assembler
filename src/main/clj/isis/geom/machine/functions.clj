@@ -1,24 +1,24 @@
 (ns isis.geom.machine.functions
   (:import (c3ga_pkg c3ga) ) )
 
-#_(
-(def e1 (c3ga_pkg.c3ga/vectorE1))
-(def e2 (c3ga_pkg.c3ga/vectorE2))
-e1
 
-(def mv (c3ga_pkg.mv.))
-(.set mv 25.0)
-mv
+(defn is-c3ga-working?
+  "A simple check to make sure c3ga is working."
+  []
+  (let [ mv (c3ga_pkg.mv.)]
+    (.set mv 25.0)
+    (println "multi-vector =" (.toString mv)))
 
-(.toString mv)
+  (let [ e1 (c3ga_pkg.c3ga/vectorE1)
+         e2 (c3ga_pkg.c3ga/vectorE2)
+         e3 (c3ga_pkg.c3ga/vectorE3)
+         e1+e2 (c3ga_pkg.c3ga/add e1 e2)]
+    (println "e1 + e2 = " (.toString e1+e2))) )
 
-(.toString (c3ga_pkg.c3ga/add e1 e2))
 
 (defn a-point
   "Returns an 'arbitrary' point that lies on curve"
-  [curve]
-  )
-)
+  [curve] )
 
 (defn axis
   "Returns the vector axis of an object of type circle, line, cylinder, or helix"

@@ -5,12 +5,12 @@
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :resource-paths ["src/main/resource/c3ga.jar"]
   :source-paths ["src/main/clj"]
-  ;; :java-source-paths ["src/main/java"]
+  :java-source-paths ["src/main/java"]
   :dependencies [[org.clojure/clojure "1.6.0"]
                  [org.clojure/core.match "0.2.1"]
                  [lein-kibit "0.0.8"]
                  [org.clojure/tools.logging "0.2.6"]]
-  :main isis.geometric-assembler.core
+  :main isis.geom.geometric-assembler
   :target-path "target/%s"
   :profiles {
              :uberjar {:aot :all}
