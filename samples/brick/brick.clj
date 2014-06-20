@@ -1,22 +1,23 @@
 (ns brick
-   "Sample assembly for brick and ground."
-(:require [isis.geom.loop.joint :refer [joint-primitive-map]]))
+  "Sample assembly for brick and ground."
+  (:require [isis.geom.model.joint :refer [joint-primitive-map]]
+            [isis.geom.action-dispatch :refer [transform!]]))
 
-;; there are a set of named geoms.
-;; each geom has a set of joints.
+;; there are a set of named links.
+;; each link has a set of joints.
 ;; each joint has a marker.
 ;; each joint has a set of constraints.
-;; each geom has a set of invarients.
+;; each link has a set of invarients.
 ;; each marker has a set of invarients.
 
 
-(defn make->geom
-  "Construct a geometric component"
+(defn make->link
+  "Construct a geometric component, i.e. a link"
   [name & {:as opts}]
   (merge {:name name :markers {} :ports {} :invariant {}} opts))
 
 (defn make->invariant
-  "Create a invariant in the geom as outlined in C.3
+  "Create a invariant in the link as outlined in C.3
   points-inv : list of points having invariant position
   points-1d  : list of (point locus) pairs, where point is restricted to 1d-locus
   points-2d  : list of (point locus) pairs, where point is restricted to 2d-locus
@@ -29,7 +30,7 @@
 
 (defn get-dof-key
   "Get the DoF key for the geometry."
-  [geom]
+  [link]
 
   )
 
@@ -46,8 +47,8 @@
   The derived data should not be stored in this object directly,
   but be stored in other objects with simliar keys."
   (ref
-   { :geoms
-     { 'ground (make->geom
+   { :links
+     { 'ground (make->link
                 'ground
                 :markers {'g1 (make->marker )
                           'g2 (make->marker :p1 1.0 :p2 0.0 :p3 0.0)
@@ -57,7 +58,7 @@
                         'j3 {:type :spherical :marker 'g3}}
                 :invariant (make->invariant :points-inv ['g1 'g2 'g3] ))
 
-       'brick  (make->geom
+       'brick  (make->link
                 'brick
                 :markers {'b1 (make->marker :p1 -100.0 :p2 50.0 :p3 10.0)
                           'b2 (make->marker :p1 -99.0 :p2 50.0 :p3 10.0)
@@ -77,7 +78,7 @@
   use of the default values, it also indicates the 'base' object.
   In this example there is no rotation so the {:i1 :i2 :i3} values
   could be anything."
-  {:geom-motors
+  {:link-motors
    {'ground {}
     'brick {:p1 100.0 :p2 -50.0 :p3 -10.0}}})
 
@@ -87,7 +88,7 @@
 (defn make-graph-watcher
   "This function is suitable to use as a watch function.
   When a graph changes it will compute the placement of
-  each geom in its assembly.  The augmented graph will
+  each link in its assembly.  The augmented graph will
   be produced by this function."
   []
   (defn graph->assemble
@@ -99,17 +100,17 @@
 
 (defn port->expand
   "Expand a single port into a vector of port-primitives."
-  [graph [geom-name port-name]]
-  (let [geoms (:geoms graph)
-        geom (get geoms geom-name)
-        ports (:ports geom)
+  [graph [link-name port-name]]
+  (let [links (:links graph)
+        link (get links link-name)
+        ports (:ports link)
         port (get ports port-name)
         primitive-types ((:type port) joint-primitive-map)
         port-marker-name (:marker port)
-        markers (:markers geom)
+        markers (:markers link)
         port-marker (get markers port-marker-name)]
     (into [] (for [primitive-type primitive-types]
-      [geom-name port-marker-name primitive-type port-marker])) ) )
+               [link-name port-marker-name primitive-type port-marker])) ) )
 
 (port->expand @brick-graph ['ground 'j1])
 
@@ -120,13 +121,13 @@
   corresponding ports."
   [graph port-pair]
   (let [ [p1 p2] (seq port-pair)
-         [p1-geom p1-name p1-type p1-mark] p1
-         [p2-geom p2-name p2-type p2-mark] p2]
+         [p1-link p1-name p1-type p1-mark] p1
+         [p2-link p2-name p2-type p2-mark] p2]
     (when (not= p1-type p2-type)
       (throw (IllegalStateException.
               (str "the connected joints have mismatched types : "
                    p1-type " != " p2-type)) ))
-    [p1-type [p1-geom p1-name] p1-mark [p2-geom p2-name] p2-mark] ) )
+    {:type p1-type :m1 [[p1-link p1-name] p1-mark] :m2 [[p2-link p2-name] p2-mark]} ) )
 
 
 (port-pair->make-constraint @brick-graph
@@ -137,9 +138,9 @@
   "Using a joint definitions, generate a list of constraints for the joint's primitives.
   Each constraint primitive is generate by merging corresponding ports."
   [graph joint-pair]
-  (let [ geoms (:geoms graph)
-         constr-lists (for [[port-geom port-joint] (seq joint-pair)]
-                        (port->expand graph [port-geom port-joint]))
+  (let [ link (:links graph)
+         constr-lists (for [[port-link port-joint] (seq joint-pair)]
+                        (port->expand graph [port-link port-joint]))
          [c1-list c2-list] constr-lists
          con-pair-list (map vector c1-list c2-list)]
     (for [con-pair con-pair-list]
@@ -148,6 +149,15 @@
 
 (graph->expand-joint-pair @brick-graph #{['ground 'j1] ['brick 'j1]})
 
+(defn graph->extract-invariants
+  "Extract all the invariants."
+  [graph]
+  (let [ link (:links graph) ]
+    (for [con-pair con-pair-list]
+      (port-pair->make-constraint graph con-pair))))
+
+(graph->extract-invariants @brick-graph)
+
 
 (defn graph->expand-joints
   "Using a graph's joint definitions,
@@ -155,28 +165,43 @@
   Each constraint primitive is generated by merging
   corresponding ports."
   [graph]
-  (for [joint-pair (:joints graph)]
-    (do
-      (println "joint pair : " joint-pair)
-      #_(graph->expand-joint-pair joint-pair))))
+  (mapcat identity
+          (for [joint-pair (:joints graph)]
+            (graph->expand-joint-pair graph joint-pair))))
 
 (graph->expand-joints @brick-graph)
 
 
+(def brick-constraints
+  [
+    ] )
+
 ;; (clojure.pprint/pprint
 (try
- (graph->expand-joints @brick-graph)
+  (for [constraint (graph->expand-joints @brick-graph)
+        :let [ {c-type :type m1 :m1 m2 :m2} constraint ] ]
+    (str c-type m1 m2) )
+
   (catch IllegalStateException ex
     (println ex)))
 
 
+
 (defn action-analysis
-  "Algorithm for using the plan fragment table to
-  perform action alalysis."
-  [constraints]
-  )
+  "Algorithm for using the plan fragment table to perform action alalysis.
+  We update a link map and a marker map with invariants.
+  The link map of invariants indicates just how well placed the link is.
+  The marker map does a similar thing."
+  [constraints invariants]
+  (let [ [m0 c0] (for-split get-plan-fragment constraints)
+         [m1 c1] (for-split get-plan-fragment c0) ] ) )
 
+(try
+  (action-analysis
+   (graph->expand-joints @brick-graph)
+   (graph->extract-invariants @brick-graph))
 
-(:geoms brick-graph)
+  (catch IllegalStateException ex
+    (println ex)))
 
 

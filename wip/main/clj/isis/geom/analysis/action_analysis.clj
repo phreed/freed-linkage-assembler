@@ -1,14 +1,14 @@
 (ns isis.geom.analysis.action-analysis
   "Action analysis : E.3.2"
-  ( :require
-    (isis.geom.pft [assembly-plan
-                         :refer [pft-entry]])
-    (isis.geom.analysis [utilities
+  (:require
+    [isis.geom.pft [assembly-plan
+                         :refer [pft-entry]]]
+    [isis.geom.analysis [utilities
                          :refer [find-geom-for-marker
-                                 preconditions-satisfied?]])
-    (isis.geom.design [graph-state
+                                 preconditions-satisfied?]]]
+    [isis.geom.design [graph-state
                        :refer [get-geom-status
-                               update-geom-status!]])))
+                               update-geom-status!]])]))
 
 (defn action-analysis
   "Algorithm 1:

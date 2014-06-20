@@ -1,4 +1,4 @@
-// https://github.com/weshoke/versor.js/blob/master/C3.js
+// https://github.com/weshoke/versor.js/blob/master/C4.js
 
 var C3 = versor.create({
 	metric:[1, 1, 1, 1, -1],

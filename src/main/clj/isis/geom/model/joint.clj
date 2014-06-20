@@ -1,8 +1,12 @@
-(ns isis.geom.loop.joint)
+(ns isis.geom.model.joint)
 
 (comment
   "A joint's representation is [[:jprim-1 :jprim-2 ...] dof]
   where dof is the degrees of freedom for the joint." )
+
+(def turn 6.2831853071)
+(def quarter-turn (* 0.25 turn))
+
 
 (def legal-joints
   "All combinations of joint primitives that restrict
@@ -33,6 +37,26 @@
   [constraint-type]
   (some asymetric-joint-primitives constraint-type))
 
+(def joint-primitive-binary
+  "the binary primitive joint types"
+  #{:coincident :in-line :in-plane :parallel-z} )
+
+(def joint-primitive-ternary
+  "the ternary primitive joint types"
+  #{:offset-z :offset-x :helical} )
+
+(def joint-primitive-compond
+  #{:co-oriented [:parallel-z [:offset-x 0.0]]
+    :screw [:in-line :parallel-z :helical]
+    :perpendicular-z [[:offset-z quarter-turn]] } )
+
+(def joint-primitive-driving
+  "the driving joint types"
+  {:angle
+   [:offset-x quarter-turn]
+   :displacement [] } )
+
+
 (def joint-primitive-map
   "joints are conveniently specified at a higher level
   than primitive constraints.  In order to perform action-analysis
@@ -40,7 +64,6 @@
   constituent constraints.  This map provides that relationship."
   {:revolute [:coincident :parallel-z]
    :prismatic [:in-line :parallel-z :offset-x]
-   :screw [:screw]
    :cylindrical [:in-line :parallel-z]
    :spherical [:coincident]
    :ball [:coincident]

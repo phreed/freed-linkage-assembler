@@ -1,0 +1,35 @@
+(ns isis.geom.action.in-plane-slice
+  "The table of rules."
+  (:require [isis.geom.action-dispatch :as master]
+            [isis.geom.model.invariant :refer [marker->invariant?
+                                               marker->add-invariant!]] ))
+
+
+(defn in-plane->precondition?
+  "Associated with each constraint type is a function which
+  checks the preconditions and returns the marker which
+  is underconstrained."
+  [m1 m2 inv]
+  (cond (marker->invariant? inv m1 :p)  m2
+        (and (marker->invariant? inv m2 :p)
+             (marker->invariant? inv m2 :z))
+        m1))
+
+(defmethod master/precondition?
+  :in-plane
+  [constraint invariants]
+  (let [{m1 :m1 m2 :m2} constraint]
+    (in-plane->precondition? m1 m2 invariants)))
+
+
+
+(defn in-plane->postcondition!
+  "Associated with each constraint type is a function which
+  checks/sets the postconditions for after the constraint has been satisfied."
+  [_ _ _])
+
+(defmethod master/assert-postcondition!
+  :in-plane
+  [constraint invariants]
+  (let [{m1 :m1 m2 :m2} constraint]
+    (in-plane->postcondition! m1 m2 invariants)))
