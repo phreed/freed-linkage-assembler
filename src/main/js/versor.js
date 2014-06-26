@@ -126,7 +126,7 @@ var basisNames = function(ty) {
 	ty.sort(function(a, b) {
 		return (a<b) ? -1 : 1;
 	});
-	
+
 	var coords = [];
 	for(var i=0; i < ty.length; ++i) {
 		coords[i] = basisString(ty[i])
@@ -159,7 +159,7 @@ var order = function(c) {
 
 var compress = function(x) {
 	var tally = {};
-	
+
 	// collect like terms
 	for(var i=0; i < x.length; ++i) {
 		var iv = x[i];
@@ -170,7 +170,7 @@ var compress = function(x) {
 			tally[iv.id] = blade(iv.id, iv.w);
 		}
 	}
-	
+
 	var res = [];
 	for(var id in tally) {
 		var iv = tally[id];
@@ -185,7 +185,7 @@ var printLines = function(text, from, to) {
 	var lines = text.match(/^.*((\r\n|\n|\r)|$)/gm);
 	from = from || 0;
 	to = to || lines.length;
-	
+
 	for(var i=from; i < to; ++i) {
 		console.log((i+1)+"\t"+lines[i].substr(0, lines[i].length-1));
 	}
@@ -212,8 +212,8 @@ var Space = function(props) {
 	}
 	this.subspaces = this.buildSubspaces();
 	this.registerSubspaces();
-	this.createTypes(props.types);	
-	
+	this.createTypes(props.types);
+
 	this.api = this.generate(props);
 	for(var name in this.api.constructors) {
 		this[name] = this.api.constructors[name];
@@ -253,7 +253,7 @@ Space.prototype.generate = function(props) {
 			}
 		}
 	}
-	
+
 	functionBody = functionBody.concat(binopCode);
 	functionBody.push("return api;");
 	var f = new Function("space", functionBody.join("\n\n"));
@@ -290,13 +290,13 @@ Space.prototype.key = function(b) {
 	var nkeys = Math.ceil(this.basis.length/32)
 	var key = [];
 	for(var i=0; i < nkeys; ++i) key[i] = 0;
-	
+
 	if(b != undefined) {
 		var k = Math.ceil((b+1)/32);
 		var shft = (b+1) - 32*(k-1);
 		key[k-1] = 1<<shft-1;
 	}
-	
+
 	return key;
 }
 
@@ -318,7 +318,7 @@ Space.prototype.buildBasis = function() {
 	// initialize with the scalar
 	var basis = [0];
 	var basisMap = {0:true};
-	
+
 	// build the coordinate blades (e1, e2, e3, ...)
 	var nb = 1;
 	for(var i=0; i < this.metric.length; ++i) {
@@ -326,7 +326,7 @@ Space.prototype.buildBasis = function() {
 		basisMap[nb] = true;
 		nb <<= 1;
 	}
-	
+
 	// build the bivectors (e12, e23, ...)
 	for(var i=0; i < basis.length; ++i) {
 		for(var j=0; j < basis.length; ++j) {
@@ -339,14 +339,14 @@ Space.prototype.buildBasis = function() {
 			}
 		}
 	}
-	
+
 	// sort the basis by grade
 	basis.sort(function(a, b) {
 		var l = grade(a)-1/a;
 		var r = grade(b)-1/b;
 		return (l<r) ? -1 : 1;
 	});
-	
+
 	return basis;
 }
 
@@ -395,7 +395,7 @@ Space.prototype.buildEuclidean = function() {
 			var gp = this.metricProduct(iv, jv);
 			var op = outer(iv, jv);
 			var ip = this.metricInner(iv, jv);
-			
+
 			S[iv].gp[jv] = [gp];
 			S[iv].op[jv] = [op];
 			S[iv].ip[jv] = [ip];
@@ -466,7 +466,7 @@ Space.prototype.buildConformalBinop = function(S, iv, jv) {
 	// get list of blades in minkowskian (diagonal) metric
 	var tmpA = this.checkMink(iv) ? this.pushMink(iv) : [blade(iv, 1)];
 	var tmpB = this.checkMink(jv) ? this.pushMink(jv) : [blade(jv, 1)];
-	
+
 	var gpTally = [];
 	var opTally = [];
 	var ipTally = [];
@@ -478,18 +478,18 @@ Space.prototype.buildConformalBinop = function(S, iv, jv) {
 			var gp = this.metricProduct(av.id, bv.id);
 			var op = outer(av.id, bv.id);
 			var ip = this.metricInner(av.id, bv.id);
-			
+
 			// push onto tally stack
 			gpTally.push(blade(gp.id, gp.w*av.w*bv.w));
 			opTally.push(blade(op.id, op.w*av.w*bv.w));
 			ipTally.push(blade(ip.id, ip.w*av.w*bv.w));
 		}
 	}
-		
+
 	var gpPop = this.accumMink(compress(gpTally));
 	var opPop = this.accumMink(compress(opTally));
 	var ipPop = this.accumMink(compress(ipTally));
-	
+
 	S[iv].gp[jv] = compress(gpPop);
 	S[iv].op[jv] = compress(opPop);
 	S[iv].ip[jv] = compress(ipPop);
@@ -514,7 +514,7 @@ Space.prototype.buildConformal = function() {
 		S[ib].involute = involute(ib)
 		S[ib].reverse = reverse(ib)
 		S[ib].conjugate = conjugate(ib)
-		
+
 		for(var j=0; j < this.basis.length; ++j) {
 			var jb = this.basis[j];
 			this.buildConformalBinop(S, ib, jb)
@@ -556,7 +556,7 @@ Space.prototype.aliasType = function(oty, nty) {
 	this.types[oty].alias = nty;
 	//this.types[oty].alias = nty
 	/*delete this.types[oty];
-	
+
 	// rename subspace if necessary
 	for(var i=0; i < this.subspaces.length; ++i) {
 		var subs = this.subspaces[i];
@@ -572,7 +572,7 @@ Space.prototype.createType = function(bases, name, aliasExisting) {
 	var key = this.basesKey(bases);
 	for(var tyname in this.types) {
 		var ty = this.types[tyname];
-		if(keyCheck(key, ty.key)) { 
+		if(keyCheck(key, ty.key)) {
 			if(aliasExisting) {
 				this.aliasType(tyname, name)
 				return name;
@@ -589,18 +589,18 @@ Space.prototype.createType = function(bases, name, aliasExisting) {
 
 Space.prototype.productList = function(bases1, bases2, opname) {
 	var tally = [];
-	
+
 	// fetch table pairs of values in types
 	var idx = 0
 	for(var i=0; i < bases1.length; ++i) {
 		var iv = bases1[i];
 		for(var j=0; j < bases2.length; ++j) {
 			var jv = bases2[j];
-		
+
 			var prod = this.products[iv][opname][jv]
 			for(var k=0; k < prod.length; ++k) {
 				var instruction = {
-					a: i, b: j, 
+					a: i, b: j,
 					ida: basisString(iv),
 					idb: basisString(jv),
 					r: prod[k]
@@ -612,11 +612,11 @@ Space.prototype.productList = function(bases1, bases2, opname) {
 	}
 
 	var combined = {};
-	// check for similar ids in the tally, or if weight is 0	
+	// check for similar ids in the tally, or if weight is 0
 	for(var i=0; i < tally.length; ++i) {
 		var instruction = tally[i];
 		if(instruction.r.w == 0) continue;
-		
+
 		var b = instruction.r.id;
 		if(combined[b]) {
 			var instructions = combined[b];
@@ -632,14 +632,14 @@ Space.prototype.productList = function(bases1, bases2, opname) {
 Space.prototype.generateType = function(name) {
 	var ty = this.types[name];
 	var coords = basisNames(ty.bases);
-	
+
 	var getfields = [];
 	var setfields = [];
 	foreach(coords, function(v, i) {
 		getfields[i] = "this["+i+"]";
 		setfields[i] = getfields[i]+" = "+v;
 	});
-	
+
 	var model = {
 		name: name,
 		classname: classname(name),
@@ -757,22 +757,22 @@ Space.prototype.generateType = function(name) {
 		"}",
 		"",
 		].join("\n");
-	
+
 	var code = [def];
-	
+
 	code.push(this.generateUnop("reverse", name));
 	code.push(this.generateUnop("involute", name));
 	code.push(this.generateUnop("conjugate", name));
 	code.push(create);
-	
+
 	ty.generated = true;
 
 	return code.join("\n\n");
 }
 
 Space.prototype.createCast = function(toName, fromName) {
-	var toTy = this.types[toName]	
-	var fromTy = this.types[fromName]	
+	var toTy = this.types[toName]
+	var fromTy = this.types[fromName]
 
 	var fromCoordMap = {}
 	foreach(fromTy.bases, function(v, i) {
@@ -786,35 +786,35 @@ Space.prototype.createCast = function(toName, fromName) {
 		else src = "0"
 		ops[i] = "this["+i+"] = "+src+";"
 	});
-	
+
 	var model = {
 		classname: classname(toName),
 		fromTy:fromName,
 		ops: ops.join("\n")
 	};
-	
-	
+
+
 	var code = [
 		model.classname+".prototype._cast."+model.fromTy+" = function(b) {",
 		model.ops,
 		"};"
 	].join("\n");
-	
+
 	var f = new Function(classname(toName), code);
 	f(this.api.classes[toName]);
 }
 
 Space.prototype.generateUnop = function(opname, tyname) {
-	var ty = this.types[tyname]	
+	var ty = this.types[tyname]
 	var coords = basisNames(ty.bases);
-	
+
 	var _this = this;
 	var ops = [];
 	foreach(ty.bases, function(v, i) {
 		var blade = _this.products[v][opname];
 		ops[i] = ((blade.w>0) ? "" : "-") + "this["+i+"]";
 	});
-	
+
 	var model = {
 		classname: classname(tyname),
 		opname: opname,
@@ -830,7 +830,7 @@ Space.prototype.generateUnop = function(opname, tyname) {
 Space.prototype.binopResultType = function(opname, tyname1, tyname2) {
 	var ty1 = this.types[tyname1];
 	var ty2 = this.types[tyname2];
-	
+
 	var op = this.productList(ty1.bases, ty2.bases, opname);
 	var tynameRes
 	if(op.blades.length == 0) {
@@ -845,7 +845,7 @@ Space.prototype.binopResultType = function(opname, tyname1, tyname2) {
 Space.prototype.generateBinop = function(opname, tyname1, tyname2) {
 	var ty1 = this.types[tyname1];
 	var ty2 = this.types[tyname2];
-	
+
 	var op = this.productList(ty1.bases, ty2.bases, opname);
 	var tynameRes = this.binopResultType(opname, tyname1, tyname2);
 
@@ -863,7 +863,7 @@ Space.prototype.generateBinop = function(opname, tyname1, tyname2) {
 				"api.classes."+tynameRes+" = "+classname(tynameRes)+";"
 			].join("\n")
 		);
-		
+
 		functionBody.push("return api;");
 		var f = new Function("space", functionBody.join("\n\n"));
 		var api = f(this);
@@ -874,7 +874,7 @@ Space.prototype.generateBinop = function(opname, tyname1, tyname2) {
 			this.api.constructors[name] = api.constructors[name];
 		}
 	}
-	
+
 	var ops = [];
 	if(op.blades.length == 0) {
 		ops[0] = "0";
@@ -939,7 +939,7 @@ Space.prototype.createAffineOp = function(opname, tyname1, tyname2) {
 		return (a<b) ? -1 : 1;
 	});
 	var ops = [];
-	
+
 	for(var i=0; i < bases.length; ++i) {
 		var operands = [];
 		var second = false;
@@ -962,7 +962,7 @@ Space.prototype.createAffineOp = function(opname, tyname1, tyname2) {
 		}
 		ops[i] = op;
 	}
-	
+
 	var tynameRes = this.createType(bases, tyname1+tyname2+"_"+opname, false);
 	var tyRes = this.types[tynameRes];
 	if(this.initialized && !tyRes.generated) {
@@ -975,7 +975,7 @@ Space.prototype.createAffineOp = function(opname, tyname1, tyname2) {
 				"api.classes."+tynameRes+" = "+classname(tynameRes)+";"
 			].join("\n")
 		);
-		
+
 		functionBody.push("return api;");
 		var f = new Function("space", functionBody.join("\n\n"));
 		var api = f(this);
@@ -986,7 +986,7 @@ Space.prototype.createAffineOp = function(opname, tyname1, tyname2) {
 			this.api.constructors[name] = api.constructors[name];
 		}
 	}
-	
+
 	var model = {
 		classname1: classname(tyname1),
 		tyname2: tyname2,
@@ -994,13 +994,13 @@ Space.prototype.createAffineOp = function(opname, tyname1, tyname2) {
 		tynameRes: tynameRes,
 		ops: ops.join(", ")
 	};
-	
+
 	var code = [
 		model.classname1+".prototype._"+model.opname+"."+model.tyname2+" = function(b) {",
 		"\treturn "+model.tynameRes+"("+model.ops+");",
 		"};"
 	].join("\n");
-	
+
 	var f = new Function(classname(tyname1), tynameRes, code);
 	f(this.api.classes[tyname1], this.api.constructors[tynameRes]);
 }
@@ -1063,7 +1063,7 @@ Space.prototype.sp = function(a, b) {
 Space.prototype.isSubType = function(tyname1, tyname2) {
 	var bases1 = this.types[tyname1].bases;
 	var bases2 = this.types[tyname2].bases;
-	
+
 	var bases1Map = {};
 	for(var i=0; i < bases1.length; ++i) {
 		bases1Map[ bases1[i] ] = true;
@@ -1080,6 +1080,6 @@ return {
 	create: function(props) {
 		return new Space(props);
 	}
-};	
+};
 }();
 
