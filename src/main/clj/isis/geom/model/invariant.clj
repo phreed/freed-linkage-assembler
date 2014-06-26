@@ -41,12 +41,10 @@
 (defn marker->invariant?
   "Abstract the testing of invariance so programs
   do not have to reference a global variable."
-  [marker-invs marker-name invariant-type]
-  (let [{inv-p :p inv-z :z inv-x :x} marker-invs]
-    (contains? marker-name
-               (case invariant-type
-                 :p @inv-p
-                 :z @inv-z
-                 :x @inv-x)) ))
+  [invariants marker invariant-type]
+  (let [{m :m, g :g} invariants,
+        inv (invariant-type m),
+        [marker-name marker-metric] marker]
+    (contains? marker-name @inv)))
 
 

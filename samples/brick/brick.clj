@@ -29,7 +29,7 @@
                 :markers {'b1 (make->marker :p1 -100.0 :p2 50.0 :p3 10.0)
                           'b2 (make->marker :p1 -99.0 :p2 50.0 :p3 10.0)
                           'b3 (make->marker :p1 -100.0 :p2 51.0 :p3 10.0) }
-                :ports {'j1 {:type :prismatic :marker 'b1}
+                :ports {'j1 {:type :spherical :marker 'b1}
                         'j2 {:type :spherical :marker 'b2}
                         'j3 {:type :spherical :marker 'b3}} )
        'ground (make->link
@@ -37,7 +37,7 @@
                 :markers {'g1 (make->marker )
                           'g2 (make->marker :p1 1.0 :p2 0.0 :p3 0.0)
                           'g3 (make->marker :p1 0.0 :p2 1.0 :p3 0.0) }
-                :ports {'j1 {:type :prismatic :marker 'g1}
+                :ports {'j1 {:type :spherical :marker 'g1}
                         'j2 {:type :spherical :marker 'g2}
                         'j3 {:type :spherical :marker 'g3}}
                 :invariant (make->invariant :p ['g1 'g2 'g3] ))}
