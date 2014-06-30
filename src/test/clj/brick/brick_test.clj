@@ -1,6 +1,7 @@
-(ns brick
+(ns brick.brick-test
   "Sample assembly for brick and ground."
-  (:require [isis.geom.model
+  (:require [expectations :refer :all]
+            [isis.geom.model
              [joint :refer [joint-primitive-map]]
              [graph :refer [make->link make->marker
                             port->expand
@@ -95,7 +96,16 @@
           (for [joint-pair (:joints graph)]
             (graph->expand-joint-pair graph joint-pair))))
 
-(graph->expand-joints @brick-graph)
+(expect ({:type :coincident,
+          :m1 [['ground 'g2] {:p1 1.0, :p3 0.0, :p2 0.0}],
+          :m2 [['brick 'b2] {:p1 -99.0, :p3 10.0, :p2 50.0}]}
+         {:type :coincident,
+          :m1 [['ground 'g3] {:p1 0.0, :p3 0.0, :p2 1.0}],
+          :m2 [['brick 'b3] {:p1 -100.0, :p3 10.0, :p2 51.0}]}
+         {:type :coincident,
+          :m1 [['ground 'g1] {}],
+          :m2 [['brick 'b1] {:p1 -100.0, :p3 10.0, :p2 50.0}]})
+        (graph->expand-joints @brick-graph))
 
 
 ;; (clojure.pprint/pprint
