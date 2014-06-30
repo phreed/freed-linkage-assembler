@@ -13,9 +13,7 @@
                                 marker->add-invariant!
                                 make->invariant]]]
             [isis.geom.action-dispatch
-             :refer [precondition?
-                     transform!
-                     assert-postcondition!]]
+             :refer [precondition?->transform!]]
             [isis.geom.action
              [coincident-slice]
              [helical-slice]
@@ -32,28 +30,26 @@
   The derived data should not be stored in this object directly,
   but be stored in other objects with simliar keys."
   (ref
-   { :links
-     {  'brick  (make->link
-                'brick
-                :markers {'b1 (make->marker :p1 -100.0 :p2 50.0 :p3 10.0)
-                          'b2 (make->marker :p1 -99.0 :p2 50.0 :p3 10.0)
-                          'b3 (make->marker :p1 -100.0 :p2 51.0 :p3 10.0) }
-                :ports {'j1 {:type :spherical :marker 'b1}
-                        'j2 {:type :spherical :marker 'b2}
-                        'j3 {:type :spherical :marker 'b3}} )
-       'ground (make->link
-                'ground
-                :markers {'g1 (make->marker )
-                          'g2 (make->marker :p1 1.0 :p2 0.0 :p3 0.0)
-                          'g3 (make->marker :p1 0.0 :p2 1.0 :p3 0.0) }
-                :ports {'j1 {:type :spherical :marker 'g1}
-                        'j2 {:type :spherical :marker 'g2}
-                        'j3 {:type :spherical :marker 'g3}}
-                :invariant (make->invariant :p ['g1 'g2 'g3] ))}
-     :joints
-     #{#{['ground 'j1] ['brick 'j1]}
-       #{['ground 'j2] ['brick 'j2]}
-       #{['ground 'j3] ['brick 'j3]}} }))
+   '{ :links
+      { brick {
+               :markers {b1 {:p1 -100.0 :p2 50.0 :p3 10.0}
+                         b2 {:p1 -99.0 :p2 50.0 :p3 10.0}
+                         b3 {:p1 -100.0 :p2 51.0 :p3 10.0} }
+               :ports {j1 {:type :spherical :marker b1}
+                       j2 {:type :spherical :marker b2}
+                       j3 {:type :spherical :marker b3}} }
+        ground {
+                :markers {g1 {}
+                          g2 {:p1 1.0 :p2 0.0 :p3 0.0}
+                          g3 {:p1 0.0 :p2 1.0 :p3 0.0} }
+                :ports {j1 {:type :spherical :marker g1}
+                        j2 {:type :spherical :marker g2}
+                        j3 {:type :spherical :marker g3}} } }
+      :base ground
+      :joints
+      #{#{[ground j1] [brick j1]}
+        #{[ground j2] [brick j2]}
+        #{[ground j3] [brick j3]}} }))
 
 (def brick-graph-goal
   "This shows the ultimate goal for the action-analysis.
@@ -61,9 +57,9 @@
   use of the default values, it also indicates the 'base' object.
   In this example there is no rotation so the {:i1 :i2 :i3} values
   could be anything."
-  {:link-motors
-   {'ground {}
-    'brick {:p1 100.0 :p2 -50.0 :p3 -10.0}}})
+  '{:link-motors
+    {ground {}
+     brick {:p1 100.0 :p2 -50.0 :p3 -10.0}}})
 
 
 (declare graph->expand-joints graph->action-analysis)
@@ -81,29 +77,34 @@
   (add-watch brick-graph :assembly-key graph->assemble) )
 
 
-(expect [['ground 'g1 :coincident {}]]
-        (port->expand @brick-graph ['ground 'j1]))
+(= '[[ground g1 :coincident {}]]
+   (port->expand @brick-graph '[ground j1]))
 
-(expect {:type :coincident,
-         :m1 [['ground 'g2] {:p2 0.0, :p3 0.0, :p1 1.0}],
-         :m2 [['brick 'b2] {:p2 0.0, :p3 0.0, :p1 101.0}]}
-        (port-pair->make-constraint
-         @brick-graph
-         [['ground 'g2 :coincident {:p1 1.0, :p3 0.0, :p2 0.0}]
-          ['brick 'b2 :coincident {:p1 101.0, :p3 0.0, :p2 0.0}]] ))
-
-
-(expect [{:type :coincident,
-          :m1 [['ground 'g1] {}],
-          :m2 [['brick 'b1] {:p1 -100.0, :p3 10.0, :p2 50.0}]}]
-        (graph->expand-joint-pair @brick-graph #{['ground 'j1] ['brick 'j1]}))
+(= '{:type :coincident,
+     :m1 [[ground g2] {:p2 0.0, :p3 0.0, :p1 1.0}],
+     :m2 [[brick b2] {:p2 0.0, :p3 0.0, :p1 101.0}]}
+   (port-pair->make-constraint
+    @brick-graph
+    '[[ground g2 :coincident {:p1 1.0, :p3 0.0, :p2 0.0}]
+      [brick b2 :coincident {:p1 101.0, :p3 0.0, :p2 0.0}]] ))
 
 
-#_(expect {:m {:p (ref #{['ground 'g1] ['ground 'g3] ['ground 'g2]}),
-             :z (ref #{}),
-             :x (ref #{})}
-         :g {:p (ref {})}}
-        (graph->init-invariants @brick-graph))
+(= '[{:type :coincident,
+      :m1 [[ground g1] {}],
+      :m2 [[brick b1] {:p1 -100.0, :p3 10.0, :p2 50.0}]}]
+   (graph->expand-joint-pair @brick-graph '#{[ground j1] [brick j1]}))
+
+
+(let [ invs (graph->init-invariants @brick-graph)
+       m (:m invs), m-p (:p m), m-z (:z m), m-x (:x m)
+       l @(:l invs), l-p (:p l), l-t (:tdof l), l-r (:rdof l) ]
+  (and
+   (= '#{[ground g1] [ground g3] [ground g2]} @m-p)
+   (= '#{[ground g1] [ground g3] [ground g2]} @m-z)
+   (= '#{[ground g2] [ground g3] [ground g2]} @m-x)
+   (= '{ground
+        {:p {:p1 0.0, :p2 0.0, :p3 0.0, :i1 0.0, :i2 0.0, :i3 1.0, :t 0.0},
+         :tdof {:# 3}, :rdof {:# 3}}} l)))
 
 
 (defn graph->expand-joints
@@ -116,29 +117,27 @@
           (for [joint-pair (:joints graph)]
             (graph->expand-joint-pair graph joint-pair))))
 
-(expect '({:type :coincident,
-          :m1 [[ground g2] {:p1 1.0, :p3 0.0, :p2 0.0}],
-          :m2 [[brick b2] {:p1 -99.0, :p3 10.0, :p2 50.0}]}
-         {:type :coincident,
-          :m1 [[ground g3] {:p1 0.0, :p3 0.0, :p2 1.0}],
-          :m2 [[brick b3] {:p1 -100.0, :p3 10.0, :p2 51.0}]}
-         {:type :coincident,
-          :m1 [[ground g1] {}],
-          :m2 [[brick b1] {:p1 -100.0, :p3 10.0, :p2 50.0}]})
-        (graph->expand-joints @brick-graph))
+(= '({:type :coincident,
+      :m1 [[ground g2] {:p1 1.0, :p3 0.0, :p2 0.0}],
+      :m2 [[brick b2] {:p1 -99.0, :p3 10.0, :p2 50.0}]}
+            {:type :coincident,
+             :m1 [[ground g3] {:p1 0.0, :p3 0.0, :p2 1.0}],
+             :m2 [[brick b3] {:p1 -100.0, :p3 10.0, :p2 51.0}]}
+            {:type :coincident,
+             :m1 [[ground g1] {}],
+             :m2 [[brick b1] {:p1 -100.0, :p3 10.0, :p2 50.0}]})
+   (graph->expand-joints @brick-graph))
 
 
-;; (clojure.pprint/pprint
-(try
-  (for [constraint (graph->expand-joints @brick-graph)
-        :let [ {c-type :type m1 :m1 m2 :m2} constraint ] ]
-    (str c-type m1 m2) )
-
-  (catch IllegalStateException ex
-    (println ex)))
 
 brick-graph
 
+
+(let [x '{:type :coincident,
+          :m1 [[ground g1] {}],
+          :m2 [[brick b1] {:p1 -100.0, :p3 10.0, :p2 50.0}]}
+      invariants (graph->init-invariants @brick-graph)]
+  (precondition?->transform! x invariants))
 
 (defn action-analysis
   "Algorithm for using the plan fragment table to perform action alalysis.
@@ -166,17 +165,21 @@ brick-graph
           ;; no progress is possible.
           invariants))
       ;; working through the constraint list.
-      (if (precondition? x invariants)
-        (do
-          (transform! x invariants)
-          (recur xs ys true))
+      (if (precondition?->transform! x invariants)
+        (recur xs ys true)
         (recur xs ys progress?) ))))
 
 
-(try
-  (let [graph @brick-graph
-        constraints (graph->expand-joints graph)
-        invariants (graph->init-invariants graph)]
-    (action-analysis constraints invariants))
-  (catch IllegalStateException ex
-    (println ex)))
+(let [graph @brick-graph
+      constraints (graph->expand-joints graph)
+      invariants (graph->init-invariants graph)
+      result (action-analysis constraints invariants)]
+  (let [marker (:m result)
+        links (:g result)]
+    (expect '#{[ground g1] [ground g2] [ground g3]} @(:p marker))
+    (expect #{} @(:z marker))
+    (expect #{} @(:x marker))
+    (expect '{ground {:p1 1.0 :p2 2.0 :p3 3.0 :o1 0.0 :o2 0.0 :o3 1.0 :t 0.0}
+              brick {:p1 1.0 :p2 2.0 :p3 3.0 :o1 0.0 :o2 0.0 :o3 1.0 :t 0.0}}
+            @(:p links))))
+

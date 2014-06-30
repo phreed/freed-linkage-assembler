@@ -3,15 +3,25 @@
   (:require isis.geom.machine.functions) )
 
 
-(defn init-marker-invariant
+(defn init-marker-invariant-s
   "Create a marker invariant with references"
   []
   {:p (ref #{}) :z (ref #{}) :x (ref #{})})
 
-(defn init-graph-invariant
-  "Create a marker invariant with references"
+(defn init-link-invariant-s
+  "Create a map of link invariants within references."
+  [] (ref {}))
+
+(defn init-link-invariant
+  "An invariant for a single link.
+  :p - the placement of the link in global coordinates.
+  :tdof - a tdof descrittion
+     :# - the number of dof remaining
+  :rdof - a tdof description
+     :# - the number of dof remaining."
   []
-  {:p (ref {})})
+  {:p {:p1 0.0 :p2 0.0 :p3 0.0 :i1 0.0 :i2 0.0 :i3 1.0 :t 0.0}
+   :tdof {:# 3} :rdof {:# 3}})
 
 
 (defn make->invariant
@@ -43,8 +53,7 @@
   do not have to reference a global variable."
   [invariants marker invariant-type]
   (let [{m :m, g :g} invariants,
-        inv (invariant-type m),
-        [marker-name marker-metric] marker]
-    (contains? marker-name @inv)))
-
+        marker-invs (invariant-type m),
+        [marker-name _] marker]
+    (contains? @marker-invs marker-name)))
 

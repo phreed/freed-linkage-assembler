@@ -1,8 +1,9 @@
 (ns isis.geom.model.graph
  (:require [isis.geom.model
              [joint :refer [joint-primitive-map]]
-             [invariant :refer [init-marker-invariant
-                                init-graph-invariant
+             [invariant :refer [init-marker-invariant-s
+                                init-link-invariant-s
+                                init-link-invariant
                                 marker->add-invariant!
                                 make->invariant]]]))
 
@@ -11,8 +12,8 @@
 ;; each link has a set of joints.
 ;; each joint has a marker.
 ;; each joint has a set of constraints.
-;; each link has a set of invarients.
-;; each marker has a set of invarients.
+;; each link has a set of invariants.
+;; each marker has a set of invariants.
 
 (defn validate-graph
   "A function to validate the linkage graph."
@@ -82,15 +83,24 @@
 
 
 (defn graph->init-invariants
-  "Make the marker invariant map and
-  extract all the initial marker invariants into it."
+  "There are two types of invariants, link and marker.
+  To start with there is only the link invariant which
+  specifies the base (grounded/fixed) link.
+  The marker invariants for that link are also invariant."
   [graph]
-  (let [m (init-marker-invariant)
-        g (init-graph-invariant)]
-    (doseq [ [link-name link] (:links graph) ]
-      (let [inv (:invariant link)
-            pnt-inv (:p inv)]
-        (when-not (empty? pnt-inv)
-          (doseq [marker-name pnt-inv]
-            (marker->add-invariant! m [link-name marker-name] :p)))))
-    {:m m :g g}))
+  (dosync
+   (let [mis (init-marker-invariant-s)
+         mis-p (:p mis), mi-z (:z mis), mis-x (:x mis)
+         lis (init-link-invariant-s)
+         base-link-name (:base graph)
+         links (:links graph)
+         base-link (base-link-name links)
+         markers (:markers base-link)]
+     (alter lis assoc base-link-name
+            (init-link-invariant))
+     (doseq [ marker-name (keys markers) ]
+       (let [marker-key [base-link-name marker-name]]
+         (alter mis-p conj marker-key)
+         (alter mis-z conj marker-key)
+         (alter mis-x conj marker-key) ))
+     {:m mis :l lis})))
