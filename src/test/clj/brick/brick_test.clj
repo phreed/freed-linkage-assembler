@@ -15,7 +15,15 @@
             [isis.geom.action-dispatch
              :refer [precondition?
                      transform!
-                     assert-postcondition!]]))
+                     assert-postcondition!]]
+            [isis.geom.action
+             [coincident-slice]
+             [helical-slice]
+             [in-line-slice]
+             [in-plane-slice]
+             [offset-x-slice]
+             [offset-z-slice]
+             [parallel-z-slice]]))
 
 
 (def brick-graph
@@ -73,17 +81,29 @@
   (add-watch brick-graph :assembly-key graph->assemble) )
 
 
-(port->expand @brick-graph ['ground 'j1])
+(expect [['ground 'g1 :coincident {}]]
+        (port->expand @brick-graph ['ground 'j1]))
 
-(port-pair->make-constraint @brick-graph
-                            [['ground 'g2 :coincident {:p1 1.0, :p3 0.0, :p2 0.0}]
-                             ['brick 'b2 :coincident {:p1 101.0, :p3 0.0, :p2 0.0}]] )
+(expect {:type :coincident,
+         :m1 [['ground 'g2] {:p2 0.0, :p3 0.0, :p1 1.0}],
+         :m2 [['brick 'b2] {:p2 0.0, :p3 0.0, :p1 101.0}]}
+        (port-pair->make-constraint
+         @brick-graph
+         [['ground 'g2 :coincident {:p1 1.0, :p3 0.0, :p2 0.0}]
+          ['brick 'b2 :coincident {:p1 101.0, :p3 0.0, :p2 0.0}]] ))
 
 
-(graph->expand-joint-pair @brick-graph #{['ground 'j1] ['brick 'j1]})
+(expect [{:type :coincident,
+          :m1 [['ground 'g1] {}],
+          :m2 [['brick 'b1] {:p1 -100.0, :p3 10.0, :p2 50.0}]}]
+        (graph->expand-joint-pair @brick-graph #{['ground 'j1] ['brick 'j1]}))
 
 
-(graph->init-invariants @brick-graph)
+#_(expect {:m {:p (ref #{['ground 'g1] ['ground 'g3] ['ground 'g2]}),
+             :z (ref #{}),
+             :x (ref #{})}
+         :g {:p (ref {})}}
+        (graph->init-invariants @brick-graph))
 
 
 (defn graph->expand-joints
@@ -96,15 +116,15 @@
           (for [joint-pair (:joints graph)]
             (graph->expand-joint-pair graph joint-pair))))
 
-(expect ({:type :coincident,
-          :m1 [['ground 'g2] {:p1 1.0, :p3 0.0, :p2 0.0}],
-          :m2 [['brick 'b2] {:p1 -99.0, :p3 10.0, :p2 50.0}]}
+(expect '({:type :coincident,
+          :m1 [[ground g2] {:p1 1.0, :p3 0.0, :p2 0.0}],
+          :m2 [[brick b2] {:p1 -99.0, :p3 10.0, :p2 50.0}]}
          {:type :coincident,
-          :m1 [['ground 'g3] {:p1 0.0, :p3 0.0, :p2 1.0}],
-          :m2 [['brick 'b3] {:p1 -100.0, :p3 10.0, :p2 51.0}]}
+          :m1 [[ground g3] {:p1 0.0, :p3 0.0, :p2 1.0}],
+          :m2 [[brick b3] {:p1 -100.0, :p3 10.0, :p2 51.0}]}
          {:type :coincident,
-          :m1 [['ground 'g1] {}],
-          :m2 [['brick 'b1] {:p1 -100.0, :p3 10.0, :p2 50.0}]})
+          :m1 [[ground g1] {}],
+          :m2 [[brick b1] {:p1 -100.0, :p3 10.0, :p2 50.0}]})
         (graph->expand-joints @brick-graph))
 
 
