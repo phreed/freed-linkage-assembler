@@ -13,11 +13,6 @@
   [m1 m2 inv]
   (when (marker->invariant? inv m1 :p) m2))
 
-(defmethod master/precondition?
-  :offset-z
-  [constraint invariants]
-  (let [{m1 :m1 m2 :m2} constraint]
-    (offset-z->precondition? m1 m2 invariants)))
 
 
 
@@ -27,8 +22,4 @@
   checks/sets the postconditions for after the constraint has been satisfied."
   [_ _ _])
 
-(defmethod master/assert-postcondition!
-  :offset-z
-  [constraint invariants]
-  (let [{m1 :m1 m2 :m2} constraint]
-    (offset-z->postcondition! m1 m2 invariants)))
+

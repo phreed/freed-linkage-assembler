@@ -8,8 +8,9 @@
                             port-pair->make-constraint
                             graph->init-invariants
                             graph->expand-joint-pair ]]
-             [invariant :refer [init-marker-invariant
-                                init-graph-invariant
+             [invariant :refer [init-marker-invariant-s
+                                init-link-invariant-s
+                                init-link-invariant
                                 marker->add-invariant!
                                 make->invariant]]]
             [isis.geom.action-dispatch
@@ -24,6 +25,7 @@
              [parallel-z-slice]]))
 
 
+
 (def brick-graph
   "From section 3.4 : Example 1: the brick
   This object is composed of the prime data for an assembly.
@@ -32,16 +34,16 @@
   (ref
    '{ :links
       { brick {
-               :markers {b1 {:p1 -100.0 :p2 50.0 :p3 10.0}
-                         b2 {:p1 -99.0 :p2 50.0 :p3 10.0}
-                         b3 {:p1 -100.0 :p2 51.0 :p3 10.0} }
+               :markers {b1 {:e1 -100.0 :e2 50.0 :e3 10.0}
+                         b2 {:e1 -99.0 :e2 50.0 :e3 10.0}
+                         b3 {:e1 -100.0 :e2 51.0 :e3 10.0} }
                :ports {j1 {:type :spherical :marker b1}
                        j2 {:type :spherical :marker b2}
                        j3 {:type :spherical :marker b3}} }
         ground {
                 :markers {g1 {}
-                          g2 {:p1 1.0 :p2 0.0 :p3 0.0}
-                          g3 {:p1 0.0 :p2 1.0 :p3 0.0} }
+                          g2 {:e1 1.0 :e2 0.0 :e3 0.0}
+                          g3 {:e1 0.0 :e2 1.0 :e3 0.0} }
                 :ports {j1 {:type :spherical :marker g1}
                         j2 {:type :spherical :marker g2}
                         j3 {:type :spherical :marker g3}} } }
@@ -55,11 +57,11 @@
   "This shows the ultimate goal for the action-analysis.
   Notice that the ground has no properties, this idicates the
   use of the default values, it also indicates the 'base' object.
-  In this example there is no rotation so the {:i1 :i2 :i3} values
+  In this example there is no rotation so the {:e12 :e23 :e31} values
   could be anything."
   '{:link-motors
     {ground {}
-     brick {:p1 100.0 :p2 -50.0 :p3 -10.0}}})
+     brick {:e1 100.0 :e2 -50.0 :e3 -10.0}}})
 
 
 (declare graph->expand-joints graph->action-analysis)
@@ -77,34 +79,33 @@
   (add-watch brick-graph :assembly-key graph->assemble) )
 
 
-(= '[[ground g1 :coincident {}]]
+(expect '[[ground g1 :coincident {}]]
    (port->expand @brick-graph '[ground j1]))
 
-(= '{:type :coincident,
-     :m1 [[ground g2] {:p2 0.0, :p3 0.0, :p1 1.0}],
-     :m2 [[brick b2] {:p2 0.0, :p3 0.0, :p1 101.0}]}
+(expect '{:type :coincident,
+     :m1 [[ground g2] {:e2 0.0, :e3 0.0, :e1 1.0}],
+     :m2 [[brick b2] {:e2 0.0, :e3 0.0, :e1 101.0}]}
    (port-pair->make-constraint
     @brick-graph
-    '[[ground g2 :coincident {:p1 1.0, :p3 0.0, :p2 0.0}]
-      [brick b2 :coincident {:p1 101.0, :p3 0.0, :p2 0.0}]] ))
+    '[[ground g2 :coincident {:e1 1.0, :e2 0.0, :e3 0.0}]
+      [brick b2 :coincident {:e1 101.0, :e2 0.0, :e3 0.0}]] ))
 
 
-(= '[{:type :coincident,
+
+(let [ ikb (graph->init-invariants @brick-graph)
+       m (:m ikb), m-p (:p m), m-z (:z m), m-x (:x m)
+       l (:l ikb), l-ground ('ground l) ]
+  (do
+   (= '#{[ground g1] [ground g2] [ground g3]} @m-p)
+   (= '#{[ground g1] [ground g2] [ground g3]} @m-z)
+   (= '#{[ground g1] [ground g2] [ground g3]} @m-x)
+   (= '{:p {:e1 0.0, :e2 0.0, :e3 0.0, :e12 0.0, :e23 0.0, :e31 1.0, :t 0.0},
+         :tdof {:# 3}, :rdof {:# 3}} l-ground)))
+
+(expect '[{:type :coincident,
       :m1 [[ground g1] {}],
-      :m2 [[brick b1] {:p1 -100.0, :p3 10.0, :p2 50.0}]}]
+      :m2 [[brick b1] {:e1 -100.0, :e3 10.0, :e2 50.0}]}]
    (graph->expand-joint-pair @brick-graph '#{[ground j1] [brick j1]}))
-
-
-(let [ invs (graph->init-invariants @brick-graph)
-       m (:m invs), m-p (:p m), m-z (:z m), m-x (:x m)
-       l @(:l invs), l-p (:p l), l-t (:tdof l), l-r (:rdof l) ]
-  (and
-   (= '#{[ground g1] [ground g3] [ground g2]} @m-p)
-   (= '#{[ground g1] [ground g3] [ground g2]} @m-z)
-   (= '#{[ground g2] [ground g3] [ground g2]} @m-x)
-   (= '{ground
-        {:p {:p1 0.0, :p2 0.0, :p3 0.0, :i1 0.0, :i2 0.0, :i3 1.0, :t 0.0},
-         :tdof {:# 3}, :rdof {:# 3}}} l)))
 
 
 (defn graph->expand-joints
@@ -117,15 +118,15 @@
           (for [joint-pair (:joints graph)]
             (graph->expand-joint-pair graph joint-pair))))
 
-(= '({:type :coincident,
-      :m1 [[ground g2] {:p1 1.0, :p3 0.0, :p2 0.0}],
-      :m2 [[brick b2] {:p1 -99.0, :p3 10.0, :p2 50.0}]}
+(expect '({:type :coincident,
+      :m1 [[ground g2] {:e1 1.0, :e3 0.0, :e2 0.0}],
+      :m2 [[brick b2] {:e1 -99.0, :e3 10.0, :e2 50.0}]}
             {:type :coincident,
-             :m1 [[ground g3] {:p1 0.0, :p3 0.0, :p2 1.0}],
-             :m2 [[brick b3] {:p1 -100.0, :p3 10.0, :p2 51.0}]}
+             :m1 [[ground g3] {:e1 0.0, :e3 0.0, :e2 1.0}],
+             :m2 [[brick b3] {:e1 -100.0, :e3 10.0, :e2 51.0}]}
             {:type :coincident,
              :m1 [[ground g1] {}],
-             :m2 [[brick b1] {:p1 -100.0, :p3 10.0, :p2 50.0}]})
+             :m2 [[brick b1] {:e1 -100.0, :e3 10.0, :e2 50.0}]})
    (graph->expand-joints @brick-graph))
 
 
@@ -135,9 +136,10 @@ brick-graph
 
 (let [x '{:type :coincident,
           :m1 [[ground g1] {}],
-          :m2 [[brick b1] {:p1 -100.0, :p3 10.0, :p2 50.0}]}
-      invariants (graph->init-invariants @brick-graph)]
-  (precondition?->transform! x invariants))
+          :m2 [[brick b1] {:e1 -100.0, :e3 10.0, :e2 50.0}]}
+      ikb (graph->init-invariants @brick-graph)]
+  (precondition?->transform! x ikb)
+  (= [] ikb))
 
 (defn action-analysis
   "Algorithm for using the plan fragment table to perform action alalysis.
@@ -170,7 +172,7 @@ brick-graph
         (recur xs ys progress?) ))))
 
 
-(let [graph @brick-graph
+#_(let [graph @brick-graph
       constraints (graph->expand-joints graph)
       invariants (graph->init-invariants graph)
       result (action-analysis constraints invariants)]
@@ -179,7 +181,7 @@ brick-graph
     (expect '#{[ground g1] [ground g2] [ground g3]} @(:p marker))
     (expect #{} @(:z marker))
     (expect #{} @(:x marker))
-    (expect '{ground {:p1 1.0 :p2 2.0 :p3 3.0 :o1 0.0 :o2 0.0 :o3 1.0 :t 0.0}
-              brick {:p1 1.0 :p2 2.0 :p3 3.0 :o1 0.0 :o2 0.0 :o3 1.0 :t 0.0}}
+    (expect '{ground {:e1 1.0 :e2 2.0 :e3 3.0 :e12 0.0 :e23 0.0 :e31 1.0 :t 0.0}
+              brick {:e1 1.0 :e2 2.0 :e3 3.0 :e12 0.0 :e23 0.0 :e31 1.0 :t 0.0}}
             @(:p links))))
 

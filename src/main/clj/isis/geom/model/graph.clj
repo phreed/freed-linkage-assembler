@@ -35,7 +35,7 @@
 (defn make->marker
   "Creates a marker in the appropriate coordinate frame."
   [& {:as opts}]
-  (merge #_{:p1 0.0 :p2 0.0 :p3 0.0 :z1 0.0 :z2 0.0 :z3 0.0 :x1 0.0 :x2 0.0 :x3 0.0}
+  (merge #_{:e1 0.0 :e2 0.0 :e3 0.0 :z1 0.0 :z2 0.0 :z3 0.0 :x1 0.0 :x2 0.0 :x3 0.0}
          {} opts))
 
 (defn port->expand
@@ -90,17 +90,22 @@
   [graph]
   (dosync
    (let [mis (init-marker-invariant-s)
-         mis-p (:p mis), mi-z (:z mis), mis-x (:x mis)
-         lis (init-link-invariant-s)
+         mis-p (:p mis), mis-z (:z mis), mis-x (:x mis)
          base-link-name (:base graph)
          links (:links graph)
+         free-links (remove #{base-link-name} (keys links))
          base-link (base-link-name links)
          markers (:markers base-link)]
-     (alter lis assoc base-link-name
-            (init-link-invariant))
      (doseq [ marker-name (keys markers) ]
        (let [marker-key [base-link-name marker-name]]
          (alter mis-p conj marker-key)
          (alter mis-z conj marker-key)
          (alter mis-x conj marker-key) ))
-     {:m mis :l lis})))
+     {:m mis
+      :l (into
+          {}
+          (map #(hash-map % (if (= % base-link)
+                              (init-link-invariant :fixed)
+                              (init-link-invariant :free)
+                              )) (keys links)))}) ))
+

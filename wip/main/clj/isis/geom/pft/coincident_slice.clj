@@ -450,28 +450,4 @@ Explanation:
   After doing this, ?geom will have two rotational degrees of freedom.
 
 
----
-PFT entry: (3,3,coincident)
----
-
-Initial status:
-  3-TDOF(?geom)
-  3-RDOF(?geom)
-
-Plan fragment:
-  begin
-  translate(?geom,
-    vec-diff(gmp(?m-1), gmp(?m-2));
-  R[0] = gmp(?m-2);
-  end;
-
-New status:
-  0-TDOF(?geom, R[0])
-  2-RDOF(?geom)
-
-Explanation:
-  Geom ?geom is free to translate, so the translation
-  vector is measured and the ?geom is moved.
-  No checks are required.
-
 "

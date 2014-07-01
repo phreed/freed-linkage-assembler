@@ -16,13 +16,6 @@
              (marker->invariant? inv m1 :x))
     m2))
 
-(defmethod master/precondition?
-  :helical
-  [constraint invariants]
-  (let [{m1 :m1 m2 :m2} constraint]
-    (helical->precondition? m1 m2 invariants)))
-
-
 
 
 
@@ -31,8 +24,3 @@
   checks/sets the postconditions for once the constraint has been satisfied."
   [_ _ _])
 
-(defmethod master/assert-postcondition!
-  :helical
-  [constraint invariants]
-  (let [{m1 :m1 m2 :m2} constraint]
-    (helical->postcondition! m1 m2 invariants)))

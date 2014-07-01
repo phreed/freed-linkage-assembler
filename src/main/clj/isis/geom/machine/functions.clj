@@ -16,6 +16,12 @@
          e1+e2 (c3ga/add e1 e2)]
     (println "e1 + e2 = " (.toString e1+e2))) )
 
+(defn- merge-position
+  "A function which merges the matching fields. (e1 e2 e3).
+  The remaining fields are preserved from v1,
+  this function is asymetric."
+  [f v1 v2]
+  (merge-with f v1 (select-keys v2 [:e1 :e2 :e3])))
 
 (defn a-point
   "Returns an 'arbitrary' point that lies on curve"
@@ -116,18 +122,21 @@
 
 (defn gmp
   "marker position (in global coordinate frame)."
-  [marker]
-  (println "gmp unimplemented")
-  )
+  [marker ikb]
+  (let [[[link-name _] mp] marker
+        lkb (:l ikb)
+        link @(link-name lkb)
+        lp (:p link)]
+    (merge-position + lp mp)))
 
 (defn gmx
   "marker x-axis vector (in global coordinate frame)."
-  [marker]
+  [marker ikb]
   (println "gmx unimplemented")
   )
 (defn gmz
   "marker z-axis vector (in global coordinate frame)."
-  [marker]
+  [marker ikb]
   (println "gmz unimplemented")
   )
 
@@ -304,8 +313,7 @@
 (defn translate
   "Translate a geom by the specified vector."
   [geom vect]
-  (println "translate unimplemented")
-  )
+  (merge-position + (:p geom) vect))
 
 (defn vec-angle
   "The angle between vector-1 and vector-2,
@@ -319,8 +327,7 @@
 (defn vec-diff
   "Vector difference of vector-1 and vector-2."
   [vector-1 vector-2]
-  (println "vec-diff unimplemented")
-  )
+  (merge-position - vector-1 vector-2))
 
 (defn vec-scale
   "Returns a vector which is original vector times scalar."
@@ -331,8 +338,7 @@
 (defn vec-sum
   "Vector sum of vector-1 and vector-2."
   [vector-1 vector-2]
-  (println "vec-sum unimplemented")
-  )
+  (merge-position + vector-1 vector-2))
 
 (defn x-mul
   "Multiply transform times vector-or transform."

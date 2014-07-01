@@ -15,22 +15,9 @@
              (marker->invariant? inv m2 :z))
         m1))
 
-(defmethod master/precondition?
-  :in-line
-  [constraint invariants]
-  (let [{m1 :m1 m2 :m2} constraint]
-    (in-line->precondition? m1 m2 invariants)))
-
-
-
 
 (defn in-line->postcondition!
   "Associated with each constraint type is a function which
   checks/sets the postconditions for after the constraint has been satisfied."
   [_ _ _])
 
-(defmethod master/assert-postcondition!
-  :in-line
-  [constraint invariants]
-  (let [{m1 :m1 m2 :m2} constraint]
-    (in-line->postcondition! m1 m2 invariants)))

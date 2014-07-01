@@ -10,7 +10,7 @@
 
 (defn init-link-invariant-s
   "Create a map of link invariants within references."
-  [] (ref {}))
+  [] {})
 
 (defn init-link-invariant
   "An invariant for a single link.
@@ -19,21 +19,25 @@
      :# - the number of dof remaining
   :rdof - a tdof description
      :# - the number of dof remaining."
-  []
-  {:p {:p1 0.0 :p2 0.0 :p3 0.0 :i1 0.0 :i2 0.0 :i3 1.0 :t 0.0}
-   :tdof {:# 3} :rdof {:# 3}})
+  [type]
+  (case type
+    :fixed (ref {:tdof {:# 0} :rdof {:# 0}
+            :p {:e1 0.0 :e2 0.0 :e3 0.0 :e12 0.0 :e23 0.0 :e31 1.0 :t 0.0}})
+
+    :free (ref {:tdof {:# 3} :rdof {:# 3}
+            :p {:e1 0.0 :e2 0.0 :e3 0.0 :e12 0.0 :e23 0.0 :e31 1.0 :t 0.0}}) ))
 
 
 (defn make->invariant
   "Create a invariant in the link as outlined in C.3
   :p : list of points having invariant position
-  :p1d  : list of (point locus) pairs, where point is restricted to a 1d-locus
-  :p2d  : list of (point locus) pairs, where point is restricted to a 2d-locus
+  :e1d  : list of (point locus) pairs, where point is restricted to a 1d-locus
+  :e2d  : list of (point locus) pairs, where point is restricted to a 2d-locus
   :v    : list of vectors with invariant orientation
   :v1d  : list of (vector locus) pairs, where the
           orientation of the vector is restricted to a 1d-locus"
   [& {:as opts}]
-  (merge {:p [], :p1d [], :p2d [], :v [], :v1d []} opts))
+  (merge {:p [], :e1d [], :e2d [], :v [], :v1d []} opts))
 
 (defn marker->add-invariant!
   "Abstract away the addition of the invariant so
