@@ -50,10 +50,51 @@
   true)
 
 
+(defn- transform!->0-3-coincident
+  "PFT entry: (0,3,coincident)
 
-(defn transform!->3-3-coincident
+Initial status:
+  0-TDOF(?geom, ?point)
+  3-RDOF(?geom)
+
+Plan fragment:
+  begin
+  3r/p-p(?geom, ?point,
+    gmp(?m-2), gmp(?m-1));
+  R[0] = vec-diff(gmp(?m-2), ?point);
+  end;
+
+New status:
+  0-TDOF(?geom, ?point)
+  1-RDOF(?geom, R[0], nil, nil)
+
+Explanation:
+  Geom ?geom cannot translate, so the coincident
+  constraint is satisfied by a rotation.
+  After the constraint is satisfied, ?geom can still rotate
+  about the line connecting ?m-2 and ?point.
   "
-  PFT entry: (3,3,coincident)
+  [m1 m2 ikb]
+  (let [lkb (:l ikb)
+        [[lm1-name _] _] m1
+        lm1 (lm1-name lkb)
+        point (:p lm1)
+        gmp1 (gmp m1 ikb)
+        gmp2 (gmp m1 ikb) ]
+    (dosync
+     (alter lm1 assoc
+            :p (translate @lm1 (vec-diff gmp2 gmp1))
+            :rdof {:# 1, :p (vec-diff gmp2 point)}) )))
+
+(defmethod coincident->transform!
+  {:tdof 0 :rdof 3}
+  [m1 m2 ikb]
+  (transform!->0-3-coincident m1 m2 ikb))
+
+
+
+(defn- transform!->3-3-coincident
+  "PFT entry: (3,3,coincident)
 
   Initial status:
   3-TDOF(?geom)
@@ -68,7 +109,7 @@
 
   New status:
   0-TDOF(?geom, R[0])
-  2-RDOF(?geom)
+  3-RDOF(?geom)  <no change>
 
   Explanation:
   Geom ?geom is free to translate, so the translation
@@ -78,12 +119,13 @@
   [m1 m2 ikb]
   (let [lkb (:l ikb)
         [[lm1-name _] _] m1
-        lm1 (lm1-name lkb)]
+        lm1 (lm1-name lkb)
+        gmp1 (gmp m1 ikb)
+        gmp2 (gmp m2 ikb)]
     (dosync
      (alter lm1 assoc
-            :p (translate @lm1 (vec-diff (gmp m1 ikb) (gmp m2 ikb)))
-            :tdof {:# 0, :p (gmp m2 ikb)}
-            :rdof {:# 2}) )))
+            :p (translate @lm1 (vec-diff gmp1 gmp2))
+            :tdof {:# 0, :p gmp2} ) )))
 
 (defmethod coincident->transform!
   {:tdof 3 :rdof 3}

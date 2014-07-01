@@ -24,6 +24,18 @@
              [offset-z-slice]
              [parallel-z-slice]]))
 
+(defprotocol Ireference? (reference? [this]))
+(extend-type java.lang.Object Ireference? (reference? [this] false))
+(extend-type nil Ireference? (reference? [this] false))
+(extend-type clojure.lang.Ref Ireference? (reference? [this] true))
+(extend-type clojure.lang.Agent Ireference? (reference? [this] true))
+
+(defn ref->str
+   "takes an arbitrary tree and replaces all futures
+   with agnostic strings."
+   [form]
+   (clojure.walk/postwalk #(if (reference? %) (list 'ref @%) %) form))
+
 
 
 (def brick-graph
@@ -92,15 +104,14 @@
 
 
 
-(let [ ikb (graph->init-invariants @brick-graph)
-       m (:m ikb), m-p (:p m), m-z (:z m), m-x (:x m)
-       l (:l ikb), l-ground ('ground l) ]
-  (do
-   (= '#{[ground g1] [ground g2] [ground g3]} @m-p)
-   (= '#{[ground g1] [ground g2] [ground g3]} @m-z)
-   (= '#{[ground g1] [ground g2] [ground g3]} @m-x)
-   (= '{:p {:e1 0.0, :e2 0.0, :e3 0.0, :e12 0.0, :e23 0.0, :e31 1.0, :t 0.0},
-         :tdof {:# 3}, :rdof {:# 3}} l-ground)))
+(expect '{:m {:p (ref #{[ground g1] [ground g3] [ground g2]}),
+         :z (ref #{[ground g1] [ground g3] [ground g2]}),
+         :x (ref #{[ground g1] [ground g3] [ground g2]})},
+     :l {brick (ref {:tdof {:# 3}, :rdof {:# 3},
+                     :p {:e1 0.0, :e2 0.0, :e3 0.0, :e12 0.0, :e23 0.0, :e31 1.0, :t 0.0}}),
+         ground (ref {:tdof {:# 3}, :rdof {:# 3},
+                      :p {:e1 0.0, :e2 0.0, :e3 0.0, :e12 0.0, :e23 0.0, :e31 1.0, :t 0.0}})}}
+   (ref->str (graph->init-invariants @brick-graph)))
 
 (expect '[{:type :coincident,
       :m1 [[ground g1] {}],
@@ -131,15 +142,49 @@
 
 
 
-brick-graph
+;; simulate the first point being repositioned, by 3-3-coincident
+(expect '{:m {:p (ref #{[ground g1] [ground g3] [ground g2]}),
+              :z (ref #{[ground g1] [ground g3] [ground g2]}),
+              :x (ref #{[ground g1] [ground g3] [ground g2]})},
+          :l {brick (ref {:tdof {:# 0,
+                                 :p {:e1 0.0, :e2 0.0, :e3 0.0, :e12 0.0, :e23 0.0, :e31 1.0, :t 0.0}},
+                          :rdof {:# 3},
+                          :p {:e1 -100.0, :e2 50.0, :e3 10.0, :e12 0.0, :e23 0.0, :e31 1.0, :t 0.0}}),
+              ground (ref {:tdof {:# 3}, :rdof {:# 3},
+                           :p {:e1 0.0, :e2 0.0, :e3 0.0, :e12 0.0, :e23 0.0, :e31 1.0, :t 0.0}})}}
+        (let [ikb (graph->init-invariants @brick-graph)]
+          (precondition?->transform!
+           '{:type :coincident,
+             :m1 [[ground g1] {}],
+             :m2 [[brick b1] {:e1 -100.0, :e3 10.0, :e2 50.0}]}
+           ikb )
+          (ref->str ikb)))
 
-
-(let [x '{:type :coincident,
-          :m1 [[ground g1] {}],
-          :m2 [[brick b1] {:e1 -100.0, :e3 10.0, :e2 50.0}]}
-      ikb (graph->init-invariants @brick-graph)]
-  (precondition?->transform! x ikb)
-  (= [] ikb))
+;; simulate the second point being repositioned, by 0-3-coincident
+(expect '{:m {:p (ref #{[ground g1] [ground g3] [ground g2]}),
+              :z (ref #{[ground g1] [ground g3] [ground g2]}),
+              :x (ref #{[ground g1] [ground g3] [ground g2]})},
+          :l {brick (ref {:tdof {:# 0,
+                                 :p {:e1 0.0, :e2 0.0, :e3 0.0, :e12 0.0, :e23 0.0, :e31 1.0, :t 0.0}},
+                          :rdof {:# 3},
+                          :p {:e1 -100.0, :e2 50.0, :e3 10.0, :e12 0.0, :e23 0.0, :e31 1.0, :t 0.0}}),
+              ground (ref {:tdof {:# 3}, :rdof {:# 3},
+                           :p {:e1 0.0, :e2 0.0, :e3 0.0, :e12 0.0, :e23 0.0, :e31 1.0, :t 0.0}})}}
+        (let [ikb {:m {:p (ref '#{[ground g1] [ground g3] [ground g2]}),
+                       :z (ref '#{[ground g1] [ground g3] [ground g2]}),
+                       :x (ref '#{[ground g1] [ground g3] [ground g2]})},
+                   :l {'brick (ref {:tdof {:# 0,
+                                          :p {:e1 0.0, :e2 0.0, :e3 0.0, :e12 0.0, :e23 0.0, :e31 1.0, :t 0.0}},
+                                   :rdof {:# 3},
+                                   :p {:e1 -100.0, :e2 50.0, :e3 10.0, :e12 0.0, :e23 0.0, :e31 1.0, :t 0.0}}),
+                       'ground (ref {:tdof {:# 3}, :rdof {:# 3},
+                                    :p {:e1 0.0, :e2 0.0, :e3 0.0, :e12 0.0, :e23 0.0, :e31 1.0, :t 0.0}})}}]
+          (precondition?->transform!
+           '{:type :coincident,
+             :m1 [[ground g2] {:e1 1.0 :e2 0.0 :e3 0.0}],
+             :m2 [[brick b2] {:e1 -99.0 :e2 50.0 :e3 10.0}]}
+           ikb)
+          (ref->str ikb)))
 
 (defn action-analysis
   "Algorithm for using the plan fragment table to perform action alalysis.
@@ -184,4 +229,3 @@ brick-graph
     (expect '{ground {:e1 1.0 :e2 2.0 :e3 3.0 :e12 0.0 :e23 0.0 :e31 1.0 :t 0.0}
               brick {:e1 1.0 :e2 2.0 :e3 3.0 :e12 0.0 :e23 0.0 :e31 1.0 :t 0.0}}
             @(:p links))))
-
