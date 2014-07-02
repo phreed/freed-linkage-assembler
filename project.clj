@@ -10,7 +10,7 @@
                  [org.clojure/core.match "0.2.1"]
                  [org.clojure/tools.logging "0.3.0"]
                  [expectations "2.0.7"]
-                 [slamhound "1.5.5"]]
+                 [org.clojure/math.numeric-tower "0.0.4"]]
   :plugins [[lein-expectations "0.0.7"]
             [lein-autoexpect "1.2.2"]
             [lein-ancient "0.5.5"]]

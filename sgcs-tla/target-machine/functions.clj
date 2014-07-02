@@ -40,8 +40,8 @@
   )
 
 (defn cross-prod
-  "Returns the cross product of vect_1 and vect_2."
-   [vect_1 vect_2]
+  "Returns the cross product of vect-1 and vect-2."
+   [vect-1 vect-2]
   )
 
 (defn cylinder
@@ -51,8 +51,8 @@
   )
 
 (defn dot-prod
-  "Returns the dot product of vect_1 and vect_2."
-   [vect_1 vect_2]
+  "Returns the dot product of vect-1 and vect-2."
+   [vect-1 vect-2]
   )
 
 (defn ellipse?

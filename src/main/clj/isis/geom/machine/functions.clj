@@ -1,5 +1,6 @@
 (ns isis.geom.machine.functions
-  (:require [isis.geom.machine.c3ga :as c3ga] ) )
+  (:require [isis.geom.machine.c3ga :as c3ga]
+            [clojure.math.numeric-tower :as math] ) )
 
 
 (defn is-c3ga-working?
@@ -66,10 +67,13 @@
   )
 
 (defn cross-prod
-  "Returns the cross product of vect_1 and vect_2."
-   [vect_1 vect_2]
-  (println "cross-prod unimplemented")
-  )
+  "Returns the cross product of vect-1 and vect-2."
+   [vect-1 vect-2]
+  (let [{v1-1 :e1, v1-2 :e2, v1-3 :e3} vect-1
+        {v2-1 :e1, v2-2 :e2, v2-3 :e3} vect-2 ]
+    {:e1 (- (* v1-2 v2-3) (* v1-3 v2-2))
+     :e2 (- (* v1-3 v2-1) (* v1-1 v2-3))
+     :e3 (- (* v1-1 v2-2) (* v1-2 v2-1))}))
 
 (defn cylinder
   "Return a cylinder object with axial line, whose circular
@@ -79,8 +83,8 @@
   )
 
 (defn dot-prod
-  "Returns the dot product of vect_1 and vect_2."
-   [vect_1 vect_2]
+  "Returns the dot product of vect-1 and vect-2."
+   [vect-1 vect-2]
   (println "dot-prod unimplemented")
   )
 
@@ -202,8 +206,10 @@
   "If quantity is a vector, returns the magnitude of quantity.
   If quantity is a scalar, returns the absolute value of quantity."
   [quantity]
-  (println "mag unimplemented")
-  )
+  (cond (number? quantity) (math/abs quantity)
+        (associative? quantity)
+        (let [{e1 :e1, e2 :e2, e3 :e3} quantity]
+          (math/sqrt (+ (* e1 e1) (* e2 e2) (* e3 e3))))))
 
 (defn modulo
   "Returs quantity modulo modulus"

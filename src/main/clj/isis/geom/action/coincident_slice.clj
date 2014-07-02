@@ -4,10 +4,11 @@
             [isis.geom.model.invariant
              :refer [marker->invariant?
                      marker->add-invariant!]]
-            [isis.geom.machine [functions
-                                :refer [translate
-                                        vec-diff
-                                        gmp]]]))
+            [isis.geom.machine
+             [functions :refer [translate
+                                vec-diff
+                                gmp]]
+             [auxiliary :refer [dof-3r_p->p]] ]))
 
 
 (defn- coincident->precondition?
@@ -80,11 +81,13 @@ Explanation:
         lm1 (lm1-name lkb)
         point (:p lm1)
         gmp1 (gmp m1 ikb)
-        gmp2 (gmp m1 ikb) ]
+        gmp2 (gmp m2 ikb)
+        link-place (dof-3r_p->p @lm1 point gmp2 gmp1)
+        r0 (vec-diff gmp2 point)]
     (dosync
      (alter lm1 assoc
-            :p (translate @lm1 (vec-diff gmp2 gmp1))
-            :rdof {:# 1, :p (vec-diff gmp2 point)}) )))
+            :p link-place
+            :rdof {:# 1, :p r0}) )))
 
 (defmethod coincident->transform!
   {:tdof 0 :rdof 3}

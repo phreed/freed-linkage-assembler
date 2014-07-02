@@ -305,30 +305,6 @@ Explanation:
   then there will still be a rotational degree of freedom.
 
 
----
-PFT entry: (0,3,coincident)
----
-
-Initial status:
-  0-TDOF(?geom, ?point)
-  3-RDOF(?geom)
-
-Plan fragment:
-  begin
-  3r/p-p(?geom, ?point,
-    gmp(?m-2), gmp(?m-1));
-  R[0] = vec-diff(gmp(?m-2), ?point);
-  end;
-
-New status:
-  0-TDOF(?geom, ?point)
-  0-RDOF(?geom, R[0], nil, nil)
-
-Explanation:
-  Geom ?geom cannot translate, so the coincident
-  constraint is satisfied by a rotation.
-  After the constraint is satisfied, ?geom can still rotate
-  about the line connecting ?m-2 and ?point.
 
 
 ---
