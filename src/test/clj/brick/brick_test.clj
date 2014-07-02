@@ -143,48 +143,51 @@
 
 
 ;; simulate the first point being repositioned, by 3-3-coincident
-(expect '{:m {:p (ref #{[ground g1] [ground g3] [ground g2]}),
-              :z (ref #{[ground g1] [ground g3] [ground g2]}),
-              :x (ref #{[ground g1] [ground g3] [ground g2]})},
-          :l {brick (ref {:tdof {:# 0,
-                                 :p {:e1 0.0, :e2 0.0, :e3 0.0, :e12 0.0, :e23 0.0, :e31 1.0, :t 0.0}},
-                          :rdof {:# 3},
-                          :p {:e1 -100.0, :e2 50.0, :e3 10.0, :e12 0.0, :e23 0.0, :e31 1.0, :t 0.0}}),
-              ground (ref {:tdof {:# 3}, :rdof {:# 3},
-                           :p {:e1 0.0, :e2 0.0, :e3 0.0, :e12 0.0, :e23 0.0, :e31 1.0, :t 0.0}})}}
-        (let [ikb (graph->init-invariants @brick-graph)]
-          (precondition?->transform!
-           '{:type :coincident,
-             :m1 [[ground g1] {}],
-             :m2 [[brick b1] {:e1 -100.0, :e3 10.0, :e2 50.0}]}
-           ikb )
-          (ref->str ikb)))
+(expect
+ '{:m {:p (ref #{[ground g1] [ground g3] [ground g2]}),
+       :z (ref #{[ground g1] [ground g3] [ground g2]}),
+       :x (ref #{[ground g1] [ground g3] [ground g2]})},
+   :l {brick (ref {:tdof {:# 0,
+                          :p {:e1 0.0, :e2 0.0, :e3 0.0, :e12 0.0, :e23 0.0, :e31 1.0, :t 0.0}},
+                   :rdof {:# 3},
+                   :p {:e1 -100.0, :e2 50.0, :e3 10.0, :e12 0.0, :e23 0.0, :e31 1.0, :t 0.0}}),
+       ground (ref {:tdof {:# 0}, :rdof {:# 0},
+                    :p {:e1 0.0, :e2 0.0, :e3 0.0, :e12 0.0, :e23 0.0, :e31 1.0, :t 0.0}})}}
+ (let [ikb (graph->init-invariants @brick-graph)]
+   (precondition?->transform!
+    '{:type :coincident,
+      :m1 [[ground g1] {}],
+      :m2 [[brick b1] {:e1 -100.0, :e3 10.0, :e2 50.0}]}
+    ikb )
+   (ref->str ikb)))
 
 ;; simulate the second point being repositioned, by 0-3-coincident
-(expect '{:m {:p (ref #{[ground g1] [ground g3] [ground g2]}),
-              :z (ref #{[ground g1] [ground g3] [ground g2]}),
-              :x (ref #{[ground g1] [ground g3] [ground g2]})},
-          :l {brick (ref {:tdof {:# 0,
-                                 :p {:e1 0.0, :e2 0.0, :e3 0.0, :e12 0.0, :e23 0.0, :e31 1.0, :t 0.0}},
-                          :rdof {:# 3},
-                          :p {:e1 -100.0, :e2 50.0, :e3 10.0, :e12 0.0, :e23 0.0, :e31 1.0, :t 0.0}}),
-              ground (ref {:tdof {:# 3}, :rdof {:# 3},
-                           :p {:e1 0.0, :e2 0.0, :e3 0.0, :e12 0.0, :e23 0.0, :e31 1.0, :t 0.0}})}}
-        (let [ikb {:m {:p (ref '#{[ground g1] [ground g3] [ground g2]}),
-                       :z (ref '#{[ground g1] [ground g3] [ground g2]}),
-                       :x (ref '#{[ground g1] [ground g3] [ground g2]})},
-                   :l {'brick (ref {:tdof {:# 0,
-                                          :p {:e1 0.0, :e2 0.0, :e3 0.0, :e12 0.0, :e23 0.0, :e31 1.0, :t 0.0}},
-                                   :rdof {:# 3},
-                                   :p {:e1 -100.0, :e2 50.0, :e3 10.0, :e12 0.0, :e23 0.0, :e31 1.0, :t 0.0}}),
-                       'ground (ref {:tdof {:# 3}, :rdof {:# 3},
-                                    :p {:e1 0.0, :e2 0.0, :e3 0.0, :e12 0.0, :e23 0.0, :e31 1.0, :t 0.0}})}}]
-          (precondition?->transform!
-           '{:type :coincident,
-             :m1 [[ground g2] {:e1 1.0 :e2 0.0 :e3 0.0}],
-             :m2 [[brick b2] {:e1 -99.0 :e2 50.0 :e3 10.0}]}
-           ikb)
-          (ref->str ikb)))
+(expect
+ '{:m {:p (ref #{[ground g1] [ground g3] [ground g2]}),
+       :z (ref #{[ground g1] [ground g3] [ground g2]}),
+       :x (ref #{[ground g1] [ground g3] [ground g2]})},
+   :l {brick (ref {:tdof {:# 0, :p {:e1 0.0, :e2 0.0, :e3 0.0, :e12 0.0, :e31 1.0, :t 0.0, :e23 0.0}},
+                   :rdof {:# 1, :p {:e1 1.0, :e2 0.0, :e3 0.0, :e12 0.0, :e31 1.0, :t 0.0, :e23 0.0}},
+                   :p {:e1 -100.0, :e2 50.0, :e3 10.0, :e12 0.0, :e23 0.0, :e31 1.0, :t 0.0}}),
+       ground (ref {:tdof {:# 0},
+                    :rdof {:# 0},
+                    :p {:e1 0.0, :e2 0.0, :e3 0.0, :e12 0.0, :e31 1.0, :t 0.0, :e23 0.0}})}}
+
+ (let [ikb {:m {:p (ref '#{[ground g1] [ground g3] [ground g2]}),
+                :z (ref '#{[ground g1] [ground g3] [ground g2]}),
+                :x (ref '#{[ground g1] [ground g3] [ground g2]})},
+            :l {'brick (ref {:tdof {:# 0,
+                                    :p {:e1 0.0, :e2 0.0, :e3 0.0, :e12 0.0, :e23 0.0, :e31 1.0, :t 0.0}},
+                             :rdof {:# 3},
+                             :p {:e1 -100.0, :e2 50.0, :e3 10.0, :e12 0.0, :e23 0.0, :e31 1.0, :t 0.0}}),
+                'ground (ref {:tdof {:# 3}, :rdof {:# 3},
+                              :p {:e1 0.0, :e2 0.0, :e3 0.0, :e12 0.0, :e23 0.0, :e31 1.0, :t 0.0}})}}]
+   (precondition?->transform!
+    '{:type :coincident,
+      :m1 [[ground g2] {:e1 1.0 :e2 0.0 :e3 0.0}],
+      :m2 [[brick b2] {:e1 -99.0 :e2 50.0 :e3 10.0}]}
+    ikb)
+   (ref->str ikb)))
 
 (defn action-analysis
   "Algorithm for using the plan fragment table to perform action alalysis.

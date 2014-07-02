@@ -24,6 +24,7 @@
   [f v1 v2]
   (merge-with f v1 (select-keys v2 [:e1 :e2 :e3])))
 
+
 (defn a-point
   "Returns an 'arbitrary' point that lies on curve"
   [curve] )
@@ -229,6 +230,43 @@
   (println "null? unimplemented")
   )
 
+(defn perp-dist
+  "Distance between surface-1 and serface-2.
+  The surfaces may be zero-, one-, or two-dimensional."
+  [surface-1 surface-2]
+  (println "perp-dist unimplemented")
+  )
+
+(defn on-surface?
+  "Returns 'true' if ?point lies on ?surface."
+  [?point ?surface]
+  (zero? (perp-dist ?point ?surface)) )
+
+(defn parallel?
+  "Returns 'true' if ?axis-1 and ?axis-2 are parallel.
+  If ?direction-matters is 'true', then the axis
+  must also be pointed in the same direction.
+  If ?direction-maters is 'false', then the axis
+  may be either parallel or anti-parallel."
+  [?axis-1 ?axis-2 ?direction-matters]
+  (let [{n1-1 :e23, n1-2 :e31, n1-3 :e12} ?axis-1
+        {n2-1 :e23, n2-2 :e31, n2-3 :e12} ?axis-2
+        pairs [[n1-1 n2-1] [n1-2 n2-2] [n1-3 n2-3]]]
+    (if (every? (fn [[a b]]  (not= (= 0.0 a) (= 0.0 b))) pairs)
+      ;; found a coordinate with value zero, but only for one side
+      false
+      ;; filter out the degenerate coordinates, those with both zero
+      (let [good (filter (fn [[a b]] (not= 0.0 a b)) pairs)]
+        (if (empty? good)
+          ;; if everything is filtered out then not parallel
+          false
+          ;; parallel if the ratios of the remaining pairs match
+          (if ?direction-matters
+            (= (map (fn [[a b]] (/ a b)) good))
+            (= (map (fn [[a b]] (math/abs (/ a b))) good))))))))
+
+
+
 (defn pc-check
   "For use with curve in {screw ellipse+r}.
   If translation and rotation are both non-null,
@@ -262,12 +300,6 @@
   (println "perp-base unimplemented")
   )
 
-(defn perp-dist
-  "Distance between surface-1 and serface-2.
-  The surfaces may be zero-, one-, or two-dimensional."
-  [surface-1 surface-2]
-  (println "perp-dist unimplemented")
-  )
 
 (defn plane
   "Create a plane object with normal vector passing through point."
