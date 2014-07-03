@@ -1,5 +1,7 @@
 (ns isis.geom.machine.functions
-  (:require [isis.geom.machine.c3ga :as c3ga]
+  (:require [isis.geom.machine
+             [c3ga :as c3ga]
+             [misc :as misc]]
             [clojure.math.numeric-tower :as math] ) )
 
 
@@ -17,13 +19,19 @@
          e1+e2 (c3ga/add e1 e2)]
     (println "e1 + e2 = " (.toString e1+e2))) )
 
-(defn- merge-position
-  "A function which merges the matching fields. (e1 e2 e3).
-  The remaining fields are preserved from v1,
-  this function is asymetric."
-  [f v1 v2]
-  (merge-with f v1 (select-keys v2 [:e1 :e2 :e3])))
+(defn mag
+  "If quantity is a vector, returns the magnitude of quantity.
+  If quantity is a scalar, returns the absolute value of quantity."
+  [quantity]
+  (cond (number? quantity) (math/abs quantity)
+        (empty? quantity) 0.0
+        (vector? quantity) (math/sqrt (reduce #(+ %1 (* %2 %2)) 0.0 quantity))
+        :else 0.0))
 
+(defn unit-ize
+  "make the object have size 1."
+  [vect]
+  (into [] (map #(/ % (mag vect)) vect)))
 
 (defn a-point
   "Returns an 'arbitrary' point that lies on curve"
@@ -70,11 +78,11 @@
 (defn cross-prod
   "Returns the cross product of vect-1 and vect-2."
    [vect-1 vect-2]
-  (let [{v1-1 :e1, v1-2 :e2, v1-3 :e3} vect-1
-        {v2-1 :e1, v2-2 :e2, v2-3 :e3} vect-2 ]
-    {:e1 (- (* v1-2 v2-3) (* v1-3 v2-2))
-     :e2 (- (* v1-3 v2-1) (* v1-1 v2-3))
-     :e3 (- (* v1-1 v2-2) (* v1-2 v2-1))}))
+  (let [[v1-1 v1-2 v1-3] vect-1
+        [v2-1 v2-2 v2-3] vect-2 ]
+    [(- (* v1-2 v2-3) (* v1-3 v2-2))
+     (- (* v1-3 v2-1) (* v1-1 v2-3))
+     (- (* v1-1 v2-2) (* v1-2 v2-1))]))
 
 (defn cylinder
   "Return a cylinder object with axial line, whose circular
@@ -114,8 +122,7 @@
   If ERROR-MODE is 'accumlate' and measuer is greater than TOLERANCE,
   then ERROR-ACC is set to ERROR-ACC plus measure."
   [measure string]
-  (println "error unimplemented")
-  )
+  (println "error : " measure string) )
 
 
 (defn equal?
@@ -129,16 +136,18 @@
   "marker position (in global coordinate frame)."
   [marker ikb]
   (let [[[link-name _] mp] marker
+        me (get mp :e [0.0 0.0 0.0])
         lkb (:l ikb)
         link @(link-name lkb)
-        lp (:p link)]
-    (merge-position + lp mp)))
+        lp (get-in link [:p :e] [0.0 0.0 0.0])]
+    (into [] (map + lp me))))
 
 (defn gmx
   "marker x-axis vector (in global coordinate frame)."
   [marker ikb]
   (println "gmx unimplemented")
   )
+
 (defn gmz
   "marker z-axis vector (in global coordinate frame)."
   [marker ikb]
@@ -176,8 +185,7 @@
 (defn line
   "Returns a line object with direction vector passing through point."
   [point vector]
-  (println "line unimplemented")
-  )
+  {:type :line :e point, :d (unit-ize vector)})
 
 (defn line?
   "Returns 'true' if object is a line."
@@ -203,14 +211,6 @@
   (println "lmz unimplemented")
   )
 
-(defn mag
-  "If quantity is a vector, returns the magnitude of quantity.
-  If quantity is a scalar, returns the absolute value of quantity."
-  [quantity]
-  (cond (number? quantity) (math/abs quantity)
-        (associative? quantity)
-        (let [{e1 :e1, e2 :e2, e3 :e3} quantity]
-          (math/sqrt (+ (* e1 e1) (* e2 e2) (* e3 e3))))))
 
 (defn modulo
   "Returs quantity modulo modulus"
@@ -249,8 +249,8 @@
   If ?direction-maters is 'false', then the axis
   may be either parallel or anti-parallel."
   [?axis-1 ?axis-2 ?direction-matters]
-  (let [{n1-1 :e23, n1-2 :e31, n1-3 :e12} ?axis-1
-        {n2-1 :e23, n2-2 :e31, n2-3 :e12} ?axis-2
+  (let [{n1-1 :z1, n1-2 :z2, n1-3 :z3} ?axis-1
+        {n2-1 :z1, n2-2 :z2, n2-3 :z3} ?axis-2
         pairs [[n1-1 n2-1] [n1-2 n2-2] [n1-3 n2-3]]]
     (if (every? (fn [[a b]]  (not= (= 0.0 a) (= 0.0 b))) pairs)
       ;; found a coordinate with value zero, but only for one side
@@ -294,18 +294,36 @@
   (println "pc-locus unimplemented")
   )
 
-(defn perp-base
-  "Returns the point on the surface closest to the specified point."
-  [point surface]
-  (println "perp-base unimplemented")
+(defmulti perp-base
+  "Returns the point on the surface closest to the specified point.
+  The surface can be 0d 1d 2d."
+  (fn [point surface] (:type surface)))
+
+(defmethod perp-base
+  :line
+  [point line]
+  (into [] (map #(- %2 (* %3 (- %1 %2))) point (:e line) (:d line)) ))
+
+(defmethod perp-base
+  :plane
+  [point plane]
+  (let [[p1 p2 p3] point
+        {[s1 s2 s3] :e, [sn1 sn2 sn3] :n} plane
+        q [(- p1 s1) (- p2 s2) (- p3 s3)]
+        s-m (mag [sn1 sn2 sn3])
+        s-u [(/ sn1 s-m) (/ sn2 s-m) (/ sn3 s-m)]
+        sq-in-prod (reduce + (map * s-u q))
+        sn (map #(* % sq-in-prod) s-u)
+        pu ()
+        ]
+    )
   )
 
 
 (defn plane
   "Create a plane object with normal vector passing through point."
   [point vect]
-  (println "plane unimplemented")
-  )
+  {:type :plane :e point :n (unit-ize vector)})
 
 (defn point?
   "Returns 'true' if object is a 'point'."
@@ -349,9 +367,10 @@
   )
 
 (defn translate
-  "Translate a geom by the specified vector."
-  [geom vect]
-  (merge-position + (:p geom) vect))
+  "Translate a geom by the specified vector.
+  This receives a full placement and returns a full placement."
+  [marker vect]
+  (merge marker {:e (into [] (map + (:e marker) vect))}))
 
 (defn vec-angle
   "The angle between vector-1 and vector-2,
@@ -365,7 +384,7 @@
 (defn vec-diff
   "Vector difference of vector-1 and vector-2."
   [vector-1 vector-2]
-  (merge-position - vector-1 vector-2))
+  (into [] (map - vector-2 vector-1)))
 
 (defn vec-scale
   "Returns a vector which is original vector times scalar."
@@ -376,7 +395,7 @@
 (defn vec-sum
   "Vector sum of vector-1 and vector-2."
   [vector-1 vector-2]
-  (merge-position + vector-1 vector-2))
+  (into [] (map + vector-1 vector-2)))
 
 (defn x-mul
   "Multiply transform times vector-or transform."

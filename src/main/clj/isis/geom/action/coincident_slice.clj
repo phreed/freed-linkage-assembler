@@ -8,31 +8,30 @@
              [functions :refer [translate
                                 vec-diff
                                 gmp]]
-             [auxiliary :refer [dof-3r_p->p]] ]))
+             [auxiliary :refer [dof-3r:p->p]] ]))
 
 
 (defn- coincident->precondition?
   "Associated with each constraint type is a function which
   checks the preconditions and returns the marker which
   is underconstrained followed by the marker that is constrained."
-  [m1 m2 invs]
-  (cond (marker->invariant? invs m2 :p) [m1 m2]
-        (marker->invariant? invs m1 :p) [m2 m1]
+  [ikb m1 m2]
+  (cond (marker->invariant? ikb m2 :p) [m1 m2]
+        (marker->invariant? ikb m1 :p) [m2 m1]
         :else false))
 
 (defn- coincident->postcondition!
   "Associated with each constraint type is a function which
   checks/sets the postconditions for after the constraint has been satisfied."
-  [_ m2 inv] (marker->add-invariant! inv m2 :p))
+  [ikb _ m2] (marker->add-invariant! ikb m2 :p))
 
 
 (defn coincident->transform-dispatch
   "Examine the underconstrained marker to determine the dispatch key.
   The key is the [#tdof #rdof]."
-  [m1 m2 ikb]
-  (let [links (:l ikb)
-        [[link-name _] _] m1
-        link @(link-name links)]
+  [ikb m1 m2]
+  (let [[[link-name _] _] m1
+        link @(link-name (:l ikb))]
     {:tdof (:# (:tdof link)) :rdof (:# (:rdof link))}))
 
 (defmulti coincident->transform!
@@ -44,10 +43,10 @@
 
 (defmethod master/precondition?->transform!
   :coincident
-  [constraint ikb]
+  [ikb constraint]
   (let [{m1 :m1 m2 :m2} constraint]
-    (when-let [ [m1 m2] (coincident->precondition? m1 m2 ikb) ]
-      (coincident->transform! m1 m2 ikb)))
+    (when-let [ [m1 m2] (coincident->precondition? ikb m1 m2) ]
+      (coincident->transform! ikb m1 m2)))
   true)
 
 
@@ -75,24 +74,23 @@ Explanation:
   After the constraint is satisfied, ?geom can still rotate
   about the line connecting ?m-2 and ?point.
   "
-  [m1 m2 ikb]
-  (let [lkb (:l ikb)
-        [[lm1-name _] _] m1
-        lm1 (lm1-name lkb)
-        point (:p lm1)
+  [ikb m1 m2]
+  (let [ [[m1-link-name _] _] m1
+        m1-link (get-in ikb [:l m1-link-name])
+        point (get-in @m1-link [:p :e])
         gmp1 (gmp m1 ikb)
         gmp2 (gmp m2 ikb)
-        link-place (dof-3r_p->p @lm1 point gmp2 gmp1)
+        link-place (dof-3r:p->p @m1-link point gmp2 gmp1)
         r0 (vec-diff gmp2 point)]
     (dosync
-     (alter lm1 assoc
+     (alter m1-link assoc
             :p link-place
             :rdof {:# 1, :p r0}) )))
 
 (defmethod coincident->transform!
   {:tdof 0 :rdof 3}
-  [m1 m2 ikb]
-  (transform!->0-3-coincident m1 m2 ikb))
+  [ikb m1 m2]
+  (transform!->0-3-coincident ikb m1 m2))
 
 
 
@@ -119,18 +117,17 @@ Explanation:
   vector is measured and the ?geom is moved.
   No checks are required.
   "
-  [m1 m2 ikb]
-  (let [lkb (:l ikb)
-        [[lm1-name _] _] m1
-        lm1 (lm1-name lkb)
+  [ikb m1 m2]
+  (let [[[m1-link-name _] _] m1
+        m1-link (get-in ikb [:l m1-link-name])
         gmp1 (gmp m1 ikb)
         gmp2 (gmp m2 ikb)]
     (dosync
-     (alter lm1 assoc
-            :p (translate @lm1 (vec-diff gmp1 gmp2))
+     (alter m1-link assoc
+            :p (translate (:p @m1-link) (vec-diff gmp1 gmp2))
             :tdof {:# 0, :p gmp2} ) )))
 
 (defmethod coincident->transform!
   {:tdof 3 :rdof 3}
-  [m1 m2 ikb]
-  (transform!->3-3-coincident m1 m2 ikb))
+  [ikb m1 m2]
+  (transform!->3-3-coincident ikb m1 m2))

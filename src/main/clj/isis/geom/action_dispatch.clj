@@ -6,11 +6,11 @@
 
 (defn- transform-dispatch
   "the function which specifies which implementation to use."
-  [constraint ikb]
+  [ikb constraint]
   (:type constraint) )
 
 (defn- precondition?->transform!<-default
-  [constraint ikb]
+  [ikb constraint]
   nil)
 
 (defmulti precondition?->transform!

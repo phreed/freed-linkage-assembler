@@ -22,10 +22,10 @@
   [type]
   (case type
     :fixed (ref {:tdof {:# 0} :rdof {:# 0}
-            :p {:e1 0.0 :e2 0.0 :e3 0.0 :e12 0.0 :e23 0.0 :e31 1.0 :t 0.0}})
+            :p {:e [0.0 0.0 0.0] :z [0.0 0.0 1.0] :x [1.0 0.0 0.0]}})
 
     :free (ref {:tdof {:# 3} :rdof {:# 3}
-            :p {:e1 0.0 :e2 0.0 :e3 0.0 :e12 0.0 :e23 0.0 :e31 1.0 :t 0.0}}) ))
+            :p {:e [0.0 0.0 0.0] :z [0.0 0.0 1.0] :x [1.0 0.0 0.0]}}) ))
 
 
 (defn make->invariant
@@ -55,8 +55,8 @@
 (defn marker->invariant?
   "Abstract the testing of invariance so programs
   do not have to reference a global variable."
-  [invariants marker invariant-type]
-  (let [{m :m, g :g} invariants,
+  [ikb marker invariant-type]
+  (let [{m :m, g :g} ikb,
         marker-invs (invariant-type m),
         [marker-name _] marker]
     (contains? @marker-invs marker-name)))
