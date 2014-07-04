@@ -42,25 +42,40 @@
   but be stored in other objects with simliar keys."
   (ref
    '{ :links
-      { brick {
-               :markers {b1 {:e1 5.0 :e2 0.0 :e3 0.0}
-                         b2 {:e1 5.0 :e2 3.0 :e3 0.0}
-                         b3 {:e1 5.0 :e2 0.0 :e3 4.0} }
-               :ports {j1 {:type :spherical :marker b1}
-                       j2 {:type :spherical :marker b2}
-                       j3 {:type :spherical :marker b3}} }
-        ground {
-                :markers {g1 {}
-                          g2 {:e1 3.0 :e2 0.0 :e3 0.0}
-                          g3 {:e1 0.0 :e2 4.0 :e3 0.0} }
+      {ground {
+                :markers {g1 {:e1 5.0 :e2 0.0 :e3 0.0}
+                          g2 {:e1 8.0 :e2 0.0 :e3 0.0}
+                          g3 {:e1 5.0 :e2 4.0 :e3 0.0} }
                 :ports {j1 {:type :spherical :marker g1}
                         j2 {:type :spherical :marker g2}
-                        j3 {:type :spherical :marker g3}} } }
+                        j3 {:type :spherical :marker g3}} }
+       brick {
+               :markers {b1 {:e1 0.0 :e2 0.0 :e3 0.0}
+                         b2 {:e1 0.0 :e2 3.0 :e3 0.0}
+                         b3 {:e1 0.0 :e2 0.0 :e3 4.0}
+                         b4 {:e1 1.0 :e2 0.0 :e3 0.0} }
+               :ports {jg1 {:type :spherical :marker b1}
+                       jg2 {:type :spherical :marker b2}
+                       jg3 {:type :spherical :marker b3}
+
+                       jc1 {:type :spherical :marker b4}
+                       jc2 {:type :spherical :marker b2}
+                       jc3 {:type :spherical :marker b3}} }
+       cap {
+               :markers {c2 {:e1 0.0 :e2 3.0 :e3 0.0}
+                         c3 {:e1 0.0 :e2 0.0 :e3 4.0}
+                         c4 {:e1 -1.0 :e2 0.0 :e3 0.0} }
+               :ports {j1 {:type :spherical :marker c4}
+                       j2 {:type :spherical :marker c2}
+                       j3 {:type :spherical :marker c3}} } }
       :base ground
       :joints
-      #{#{[ground j1] [brick j1]}
-        #{[ground j2] [brick j2]}
-        #{[ground j3] [brick j3]}} }))
+      #{#{[ground j1] [brick jg1]}
+        #{[ground j2] [brick jg2]}
+        #{[ground j3] [brick jg3]}
+        #{[brick jc1] [cap j1]}
+        #{[brick jc2] [cap j2]}
+        #{[cap j3] [brick jc3]}} }))
 
 (def brick-graph-goal
   "This shows the ultimate goal for the action-analysis.
@@ -89,7 +104,7 @@
 
 
 (expect
- '[[ground g1 :coincident {}]]
+ '[[ground g1 :coincident {:e1 5.0, :e2 0.0, :e3 0.0}]]
  (port->expand @brick-graph '[ground j1]))
 
 (expect
@@ -108,28 +123,39 @@
        :z (ref #{[ground g1] [ground g3] [ground g2]}),
        :x (ref #{[ground g1] [ground g3] [ground g2]})},
    :l {brick (ref {:tdof {:# 3}, :rdof {:# 3},
-                   :p {:e [0.0 0.0 0.0] :z [0.0 0.0 1.0] :x [1.0 0.0 0.0]}}),
+                   :p {:e [0.0 0.0 0.0] :z [0.0 0.0 1.0] :x [1.0 0.0 0.0]}})
        ground (ref {:tdof {:# 0}, :rdof {:# 0},
-                    :p {:e [0.0 0.0 0.0] :z [0.0 0.0 1.0] :x [1.0 0.0 0.0]}})}}
+                    :p {:e [0.0 0.0 0.0] :z [0.0 0.0 1.0] :x [1.0 0.0 0.0]}})
+       cap (ref {:tdof {:# 3}, :rdof {:# 3},
+                 :p {:e [0.0 0.0 0.0], :z [0.0 0.0 1.0], :x [1.0 0.0 0.0]}})}}
  (ref->str (graph->init-invariants @brick-graph)))
 
 (expect
- '[{:type :coincident,
-    :m1 [[ground g1] {:e [nil nil nil] :z [nil nil nil] :x [nil nil nil]}],
-    :m2 [[brick b1] {:e [5.0 0.0 0.0] :z [nil nil nil] :x [nil nil nil]}]}]
- (graph->expand-joint-pair @brick-graph '#{[ground j1] [brick j1]}))
+ '({:type :coincident
+    :m1 [[ground g1] {:e [5.0 0.0 0.0], :z [nil nil nil], :x [nil nil nil]}]
+    :m2 [[brick b1] {:e [0.0 0.0 0.0], :z [nil nil nil], :x [nil nil nil]}]})
+ (graph->expand-joint-pair @brick-graph '#{[ground j1] [brick jg1]}))
 
 
 (expect
- '({:type :coincident
-    :m1 [[ground g2] {:e [3.0 0.0 0.0] :z [nil nil nil] :x [nil nil nil]}]
-    :m2 [[brick b2] {:e [5.0 3.0 0.0] :z [nil nil nil] :x [nil nil nil]}]}
-   {:type :coincident
-    :m1 [[ground g3] {:e [0.0 4.0 0.0] :z [nil nil nil] :x [nil nil nil]}]
-    :m2 [[brick b3] {:e [5.0 0.0 4.0] :z [nil nil nil] :x [nil nil nil]}]}
-   {:type :coincident
-    :m1 [[ground g1] {:e [nil nil nil] :z [nil nil nil] :x [nil nil nil]}]
-    :m2 [[brick b1] {:e [5.0 0.0 0.0] :z [nil nil nil] :x [nil nil nil]}]})
+  '({:type :coincident
+     :m1 [[ground g2] {:e [8.0 0.0 0.0], :z [nil nil nil], :x [nil nil nil]}]
+     :m2 [[brick b2] {:e [0.0 3.0 0.0], :z [nil nil nil], :x [nil nil nil]}]}
+    {:type :coincident
+     :m1 [[brick b4] {:e [1.0 0.0 0.0], :z [nil nil nil], :x [nil nil nil]}]
+     :m2 [[cap c4] {:e [-1.0 0.0 0.0], :z [nil nil nil], :x [nil nil nil]}]}
+    {:type :coincident
+     :m1 [[ground g1] {:e [5.0 0.0 0.0], :z [nil nil nil], :x [nil nil nil]}]
+     :m2 [[brick b1] {:e [0.0 0.0 0.0], :z [nil nil nil], :x [nil nil nil]}]}
+    {:type :coincident
+     :m1 [[brick b3] {:e [0.0 0.0 4.0], :z [nil nil nil], :x [nil nil nil]}]
+     :m2 [[cap c3] {:e [0.0 0.0 4.0], :z [nil nil nil], :x [nil nil nil]}]}
+    {:type :coincident
+     :m1 [[brick b3] {:e [0.0 0.0 4.0], :z [nil nil nil], :x [nil nil nil]}]
+     :m2 [[ground g3] {:e [5.0 4.0 0.0], :z [nil nil nil], :x [nil nil nil]}]}
+    {:type :coincident
+     :m1 [[cap c2] {:e [0.0 3.0 0.0], :z [nil nil nil], :x [nil nil nil]}]
+     :m2 [[brick b2] {:e [0.0 3.0 0.0], :z [nil nil nil], :x [nil nil nil]}]})
  (graph->expand-joints @brick-graph))
 
 
@@ -138,11 +164,12 @@
  '{:m {:p (ref #{[ground g1] [ground g3] [ground g2] [brick b1]})
        :z (ref #{[ground g1] [ground g3] [ground g2]})
        :x (ref #{[ground g1] [ground g3] [ground g2]})}
-   :l {brick (ref {:tdof {:# 0 :p [0.0 0.0 0.0]}
-                   :rdof {:# 3}
+   :l {ground (ref {:tdof {:# 0} :rdof {:# 0}
+                    :p {:e [0.0 0.0 0.0] :z [0.0 0.0 1.0] :x [1.0 0.0 0.0]}})
+       brick (ref {:tdof {:# 0 :p [0.0 0.0 0.0]}, :rdof {:# 3}
                    :p {:e [100.0 -50.0 -10.0] :z [0.0 0.0 1.0] :x [1.0 0.0 0.0]}})
-       ground (ref {:tdof {:# 0} :rdof {:# 0}
-                    :p {:e [0.0 0.0 0.0] :z [0.0 0.0 1.0] :x [1.0 0.0 0.0]}})}}
+       cap (ref {:tdof {:# 3} :rdof {:# 3}
+                 :p {:e [0.0 0.0 0.0], :z [0.0 0.0 1.0], :x [1.0 0.0 0.0]}})}}
  (let [ikb (graph->init-invariants @brick-graph)]
    (precondition?->transform! ikb
     '{:type :coincident
@@ -154,11 +181,12 @@
  '{:m {:p (ref #{[ground g1] [ground g3] [ground g2] [brick b1]})
        :z (ref #{[ground g1] [ground g3] [ground g2]})
        :x (ref #{[ground g1] [ground g3] [ground g2]})}
-   :l {brick (ref {:tdof {:# 0 :p [0.0 0.0 0.0]}
-                   :rdof {:# 3}
-                   :p {:e [-5.0 0.0 -4.0] :z [0.0 0.0 1.0] :x [1.0 0.0 0.0]}})
-       ground (ref {:tdof {:# 0} :rdof {:# 0}
-                    :p {:e [0.0 0.0 0.0] :z [0.0 0.0 1.0] :x [1.0 0.0 0.0]}})}}
+   :l {ground (ref {:tdof {:# 0}, :rdof {:# 0}
+                    :p {:e [0.0 0.0 0.0], :z [0.0 0.0 1.0], :x [1.0 0.0 0.0]}})
+       brick (ref {:tdof {:# 0, :p [0.0 0.0 0.0]}, :rdof {:# 3}
+                   :p {:e [-5.0 0.0 -4.0], :z [0.0 0.0 1.0], :x [1.0 0.0 0.0]}})
+       cap (ref {:tdof {:# 3}, :rdof {:# 3},
+                 :p {:e [0.0 0.0 0.0], :z [0.0 0.0 1.0], :x [1.0 0.0 0.0]}})}}
  (let [ikb (graph->init-invariants @brick-graph)]
    (precondition?->transform! ikb
     '{:type :coincident
@@ -167,16 +195,16 @@
    (ref->str ikb)))
 
 ;; simulate the second point being repositioned, by 0-3-coincident
-(=
+(expect
  '{:m {:p (ref #{[ground g1] [ground g3] [ground g2] [brick b1]})
        :z (ref #{[ground g1] [ground g3] [ground g2]})
        :x (ref #{[ground g1] [ground g3] [ground g2]})}
-   :l {brick (ref {:tdof {:# 0 :p [0.0 0.0 0.0]}
-                   :rdof {:# 1 :a [-8.0 0.0 -4.0]}
-                   :p {:e [-8.0 0.0 -4.0] :z [0.0 0.0 1.0] :x [1.0 0.0 0.0]}})
-       ground (ref {:tdof {:# 0}, :rdof {:# 0}
-                    :p {:e1 0.0, :e2 0.0, :e3 0.0, :z3 0.0, :z2 1.0, :t 0.0, :z1 0.0}})}}
-
+   :l {ground (ref {:tdof {:# 0}, :rdof {:# 0}
+                    :p {:e [0.0 0.0 0.0], :z [0.0 0.0 1.0], :x [1.0 0.0 0.0]}})
+       brick (ref {:tdof {:# 0, :p [0.0 0.0 0.0]}, :rdof {:# 3}
+                   :p {:e [-5.0 0.0 -4.0], :z [0.0 0.0 1.0], :x [1.0 0.0 0.0]}})
+       cap (ref {:tdof {:# 3}, :rdof {:# 3},
+                 :p {:e [0.0 0.0 0.0], :z [0.0 0.0 1.0], :x [1.0 0.0 0.0]}})}}
  (let [ikb (graph->init-invariants @brick-graph)]
    ;; repeat from previous test
    (precondition?->transform! ikb
@@ -222,16 +250,15 @@
 
 
 (expect
- '{:m {:p (ref #{[ground g1] [ground g3] [ground g2]}),
-       :z (ref #{[ground g1] [ground g3] [ground g2]}),
-       :x (ref #{[ground g1] [ground g3] [ground g2]})},
-   :l {brick (ref {:tdof {:# 0, :p {:e1 0.0, :e2 0.0, :e3 0.0, :z3 0.0, :z2 1.0, :t 0.0, :z1 0.0}},
-                   :rdof {:# 1, :p {:e1 1.0, :e2 0.0, :e3 0.0, :z3 0.0, :z2 1.0, :t 0.0, :z1 0.0}},
-                   :p {:e1 -100.0, :e2 50.0, :e3 10.0, :z3 0.0, :z1 0.0, :z2 1.0, :t 0.0}}),
-       ground (ref {:tdof {:# 0},
-                    :rdof {:# 0},
-                    :p {:e1 0.0, :e2 0.0, :e3 0.0, :z3 0.0, :z2 1.0, :t 0.0, :z1 0.0}})}}
-
+ '{:m {:p (ref #{[ground g1] [ground g3] [ground g2] [brick b1] [brick b2] [brick b3] [cap c1] [cap c2] [cap c3]})
+       :z (ref #{[ground g1] [ground g3] [ground g2] [brick b1] [brick b2] [brick b3] [cap c1] [cap c2] [cap c3]})
+       :x (ref #{[ground g1] [ground g3] [ground g2] [brick b1] [brick b2] [brick b3] [cap c1] [cap c2] [cap c3]})}
+   :l {ground (ref {:tdof {:# 0}, :rdof {:# 0}
+                    :p {:e [0.0 0.0 0.0], :z [0.0 0.0 1.0], :x [1.0 0.0 0.0]}})
+       brick (ref {:tdof {:# 0, :p [0.0 0.0 0.0]}, :rdof {:# 0}
+                   :p {:e [-5.0 0.0 -4.0], :z [0.0 0.0 1.0], :x [1.0 0.0 0.0]}})
+       cap (ref {:tdof {:# 0}, :rdof {:# 0},
+                 :p {:e [0.0 0.0 0.0], :z [0.0 0.0 1.0], :x [1.0 0.0 0.0]}})}}
  '(let [graph @brick-graph]
     (action-analysis
      (graph->expand-joints graph)

@@ -26,5 +26,7 @@
   They must all be of the same type and there
   values must be individually in range."
   [tol-value & xs]
-  (every? identity (apply map #(apply in-range? tol-value %&) xs)))
+  (if (not= (apply map #(count %) xs))
+    false
+    (every? identity (apply map #(apply in-range? tol-value %&) xs))))
 
