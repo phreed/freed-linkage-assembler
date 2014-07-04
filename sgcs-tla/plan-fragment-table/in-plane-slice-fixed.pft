@@ -12,7 +12,7 @@ PFT entry: (?M_1 is fixed)
 
 Assumptions:
   marker-has-invariant-position(?M_1)
-  geom-has_marker(?geom, ?M_2)
+  geom-has_marker(?link, ?M_2)
 
 
 ---
@@ -20,8 +20,8 @@ PFT entry: (0,0,in-plane)  (M_1 is fixed)
 ---
 
 Initial status:
-  0-TDOF(?geom, ?point)
-  0-RDOF(?geom)
+  0-TDOF(?link, ?point)
+  0-RDOF(?link)
 
 Plan fragment:
   begin
@@ -32,11 +32,11 @@ Plan fragment:
   end;
 
 New status:
-  0-TDOF(?geom, ?point)
-  0-RDOF(?geom)
+  0-TDOF(?link, ?point)
+  0-RDOF(?link)
 
 Explanation:
-  Geom ?geom is fixed, so the in-plane constraint
+  Geom ?link is fixed, so the in-plane constraint
   can only be checked for consistency.
 
 
@@ -45,8 +45,8 @@ PFT entry: (1,0,in-plane) (?M_1 is fixed)
 ---
 
 Initial status:
-  1-TDOF(?geom, ?point, ?line, ?lf)
-  0-RDOF(?geom)
+  1-TDOF(?link, ?point, ?line, ?lf)
+  0-RDOF(?link)
 
 Plan fragment:
   begin
@@ -57,16 +57,16 @@ Plan fragment:
   unless point?(R[3])
     error(perp-dist(R[1], R[2]),
     estring[7]);
-  translate(?geom,
+  translate(?link,
     vec-diff(gmp(?M_1), R[3]));
   end;
 
 New status:
-  0-TDOF(?geom, ?point)
-  0-RDOF(?geom)
+  0-TDOF(?link, ?point)
+  0-RDOF(?link)
 
 Explanation:
-  Geom ?geom cannot rotate.
+  Geom ?link cannot rotate.
   Therefore, the in-plane constraint must be satisfied by a translation.
   In the degenerate case, the plane defined by ?M_2 is parallel to ?line,
   which causes inaccuracies in the degrees of freedom tally.
@@ -77,8 +77,8 @@ PFT entry: (2,0,in-plane) (?M_1 is fixed)
 ---
 
 Initial status:
-  2-TDOF(?geom, ?point, ?plane, ?lf)
-  0-RDOF(?geom)
+  2-TDOF(?link, ?point, ?plane, ?lf)
+  0-RDOF(?link)
 
 Explanation:
   This entry has no application.
@@ -89,24 +89,24 @@ PFT entry: (3,0,in-plane) (?M_1 is fixed)
 ---
 
 Initial status:
-  3-TDOF(?geom)
-  0-RDOF(?geom)
+  3-TDOF(?link)
+  0-RDOF(?link)
 
 Plan fragment:
   begin
   R[0] = plane(gmp(?M_2), gmz(?M_2));
   R[1] = perp-base(gmp(?M_1), R[0]),
   R[2] = vec-diff(gmp(?M_1), R[1]);
-  translate(?geom, R[2]);
+  translate(?link, R[2]);
   R[3] = gmp(?M_1);
   end;
 
 New status:
-  1-TDOF(?geom, R[3], R[0], R[0])
-  0-RDOF(?geom)
+  1-TDOF(?link, R[3], R[0], R[0])
+  0-RDOF(?link)
 
 Explanation:
-  Geom ?geom is free to translate,
+  Geom ?link is free to translate,
   so the translation vector is measured and the geom is moved.
   No checks are required.
 
@@ -115,8 +115,8 @@ PFT entry: (h,h,in-plane) (?M_1 is fixed)
 ---
 
 Initial status:
-  h-TDOF(?geom, ?point, ?line, ?point)
-  h-RDOF(?geom, ?axis, ?axis_1, ?axis_2)
+  h-TDOF(?link, ?point, ?line, ?point)
+  h-RDOF(?link, ?axis, ?axis_1, ?axis_2)
 
 Branch variables:
   q_0, denoting a potentially infinite branch
@@ -134,21 +134,21 @@ Plan fragment:
   R[5] = vec-diff(R[2], R[3]);
   R[6] = perp-base(gmp(?M_1, R[3]);
   R[7] = vec-diff(gmp(?M_1), R[3]);
-  translate(?geom, vec-diff(R[6], R[4]));
+  translate(?link, vec-diff(R[6], R[4]));
   R[8] = vec-angle(R[5], R[7], ?axis);
   if null?(?axis_1) and null?(?axis_2)
-    then rotate(?geom, ?point, ?axis, R[8])
-    else 2r/a(?geom, ?point, R[8],
+    then rotate(?link, ?point, ?axis, R[8])
+    else 2r/a(?link, ?point, R[8],
       ?axis, ?axis_1, ?axis_2);
   end;
 
 New status:
-  0-TDOF(?geom, ?point)
-  0-RDOF(?geom)
+  0-TDOF(?link, ?point)
+  0-RDOF(?link)
 
 Explanation:
-  Points on ?geom are confined to a helix.
-  Geom ?geom is translated and rotated, both
+  Points on ?link are confined to a helix.
+  Geom ?link is translated and rotated, both
   along and about the screw axis.
   First, the point on the line defimed by ?M_2
   and its z-axis which will coincide with ?M_1 is found;
@@ -160,8 +160,8 @@ PFT entry: (0,1,in-plane) (?M_1 is fixed)
 ---
 
 Initial status:
-  0-TDOF(?geom, ?point)
-  1-RDOF(?geom, ?axis, ?axis_1, ?axis_2)
+  0-TDOF(?link, ?point)
+  1-RDOF(?link, ?axis, ?axis_1, ?axis_2)
 
 Branch variables:
   q_0, denoting a 2-way branch
@@ -177,16 +177,16 @@ Plan fragment:
   unless point?(R[5])
     error(perp-dist(R[3], R[4]),
     estring[4]);
-  1r/p-p(?geom, ?point, R[5], gmp(?M_1),
+  1r/p-p(?link, ?point, R[5], gmp(?M_1),
     ?axis, ?axis_1, ?axis_2);
   end;
 
 New status:
-  0-TDOF(?geom, ?point)
-  0-RDOF(?geom)
+  0-TDOF(?link, ?point)
+  0-RDOF(?link)
 
 Explanation:
-  Geom ?geom has only one rotational degree of freedom.
+  Geom ?link has only one rotational degree of freedom.
   Therefore it must be rotated about its known point and known axis.
   First, the point on the line defined by ?M_2 and its z-axis
   which will coincide with ?M_1 is found;
@@ -200,8 +200,8 @@ PFT entry: (1,1,in-plane) (?M_1 is fixed)
 ---
 
 Initial status:
-  1-TDOF(?geom, ?point, ?line, ?lf)
-  1-RDOF(?geom, ?axis, ?axis_1, ?axis_2)
+  1-TDOF(?link, ?point, ?line, ?lf)
+  1-RDOF(?link, ?axis, ?axis_1, ?axis_2)
 
 Plan fragment:
   begin
@@ -214,18 +214,18 @@ Plan fragment:
     error(perp-dist(R[2], R[3]),
     estring[6]);
   R[5] = a-point(R[4]);
-  1t-1r/p-p(?geom, ?point, ?line,
+  1t-1r/p-p(?link, ?point, ?line,
     ?axis, ?axis_1, ?axis_2,
     R[5], gmp(?M_1), ?lf, 0);
   R[6] = ellipse-+-r(R[4], gmp(?M_2), R[5]);
   end;
 
 New status:
-  h-TDOF(?geom, R[5], R[7], R[7] )
-  h-RDOF(?geom, ?axis, ?axis_1, ?axis_2)
+  h-TDOF(?link, R[5], R[7], R[7] )
+  h-RDOF(?link, ?axis, ?axis_1, ?axis_2)
 
 Explanation:
-  Geom ?geom has only one rotational and one translational degree of freedom.
+  Geom ?link has only one rotational and one translational degree of freedom.
   First, the point on the plane defined by ?M_2 and its z-axis which
   will coincide with ?M_1 is found;
   then, the geom is translated and rotated to make that
@@ -238,8 +238,8 @@ PFT entry: (2,1,in-plane)  (?M_1 is fixed)
 ---
 
 Initial status:
-  2-TDOF(?geom, ?point, ?plane, ?lf)
-  1-RDOF(?geom, ?axis, ?axis_1, ?axis_2)
+  2-TDOF(?link, ?point, ?plane, ?lf)
+  1-RDOF(?link, ?axis, ?axis_1, ?axis_2)
 
 
 Explanation:
@@ -251,24 +251,24 @@ PFT entry: (3,1,in-plane) (?M_1 is fixed)
 ---
 
 Initial status:
-  3-TDOF(?geom)
-  1-RDOF(?geom, ?axis, ?axis_1, ?axis_2)
+  3-TDOF(?link)
+  1-RDOF(?link, ?axis, ?axis_1, ?axis_2)
 
 Plan fragment:
   begin
   R[0] = plane(gmp(?M_2), gmz(?M_2));
   R[1] = perp-dist(gmp(?M_1), R[0]);
   R[2] = vec-diff(gmp(?M_1), R[1]);
-  translate(?geom, R[2]);
+  translate(?link, R[2]);
   R[3] = gmp(?M_2);
   end;
 
 New status:
-  2-TDOF(?geom, R[2], R[0], R[0])
-  1-RDOF(?geom, ?axis, ?axis_1, ?axis_2)
+  2-TDOF(?link, R[2], R[0], R[0])
+  1-RDOF(?link, ?axis, ?axis_1, ?axis_2)
 
 Explanation:
-  Geom ?geom is free to translate, so the translation
+  Geom ?link is free to translate, so the translation
   vector is measured and the geom is moved.
   No checks are required.
 
@@ -278,8 +278,8 @@ PFT entry: (0,2,in-plane) (?M_1 is fixed)
 ---
 
 Initial status:
-  0-TDOF(?geom, ?point)
-  2-RDOF(?geom, ?axis_1, ?axis_2)
+  0-TDOF(?link, ?point)
+  2-RDOF(?link, ?axis_1, ?axis_2)
 
 Branch variables:
   q_0, denoting a 2-way branch
@@ -295,7 +295,7 @@ Plan fragment:
     error(perp-dist(R[1], R[2]),
     estring[7]);
 
-  2r/p-p(?geom, ?point,
+  2r/p-p(?link, ?point,
     R[3], gmp(?M_1),
     ?axis_1, ?axis_2, q_1);
 
@@ -305,15 +305,15 @@ Plan fragment:
 
 
 New status:
-  0-TDOF(?geom, ?point)
-  1-RDOF(?geom, R[5], ?axis_1, ?axis_2)
+  0-TDOF(?link, ?point)
+  1-RDOF(?link, R[5], ?axis_1, ?axis_2)
 
 Explanation:
-  Geom ?geom has two rotational degrees of fredom.
+  Geom ?link has two rotational degrees of fredom.
   The line defined by marker ?M_2 and its z-axis is
   constructed, and the point that will coincide with
   marker ?M_1 is found.
-  Then, ?geom is rotated to put the point into
+  Then, ?link is rotated to put the point into
   coincidence with ?M_1.
   After this action, a single degree of freedom remains.
 
@@ -323,8 +323,8 @@ PFT entry: (0,3,in-plane) (?M_1 is fixed)
 ---
 
 Initial status:
-  0-TDOF(?geom, ?point)
-  3-RDOF(?geom)
+  0-TDOF(?link, ?point)
+  3-RDOF(?link)
 
 Plan fragment:
   begin
@@ -338,7 +338,7 @@ Plan fragment:
 
   R[4] = a-point(R[3]);
 
-  3r/p-p(?geom, ?point, R[4], gmp(?M_1));
+  3r/p-p(?link, ?point, R[4], gmp(?M_1));
 
   R[5] = perp-base(?point, R[2]);
   R[6] = vec-diff(R[5], ?point);
@@ -346,11 +346,11 @@ Plan fragment:
   end;
 
 New status:
-  0-TDOF(?geom, ?point)
-  2-RDOF(?geom, R[6], R[7])
+  0-TDOF(?link, ?point)
+  2-RDOF(?link, R[6], R[7])
 
 Explanation:
-  Geom ?geom cannot translate, so the in-plane
+  Geom ?link cannot translate, so the in-plane
   constraint is satisfied by a rotation.
   There remain two rotational degrees of freedom.
 
@@ -360,8 +360,8 @@ PFT entry: (1,3,in-plane) (?M_1 is fixed)
 ---
 
 Initial status:
-  1-TDOF(?geom, ?point, ?line, ?lf)
-  3-RDOF(?geom)
+  1-TDOF(?link, ?point, ?line, ?lf)
+  3-RDOF(?link)
 
 Explanation:
   This entry has no application.
@@ -372,8 +372,8 @@ PFT entry: (2,3,in-plane) (?M_1 is fixed)
 ---
 
 Initial status:
-  2-TDOF(?geom, ?point, ?plane, ?lf)
-  3-RDOF(?geom)
+  2-TDOF(?link, ?point, ?plane, ?lf)
+  3-RDOF(?link)
 
 Explanation:
   This entry has no application.
@@ -385,24 +385,24 @@ PFT entry: (3,3,in-plane) (?M_1 is fixed)
 ---
 
 Initial status:
-  3-TDOF(?geom)
-  3-RDOF(?geom)
+  3-TDOF(?link)
+  3-RDOF(?link)
 
 Plan fragment:
   begin
   R[0] = plane(gmp(?M_2), gmz(?M_2));
   R[1] = perp-dist(gmp(?M_1), R[0]);
   R[2] = vec-diff(gmp(?M_1), R[1]);
-  translate(?geom, R[2]);
+  translate(?link, R[2]);
   R[3] = gmp(?M_1);
   end;
 
 New status:
-  2-TDOF(?geom, R[3], R[0], R[0])
-  3-RDOF(?geom)
+  2-TDOF(?link, R[3], R[0], R[0])
+  3-RDOF(?link)
 
 Explanation:
-  Geom ?geom is free to translate, so the translation
-  vector is measured and the ?geom is moved.
+  Geom ?link is free to translate, so the translation
+  vector is measured and the ?link is moved.
   No checks are required.
 

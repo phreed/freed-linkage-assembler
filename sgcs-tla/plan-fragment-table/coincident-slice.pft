@@ -8,7 +8,7 @@ Constraint:
 
 Assumptions:
   marker-has-invariant-position(?M_1)
-  geom-has_marker(?geom, ?M_2)
+  geom-has_marker(?link, ?M_2)
 
 
 ---
@@ -16,8 +16,8 @@ PFT entry: (0,0,coincident)
 ---
 
 Initial status:
-  0-TDOF(?geom, ?point)
-  0-RDOF(?geom)
+  0-TDOF(?link, ?point)
+  0-RDOF(?link)
 
 Plan fragment:
   begin
@@ -27,11 +27,11 @@ Plan fragment:
   end;
 
 New status:
-  0-TDOF(?geom, ?point)
-  0-RDOF(?geom)
+  0-TDOF(?link, ?point)
+  0-RDOF(?link)
 
 Explanation:
-  Geom ?geom is fixed, so the coincident constraint can only be checked for consistency.
+  Geom ?link is fixed, so the coincident constraint can only be checked for consistency.
 
 
 ---
@@ -39,24 +39,24 @@ PFT entry: (1,0,coincident)
 ---
 
 Initial status:
-  1-TDOF(?geom, ?point, ?line, ?lf)
-  0-RDOF(?geom)
+  1-TDOF(?link, ?point, ?line, ?lf)
+  0-RDOF(?link)
 
 Plan fragment:
   begin
   R[0] = vec-diff(gmp(?M_1), gmp(?M_2));
-  translate(?geom, R[0]);
+  translate(?link, R[0]);
   R[1] = perp-dist(?point, ?line);
   unless zero?(R[1])
     error(R[1], estring[1]);
   end;
 
 New status:
-  0-TDOF(?geom, ?point)
-  0-RDOF(?geom)
+  0-TDOF(?link, ?point)
+  0-RDOF(?link)
 
 Explanation:
-  Geom ?geom cannot rotate.
+  Geom ?link cannot rotate.
   Therefore, the coincident constraint must be satisfied by a
   translation by the vector from marker ?M_2 to marker ?M_1.
   This translation may invalidate the constraint that ?point
@@ -68,24 +68,24 @@ PFT entry: (2,0,coincident)
 ---
 
 Initial status:
-  2-TDOF(?geom, ?point, ?line, ?lf)
-  0-RDOF(?geom)
+  2-TDOF(?link, ?point, ?line, ?lf)
+  0-RDOF(?link)
 
 Plan fragment:
   begin
   R[0] = vec-diff(gmp(?M_1), gmp(?M_2));
-  translate(?geom, R[0]);
+  translate(?link, R[0]);
   R[1] = perp-dist(?point, ?plane);
   unless zero?(R[1])
     error(R[1], estring[1]);
   end;
 
 New status:
-  0-TDOF(?geom, ?point)
-  0-RDOF(?geom)
+  0-TDOF(?link, ?point)
+  0-RDOF(?link)
 
 Explanation:
-  Geom ?geom cannot rotate.
+  Geom ?link cannot rotate.
   Therefore, the coincident constraint must be satisfied by a
   translation by the vector from marker ?M_2 to marker ?M_1.
   This translation may invalidate the constraint that ?point
@@ -97,22 +97,22 @@ PFT entry: (3,0,coincident)
 ---
 
 Initial status:
-  3-TDOF(?geom)
-  0-RDOF(?geom)
+  3-TDOF(?link)
+  0-RDOF(?link)
 
 Plan fragment:
   begin
-  translate(?geom,
+  translate(?link,
     vec-diff(gmp(?M_1), gmp(?M_2)));
   R[0] = gmp(?M_2);
   end;
 
 New status:
-  0-TDOF(?geom, R[0])
-  0-RDOF(?geom)
+  0-TDOF(?link, R[0])
+  0-RDOF(?link)
 
 Explanation:
-  Geom ?geom is free to translate,
+  Geom ?link is free to translate,
   so the translation vector is measured and the geom is moved.
   No checks are required.
 
@@ -121,27 +121,27 @@ PFT entry: (h,h,coincident)
 ---
 
 Initial status:
-  h-TDOF(?geom, ?point, ?line, ?point)
-  h-RDOF(?geom, ?axis, ?axis_1, ?axis_2)
+  h-TDOF(?link, ?point, ?line, ?point)
+  h-RDOF(?link, ?axis, ?axis_1, ?axis_2)
 
 Plan fragment:
   begin
   R[0] = vec-diff(gmp(?M_1), gmp(?M_2));
-  translate(?geom, R[0]);
+  translate(?link, R[0]);
   R[1] = pc-check(?line, R[0], nil, 0);
   unless R[1]
     error(pc-error((?line, R[0], nil), estring[4]);
   if null?(?axis_1) and null?(?axis_2)
-    then rotate(?geom, ?point, ?axis, R[1])
-    else 2r/n(?geom, ?point, R[1], ?axis, ?axis_1, ?axis_2);
+    then rotate(?link, ?point, ?axis, R[1])
+    else 2r/n(?link, ?point, R[1], ?axis, ?axis_1, ?axis_2);
   end;
 
 New status:
-  0-TDOF(?geom, ?point)
-  0-RDOF(?geom)
+  0-TDOF(?link, ?point)
+  0-RDOF(?link)
 
 Explanation:
-  Geom ?geom is translated along ?line and rotated about ?axis.
+  Geom ?link is translated along ?line and rotated about ?axis.
   The rotation must be consistent with the translation
   and ?line parameters.
 
@@ -151,21 +151,21 @@ PFT entry: (0,1,coincident)
 ---
 
 Initial status:
-  0-TDOF(?geom, ?point)
-  1-RDOF(?geom, ?axis, ?axis_1, ?axis_2)
+  0-TDOF(?link, ?point)
+  1-RDOF(?link, ?axis, ?axis_1, ?axis_2)
 
 Plan fragment:
   begin
-  1r/p-p(?geom, ?point, gmp(?M_2), gmp(?M_1),
+  1r/p-p(?link, ?point, gmp(?M_2), gmp(?M_1),
     ?axis, ?axis_1, ?axis_2);
   end;
 
 New status:
-  0-TDOF(?geom, ?point)
-  0-RDOF(?geom)
+  0-TDOF(?link, ?point)
+  0-RDOF(?link)
 
 Explanation:
-  Geom ?geom has only one rotational degree of freedom.
+  Geom ?link has only one rotational degree of freedom.
   Therefore it must be rotated about its known point and known axis.
   The two markers must be equidistant from the line defined by
   ?point and ?axis, and must lie in a common plaine perpendicular
@@ -177,28 +177,28 @@ PFT entry: (1,1,coincident)
 ---
 
 Initial status:
-  1-TDOF(?geom, ?point, ?line, ?lf)
-  1-RDOF(?geom, ?axis, ?axis_1, ?axis_2)
+  1-TDOF(?link, ?point, ?line, ?lf)
+  1-RDOF(?link, ?axis, ?axis_1, ?axis_2)
 
 Branch variables:
   q_0, denoting a 2-way branch
 
 Plan fragment:
   begin
-  1t-1r/p-p(?geom, ?point, ?line,
+  1t-1r/p-p(?link, ?point, ?line,
     ?axis, ?axis_1, ?axis_2,
     gmp(?M_2), gmp(?M_1), ?lf, q_0);
   end;
 
 New status:
-  0-TDOF(?geom, ?point)
-  0-RDOF(?geom)
+  0-TDOF(?link, ?point)
+  0-RDOF(?link)
 
 Explanation:
-  Geom ?geom has only one rotational and one translational degree of freedom.
+  Geom ?link has only one rotational and one translational degree of freedom.
   Therefore it must be translated along and rotated about
   the ?line to which ?point is constrained.
-  This effect is achieved by translating ?geom to make the
+  This effect is achieved by translating ?link to make the
   markers coincident, and then attempting to move ?point back onto ?line,
   using a rotation.
   In general, there are two distinct solutions to this problem,
@@ -211,28 +211,28 @@ PFT entry: (2,1,coincident)
 ---
 
 Initial status:
-  2-TDOF(?geom, ?point, ?plane, ?lf)
-  1-RDOF(?geom, ?axis, ?axis_1, ?axis_2)
+  2-TDOF(?link, ?point, ?plane, ?lf)
+  1-RDOF(?link, ?axis, ?axis_1, ?axis_2)
 
 Branch variables:
   q_0, denoting a 2-way branch
 
 Plan fragment:
   begin
-  2t-1r/p-p(?geom, ?point, ?plane,
+  2t-1r/p-p(?link, ?point, ?plane,
     ?axis, ?axis_1, ?axis_2,
     gmp(?M_2), gmp(?M_1), ?lf, q_0);
   end;
 
 New status:
-  0-TDOF(?geom, ?point)
-  0-RDOF(?geom)
+  0-TDOF(?link, ?point)
+  0-RDOF(?link)
 
 Explanation:
-  Geom ?geom has one rotational and two translational degrees of freedom.
+  Geom ?link has one rotational and two translational degrees of freedom.
   Therefore it must be translated along its
   known ?plane and rotated about its known ?axis.
-  This effect is achieved by translating ?geom to make the
+  This effect is achieved by translating ?link to make the
   markers coincident, and then attempting to move ?point back onto ?plane.
   In general, there are two distinct solutions to this problem,
   so a branch variable q_0 is used to select the desired solution.
@@ -243,22 +243,22 @@ PFT entry: (3,1,coincident)
 ---
 
 Initial status:
-  3-TDOF(?geom)
-  1-RDOF(?geom, ?axis, ?axis_1, ?axis_2)
+  3-TDOF(?link)
+  1-RDOF(?link, ?axis, ?axis_1, ?axis_2)
 
 Plan fragment:
   begin
-  translate(?geom,
+  translate(?link,
     vec-diff(gmp(?M_1), gmp(?M_2)));
   R[0] = gmp(?M_2);
   end;
 
 New status:
-  0-TDOF(?geom, R[0])
-  1-RDOF(?geom, ?axis, ?axis_1, ?axis_2)
+  0-TDOF(?link, R[0])
+  1-RDOF(?link, ?axis, ?axis_1, ?axis_2)
 
 Explanation:
-  Geom ?geom is free to translate, so the translation
+  Geom ?link is free to translate, so the translation
   vector is measured and the geom is moved.
   No checks are required.
 
@@ -268,25 +268,25 @@ PFT entry: (0,2,coincident)
 ---
 
 Initial status:
-  0-TDOF(?geom, ?point)
-  2-RDOF(?geom, ?axis_1, ?axis_2)
+  0-TDOF(?link, ?point)
+  2-RDOF(?link, ?axis_1, ?axis_2)
 
 Branch variables:
   q_0, denoting a 2-way branch
 
 Plan fragment:
   begin
-  2r/p-p(?geom, ?point,
+  2r/p-p(?link, ?point,
     gmp(?M_2), gmp(?M_1),
     ?axis_1, ?axis_2, q_0);
   end;
 
 New status:
-  0-TDOF(?geom, ?point)
-  0-RDOF(?geom)
+  0-TDOF(?link, ?point)
+  0-RDOF(?link)
 
 Explanation:
-  Geom ?geom has two rotational degrees of fredom.
+  Geom ?link has two rotational degrees of fredom.
   The marker that is to be moved is first placed in a plane
   through the desired locatoins and perpendicular to ?axis_1,
   by rotation aboutn ?axis_2.
@@ -302,24 +302,24 @@ PFT entry: (0,3,coincident)
 ---
 
 Initial status:
-  0-TDOF(?geom, ?point)
-  3-RDOF(?geom)
+  0-TDOF(?link, ?point)
+  3-RDOF(?link)
 
 Plan fragment:
   begin
-  3r/p-p(?geom, ?point,
+  3r/p-p(?link, ?point,
     gmp(?M_2), gmp(?M_1));
   R[0] = vec-diff(gmp(?M_2), ?point);
   end;
 
 New status:
-  0-TDOF(?geom, ?point)
-  0-RDOF(?geom, R[0], nil, nil)
+  0-TDOF(?link, ?point)
+  0-RDOF(?link, R[0], nil, nil)
 
 Explanation:
-  Geom ?geom cannot translate, so the coincident
+  Geom ?link cannot translate, so the coincident
   constraint is satisfied by a rotation.
-  After the constraint is satisfied, ?geom can still rotate
+  After the constraint is satisfied, ?link can still rotate
   about the line connecting ?M_2 and ?point.
 
 
@@ -328,32 +328,32 @@ PFT entry: (1,3,coincident)
 ---
 
 Initial status:
-  1-TDOF(?geom, ?point, ?line, ?lf)
-  3-RDOF(?geom)
+  1-TDOF(?link, ?point, ?line, ?lf)
+  3-RDOF(?link)
 
 Branch variables:
   q_0, denoting a 2-way branch
 
 Plan fragment:
   begin
-  1t-3r/p-p(?geom, ?point, ?line,
+  1t-3r/p-p(?link, ?point, ?line,
     gmp(?M_2), gmp(?M_1),
     ?lf, q_0);
   R[1] = vec-diff(gmp(?M_2), ?point);
   end;
 
 New status:
-  0-TDOF(?geom, ?point)
-  1-RDOF(?geom, R[1], nil, nil)
+  0-TDOF(?link, ?point)
+  1-RDOF(?link, R[1], nil, nil)
 
 Explanation:
-  Geom ?geom is translated to bring ?M_2 into
+  Geom ?link is translated to bring ?M_2 into
   coincidence with ?M_1.
-  Then, ?geom is rotated to bring ?point back onto ?line.
+  Then, ?link is rotated to bring ?point back onto ?line.
   In general, there are two distinct solutions to
   this problem, so a branch variable q_0 is used to
   select the desired solution.
-  After the constraint is satisfied, ?geom can still
+  After the constraint is satisfied, ?link can still
   rotate about the line connecting ?M_2 and ?point.
 
 
@@ -363,15 +363,15 @@ Case : ?point = ?lf
 ---
 
 Initial status:
-  2-TDOF(?geom, ?point, ?plane, ?lf)
-  3-RDOF(?geom)
+  2-TDOF(?link, ?point, ?plane, ?lf)
+  3-RDOF(?link)
 
 Branch variables:
   q_0, denoting a 2-way branch
 
 Plan fragment:
   begin
-  translate(?geom,
+  translate(?link,
     vec-diff(gmp(?M_1), gmp(?M_2)));
   R[0] = sphere(gmp(?M_2),
     perpendiclar-dist(gmp(?M_2), gmp(?M_1));
@@ -380,22 +380,22 @@ Plan fragment:
     error(perpendiclar-dist(R[0], ?plane), estring[7]);
   R[2] = a-point(R[1]);
   if equal?(?point, ?lf)
-    then 3r/p-p(?geom, gmp(?M_2), ?point, R[2])
-    else 3r/p-p(?geom, gmp(?M_2), R[2], ?point);
+    then 3r/p-p(?link, gmp(?M_2), ?point, R[2])
+    else 3r/p-p(?link, gmp(?M_2), R[2], ?point);
   R[3] = perpendiclar-base(gmp(?M_2), ?plane);
   R[4] = vec-diff(R[3], gmp(?M_2));
   R[5] = vec-diff(R[2], gmp(?M_2));
   end;
 
 New status:
-  0-TDOF(?geom, ?point)
-  2-RDOF(?geom, R[4], R[5])
+  0-TDOF(?link, ?point)
+  2-RDOF(?link, R[4], R[5])
 
 Explanation:
-  Geom ?geom is translated to bring ?M_2 into
+  Geom ?link is translated to bring ?M_2 into
   coincidence with ?M_1.
-  Then, ?geom is rotated to bring ?point back onto ?plane.
-  After doing this, ?geom will have two rotational degrees of freedom.
+  Then, ?link is rotated to bring ?point back onto ?plane.
+  After doing this, ?link will have two rotational degrees of freedom.
 
 
 
@@ -405,8 +405,8 @@ Case : ?plane = ?lf
 ---
 
 Initial status:
-  2-TDOF(?geom, ?point, ?plane, ?lf)
-  3-RDOF(?geom)
+  2-TDOF(?link, ?point, ?plane, ?lf)
+  3-RDOF(?link)
 
 Branch variables:
   q_0, denoting a 2-way branch
@@ -414,7 +414,7 @@ Branch variables:
 Plan fragment:
   begin
   R[0] = vec-diff(gmp(?M_1), gmp(?M_2));
-  translate(?geom, R[0]);
+  translate(?link, R[0]);
   R[1] = normal(?plane);
   R[2] = plane(?point, R[1]);
   R[3] = perpendiclar-dist(gmp(?M_2), ?point);
@@ -424,22 +424,22 @@ Plan fragment:
     error(perpendiclar-dist(R[2], R[4]), estring[7]);
   R[6] = a-point(R[5]);
   if equal?(?point, ?lf)
-    then 3r/p-p(?geom, gmp(?M_2), R[5], ?point);
-    else 3r/p-p(?geom, gmp(?M_2), ?point, R[5])
+    then 3r/p-p(?link, gmp(?M_2), R[5], ?point);
+    else 3r/p-p(?link, gmp(?M_2), ?point, R[5])
   R[7] = perpendiclar-base(gmp(?M_2), ?plane);
   R[8] = vec-diff(R[7], gmp(?M_2));
   R[9] = vec-diff(R[6], gmp(?M_2));
   end;
 
 New status:
-  0-TDOF(?geom, ?point)
-  2-RDOF(?geom, R[8], R[9])
+  0-TDOF(?link, ?point)
+  2-RDOF(?link, R[8], R[9])
 
 Explanation:
-  Geom ?geom is translated to bring ?M_2 into
+  Geom ?link is translated to bring ?M_2 into
   coincidence with ?M_1.
-  Then, ?geom is rotated to bring ?plane back onto ?point.
-  After doing this, ?geom will have two rotational degrees of freedom.
+  Then, ?link is rotated to bring ?plane back onto ?point.
+  After doing this, ?link will have two rotational degrees of freedom.
 
 
 ---
@@ -447,22 +447,22 @@ PFT entry: (3,3,coincident)
 ---
 
 Initial status:
-  3-TDOF(?geom)
-  3-RDOF(?geom)
+  3-TDOF(?link)
+  3-RDOF(?link)
 
 Plan fragment:
   begin
-  translate(?geom,
+  translate(?link,
     vec-diff(gmp(?M_1), gmp(?M_2));
   R[0] = gmp(?M_2);
   end;
 
 New status:
-  0-TDOF(?geom, R[0])
-  2-RDOF(?geom)
+  0-TDOF(?link, R[0])
+  2-RDOF(?link)
 
 Explanation:
-  Geom ?geom is free to translate, so the translation
-  vector is measured and the ?geom is moved.
+  Geom ?link is free to translate, so the translation
+  vector is measured and the ?link is moved.
   No checks are required.
 

@@ -39,7 +39,7 @@
    [quantity-or-pair]
   )
 
-(defn cross-prod
+(defn outer-prod
   "Returns the cross product of vect-1 and vect-2."
    [vect-1 vect-2]
   )

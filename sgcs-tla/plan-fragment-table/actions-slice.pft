@@ -4,7 +4,7 @@ Branch variables:
 
 Plan fragment:
   begin
-  1t-3r/p-p(?geom, ?point, ?line,
+  1t-3r/p-p(?link, ?point, ?line,
     gmp(?M_2), gmp(?M_1),
     ?lf, q_0);
   R[1] = vec-diff(gmp(?M_2), ?point);
@@ -23,9 +23,9 @@ Plan fragment:
   unless point?(R[5])
     error(perp-dist(R[3], R[4]),
     estring[4]);
-  1r/p-p(?geom, ?point, R[5], gmp(?M_1),
+  1r/p-p(?link, ?point, R[5], gmp(?M_1),
     ?axis, ?axis_1, ?axis_2);
-  1t-1r/p-p(?geom, ?point, ?line,
+  1t-1r/p-p(?link, ?point, ?line,
     ?axis, ?axis_1, ?axis_2,
     gmp(?M_2), gmp(?M_1), ?lf, q_0);
 

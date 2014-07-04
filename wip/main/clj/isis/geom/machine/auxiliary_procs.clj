@@ -34,16 +34,16 @@
 
 
 (defn dof-2r:a
-  "Procedure to rotate body ?geom about axes ?axis_1 and ?axis-2,
+  "Procedure to rotate body ?link about axes ?axis_1 and ?axis-2,
   keeping the position of point ?center invariant, so as to
-  move the ?geom about axis by ?angle."
-  [?geom ?center ?angle ?axis ?axis-1 ?axis-2]
+  move the ?link about axis by ?angle."
+  [?link ?center ?angle ?axis ?axis-1 ?axis-2]
   (let [r0 (circle ?center ?axis 10)
         r1 (a-point r0)
-        _  (rotate ?geom ?center ?axis ?angle)
+        _  (rotate ?link ?center ?axis ?angle)
         r2 (copy r1)
-        _ (rotate ?geom ?center ?axis (- ?angle))]
-    (2r:p->p ?geom ?center r1 r2 ?axis-1 ?axis-2)))
+        _ (rotate ?link ?center ?axis (- ?angle))]
+    (2r:p->p ?link ?center r1 r2 ?axis-1 ?axis-2)))
 
 
 
@@ -51,25 +51,25 @@
 
 
 (defn dof-1t-1r:p->p:point-lf
-  "This case is for when ?point is on ?geom, and ?line is invariant."
-  [?geom ?point ?line ?axis ?from-point ?to-point ?q]
+  "This case is for when ?point is on ?link, and ?line is invariant."
+  [?link ?point ?line ?axis ?from-point ?to-point ?q]
   (let [r0 (vec-diff ?to-point ?from-point)
-        _ (translate ?geom r0)
+        _ (translate ?link r0)
         r1 (line ?to-point ?axis)
         r2 (perp-base ?point r1)
         r3 (circle r2 ?axis (perp-dist ?point r2))
         r4 (intersect ?line r3 ?q)]
     (if-not (point? r4)
       (error (perp-dist ?line r3) estring-1)
-      (1r:p->p ?geom ?from-point ?point r4 ?axis ?axis-1 ?axis-2))) )
+      (1r:p->p ?link ?from-point ?point r4 ?axis ?axis-1 ?axis-2))) )
 
 
 (defn dof-1t-1r:p->p:line-lf
-  "This case is for when ?line is on ?geom, and ?point is invariant."
-  [?geom ?point ?line ?axis ?from-point ?to-point ?q]
+  "This case is for when ?line is on ?link, and ?point is invariant."
+  [?link ?point ?line ?axis ?from-point ?to-point ?q]
   (let [r0 (vec-diff ?from-point ?to-point)
         r1 (copy ?line)
-        _ (translate ?geom r0)
+        _ (translate ?link r0)
         r2 (line ?from-point ?axis)
         r3 (perp-base ?point r2)
         r4 (mag (vec-diff ?point r3))
@@ -78,41 +78,41 @@
     (if-not (point? r6)
       (error (perp-dist r1 r5) estring-7)
       ;;; ERRATA the ?point below was point?
-      (dof-1r:p->p ?geom ?to-point r6 ?point ?axis ?axis-1 ?axis-2))) )
+      (dof-1r:p->p ?link ?to-point r6 ?point ?axis ?axis-1 ?axis-2))) )
 
 (defn dof-1t-1r:p->p
-  "Procedure to rotate body ?geom about ?axis and
-  translate body ?geom along ?line,
-  thus moving ?freom-point to ?geom to globally-fixed ?to-point.
+  "Procedure to rotate body ?link about ?axis and
+  translate body ?link along ?line,
+  thus moving ?freom-point to ?link to globally-fixed ?to-point.
   Rotation is done so as to not violate restrictions imposed
   by ?axis-1 and ?axis-2, if they exist."
-  [?geom ?point ?line ?axis ?from-point ?to-point ?lf ?q]
+  [?link ?point ?line ?axis ?from-point ?to-point ?lf ?q]
 
   ((if (equal? ?point ?lf) dof-lt-1r:p->p:point-lf  dof-lt-1r:p->p:line-lf )
-   ?geom ?point ?line ?axis ?axis-1 ?axis-2) )
+   ?link ?point ?line ?axis ?axis-1 ?axis-2) )
 
 
 (defn dof-2t-1r:p->p:point-lf
-  "This case is for when ?point is on ?geom, and ?plane is invariant."
-  [?geom ?point ?plane ?axis ?axis-1 ?axis-2 ?from-point ?to-point ?q]
+  "This case is for when ?point is on ?link, and ?plane is invariant."
+  [?link ?point ?plane ?axis ?axis-1 ?axis-2 ?from-point ?to-point ?q]
 
   (let [r0 (vec-diff ?to-point ?from-point)
-        _ (translate ?geom r0)
+        _ (translate ?link r0)
         r1 (line ?to-point ?axis)
         r2 (perp-base ?point r1)
         r3 (circle r2 ?axis (perp-dist ?point r2))
         r4 (intersect ?plane r3 ?q)]
     (if-not (point? r4)
       (error (perp-dist ?plane r3) estring-1)
-      (dof-1r:p->p ?geom ?from-point ?point r4 ?axis ?axis-1 ?axis-2))))
+      (dof-1r:p->p ?link ?from-point ?point r4 ?axis ?axis-1 ?axis-2))))
 
 
 (defn dof-2t-1r:p->p:plane-lf
-  "This case is for when ?plane is on ?geom, and ?point is invariant."
-  [?geom ?point ?plane ?axis ?axis-1 ?axis-2 ?from-point ?to-point ?q]
+  "This case is for when ?plane is on ?link, and ?point is invariant."
+  [?link ?point ?plane ?axis ?axis-1 ?axis-2 ?from-point ?to-point ?q]
 
   (let [r0 (vec-diff ?to-point ?from-point)
-        _ (translate ?geom r0)
+        _ (translate ?link r0)
         r1 (normal ?plane)
         r2 (plane ?point r1)
         r3 (perp-dist ?from-point ?point)
@@ -121,113 +121,113 @@
     (if-not (point? r5)
       (error (perp-dist r2 r4) estring-7)
       ;;; ERRATA the ?point below was point?
-      (dof-1r:p->p ?geom ?from-point r5 ?point ?axis ?axis-1 ?axis-2))))
+      (dof-1r:p->p ?link ?from-point r5 ?point ?axis ?axis-1 ?axis-2))))
 
 
 (defn dof-2t-1r:p->p
-  "Procedure to rotate body ?geom about ?axis and
-  translate body ?geom along ?plane,
-  thus moving ?freom-point to ?geom to globally-fixed ?to-point.
+  "Procedure to rotate body ?link about ?axis and
+  translate body ?link along ?plane,
+  thus moving ?freom-point to ?link to globally-fixed ?to-point.
   Rotation is done so as to not violate restrictions imposed
   by ?axis-1 and ?axis-2, if they exist."
-  [?geom ?point ?plane ?axis ?axis-1 ?axis-2 ?from-point ?to-point ?lf ?q]
+  [?link ?point ?plane ?axis ?axis-1 ?axis-2 ?from-point ?to-point ?lf ?q]
 
   ((if (equal? ?point ?lf) dof-2t-1r:p->p:point-lf  dof-2t-1r:p->p:plane-lf )
-   ?geom ?point ?plane ?axis ?axis-1 ?axis-2 ?from-point ?to-point ?q) )
+   ?link ?point ?plane ?axis ?axis-1 ?axis-2 ?from-point ?to-point ?q) )
 
 (defn dof-1t-2r:p->p:point-lf
-  "This case is for when ?point is on ?geom, and ?line is invariant."
-  [?geom ?point ?line ?axis-1 ?axis-2 ?from-point ?to-point ?q]
-  (let [_ (translate ?geom (vec-diff ?to-point ?from-point))
+  "This case is for when ?point is on ?link, and ?line is invariant."
+  [?link ?point ?line ?axis-1 ?axis-2 ?from-point ?to-point ?q]
+  (let [_ (translate ?link (vec-diff ?to-point ?from-point))
         r0 (sphere ?from-point (perp-dist ?freom-point ?point))
         r1 (intersect r0 ?line ?q)]
     (if-not (point? r1)
       (error (perp-dist r0 ?line) estring-1)
-      (dof-2r:p->p ?geom ?from-point ?point r1 ?axis-1 ?axis-2))))
+      (dof-2r:p->p ?link ?from-point ?point r1 ?axis-1 ?axis-2))))
 
 
 (defn dof-1t-2r:p->p:line-lf
-  "This case is for when ?line is on ?geom, and ?point is invariant."
-  [?geom ?point ?line ?axis-1 ?axis-2 ?from-point ?to-point ?q]
+  "This case is for when ?line is on ?link, and ?point is invariant."
+  [?link ?point ?line ?axis-1 ?axis-2 ?from-point ?to-point ?q]
   (let [r0 (vec-diff ?to-point ?from-point)
         r2 (copy ?line)
-        _ (translate ?geom r0)
+        _ (translate ?link r0)
         r3 (perp-dist ?from-point ?point)
         r4 (sphere ?from-point r3)
         r5 (intersect r2 r4 ?q)]
     (if-not (point? r5)
       (error (perp-dist r2 r4) estring-7)
-      (dof-2r:p->p ?geom ?from-point r5 ?point ?axis-1 ?axis-2))))
+      (dof-2r:p->p ?link ?from-point r5 ?point ?axis-1 ?axis-2))))
 
 
 (defn dof-1t-2r:p->p
-  "Procedure to translate ?geom to bring ?M2 into coincidence with ?M1,
-  followed by rotating ?geom about ?axis-2 and ?axis-1 to bring ?point back onto ?line.
+  "Procedure to translate ?link to bring ?M2 into coincidence with ?M1,
+  followed by rotating ?link about ?axis-2 and ?axis-1 to bring ?point back onto ?line.
   In general there are two distinct solutions to this problem,
   so a branch variable ?q is used to select the desired solution."
-  [?geom ?point ?line ?axis-1 ?axis-2 ?from-point ?to-point ?lf ?q]
+  [?link ?point ?line ?axis-1 ?axis-2 ?from-point ?to-point ?lf ?q]
 
   ((if (equal? ?point ?lf) dof-1t-2r:p->p:point-lf  dof-1t-2r:p->p:line-lf )
-   ?geom ?point ?line ?axis-1 ?axis-2 ?from-point ?to-point ?q) )
+   ?link ?point ?line ?axis-1 ?axis-2 ?from-point ?to-point ?q) )
 
 
 (defn dof-1t-3r:p->p:point-lf
-  "This case is for when ?point is on ?geom, and ?line is invariant"
-  [?geom ?point ?line ?from-point ?to-point ?q]
+  "This case is for when ?point is on ?link, and ?line is invariant"
+  [?link ?point ?line ?from-point ?to-point ?q]
 
-  (let [_ (translate ?geom (vec-diff ?to-point ?from-point))
+  (let [_ (translate ?link (vec-diff ?to-point ?from-point))
         r0 (sphere ?from-point (perp-dist ?from-point ?point))
         r1 (intersect r0 ?line ?q)]
     (if-not (point? r1)
       (error (perp-dist r0 ?line) estring-7)
-      (dof-3r:p->p ?geom ?from-point ?point r1))))
+      (dof-3r:p->p ?link ?from-point ?point r1))))
 ;; ERRATA r2 (vec-diff r1 ?from-point)
 
 (defn dof-1t-3r:p->p:line-lf
-  "This case is for when ?line is on ?geom, and ?point is invariant"
-  [?geom ?point ?line ?from-point ?to-point ?q]
+  "This case is for when ?line is on ?link, and ?point is invariant"
+  [?link ?point ?line ?from-point ?to-point ?q]
 
   (let [r0 (vec-diff ?to-point ?from-point)
         r2 (copy ?line)
-        _ (translate ?geom r0)
+        _ (translate ?link r0)
         r3 (perp-dist ?from-point ?point)
         r4 (sphere ?from-point r3)
         r5 (intersect r2 r4 ?q)]
     (if-not (point? r5)
       (error (perp-dist r2 r4) estring-7)
-      (dof-3r:p->p ?geom ?from-point r5 ?point ))))
+      (dof-3r:p->p ?link ?from-point r5 ?point ))))
 ;; ERRATA r6 (vec-diff r5 ?from-point)
 
 (defn dof-1t-3r:p->p
-  "Procedure to translate ?geom to bring ?M-2 into coincidence with ?M-1,
-  followed by rotating ?geom to brint ?point back onto ?line.
+  "Procedure to translate ?link to bring ?M-2 into coincidence with ?M-1,
+  followed by rotating ?link to brint ?point back onto ?line.
   In general, there are two distinct solutions to this problem,
   so a branch variable ?q is used to select the desired solution."
-  [?geom ?point ?line ?from-point ?to-point ?lf ?q]
+  [?link ?point ?line ?from-point ?to-point ?lf ?q]
 
 
   ((if (equal? ?point ?lf) dof-1t-3r:p->p:point-lf  dof-1t-3r:p->p:line-lf )
-   ?geom ?point ?line ?from-point ?to-point ?q) )
+   ?link ?point ?line ?from-point ?to-point ?q) )
 
 
 (def dof-2t-2r:p->p:point-lf
-  "This case is for when ?point is on ?geom and ?plane is invariant."
-  [?geom ?point ?plane ?axis-1 ?axis-2 ?from-point ?to-point]
+  "This case is for when ?point is on ?link and ?plane is invariant."
+  [?link ?point ?plane ?axis-1 ?axis-2 ?from-point ?to-point]
 
-  (let [_ (translate ?geom (vec-diff ?to-point ?from-point))
+  (let [_ (translate ?link (vec-diff ?to-point ?from-point))
         r0 (sphere ?from-point ?point)
         r1 (intersect  r0 ?plane 0)]
     (if-not (circle? r1)
       (error (purp-dist r0 ?plane) estring-7)
-      (dof-2r:p->p ?geom ?from-point ?point r2 ?axis-1 ?axis-2))))
+      (dof-2r:p->p ?link ?from-point ?point r2 ?axis-1 ?axis-2))))
 ;; ERRATA r3 (perp-base ?from-point ?plane) r4 (vec-diff r3 ?from-point)
 
 (defn dof-2t-2r:p->p:plane-lf
-  "This case is for when ?plane is on ?geom, and ?point is invariant"
-  [?geom ?point ?plane ?axis-1 ?axis-2 ?from-point ?to-point]
+  "This case is for when ?plane is on ?link, and ?point is invariant"
+  [?link ?point ?plane ?axis-1 ?axis-2 ?from-point ?to-point]
 
   (let [r0 (vec-diff ?to-point ?from-point)
-        _ (translate ?geom r0)
+        _ (translate ?link r0)
         r1 (normal ?plane)
         r2 (plane ?point r1)
         r3 (perp-dist ?from-point ?point)
@@ -237,16 +237,16 @@
     (if-not (circle? r5)
       (error (perp-dist r2 r4) estring-7)
       (let [r6 (a-point r5)]
-        (dof-2r:p->p ?geom ?from-point r5 ?point ?axis-1 ?axis-2)))))
+        (dof-2r:p->p ?link ?from-point r5 ?point ?axis-1 ?axis-2)))))
 ;; ERRATA r7 (perp-base ?from-point ?plane) r8 (vec-diff r7 ?from-point)
 
 
 (defn dof-2t-2r:p->p
-  "Procedure to translate ?geom to bring ?M-2 into coincidence with ?M-1,
-  followed by rotating ?geom to brint ?point back onto ?line."
-  [?geom ?point ?plane ?axis-1 ?axis-2 ?from-point ?to-point ?lf]
+  "Procedure to translate ?link to bring ?M-2 into coincidence with ?M-1,
+  followed by rotating ?link to brint ?point back onto ?line."
+  [?link ?point ?plane ?axis-1 ?axis-2 ?from-point ?to-point ?lf]
 
 
   ((if (equal? ?point ?lf) dof-2t-2r:p->p:point-lf  dof-2t-2r:p->p:plane-lf )
-   ?geom ?point ?line ?from-point ?to-point ?q) )
+   ?link ?point ?line ?from-point ?to-point ?q) )
 

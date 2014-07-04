@@ -8,4 +8,3 @@
 (extend-type clojure.lang.Ref Ireference? (reference? [this] true))
 (extend-type clojure.lang.Agent Ireference? (reference? [this] true))
 
-

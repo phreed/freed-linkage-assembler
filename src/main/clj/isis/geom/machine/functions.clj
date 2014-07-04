@@ -1,7 +1,7 @@
 (ns isis.geom.machine.functions
   (:require [isis.geom.machine
              [c3ga :as c3ga]
-             [misc :as misc]]
+             [tolerance :as tolerance]]
             [clojure.math.numeric-tower :as math] ) )
 
 
@@ -75,8 +75,10 @@
   (println "cos unimplemented")
   )
 
-(defn cross-prod
-  "Returns the cross product of vect-1 and vect-2."
+(defn outer-prod
+  "Returns the outer product of vect-1 and vect-2.
+  This can be considered either a bivector or
+  the perpendicular dual vector."
    [vect-1 vect-2]
   (let [[v1-1 v1-2 v1-3] vect-1
         [v2-1 v2-2 v2-3] vect-2 ]
@@ -249,22 +251,7 @@
   If ?direction-maters is 'false', then the axis
   may be either parallel or anti-parallel."
   [?axis-1 ?axis-2 ?direction-matters]
-  (let [{n1-1 :z1, n1-2 :z2, n1-3 :z3} ?axis-1
-        {n2-1 :z1, n2-2 :z2, n2-3 :z3} ?axis-2
-        pairs [[n1-1 n2-1] [n1-2 n2-2] [n1-3 n2-3]]]
-    (if (every? (fn [[a b]]  (not= (= 0.0 a) (= 0.0 b))) pairs)
-      ;; found a coordinate with value zero, but only for one side
-      false
-      ;; filter out the degenerate coordinates, those with both zero
-      (let [good (filter (fn [[a b]] (not= 0.0 a b)) pairs)]
-        (if (empty? good)
-          ;; if everything is filtered out then not parallel
-          false
-          ;; parallel if the ratios of the remaining pairs match
-          (if ?direction-matters
-            (= (map (fn [[a b]] (/ a b)) good))
-            (= (map (fn [[a b]] (math/abs (/ a b))) good))))))))
-
+  (tolerance/small-scalar? :default (mag (outer-prod (unit-ize ?axis-1) (unit-ize ?axis-2)))))
 
 
 (defn pc-check

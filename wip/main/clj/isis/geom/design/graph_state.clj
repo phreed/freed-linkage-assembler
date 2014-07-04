@@ -82,8 +82,8 @@
 
 (defn geom-markers
   "Return the marker vector for a particular geom."
-  [?geom-name]
-  (case ?geom-name
+  [?link-name]
+  (case ?link-name
     l12 ['m12-1 'm12-2]
     l13 ['m13-1 'm13-2]
     l23 ['m23-1 'm23-2]
@@ -91,13 +91,13 @@
 
 (defn get-geom-status
   "Get the status of the named geom."
-  [?geom-name ?new-status]
-  (get-graph-element ?geom-name))
+  [?link-name ?new-status]
+  (get-graph-element ?link-name))
 
 (defn update-geom-status!
   "Set the status of the named geom."
-  [?geom-name ?new-status]
-  (update-graph-element! ?geom-name ?new-status))
+  [?link-name ?new-status]
+  (update-graph-element! ?link-name ?new-status))
 
 (defn joint-constraints
   "Return the joint constraints by joint name."

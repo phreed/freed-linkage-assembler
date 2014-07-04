@@ -8,7 +8,7 @@ Constraint:
 
 Assumptions:
   marker-has-invariant-z(?M_1)
-  geom-has_marker(?geom, ?M_2)
+  geom-has_marker(?link, ?M_2)
 
 
 ---
@@ -16,8 +16,8 @@ PFT entry: (0,0,offset-z)
 ---
 
 Initial status:
-  0-TDOF(?geom, ?point)
-  0-RDOF(?geom)
+  0-TDOF(?link, ?point)
+  0-RDOF(?link)
 
 Plan fragment:
   begin
@@ -28,11 +28,11 @@ Plan fragment:
   end;
 
 New status:
-  0-TDOF(?geom, ?point)
-  0-RDOF(?geom)
+  0-TDOF(?link, ?point)
+  0-RDOF(?link)
 
 Explanation:
-  Geom ?geom has no rotational degrees of freedom,
+  Geom ?link has no rotational degrees of freedom,
   so the offset-z constraint can only be checked for consistency.
 
 
@@ -41,8 +41,8 @@ PFT entry: (0,1,offset-z)
 ---
 
 Initial status:
-  0-TDOF(?geom, ?point)
-  1-RDOF(?geom, ?axis, ?axis_1, ?axis_2)
+  0-TDOF(?link, ?point)
+  1-RDOF(?link, ?axis, ?axis_1, ?axis_2)
 
 Branch variables:
   q_0, denoting a 2-way branch
@@ -65,16 +65,16 @@ Plan fragment:
   unless point?(R[8])
     error(perp-dist(R[4], R[7]), estring[8]);
 
-  1r/p-p(?geom, ?point, R[1], R[8],
+  1r/p-p(?link, ?point, R[1], R[8],
     ?axis, ?axis_1, ?axis_2);
   end;
 
 New status:
-  0-TDOF(?geom, ?point)
-  0-RDOF(?geom)
+  0-TDOF(?link, ?point)
+  0-RDOF(?link)
 
 Explanation:
-  Geom ?geom has only one rotational degree of freedom.
+  Geom ?link has only one rotational degree of freedom.
   So, it must be rotated about its known point and known axis.
 
 
@@ -84,8 +84,8 @@ PFT entry: (0,2,offset-z)
 ---
 
 Initial status:
-  0-TDOF(?geom, ?point)
-  2-RDOF(?geom, ?axis_1, ?axis_2)
+  0-TDOF(?link, ?point)
+  2-RDOF(?link, ?axis_1, ?axis_2)
 
 
 Explanation:
@@ -98,8 +98,8 @@ PFT entry: (0,3,offset-z)
 ---
 
 Initial status:
-  0-TDOF(?geom, ?point)
-  3-RDOF(?geom)
+  0-TDOF(?link, ?point)
+  3-RDOF(?link)
 
 Plan fragment:
   begin
@@ -110,17 +110,17 @@ Plan fragment:
   R[3] = a-point(R[2]);
   R[4] = vec-sum(?point, gmz(?M_2));
 
-  3r/p-p(?geom, ?point, R[4], R[3]);
+  3r/p-p(?link, ?point, R[4], R[3]);
   R[5] = gmz(?M_1);
   R[6] = gmz(?M_2);
   end;
 
 New status:
-  0-TDOF(?geom, ?point)
-  2-RDOF(?geom, R[5], R[6])
+  0-TDOF(?link, ?point)
+  2-RDOF(?link, R[5], R[6])
 
 Explanation:
-  All rotational degrees of freedom are available for ?geom.
+  All rotational degrees of freedom are available for ?link.
   Thus, the action will be a pure rotation.
   The angle between the two marker z-axes is measured,
   and the geom is rotated to give the axes an
