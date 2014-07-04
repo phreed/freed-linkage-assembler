@@ -178,20 +178,20 @@
    (ref->str ikb)))
 
 (expect
- '{:m {:p (ref #{[ground g1] [ground g3] [ground g2] [brick b1]})
+ '{:m {:p (ref #{[ground g1] [ground g3] [ground g2] [brick b3]})
        :z (ref #{[ground g1] [ground g3] [ground g2]})
        :x (ref #{[ground g1] [ground g3] [ground g2]})}
    :l {ground (ref {:tdof {:# 0}, :rdof {:# 0}
                     :p {:e [0.0 0.0 0.0], :z [0.0 0.0 1.0], :x [1.0 0.0 0.0]}})
-       brick (ref {:tdof {:# 0, :p [0.0 0.0 0.0]}, :rdof {:# 3}
-                   :p {:e [-5.0 0.0 -4.0], :z [0.0 0.0 1.0], :x [1.0 0.0 0.0]}})
+       brick (ref {:tdof {:# 0, :p [5.0 4.0 0.0]}, :rdof {:# 3}
+                   :p {:e [5.0 4.0 -4.0], :z [0.0 0.0 1.0], :x [1.0 0.0 0.0]}})
        cap (ref {:tdof {:# 3}, :rdof {:# 3},
                  :p {:e [0.0 0.0 0.0], :z [0.0 0.0 1.0], :x [1.0 0.0 0.0]}})}}
  (let [ikb (graph->init-invariants @brick-graph)]
    (precondition?->transform! ikb
     '{:type :coincident
-      :m1 [[ground g1] {}]
-      :m2 [[brick b1] {:e [5.0 0.0 4.0]}]} )
+      :m1 [[ground g3] {:e [5.0 4.0 0.0]}]
+      :m2 [[brick b3] {:e [0.0 0.0 4.0]}]} )
    (ref->str ikb)))
 
 ;; simulate the second point being repositioned, by 0-3-coincident
@@ -201,21 +201,21 @@
        :x (ref #{[ground g1] [ground g3] [ground g2]})}
    :l {ground (ref {:tdof {:# 0}, :rdof {:# 0}
                     :p {:e [0.0 0.0 0.0], :z [0.0 0.0 1.0], :x [1.0 0.0 0.0]}})
-       brick (ref {:tdof {:# 0, :p [0.0 0.0 0.0]}, :rdof {:# 3}
-                   :p {:e [-5.0 0.0 -4.0], :z [0.0 0.0 1.0], :x [1.0 0.0 0.0]}})
+       brick (ref {:tdof {:# 0, :p [5.0 0.0 0.0]}, :rdof {:# 3}
+                   :p {:e [5.0 0.0 0.0], :z [0.0 0.0 1.0], :x [1.0 0.0 0.0]}})
        cap (ref {:tdof {:# 3}, :rdof {:# 3},
                  :p {:e [0.0 0.0 0.0], :z [0.0 0.0 1.0], :x [1.0 0.0 0.0]}})}}
  (let [ikb (graph->init-invariants @brick-graph)]
    ;; repeat from previous test
    (precondition?->transform! ikb
     '{:type :coincident
-      :m1 [[ground g1] {}]
-      :m2 [[brick b1] {:e [5.0 0.0 4.0]}]} )
+      :m1 [[ground g1] {:e [5.0 0.0 0.0]}]
+      :m2 [[brick b1] {:e [0.0 0.0 0.0]}]} )
    ;; apply the second point constraint
    (precondition?->transform! ikb
     '{:type :coincident
-      :m1 [[ground g2] {:e [3.0 0.0 0.0]}]
-      :m2 [[brick b2] {:e [5.0 3.0 0.0]}]})
+      :m1 [[ground g2] {:e [8.0 0.0 0.0]}]
+      :m2 [[brick b2] {:e [0.0 3.0 0.0]}]})
    (ref->str ikb)))
 
 (defn action-analysis
