@@ -26,7 +26,7 @@ Initial status:
 Plan fragment:
   begin
   R[0] = vec-diff(gmp(?M_2), gmp(?M_1));
-  R[1] = dot-prod(R[0], gmp(?M_1));
+  R[1] = inner-prod(R[0], gmp(?M_1));
   unless zero?(R[1])
     error(R[1], estring[9]);
   end;

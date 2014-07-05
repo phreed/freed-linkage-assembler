@@ -4,10 +4,10 @@
   First, the various tables are defined, and interfacing
   functions are provided. "
   (:require
-    (isis.geom.machine.functions)
-    (isis.geom.design [graph-state
+    [isis.geom.machine.geobj :as geobj]
+    [isis.geom.design [graph-state
                        :refer [get-geom-status
-                               update-geom-status!]])))
+                               update-geom-status!]]]))
 
 (def frog "ribbit")
 

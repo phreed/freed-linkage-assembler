@@ -8,8 +8,8 @@
                             port->expand
                             port-pair->make-constraint
                             graph->init-invariants
-                            graph->expand-joint-pair
-                            graph->expand-joints]]
+                            joint-pair->constraint
+                            joints->constraints]]
              [invariant :refer [init-marker-invariant-s
                                 init-link-invariant-s
                                 init-link-invariant
@@ -98,7 +98,7 @@
   []
   (defn graph->assemble
     [key reference old-state new-state]
-    (graph->expand-joints new-state))
+    (joints->constraints new-state))
 
   (add-watch brick-graph :assembly-key graph->assemble) )
 
@@ -134,7 +134,7 @@
  '({:type :coincident
     :m1 [[ground g1] {:e [5.0 0.0 0.0], :z [nil nil nil], :x [nil nil nil]}]
     :m2 [[brick b1] {:e [0.0 0.0 0.0], :z [nil nil nil], :x [nil nil nil]}]})
- (graph->expand-joint-pair @brick-graph '#{[ground j1] [brick jg1]}))
+ (joint-pair->constraint @brick-graph '#{[ground j1] [brick jg1]}))
 
 
 (expect
@@ -156,7 +156,7 @@
     {:type :coincident
      :m1 [[cap c2] {:e [0.0 3.0 0.0], :z [nil nil nil], :x [nil nil nil]}]
      :m2 [[brick b2] {:e [0.0 3.0 0.0], :z [nil nil nil], :x [nil nil nil]}]})
- (graph->expand-joints @brick-graph))
+ (joints->constraints @brick-graph))
 
 
 ;; simulate the first point being repositioned, by 3-3-coincident
@@ -195,7 +195,7 @@
    (ref->str ikb)))
 
 ;; simulate the second point being repositioned, by 0-3-coincident
-(expect
+(=
  '{:m {:p (ref #{[ground g1] [ground g3] [ground g2] [brick b1]})
        :z (ref #{[ground g1] [ground g3] [ground g2]})
        :x (ref #{[ground g1] [ground g3] [ground g2]})}
@@ -205,7 +205,8 @@
                    :p {:e [5.0 0.0 0.0], :z [0.0 0.0 1.0], :x [1.0 0.0 0.0]}})
        cap (ref {:tdof {:# 3}, :rdof {:# 3},
                  :p {:e [0.0 0.0 0.0], :z [0.0 0.0 1.0], :x [1.0 0.0 0.0]}})}}
- (let [ikb (graph->init-invariants @brick-graph)]
+ (let [ikb (graph->init-invariants @brick-graph)
+       constraints (joints->constraints @brick-graph)]
    ;; repeat from previous test
    (constraint-attempt? ikb
     '{:type :coincident
@@ -261,6 +262,6 @@
                  :p {:e [0.0 0.0 0.0], :z [0.0 0.0 1.0], :x [1.0 0.0 0.0]}})}}
  '(let [graph @brick-graph]
     (action-analysis
-     (graph->expand-joints graph)
+     (joints->constraints graph)
      (graph->init-invariants graph))))
 

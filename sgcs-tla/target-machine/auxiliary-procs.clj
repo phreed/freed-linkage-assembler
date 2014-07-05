@@ -23,7 +23,7 @@
   [?axis-1 ?axis-2 ?direction-matters]
   (let [r0 (unit-vec ?axis-1)
         r1 (unit-vec ?axis-2)
-        r2 (dot-prod r0 r1)]
+        r2 (inner-prod r0 r1)]
     (if ?direction-matters
       (equal? r2 1)
       (equal? (mag r1) 1))) )
@@ -32,14 +32,14 @@
   "Procedure to rotate body ?link, about axes ?axis-1 and ?axis-2,
   leaving the position of point ?center invariant, and
   moving ?from-point on ?link to globally fixed ?to-point."
-  [?link ?center ?from-point ?to-point ?axis_1 ?axis_2 ?q]
+  [?link ?center ?from-point ?to-point ?axis_1 ?axis_2 ?branch]
   (let [r0 (line ?center ?axis-2)
         r1 (line ?center ?axis-1)
         r2 (perp-base ?from-point r0)
         r3 (perp-base ?to-point r1)
         r4 (intersect (plane r2 ?axis-2) (plane r3 ?axis-1) 0)
         r5 (sphere ?center (perp-dist ?to-point ?center))
-        r6 (intersect r5 r4 ?q)]
+        r6 (intersect r5 r4 ?branch)]
     (if-not (point? r6)
       (error (perp-dist r5 r4) estring-7)
       (let [r7 (vec-diff ?from-point r3)
@@ -102,13 +102,13 @@
 
 (defn 1t-1r_p-p_point-lf
   "This case is for when ?point is on ?link, and ?line is invariant."
-  [?link ?point ?line ?axis ?from-point ?to-point ?q]
+  [?link ?point ?line ?axis ?from-point ?to-point ?branch]
   (let [r0 (vec-diff ?to-point ?from-point)
         _ (translate ?link r0)
         r1 (line ?to-point ?axis)
         r2 (perp-base ?point r1)
         r3 (circle r2 ?axis (perp-dist ?point r2))
-        r4 (intersect ?line r3 ?q)]
+        r4 (intersect ?line r3 ?branch)]
     (if-not (point? r4)
       (error (perp-dist ?line r3) estring-1)
       (1r_p-p ?link ?from-point ?point r4 ?axis ?axis-1 ?axis-2))) )
@@ -116,7 +116,7 @@
 
 (defn 1t-1r_p-p_line-lf
   "This case is for when ?line is on ?link, and ?point is invariant."
-  [?link ?point ?line ?axis ?from-point ?to-point ?q]
+  [?link ?point ?line ?axis ?from-point ?to-point ?branch]
   (let [r0 (vec-diff ?from-point ?to-point)
         r1 (copy ?line)
         _ (translate ?link r0)
@@ -124,7 +124,7 @@
         r3 (perp-base ?point r2)
         r4 (mag (vec-diff ?point r3))
         r5 (circle r3 ?axis r4)
-        r6 (intersect r1 r5 ?q)]
+        r6 (intersect r1 r5 ?branch)]
     (if-not (point? r6)
       (error (perp-dist r1 r5) estring-7)
       ;;; ERRATA the ?point below was point?
@@ -136,7 +136,7 @@
   thus moving ?freom-point to ?link to globally-fixed ?to-point.
   Rotation is done so as to not violate restrictions imposed
   by ?axis-1 and ?axis-2, if they exist."
-  [?link ?point ?line ?axis ?from-point ?to-point ?lf ?q]
+  [?link ?point ?line ?axis ?from-point ?to-point ?lf ?branch]
 
   ((if (equal? ?point ?lf) lt-1r_p-p_point-lf  lt-1r_p-p_line-lf )
    ?link ?point ?line ?axis ?axis-1 ?axis-2) )
@@ -144,14 +144,14 @@
 
 (defn 2t-1r_p-p_point-lf
   "This case is for when ?point is on ?link, and ?plane is invariant."
-  [?link ?point ?plane ?axis ?axis-1 ?axis-2 ?from-point ?to-point ?q]
+  [?link ?point ?plane ?axis ?axis-1 ?axis-2 ?from-point ?to-point ?branch]
 
   (let [r0 (vec-diff ?to-point ?from-point)
         _ (translate ?link r0)
         r1 (line ?to-point ?axis)
         r2 (perp-base ?point r1)
         r3 (circle r2 ?axis (perp-dist ?point r2))
-        r4 (intersect ?plane r3 ?q)]
+        r4 (intersect ?plane r3 ?branch)]
     (if-not (point? r4)
       (error (perp-dist ?plane r3) estring-1)
       (1r_p-p ?link ?from-point ?point r4 ?axis ?axis-1 ?axis-2))))
@@ -159,7 +159,7 @@
 
 (defn 2t-1r_p-p_plane-lf
   "This case is for when ?plane is on ?link, and ?point is invariant."
-  [?link ?point ?plane ?axis ?axis-1 ?axis-2 ?from-point ?to-point ?q]
+  [?link ?point ?plane ?axis ?axis-1 ?axis-2 ?from-point ?to-point ?branch]
 
   (let [r0 (vec-diff ?to-point ?from-point)
         _ (translate ?link r0)
@@ -167,7 +167,7 @@
         r2 (plane ?point r1)
         r3 (perp-dist ?from-point ?point)
         r4 (circle ?from-point ?axis r3)
-        r5 (intersect r2 r4 ?q)]
+        r5 (intersect r2 r4 ?branch)]
     (if-not (point? r5)
       (error (perp-dist r2 r4) estring-7)
       ;;; ERRATA the ?point below was point?
@@ -180,17 +180,17 @@
   thus moving ?freom-point to ?link to globally-fixed ?to-point.
   Rotation is done so as to not violate restrictions imposed
   by ?axis-1 and ?axis-2, if they exist."
-  [?link ?point ?plane ?axis ?axis-1 ?axis-2 ?from-point ?to-point ?lf ?q]
+  [?link ?point ?plane ?axis ?axis-1 ?axis-2 ?from-point ?to-point ?lf ?branch]
 
   ((if (equal? ?point ?lf) 2t-1r_p-p_point-lf  2t-1r_p-p_plane-lf )
-   ?link ?point ?plane ?axis ?axis-1 ?axis-2 ?from-point ?to-point ?q) )
+   ?link ?point ?plane ?axis ?axis-1 ?axis-2 ?from-point ?to-point ?branch) )
 
 (defn 1t-2r_p-p_point-lf
   "This case is for when ?point is on ?link, and ?line is invariant."
-  [?link ?point ?line ?axis-1 ?axis-2 ?from-point ?to-point ?q]
+  [?link ?point ?line ?axis-1 ?axis-2 ?from-point ?to-point ?branch]
   (let [_ (translate ?link (vec-diff ?to-point ?from-point))
         r0 (sphere ?from-point (perp-dist ?freom-point ?point))
-        r1 (intersect r0 ?line ?q)]
+        r1 (intersect r0 ?line ?branch)]
     (if-not (point? r1)
       (error (perp-dist r0 ?line) estring-1)
       (2r_p-p ?link ?from-point ?point r1 ?axis-1 ?axis-2))))
@@ -198,13 +198,13 @@
 
 (defn 1t-2r_p-p_line-lf
   "This case is for when ?line is on ?link, and ?point is invariant."
-  [?link ?point ?line ?axis-1 ?axis-2 ?from-point ?to-point ?q]
+  [?link ?point ?line ?axis-1 ?axis-2 ?from-point ?to-point ?branch]
   (let [r0 (vec-diff ?to-point ?from-point)
         r2 (copy ?line)
         _ (translate ?link r0)
         r3 (perp-dist ?from-point ?point)
         r4 (sphere ?from-point r3)
-        r5 (intersect r2 r4 ?q)]
+        r5 (intersect r2 r4 ?branch)]
     (if-not (point? r5)
       (error (perp-dist r2 r4) estring-7)
       (2r_p-p ?link ?from-point r5 ?point ?axis-1 ?axis-2))))
@@ -214,20 +214,20 @@
   "Procedure to translate ?link to bring ?M2 into coincidence with ?M1,
   followed by rotating ?link about ?axis_2 and ?axis_1 to bring ?point back onto ?line.
   In general there are two distinct solutions to this problem,
-  so a branch variable ?q is used to select the desired solution."
-  [?link ?point ?line ?axis-1 ?axis-2 ?from-point ?to-point ?lf ?q]
+  so a branch variable ?branch is used to select the desired solution."
+  [?link ?point ?line ?axis-1 ?axis-2 ?from-point ?to-point ?lf ?branch]
 
   ((if (equal? ?point ?lf) 1t-2r_p-p_point-lf  1t-2r_p-p_line-lf )
-   ?link ?point ?line ?axis-1 ?axis-2 ?from-point ?to-point ?q) )
+   ?link ?point ?line ?axis-1 ?axis-2 ?from-point ?to-point ?branch) )
 
 
 (defn 1t-3r_p-p_point-lf
   "This case is for when ?point is on ?link, and ?line is invariant"
-  [?link ?point ?line ?from-point ?to-point ?q]
+  [?link ?point ?line ?from-point ?to-point ?branch]
 
   (let [_ (translate ?link (vec-diff ?to-point ?from-point))
         r0 (sphere ?from-point (perp-dist ?from-point ?point))
-        r1 (intersect r0 ?line ?q)]
+        r1 (intersect r0 ?line ?branch)]
     (if-not (point? r1)
       (error (perp-dist r0 ?line) estring-7)
       (3r_p-p ?link ?from-point ?point r1))))
@@ -235,14 +235,14 @@
 
 (defn 1t-3r_p-p_line-lf
   "This case is for when ?line is on ?link, and ?point is invariant"
-  [?link ?point ?line ?from-point ?to-point ?q]
+  [?link ?point ?line ?from-point ?to-point ?branch]
 
   (let [r0 (vec-diff ?to-point ?from-point)
         r2 (copy ?line)
         _ (translate ?link r0)
         r3 (perp-dist ?from-point ?point)
         r4 (sphere ?from-point r3)
-        r5 (intersect r2 r4 ?q)]
+        r5 (intersect r2 r4 ?branch)]
     (if-not (point? r5)
       (error (perp-dist r2 r4) estring-7)
       (3r_p-p ?link ?from-point r5 ?point ))))
@@ -252,12 +252,12 @@
   "Procedure to translate ?link to bring ?M-2 into coincidence with ?M-1,
   followed by rotating ?link to brint ?point back onto ?line.
   In general, there are two distinct solutions to this problem,
-  so a branch variable ?q is used to select the desired solution."
-  [?link ?point ?line ?from-point ?to-point ?lf ?q]
+  so a branch variable ?branch is used to select the desired solution."
+  [?link ?point ?line ?from-point ?to-point ?lf ?branch]
 
 
   ((if (equal? ?point ?lf) 1t-3r_p-p_point-lf  1t-3r_p-p_line-lf )
-   ?link ?point ?line ?from-point ?to-point ?q) )
+   ?link ?point ?line ?from-point ?to-point ?branch) )
 
 
 (def 2t-2r_p-p_point-lf
@@ -282,8 +282,8 @@
         r2 (plane ?point r1)
         r3 (perp-dist ?from-point ?point)
         r4 (sphere ?from-point r3)
-        ;; ERRATA ?q is not defined
-        r5 (intersect r2 r4 ?q)]
+        ;; ERRATA ?branch is not defined
+        r5 (intersect r2 r4 ?branch)]
     (if-not (circle? r5)
       (error (perp-dist r2 r4) estring-7)
       (let [r6 (a-point r5)]
@@ -298,5 +298,5 @@
 
 
   ((if (equal? ?point ?lf) 2t-2r_p-p_point-lf  2t-2r_p-p_plane-lf )
-   ?link ?point ?line ?from-point ?to-point ?q) )
+   ?link ?point ?line ?from-point ?to-point ?branch) )
 

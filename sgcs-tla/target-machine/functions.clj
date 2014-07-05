@@ -50,7 +50,7 @@
    [line axis radius]
   )
 
-(defn dot-prod
+(defn inner-prod
   "Returns the dot product of vect-1 and vect-2."
    [vect-1 vect-2]
   )
@@ -217,7 +217,7 @@
   )
 
 (defn rotate
-  "Rotate a geom about the point and axis by an angle."
+  "rotate a geom about the point and axis by an angle."
   [geom point axis angle]
   )
 
@@ -247,7 +247,7 @@
   )
 
 (defn translate
-  "Translate a geom by the specified vector."
+  "translate a geom by the specified vector."
   [geom vect]
   )
 
@@ -255,9 +255,20 @@
   "The angle between vector-1 and vector-2,
   viewed from the positive direction of axis,
   measured counter-clockwise from vector-1 to vector-2.
-  The angle is represented as a (sine cosine) pair."
+  The angle is represented as a (sine cosine) pair.
+
+  |a.b| = |a| |b| cos 0 & |a^b| = |a| |b| sin 0
+  or [sine cosine] = [|a^b| a.b]/(|a|*|b|).
+  The sign for sine is determined by comparing the
+  direction of the axis to a^b."
   [vector-1 vector-2 axis]
-  )
+  (let [ab-outer (outer-prod vector-1 vector-2)
+        ab-inner (inner-prod vector-2 axis)
+        ab-mag (* (mag vector-1) (mag vector-2))
+        aligned? (pos? (inner-prod ab-outer axis))
+        sine (/ (mag ab-outer) ab-mag)
+        cosine (/ ab-inner ab-mag)]
+    (if (aligned?) [sine cosine] [(- sine) cosine])))
 
 (defn vec-diff
   "Vector difference of vector-1 and vector-2."

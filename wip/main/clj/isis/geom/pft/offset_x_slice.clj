@@ -23,7 +23,7 @@ Initial status:
 
 Plan fragment:
   begin
-  R[0] = dot-product(gmx(?M_1), gmx(?M_2));
+  R[0] = inner-product(gmx(?M_1), gmx(?M_2));
   R[1] = cos(it ?a)
   unless zero?(R[0] - R[1])
     error(R[0] - R[1], estring[9]);
@@ -48,7 +48,7 @@ Initial status:
 
 Plan fragment:
   begin
-  R[0] = dot-product(gmx(?M_1), gmx(?M_2));
+  R[0] = inner-product(gmx(?M_1), gmx(?M_2));
   R[1] = cos(it ?a)
   unless zero?(R[0] - R[1])
     error(R[0] - R[1], estring[9]);
@@ -73,7 +73,7 @@ Initial status:
 
 Plan fragment:
   begin
-  R[0] = dot-product(gmx(?M_1), gmx(?M_2));
+  R[0] = inner-product(gmx(?M_1), gmx(?M_2));
   R[1] = cos(it ?a)
   unless zero?(R[0] - R[1])
     error(R[0] - R[1], estring[9]);
@@ -98,7 +98,7 @@ Initial status:
 
 Plan fragment:
   begin
-  R[0] = dot-product(gmx(?M_1), gmx(?M_2));
+  R[0] = inner-product(gmx(?M_1), gmx(?M_2));
   R[1] = cos(it ?a)
   unless zero?(R[0] - R[1])
     error(R[0] - R[1], estring[9]);

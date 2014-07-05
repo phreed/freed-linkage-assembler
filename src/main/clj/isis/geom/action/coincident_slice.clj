@@ -5,10 +5,10 @@
              :refer [marker->invariant?
                      marker->add-invariant!]]
             [isis.geom.machine
-             [functions :refer [translate
-                                vec-diff
-                                gmp]]
-             [auxiliary :refer [dof-3r:p->p]] ]))
+             [geobj :refer [translate
+                           vec-diff
+                           gmp]]
+             [auxiliary :refer [dof-3rp->p]] ]))
 
 
 (defn- coincident->precondition?
@@ -16,8 +16,8 @@
   checks the preconditions and returns the marker which
   is underconstrained followed by the marker that is constrained."
   [ikb m1 m2]
-  (cond (marker->invariant? ikb m2 :p) [m1 m2]
-        (marker->invariant? ikb m1 :p) [m2 m1]
+  (cond (marker->invariant? ikb m2 :p) [m2 m1]
+        (marker->invariant? ikb m1 :p) [m1 m2]
         :else false))
 
 (defn- coincident->postcondition!
@@ -28,9 +28,9 @@
 
 (defn coincident->transform-dispatch
   "Examine the underconstrained marker to determine the dispatch key.
-  The key is the [#tdof #rdof]."
+  The key is the [#tdof #rdof] of the m2 link."
   [ikb m1 m2]
-  (let [[[link-name _] _] m1
+  (let [[[link-name _] _] m2
         link @(link-name (:l ikb))]
     {:tdof (:# (:tdof link)) :rdof (:# (:rdof link))}))
 
@@ -45,8 +45,8 @@
   :coincident
   [ikb constraint]
   (let [{m1 :m1 m2 :m2} constraint]
-    (when-let [ [m1 m2] (coincident->precondition? ikb m1 m2) ]
-      (coincident->transform! ikb m1 m2)))
+    (when-let [ [ma1 ma2] (coincident->precondition? ikb m1 m2) ]
+      (coincident->transform! ikb ma1 ma2)))
   true)
 
 
@@ -54,19 +54,19 @@
   "PFT entry: (0,3,coincident)
 
 Initial status:
-  0-TDOF(?link, ?point)
-  3-RDOF(?link)
+  0-TDOF(?m2-link, ?m2-point)
+  3-RDOF(?m2-link)
 
 Plan fragment:
   begin
-  3r/p-p(?link, ?point,
-    gmp(?m-2), gmp(?m-1));
-  R[0] = vec-diff(gmp(?m-2), ?point);
+  3r/p-p(?m2-link, ?m2-point,
+    gmp(?m2), gmp(?m1));
+  R[0] = vec-diff(gmp(?m2), ?m2-point);
   end;
 
 New status:
-  0-TDOF(?link, ?point)
-  1-RDOF(?link, R[0], nil, nil)
+  0-TDOF(?m2-link, ?m2-point)
+  1-RDOF(?m2-link, R[0], nil, nil)
 
 Explanation:
   Geom ?link cannot translate, so the coincident
@@ -75,18 +75,16 @@ Explanation:
   about the line connecting ?m-2 and ?point.
   "
   [ikb m1 m2]
-  (let [ [[m1-link-name m1-proper-name] _] m1
-        m1-link (get-in ikb [:l m1-link-name])
-        point (get-in @m1-link [:p :e])
+  (let [ [[m2-link-name m2-proper-name] _] m2
+        m2-link (get-in ikb [:l m2-link-name])
+        m2-point (get-in @m2-link [:p :e])
         gmp1 (gmp m1 ikb)
-        gmp2 (gmp m2 ikb)
-        link-place (dof-3r:p->p @m1-link point gmp2 gmp1)
-        r0 (vec-diff gmp2 point)]
+        gmp2 (gmp m2 ikb)]
     (dosync
-     (alter (get-in ikb [:m :p]) disj [m1-link-name m1-proper-name])
-     (alter m1-link assoc
-            :p link-place
-            :rdof {:# 1, :p r0}) )))
+     (alter (get-in ikb [:m :p]) disj [m2-link-name m2-proper-name])
+     (alter m2-link merge
+            ; (dof-3rp->p @m2-link m2-point gmp2 gmp1)
+            {:rdof {:# 1, :a (vec-diff gmp2 m2-point)}} ) )))
 
 (defmethod coincident->transform!
   {:tdof 0 :rdof 3}
@@ -99,35 +97,34 @@ Explanation:
   "PFT entry: (3,3,coincident)
 
   Initial status:
-  3-TDOF(?link)
-  3-RDOF(?link)
+  3-TDOF(?m2-link)
+  3-RDOF(?m2-link)
 
   Plan fragment:
   begin
-  translate(?link,
-  vec-diff(gmp(?m-1), gmp(?m-2));
-  R[0] = gmp(?m-2);
+  translate(?m2-link, vec-diff(gmp(?m1), gmp(?m2));
+  R[0] = gmp(?m2);
   end;
 
   New status:
-  0-TDOF(?link, R[0])
-  3-RDOF(?link)  <no change>
+  0-TDOF(?m2-link, R[0])
+  3-RDOF(?m2-link)  <no change>
 
   Explanation:
-  Geom ?link is free to translate, so the translation
-  vector is measured and the ?link is moved.
+  Link ?m2-link is free to translate, so the translation
+  vector is measured and the ?m2-link is moved.
   No checks are required.
   "
   [ikb m1 m2]
-  (let [[[m1-link-name m1-proper-name] _] m1
-        m1-link (get-in ikb [:l m1-link-name])
+  (let [[[m2-link-name m2-proper-name] _] m2
+        m2-link (get-in ikb [:l m2-link-name])
         gmp1 (gmp m1 ikb)
         gmp2 (gmp m2 ikb)]
     (dosync
-     (alter (get-in ikb [:m :p]) conj [m1-link-name m1-proper-name])
-     (alter m1-link assoc
-            :p (translate (:p @m1-link) (vec-diff gmp1 gmp2))
-            :tdof {:# 0, :p gmp2} ) )))
+     (alter (get-in ikb [:m :p]) conj [m2-link-name m2-proper-name])
+     (alter m2-link merge
+            (translate @m2-link (vec-diff gmp1 gmp2))
+            {:tdof {:# 0, :p gmp1}} ) )))
 
 (defmethod coincident->transform!
   {:tdof 3 :rdof 3}

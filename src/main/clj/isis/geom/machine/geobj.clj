@@ -1,23 +1,7 @@
-(ns isis.geom.machine.functions
+(ns isis.geom.machine.geobj
   (:require [isis.geom.machine
-             [c3ga :as c3ga]
              [tolerance :as tolerance]]
             [clojure.math.numeric-tower :as math] ) )
-
-
-(defn is-c3ga-working?
-  "A simple check to make sure c3ga is working."
-  []
-  (throw (UnsupportedOperationException. "is-c3ga-working"))
-  #_(let [ mv (c3ga/mv.)]
-    (.set mv 25.0)
-    (println "multi-vector =" (.toString mv)))
-
-  (let [ e1 (c3ga/vectorE1)
-         e2 (c3ga/vectorE2)
-         e3 (c3ga/vectorE3)
-         e1+e2 (c3ga/add e1 e2)]
-    (println "e1 + e2 = " (.toString e1+e2))) )
 
 (defn mag
   "If quantity is a vector, returns the magnitude of quantity.
@@ -33,6 +17,68 @@
   [vect]
   (into [] (map #(/ % (mag vect)) vect)))
 
+(defn point
+  "No special typing on a point.
+  It is simply a 3-tuple."
+  [triple] triple)
+
+
+(defn point?
+  "Returns 'true' if object is a 'point'."
+  [object]
+  (cond (not (vector? object)) false
+        (not (= 3 (count object))) false
+        :else true))
+
+(defn line
+  "Returns a line object with direction axis passing through point."
+  [point axis]
+  {:type :line :e point, :d (unit-ize axis)})
+
+(defn line?
+  "Returns 'true' if object is a line."
+  [object]
+  (= :line (:type object)))
+
+
+
+(defn inner-prod
+  "Returns the dot product of vect-1 and vect-2."
+   [vect-1 vect-2]
+  (reduce + (map * vect-1 vect-2)))
+
+(defn outer-prod
+  "Returns the outer product of vect-1 and vect-2.
+  This can be considered either a bivector or
+  the perpendicular dual vector."
+   [v1 v2]
+  (let [[v1-1 v1-2 v1-3] v1
+        [v2-1 v2-2 v2-3] v2 ]
+    [(- (* v1-2 v2-3) (* v1-3 v2-2))
+     (- (* v1-3 v2-1) (* v1-1 v2-3))
+     (- (* v1-1 v2-2) (* v1-2 v2-1))]))
+
+(defn outer-prod-3
+  "Returns the outer product of vect-1 and vect-2.
+  This can be considered either a bivector or
+  the perpendicular dual vector."
+   [v1 v2 v3]
+  (inner-prod (outer-prod v1 v2) v3))
+
+
+
+(defn plane
+  "Create a plane object with normal vector passing through point."
+  [point normal]
+  {:type :plane :e point :n (unit-ize normal)})
+
+
+(defn plane?
+  "Returns 'true' if object is a 'plane'."
+  [object]
+  (= :plane (:type object)))
+
+
 (defn a-point
   "Returns an 'arbitrary' point that lies on curve"
   [curve] )
@@ -40,7 +86,12 @@
 (defn axis
   "Returns the vector axis of an object of type circle, line, cylinder, or helix"
   [object]
-  )
+  (let [otype (:type object)]
+    (cond (= otype :line) (:d object)
+          (= otype :circle) (:a object)
+          (= otype :cylinder) (:a object)
+          (= otype :helix) (:a object)
+          :else object)))
 
 (defn centerline
   "Returns the centerline of rotation of a curve that is constrained by a
@@ -53,13 +104,12 @@
   "Returns a circle object with its center at point, and with
   specified axis vector and radius."
    [point axis radius]
-  )
+  {:type :circle :e point :a axis :r radius})
 
 (defn circle?
   "Returns 'true' if object is a circle."
    [object]
-  (println "circle? unimplemented")
-  )
+  (= :circle (:type object)))
 
 (defn copy
   "Returns a copy of a geometric object, fixed in the
@@ -70,21 +120,10 @@
 
 (defn cos
   "If quantity-or-pair is a pair, returns the cosine element of the pair.
-  If quantity-or-pair is a scalar, returns the cosine."
+  If quantity-or-pair is a scalar (an angle measured in radians), returns the cosine."
    [quantity-or-pair]
-  (println "cos unimplemented")
-  )
-
-(defn outer-prod
-  "Returns the outer product of vect-1 and vect-2.
-  This can be considered either a bivector or
-  the perpendicular dual vector."
-   [vect-1 vect-2]
-  (let [[v1-1 v1-2 v1-3] vect-1
-        [v2-1 v2-2 v2-3] vect-2 ]
-    [(- (* v1-2 v2-3) (* v1-3 v2-2))
-     (- (* v1-3 v2-1) (* v1-1 v2-3))
-     (- (* v1-1 v2-2) (* v1-2 v2-1))]))
+  (cond (vector? quantity-or-pair) (nth quantity-or-pair 1)
+        :else (Math/cos quantity-or-pair)))
 
 (defn cylinder
   "Return a cylinder object with axial line, whose circular
@@ -93,11 +132,6 @@
   (println "cylinder unimplemented")
   )
 
-(defn dot-prod
-  "Returns the dot product of vect-1 and vect-2."
-   [vect-1 vect-2]
-  (println "dot-prod unimplemented")
-  )
 
 (defn ellipse?
   "Returns 'true' if object is an ellipse."
@@ -128,7 +162,7 @@
 
 
 (defn equal?
-  "Returns 'true' if quantity-1 equals quantity-2 withing TOLERANCE.
+  "Returns 'true' if quantity-1 equals quantity-2 within TOLERANCE.
   Quantities may be scalars, points, or vectors."
   [quantity-1 quantity-2]
   (println "equal? unimplemented")
@@ -163,14 +197,38 @@
   (println "helix unimplemented")
  )
 
+(defn intersect-3-planes
+ "Calculates the intersection of three planes."
+  [a b c]
+  (let [{a- :e, an :n} a
+        {b- :e, bn :n} b
+        {c- :e, cn :n} c
+        anbncn (mag (outer-prod-3 an bn cn))
+        a-bncn (mag (outer-prod-3 a- bn cn))
+        anb-cn (mag (outer-prod-3 an b- cn))
+        anbnc- (mag (outer-prod-3 an bn c-))]
+    (if (zero? anbncn) nil
+      [(/ a-bncn anbncn) (/ anb-cn anbncn) (/ anbnc- anbncn)])))
+
+
 (defn intersect
  "Calculates the intersection of surface-1 and surface-2.
  Either surface may be zero-, one-, or two-dimensional.
  The branch argument determines which solution branch is used.
- Returns the null value (nil) if the surfaces do not intersect."
-[surface-1 surface-2]
-  (println "intersect unimplemented")
- )
+ Returns the null value (nil) if the surfaces do not intersect.
+
+ For a closed form solution to two planes intesecting.
+ Compute the intersection between 3 planes.
+ The third plane uses either point from surface-1 or vector-2
+ as its locating point and the cross product as the normal."
+  [s1 s2 branch]
+  (cond (and (plane? s1) (plane? s2))
+        (let [axis (unit-ize (outer-prod (:n s1) (:n s2)))
+              p1 (:e s1) p2 (:e s2)
+              s3 (plane p1 axis)
+              point (intersect-3-planes s1 s2 s3)]
+          (line point axis))))
+
 
 (defn inverse
   "Returns the inverse of a transform."
@@ -184,31 +242,20 @@
   (println "lcf unimplemented")
   )
 
-(defn line
-  "Returns a line object with direction vector passing through point."
-  [point vector]
-  {:type :line :e point, :d (unit-ize vector)})
-
-(defn line?
-  "Returns 'true' if object is a line."
-  [object]
-  (println "line? unimplemented")
-  )
-
 (defn lmp
-  "marker position in geom coordinate frame."
+  "marker position in link coordinate frame."
   [marker]
   (println "lmp unimplemented")
   )
 
 (defn lmx
-  "marker x-axis position in geom coordinate frame."
+  "marker x-axis position in link coordinate frame."
   [marker]
   (println "lmx unimplemented")
   )
 
 (defn lmz
-  "marker z-axis position in geom coordinate frame."
+  "marker z-axis position in link coordinate frame."
   [marker]
   (println "lmz unimplemented")
   )
@@ -307,23 +354,6 @@
   )
 
 
-(defn plane
-  "Create a plane object with normal vector passing through point."
-  [point vect]
-  {:type :plane :e point :n (unit-ize vector)})
-
-(defn point?
-  "Returns 'true' if object is a 'point'."
-  [object]
-  (println "point? unimplemented")
-  )
-
-(defn rotate
-  "Rotate a geom about the point and axis by an angle."
-  [geom point axis angle]
-  (println "rotate unimplemented")
-  )
-
 (defn screw
   "Create a screw object with translational constraint
   defined by line, and with screw motion defined by
@@ -346,32 +376,39 @@
   )
 
 (defn transform
-  "If argument is a geom, returns the coordinate transform of the geom.
-  If argument is a marker, returns the coordinate transform of the geom
+  "If argument is a link, returns the coordinate transform of the link.
+  If argument is a marker, returns the coordinate transform of the link
   to which the marker is attached."
   [argument]
   (println "transform unimplemented")
   )
 
-(defn translate
-  "Translate a geom by the specified vector.
-  This receives a full placement and returns a full placement."
-  [marker vect]
-  (merge marker {:e (into [] (map + (:e marker) vect))}))
 
 (defn vec-angle
   "The angle between vector-1 and vector-2,
   viewed from the positive direction of axis,
   measured counter-clockwise from vector-1 to vector-2.
-  The angle is represented as a (sine cosine) pair."
+  The angle is represented as a (sine cosine) pair.
+
+  |a.b| = |a| |b| cos 0 & |a^b| = |a| |b| sin 0
+  or [sine cosine] = [|a^b| a.b]/(|a|*|b|).
+  The sign for sine is determined by comparing the
+  direction of the axis to a^b."
   [vector-1 vector-2 axis]
-  (println "vec-angle unimplemented")
-  )
+  (let [ab-outer (outer-prod vector-1 vector-2)
+        ab-inner (inner-prod vector-2 axis)
+        ab-mag (* (mag vector-1) (mag vector-2))
+        aligned? (pos? (inner-prod ab-outer axis))
+        sine (/ (mag ab-outer) ab-mag)
+        cosine (/ ab-inner ab-mag)]
+    (cond aligned? [sine cosine]
+          :else [(- sine) cosine] )))
 
 (defn vec-diff
-  "Vector difference of vector-1 and vector-2."
-  [vector-1 vector-2]
-  (into [] (map - vector-2 vector-1)))
+  "Vector difference of vector-1 and vector-2.
+  Produces a vector from vector-subtrahend to vector-minuend."
+  [vector-minuend vector-subtrahend]
+  (into [] (map - vector-minuend vector-subtrahend)))
 
 (defn vec-scale
   "Returns a vector which is original vector times scalar."
@@ -390,3 +427,15 @@
   (println "x-mul unimplemented")
   )
 
+(defn rotate
+  "rotate a link about the point and axis by an angle."
+  [link point axis angle]
+  (merge @link {:p (merge-with vec-sum (:p link) {:z axis})}))
+
+
+(defn translate
+  "translate a link by the specified vector.
+  This receives a full placement and returns a full placement.
+  The vector points in the direction of the translation."
+  [link vect]
+  (merge link {:p (merge-with vec-sum (:p link) {:e vect})}))
