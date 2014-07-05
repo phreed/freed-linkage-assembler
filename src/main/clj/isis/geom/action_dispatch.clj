@@ -1,21 +1,19 @@
 (ns isis.geom.action-dispatch
-  "the dispatch functions for performing actions."
+  "The dispatch functions for performing actions."
   )
 
 
+(defn- constraint-attempt-dispatch
+  "The function which specifies which implementation to use."
+  [ikb constraint] (:type constraint))
 
-(defn- transform-dispatch
-  "the function which specifies which implementation to use."
-  [ikb constraint]
-  (:type constraint) )
-
-(defn- precondition?->transform!<-default
+(defn- constraint-attempt?<-default
   [ikb constraint]
   nil)
 
-(defmulti precondition?->transform!
+(defmulti constraint-attempt?
   "Make invariant one or more properties of the indicated marker.
   Update the geometry invariant to indicate the new DoF predicates."
-  #'transform-dispatch
-  :default precondition?->transform!<-default)
+  #'constraint-attempt-dispatch
+  :default constraint-attempt?<-default)
 

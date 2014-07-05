@@ -41,7 +41,7 @@
 
 
 
-(defmethod master/precondition?->transform!
+(defmethod master/constraint-attempt?
   :coincident
   [ikb constraint]
   (let [{m1 :m1 m2 :m2} constraint]

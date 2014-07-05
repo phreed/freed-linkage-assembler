@@ -16,7 +16,7 @@
                                 marker->add-invariant!
                                 make->invariant]]]
             [isis.geom.action-dispatch
-             :refer [precondition?->transform!]]
+             :refer [constraint-attempt?]]
             [isis.geom.action
              [coincident-slice]
              [helical-slice]
@@ -171,7 +171,7 @@
        cap (ref {:tdof {:# 3} :rdof {:# 3}
                  :p {:e [0.0 0.0 0.0], :z [0.0 0.0 1.0], :x [1.0 0.0 0.0]}})}}
  (let [ikb (graph->init-invariants @brick-graph)]
-   (precondition?->transform! ikb
+   (constraint-attempt? ikb
     '{:type :coincident
       :m1 [[ground g1] {}]
       :m2 [[brick b1] {:e [-100.0 50.0 10.0]}]} )
@@ -188,7 +188,7 @@
        cap (ref {:tdof {:# 3}, :rdof {:# 3},
                  :p {:e [0.0 0.0 0.0], :z [0.0 0.0 1.0], :x [1.0 0.0 0.0]}})}}
  (let [ikb (graph->init-invariants @brick-graph)]
-   (precondition?->transform! ikb
+   (constraint-attempt? ikb
     '{:type :coincident
       :m1 [[ground g3] {:e [5.0 4.0 0.0]}]
       :m2 [[brick b3] {:e [0.0 0.0 4.0]}]} )
@@ -207,12 +207,12 @@
                  :p {:e [0.0 0.0 0.0], :z [0.0 0.0 1.0], :x [1.0 0.0 0.0]}})}}
  (let [ikb (graph->init-invariants @brick-graph)]
    ;; repeat from previous test
-   (precondition?->transform! ikb
+   (constraint-attempt? ikb
     '{:type :coincident
       :m1 [[ground g1] {:e [5.0 0.0 0.0]}]
       :m2 [[brick b1] {:e [0.0 0.0 0.0]}]} )
    ;; apply the second point constraint
-   (precondition?->transform! ikb
+   (constraint-attempt? ikb
     '{:type :coincident
       :m1 [[ground g2] {:e [8.0 0.0 0.0]}]
       :m2 [[brick b2] {:e [0.0 3.0 0.0]}]})
@@ -244,7 +244,7 @@
           ;; no progress is possible.
           ikb))
       ;; working through the constraint list.
-      (if (precondition?->transform! ikb x)
+      (if (constraint-attempt? ikb x)
         (recur xs ys true)
         (recur xs ys progress?) ))))
 
