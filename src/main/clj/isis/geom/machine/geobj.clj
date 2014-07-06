@@ -430,7 +430,8 @@
 (defn rotate
   "rotate a link about the point and axis by an angle."
   [link point axis angle]
-  (merge @link {:p (merge-with vec-sum (:p link) {:z axis})}))
+  (let [rotation (conj [angle] 6.28)]
+    (merge link {:p (merge (:p link) {:e point :z axis :x rotation})})))
 
 
 (defn translate

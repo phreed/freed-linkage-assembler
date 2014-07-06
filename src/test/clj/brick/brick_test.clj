@@ -195,7 +195,7 @@
    (ref->str ikb)))
 
 ;; simulate the second point being repositioned, by 0-3-coincident
-(=
+(expect
  '{:m {:p (ref #{[ground g1] [ground g3] [ground g2] [brick b1]})
        :z (ref #{[ground g1] [ground g3] [ground g2]})
        :x (ref #{[ground g1] [ground g3] [ground g2]})}

@@ -83,7 +83,7 @@ Explanation:
     (dosync
      (alter (get-in ikb [:m :p]) disj [m2-link-name m2-proper-name])
      (alter m2-link merge
-            ; (dof-3rp->p @m2-link m2-point gmp2 gmp1)
+            (dof-3rp->p @m2-link m2-point gmp2 gmp1)
             {:rdof {:# 1, :a (vec-diff gmp2 m2-point)}} ) )))
 
 (defmethod coincident->transform!
