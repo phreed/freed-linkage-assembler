@@ -154,30 +154,6 @@ Explanation:
   and ?line parameters.
 
 
----
-PFT entry: (0,1,coincident)
----
-
-Initial status:
-  0-TDOF(?link, ?point)
-  1-RDOF(?link, ?axis, ?axis_1, ?axis_2)
-
-Plan fragment:
-  begin
-  1r/p-p(?link, ?point, gmp(?m-2), gmp(?m-1),
-    ?axis, ?axis_1, ?axis_2);
-  end;
-
-New status:
-  0-TDOF(?link, ?point)
-  0-RDOF(?link)
-
-Explanation:
-  Geom ?link has only one rotational degree of freedom.
-  Therefore it must be rotated about its known point and known axis.
-  The two markers must be equidistant from the line defined by
-  ?point and ?axis, and must lie in a common plaine perpendicular
-  to ?axis.
 
 
 ---

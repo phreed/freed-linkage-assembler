@@ -6,26 +6,32 @@
 (defn init-marker-invariant-s
   "Create a marker invariant with references"
   []
-  {:p (ref #{}) :z (ref #{}) :x (ref #{})})
+  {:loc (ref #{}) :z (ref #{}) :x (ref #{})})
 
 (defn init-link-invariant-s
   "Create a map of link invariants within references."
   [] {})
 
-(defn init-link-invariant
-  "An invariant for a single link.
-  :p - the placement of the link in global coordinates.
-  :tdof - a tdof descrittion
-     :# - the number of dof remaining
-  :rdof - a tdof description
-     :# - the number of dof remaining."
-  [type]
-  (case type
-    :fixed (ref {:tdof {:# 0} :rdof {:# 0}
-            :p {:e [0.0 0.0 0.0] :z [0.0 0.0 1.0] :a [0.0 1.0]}})
+(defn marker->add-invariant!
+  "Abstract away the addition of the invariant so
+  programs do not have to reference a global variable.
+  This is a set of lists: position, z-axis, and x-axis vectors."
+  [marker-invs marker-name invariant-type]
+  (let [{loc :loc, z :z, x :x} marker-invs]
+    (dosync
+     (case invariant-type
+       :loc (alter loc conj marker-name)
+       :z (alter z conj marker-name)
+       :x (alter x conj marker-name))) ))
 
-    :free (ref {:tdof {:# 3} :rdof {:# 3}
-            :p {:e [0.0 0.0 0.0] :z [0.0 0.0 1.0] :a [0.0 1.0]}}) ))
+
+(defn marker->invariant?
+  "Abstract the testing of invariance so programs
+  do not have to reference a global variable."
+  [ikb marker invariant-type]
+  (let [marker-invs (get-in ikb [:mark invariant-type]),
+        [marker-name _] marker]
+    (contains? @marker-invs marker-name)))
 
 
 (defn make->invariant
@@ -37,27 +43,21 @@
   :v1d  : list of (vector locus) pairs, where the
           orientation of the vector is restricted to a 1d-locus"
   [& {:as opts}]
-  (merge {:p [], :e1d [], :e2d [], :v [], :v1d []} opts))
-
-(defn marker->add-invariant!
-  "Abstract away the addition of the invariant so
-  programs do not have to reference a global variable.
-  This is a set of lists: position, z-axis, and x-axis vectors."
-  [marker-invs marker-name invariant-type]
-  (let [{:keys [p z x]} marker-invs]
-    (dosync
-     (case invariant-type
-       :p (alter p conj marker-name)
-       :z (alter z conj marker-name)
-       :x (alter x conj marker-name))) ))
+  (merge {:p [], :p1d [], :p2d [], :v [], :v1d []} opts))
 
 
-(defn marker->invariant?
-  "Abstract the testing of invariance so programs
-  do not have to reference a global variable."
-  [ikb marker invariant-type]
-  (let [{m :m, g :g} ikb,
-        marker-invs (invariant-type m),
-        [marker-name _] marker]
-    (contains? @marker-invs marker-name)))
+(defn init-link-invariant
+  "An invariant for a single link.
+  :q - the placement of the link in global coordinates.
+  :tdof - a tdof descrittion
+     :# - the number of dof remaining
+  :rdof - a tdof description
+     :# - the number of dof remaining."
+  [type]
+  (case type
+    :fixed (ref {:tdof {:# 0} :rdof {:# 0}
+            :q {:e [0.0 0.0 0.0] :i [0.0 0.0 1.0] :a [0.0 1.0]}})
+
+    :free (ref {:tdof {:# 3} :rdof {:# 3}
+            :q {:e [0.0 0.0 0.0] :i [0.0 0.0 1.0] :a [0.0 1.0]}}) ))
 

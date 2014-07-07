@@ -6,11 +6,9 @@
 (defn- constraint-attempt-dispatch
   "The function which specifies which implementation to use."
   [ikb constraint]
-  (let [[ctype m1 m2] constraint
-        [[m1-link-name _] _] m1
-        [[m2-link-name _] _] m2
-        m1-link @(m1-link-name (:l ikb))
-        m2-link @(m2-link-name (:l ikb))]
+  (let [[ctype [[m1-link-name _] _] [[m2-link-name _] _] m2] constraint
+        m1-link @(get-in ikb [:link m1-link-name])
+        m2-link @(get-in ikb [:link m2-link-name])]
     [ctype
      :m1 [:tdof (:# (:tdof m1-link))
           :rdof (:# (:rdof m1-link))]

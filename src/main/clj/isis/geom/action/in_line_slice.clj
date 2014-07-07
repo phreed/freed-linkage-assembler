@@ -10,8 +10,8 @@
   checks the preconditions and returns the marker which
   is underconstrained."
   [m1 m2 inv]
-  (cond (marker->invariant? inv m1 :p)  m2
-        (and (marker->invariant? inv m2 :p)
+  (cond (marker->invariant? inv m1 :loc)  m2
+        (and (marker->invariant? inv m2 :loc)
              (marker->invariant? inv m2 :z))
         m1))
 

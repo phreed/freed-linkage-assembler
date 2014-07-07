@@ -1,15 +1,14 @@
 (ns isis.geom.machine.geobj
   (:require [isis.geom.machine
-             [tolerance :as tolerance]]
-            [clojure.math.numeric-tower :as math] ) )
+             [tolerance :as tolerance]]) )
 
 (defn mag
   "If quantity is a vector, returns the magnitude of quantity.
   If quantity is a scalar, returns the absolute value of quantity."
   [quantity]
-  (cond (number? quantity) (math/abs quantity)
+  (cond (number? quantity) (Math/abs quantity)
         (empty? quantity) 0.0
-        (vector? quantity) (math/sqrt (reduce #(+ %1 (* %2 %2)) 0.0 quantity))
+        (vector? quantity) (Math/sqrt (reduce #(+ %1 (* %2 %2)) 0.0 quantity))
         :else 0.0))
 
 (defn unit-ize
@@ -167,9 +166,8 @@
   [marker ikb]
   (let [[[link-name _] mp] marker
         me (get mp :e [0.0 0.0 0.0])
-        lkb (:l ikb)
-        link @(link-name lkb)
-        lp (get-in link [:p :e] [0.0 0.0 0.0])]
+        link @(get-in ikb [:link link-name])
+        lp (get-in link [:q :e] [0.0 0.0 0.0])]
     (into [] (map + lp me))))
 
 (defn gmx
@@ -406,6 +404,19 @@
     (cond aligned? [sine cosine]
           :else [(- sine) cosine] )))
 
+(defn half-angle
+  "The angle specified in [sine cosine] form is in halved. "
+  [[sine cosine]]
+  [(Math/sin (* 0.5 (Math/asin sine))) (Math/cos (* 0.5 (Math/acos cosine)))])
+
+(defn double-angle
+  "The angle specified in [sine cosine] form is doubled. "
+  [[sine cosine]]
+  (let [new-sine (Math/sin (* 2.0 (Math/asin sine)))
+        new-cosine (Math/cos (* 2.0 (Math/acos cosine)))]
+    [new-sine new-cosine]))
+;    (if (equal? 0.0 new-cosine)))
+
 (defn vec-diff
   "Vector difference of vector-1 and vector-2.
   Produces a vector from vector-subtrahend to vector-minuend."
@@ -429,11 +440,47 @@
   (println "x-mul unimplemented")
   )
 
+(defn- quat-exp
+  "Produce a quaternion from an axis and and angle.
+  The axis need not be unit and the angle is [sine cosine] form.
+  "
+  [axis angle]
+  (let [uaxis (unit-ize axis)
+        [sine cosine] angle]
+    (into [] (cons cosine (map #(* % sine) uaxis) ))))
+
+(defn- quat-prod
+  "Multiply two quaternion."
+  [q1 q2]
+  (let [[a1 b1 c1 d1] q1
+        [a2 b2 c2 d2] q2]
+    [(+ (+ (* a1 a2)) (- (* b1 b2)) (- (* c1 c2)) (- (* d1 d2)))
+     (+ (+ (* a1 b2)) (+ (* b1 a2)) (+ (* c1 d2)) (- (* d1 c2)))
+     (+ (+ (* a1 c2)) (- (* b1 d2)) (+ (* c1 a2)) (+ (* d1 b2)))
+     (+ (+ (* a1 d2)) (+ (* b1 c2)) (- (* c1 b2)) (+ (* d1 a2)))]))
+
+(defn- quat-log
+  "Convert quaternion into axis angle representation."
+  [q]
+  (let [[q0 q1 q2 q3] q
+        qi [q1 q2 q3]
+        i (unit-ize qi) ]
+    {:i i
+     :a (double-angle [q0 (/ (mag qi) (mag i))]) } ))
+
 (defn rotate
-  "rotate a link about the point and axis by an angle."
+  "rotate a link about the point and axis by an angle.
+  Performed by composition of rotations.
+  e(-i*theta/2) = e(-i2*theta2/2) * (-i1*thata1/2)
+  Where
+  e(i*theta/2) = cos(theta/2) + i*sin(theta/2)
+  "
   [link point axis angle]
-  (let [rotation (conj [angle] 6.28)]
-    (merge link {:p (merge (:p link) {:e point :z axis :x rotation})})))
+  (let [quat (:q link)
+        q1 (quat-exp (:i quat) (half-angle (:a quat)))
+        q2 (quat-exp axis (half-angle angle))
+        r (quat-log (quat-prod q1 q2)) ]
+    (merge link {:q (merge (:q link) {:e point} r)})))
 
 
 (defn translate
@@ -441,4 +488,4 @@
   This receives a full placement and returns a full placement.
   The vector points in the direction of the translation."
   [link vect]
-  (merge link {:p (merge-with vec-sum (:p link) {:e vect})}))
+  (merge link {:q (merge-with vec-sum (:q link) {:e vect})}))

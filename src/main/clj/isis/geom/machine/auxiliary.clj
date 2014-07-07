@@ -10,7 +10,7 @@
                       null? rotate perp-dist
                       line intersect plane sphere]]]))
 
-(defn dof-2rp->p
+(defn dof-2r:p->p
   "Procedure to rotate body ?link, about axes ?axis-1 and ?axis-2,
   leaving the position of point ?center invariant, and
   moving ?from-point on ?link to globally fixed ?to-point.
@@ -33,7 +33,7 @@
             r12 (vec-angle r10 r11 (outer-prod r10 r11)) ]
         (rotate ?link ?center ?axis-1 r12)))) )
 
-(defn dof-1rp->p
+(defn dof-1r:p->p
   "Procedure to rotate body ?link about ?axis.
   If restrictions are imposed by ?axis-1 and ?axis-2, they are honored.
   The procedure keeps the position of point ?center invariant,
@@ -51,17 +51,17 @@
           (let [r5 (vec-angle r2 r1 ?axis)]
             (if (and (nil? ?axis-1) (nil? ?axis-2))
               (rotate ?link ?center ?axis r5)
-              (dof-2rp->p ?link ?center ?from-point ?to-point ?axis-1 ?axis-2 1))))))))
+              (dof-2r:p->p ?link ?center ?from-point ?to-point ?axis-1 ?axis-2 1))))))))
 
-(defn dof-3rp->p
+(defn dof-3r:p->p
   "Procedure to rotate body ?link about ?center,
   moving ?from-point on ?link to globally-fixed ?to-point.
-  Done by constructing a rotational axis and calling dof-1rp->p."
+  Done by constructing a rotational axis and calling dof-1r:p->p."
   [?link ?center ?from-point ?to-point]
   (let [r0 (vec-diff ?from-point ?center)
         r1 (vec-diff ?to-point ?center)]
     (cond (tolerance/equivalent? :default r0 r1) {:e [0.0 0.0 0.0]}
           (not (tolerance/in-range? :default (mag r0) (mag r1))) (error [:r0 r0 :r1 r1] emsg/emsg-4)
-          :else (dof-1rp->p ?link ?center ?from-point ?to-point
+          :else (dof-1r:p->p ?link ?center ?from-point ?to-point
                    (outer-prod r0 r1) nil nil))))
 

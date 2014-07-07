@@ -98,7 +98,7 @@
   [graph]
   (dosync
    (let [mis (init-marker-invariant-s)
-         mis-p (:p mis), mis-z (:z mis), mis-x (:x mis)
+         mis-l (:loc mis), mis-z (:z mis), mis-x (:x mis)
          base-link-name (:base graph)
          links (:links graph)
          free-links (remove #{base-link-name} (keys links))
@@ -106,11 +106,11 @@
          markers (:markers base-link)]
      (doseq [ marker-name (keys markers) ]
        (let [marker-key [base-link-name marker-name]]
-         (alter mis-p conj marker-key)
+         (alter mis-l conj marker-key)
          (alter mis-z conj marker-key)
          (alter mis-x conj marker-key) ))
-     {:m mis
-      :l (into
+     {:mark mis
+      :link (into
           {}
           (map #(hash-map % (if (= % base-link-name)
                               (init-link-invariant :fixed)
