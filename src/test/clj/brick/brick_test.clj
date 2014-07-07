@@ -123,11 +123,11 @@
        :z (ref #{[ground g1] [ground g3] [ground g2]}),
        :x (ref #{[ground g1] [ground g3] [ground g2]})},
    :l {brick (ref {:tdof {:# 3}, :rdof {:# 3},
-                   :p {:e [0.0 0.0 0.0] :z [0.0 0.0 1.0] :x [1.0 0.0 0.0]}})
+                   :p {:e [0.0 0.0 0.0] :z [0.0 0.0 1.0] :a [0.0 1.0]}})
        ground (ref {:tdof {:# 0}, :rdof {:# 0},
-                    :p {:e [0.0 0.0 0.0] :z [0.0 0.0 1.0] :x [1.0 0.0 0.0]}})
+                    :p {:e [0.0 0.0 0.0] :z [0.0 0.0 1.0] :a [0.0 1.0]}})
        cap (ref {:tdof {:# 3}, :rdof {:# 3},
-                 :p {:e [0.0 0.0 0.0], :z [0.0 0.0 1.0], :x [1.0 0.0 0.0]}})}}
+                 :p {:e [0.0 0.0 0.0], :z [0.0 0.0 1.0], :a [0.0 1.0]}})}}
  (ref->str (graph->init-invariants @brick-graph)))
 
 (expect
@@ -165,11 +165,11 @@
        :z (ref #{[ground g1] [ground g3] [ground g2]})
        :x (ref #{[ground g1] [ground g3] [ground g2]})}
    :l {ground (ref {:tdof {:# 0} :rdof {:# 0}
-                    :p {:e [0.0 0.0 0.0] :z [0.0 0.0 1.0] :x [1.0 0.0 0.0]}})
+                    :p {:e [0.0 0.0 0.0] :z [0.0 0.0 1.0] :a [0.0 1.0]}})
        brick (ref {:tdof {:# 0 :p [0.0 0.0 0.0]}, :rdof {:# 3}
-                   :p {:e [100.0 -50.0 -10.0] :z [0.0 0.0 1.0] :x [1.0 0.0 0.0]}})
+                   :p {:e [100.0 -50.0 -10.0] :z [0.0 0.0 1.0] :a [0.0 1.0]}})
        cap (ref {:tdof {:# 3} :rdof {:# 3}
-                 :p {:e [0.0 0.0 0.0], :z [0.0 0.0 1.0], :x [1.0 0.0 0.0]}})}}
+                 :p {:e [0.0 0.0 0.0], :z [0.0 0.0 1.0], :a [0.0 1.0]}})}}
  (let [ikb (graph->init-invariants @brick-graph)]
    (constraint-attempt? ikb
     '{:type :coincident
@@ -182,11 +182,11 @@
        :z (ref #{[ground g1] [ground g3] [ground g2]})
        :x (ref #{[ground g1] [ground g3] [ground g2]})}
    :l {ground (ref {:tdof {:# 0}, :rdof {:# 0}
-                    :p {:e [0.0 0.0 0.0], :z [0.0 0.0 1.0], :x [1.0 0.0 0.0]}})
+                    :p {:e [0.0 0.0 0.0], :z [0.0 0.0 1.0], :a [0.0 1.0]}})
        brick (ref {:tdof {:# 0, :p [5.0 4.0 0.0]}, :rdof {:# 3}
-                   :p {:e [5.0 4.0 -4.0], :z [0.0 0.0 1.0], :x [1.0 0.0 0.0]}})
+                   :p {:e [5.0 4.0 -4.0], :z [0.0 0.0 1.0], :a [0.0 1.0]}})
        cap (ref {:tdof {:# 3}, :rdof {:# 3},
-                 :p {:e [0.0 0.0 0.0], :z [0.0 0.0 1.0], :x [1.0 0.0 0.0]}})}}
+                 :p {:e [0.0 0.0 0.0], :z [0.0 0.0 1.0], :a [0.0 1.0]}})}}
  (let [ikb (graph->init-invariants @brick-graph)]
    (constraint-attempt? ikb
     '{:type :coincident
@@ -200,11 +200,11 @@
        :z (ref #{[ground g1] [ground g3] [ground g2]})
        :x (ref #{[ground g1] [ground g3] [ground g2]})}
    :l {ground (ref {:tdof {:# 0}, :rdof {:# 0}
-                    :p {:e [0.0 0.0 0.0], :z [0.0 0.0 1.0], :x [1.0 0.0 0.0]}})
+                    :p {:e [0.0 0.0 0.0], :z [0.0 0.0 1.0], :a [0.0 1.0]}})
        brick (ref {:tdof {:# 0, :p [5.0 0.0 0.0]}, :rdof {:# 3}
-                   :p {:e [5.0 0.0 0.0], :z [0.0 0.0 1.0], :x [1.0 0.0 0.0]}})
+                   :p {:e [5.0 0.0 0.0], :z [0.0 0.0 1.0], :a [0.0 1.0]}})
        cap (ref {:tdof {:# 3}, :rdof {:# 3},
-                 :p {:e [0.0 0.0 0.0], :z [0.0 0.0 1.0], :x [1.0 0.0 0.0]}})}}
+                 :p {:e [0.0 0.0 0.0], :z [0.0 0.0 1.0], :a [0.0 1.0]}})}}
  (let [ikb (graph->init-invariants @brick-graph)
        constraints (joints->constraints @brick-graph)]
    ;; repeat from previous test
@@ -255,11 +255,11 @@
        :z (ref #{[ground g1] [ground g3] [ground g2] [brick b1] [brick b2] [brick b3] [cap c1] [cap c2] [cap c3]})
        :x (ref #{[ground g1] [ground g3] [ground g2] [brick b1] [brick b2] [brick b3] [cap c1] [cap c2] [cap c3]})}
    :l {ground (ref {:tdof {:# 0}, :rdof {:# 0}
-                    :p {:e [0.0 0.0 0.0], :z [0.0 0.0 1.0], :x [1.0 0.0 0.0]}})
+                    :p {:e [0.0 0.0 0.0], :z [0.0 0.0 1.0], :a [0.0 1.0]}})
        brick (ref {:tdof {:# 0, :p [0.0 0.0 0.0]}, :rdof {:# 0}
-                   :p {:e [-5.0 0.0 -4.0], :z [0.0 0.0 1.0], :x [1.0 0.0 0.0]}})
+                   :p {:e [-5.0 0.0 -4.0], :z [0.0 0.0 1.0], :a [0.0 1.0]}})
        cap (ref {:tdof {:# 0}, :rdof {:# 0},
-                 :p {:e [0.0 0.0 0.0], :z [0.0 0.0 1.0], :x [1.0 0.0 0.0]}})}}
+                 :p {:e [0.0 0.0 0.0], :z [0.0 0.0 1.0], :a [0.0 1.0]}})}}
  '(let [graph @brick-graph]
     (action-analysis
      (joints->constraints graph)

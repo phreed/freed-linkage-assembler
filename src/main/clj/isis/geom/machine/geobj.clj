@@ -118,12 +118,6 @@
   (println "copy unimplemented")
   )
 
-(defn cos
-  "If quantity-or-pair is a pair, returns the cosine element of the pair.
-  If quantity-or-pair is a scalar (an angle measured in radians), returns the cosine."
-   [quantity-or-pair]
-  (cond (vector? quantity-or-pair) (nth quantity-or-pair 1)
-        :else (Math/cos quantity-or-pair)))
 
 (defn cylinder
   "Return a cylinder object with axial line, whose circular
@@ -362,12 +356,6 @@
   (println "screw unimplemented")
   )
 
-(defn sin
-  "If quantity-or-pair is a pair, returns the sine element of the pair.
-  If quantity-or-pair is a scalar, returns the sine of the quantity."
-  [quantity-or-pair]
-  (println "sin unimplemented")
-  )
 
 (defn sphere
   "Returns a sphere object centered at point with specified radius."
@@ -383,6 +371,20 @@
   (println "transform unimplemented")
   )
 
+(defn sin
+  "If quantity-or-pair is a pair, returns the sine element of the pair.
+  If quantity-or-pair is a scalar, returns the sine of the quantity."
+  [quantity-or-pair]
+  [quantity-or-pair]
+  (cond (vector? quantity-or-pair) (nth quantity-or-pair 0)
+        :else (Math/sin quantity-or-pair)))
+
+(defn cos
+  "If quantity-or-pair is a pair, returns the cosine element of the pair.
+  If quantity-or-pair is a scalar (an angle measured in radians), returns the cosine."
+  [quantity-or-pair]
+  (cond (vector? quantity-or-pair) (nth quantity-or-pair 1)
+        :else (Math/cos quantity-or-pair)))
 
 (defn vec-angle
   "The angle between vector-1 and vector-2,
