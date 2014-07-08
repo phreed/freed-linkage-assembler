@@ -59,7 +59,7 @@
 
 (def joint-primitive-map
   "joints are conveniently specified at a higher level
-  than primitive constraints.  In order to perform action-analysis
+  than primitive constraints.  In order to perform position-analysis
   these lower (and higher) joints must be decomposed into their
   constituent constraints.  This map provides that relationship."
   {:revolute [:coincident :parallel-z]

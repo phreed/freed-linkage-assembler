@@ -1,6 +1,6 @@
 (ns isis.geom.action.coincident-slice
   "The table of rules."
-  (:require [isis.geom.action-dispatch :as master]
+  (:require [isis.geom.position-dispatch :as master]
             [isis.geom.model.invariant
              :refer [marker->invariant?
                      marker->add-invariant!]]
@@ -76,8 +76,8 @@ Explanation:
   [ikb m1 m2]
   (let [ [[m2-link-name m2-proper-name] _] m2
         m2-link (get-in ikb [:link m2-link-name])
-        m2-point (get-in @m2-link [:q :e])
-        m2-axis (get-in @m2-link [:q :i])
+        m2-point (get-in @m2-link [:versor :e])
+        m2-axis (get-in @m2-link [:versor :i])
         m2-axis-1 {} m2-axis-2 {}
         gmp1 (gmp m1 ikb)
         gmp2 (gmp m2 ikb)]
@@ -121,7 +121,7 @@ Explanation:
   [ikb m1 m2]
   (let [ [[m2-link-name m2-proper-name] _] m2
         m2-link (get-in ikb [:link m2-link-name])
-        m2-point (get-in @m2-link [:q :e])
+        m2-point (get-in @m2-link [:versor :e])
         gmp1 (gmp m1 ikb)
         gmp2 (gmp m2 ikb)]
     (dosync

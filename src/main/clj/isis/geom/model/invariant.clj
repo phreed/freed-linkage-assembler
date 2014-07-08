@@ -48,7 +48,7 @@
 
 (defn init-link-invariant
   "An invariant for a single link.
-  :q - the placement of the link in global coordinates.
+  :versor - the placement of the link in global coordinates.
   :tdof - a tdof descrittion
      :# - the number of dof remaining
   :rdof - a tdof description
@@ -56,8 +56,8 @@
   [type]
   (case type
     :fixed (ref {:tdof {:# 0} :rdof {:# 0}
-            :q {:e [0.0 0.0 0.0] :i [0.0 0.0 1.0] :a [0.0 1.0]}})
+            :versor {:e [0.0 0.0 0.0] :i [0.0 0.0 1.0] :a [0.0 1.0]}})
 
     :free (ref {:tdof {:# 3} :rdof {:# 3}
-            :q {:e [0.0 0.0 0.0] :i [0.0 0.0 1.0] :a [0.0 1.0]}}) ))
+            :versor {:e [0.0 0.0 0.0] :i [0.0 0.0 1.0] :a [0.0 1.0]}}) ))
 

@@ -15,7 +15,7 @@
                                 init-link-invariant
                                 marker->add-invariant!
                                 make->invariant]]]
-            [isis.geom.action-dispatch
+            [isis.geom.position-dispatch
              :refer [constraint-attempt?]]
             [isis.geom.action
              [coincident-slice]
@@ -78,7 +78,7 @@
         #{[cap j3] [brick jc3]}} }))
 
 (def brick-graph-goal
-  "This shows the ultimate goal for the action-analysis.
+  "This shows the ultimate goal for the position-analysis.
   Notice that the ground has no properties, this idicates the
   use of the default values, it also indicates the 'base' object.
   In this example there is no rotation so the {:z3 :z1 :z2} values
@@ -88,7 +88,7 @@
      brick {:e [8.0 -5.0 -1.0] :z []}}})
 
 
-(declare graph->action-analysis)
+(declare graph->position-analysis)
 
 (defn make-graph-watcher
   "This function is suitable to use as a watch function.
@@ -123,11 +123,11 @@
        :z (ref #{[ground g1] [ground g3] [ground g2]}),
        :x (ref #{[ground g1] [ground g3] [ground g2]})},
    :link {brick (ref {:tdof {:# 3}, :rdof {:# 3},
-                   :q {:e [0.0 0.0 0.0] :i [0.0 0.0 1.0] :a [0.0 1.0]}})
+                   :versor {:e [0.0 0.0 0.0] :i [0.0 0.0 1.0] :a [0.0 1.0]}})
        ground (ref {:tdof {:# 0}, :rdof {:# 0},
-                    :q {:e [0.0 0.0 0.0] :i [0.0 0.0 1.0] :a [0.0 1.0]}})
+                    :versor {:e [0.0 0.0 0.0] :i [0.0 0.0 1.0] :a [0.0 1.0]}})
        cap (ref {:tdof {:# 3}, :rdof {:# 3},
-                 :q {:e [0.0 0.0 0.0], :i [0.0 0.0 1.0], :a [0.0 1.0]}})}}
+                 :versor {:e [0.0 0.0 0.0], :i [0.0 0.0 1.0], :a [0.0 1.0]}})}}
  (ref->str (graph->init-invariants @brick-graph)))
 
 (expect
@@ -165,11 +165,11 @@
        :z (ref #{[ground g1] [ground g3] [ground g2]})
        :x (ref #{[ground g1] [ground g3] [ground g2]})}
    :link {ground (ref {:tdof {:# 0} :rdof {:# 0}
-                    :q {:e [0.0 0.0 0.0] :i [0.0 0.0 1.0] :a [0.0 1.0]}})
+                    :versor {:e [0.0 0.0 0.0] :i [0.0 0.0 1.0] :a [0.0 1.0]}})
        brick (ref {:tdof {:# 0 :p [0.0 0.0 0.0]}, :rdof {:# 3}
-                   :q {:e [100.0 -50.0 -10.0] :i [0.0 0.0 1.0] :a [0.0 1.0]}})
+                   :versor {:e [100.0 -50.0 -10.0] :i [0.0 0.0 1.0] :a [0.0 1.0]}})
        cap (ref {:tdof {:# 3} :rdof {:# 3}
-                 :q {:e [0.0 0.0 0.0], :i [0.0 0.0 1.0], :a [0.0 1.0]}})}}
+                 :versor {:e [0.0 0.0 0.0], :i [0.0 0.0 1.0], :a [0.0 1.0]}})}}
  (let [ikb (graph->init-invariants @brick-graph)]
    (constraint-attempt? ikb
     '{:type :coincident
@@ -182,11 +182,11 @@
        :z (ref #{[ground g1] [ground g3] [ground g2]})
        :x (ref #{[ground g1] [ground g3] [ground g2]})}
    :link {ground (ref {:tdof {:# 0}, :rdof {:# 0}
-                    :q {:e [0.0 0.0 0.0], :i [0.0 0.0 1.0], :a [0.0 1.0]}})
+                    :versor {:e [0.0 0.0 0.0], :i [0.0 0.0 1.0], :a [0.0 1.0]}})
        brick (ref {:tdof {:# 0, :p [5.0 4.0 0.0]}, :rdof {:# 3}
-                   :q {:e [5.0 4.0 -4.0], :i [0.0 0.0 1.0], :a [0.0 1.0]}})
+                   :versor {:e [5.0 4.0 -4.0], :i [0.0 0.0 1.0], :a [0.0 1.0]}})
        cap (ref {:tdof {:# 3}, :rdof {:# 3},
-                 :q {:e [0.0 0.0 0.0], :i [0.0 0.0 1.0], :a [0.0 1.0]}})}}
+                 :versor {:e [0.0 0.0 0.0], :i [0.0 0.0 1.0], :a [0.0 1.0]}})}}
  (let [ikb (graph->init-invariants @brick-graph)]
    (constraint-attempt? ikb
     '{:type :coincident
@@ -204,12 +204,12 @@
             :z (ref #{[ground g1] [ground g3] [ground g2]})
             :x (ref #{[ground g1] [ground g3] [ground g2]})}
      :link {ground (ref {:tdof {:# 0}, :rdof {:# 0}
-                         :q {:e [0.0 0.0 0.0], :i [0.0 0.0 1.0], :a [0.0 1.0]}})
+                         :versor {:e [0.0 0.0 0.0], :i [0.0 0.0 1.0], :a [0.0 1.0]}})
             brick (ref {:tdof {:# 0, :p [5.0 0.0 0.0]}
                         :rdof {:# 3}
-                        :q {:e [5.0 0.0 0.0], :i [0.0 0.0 1.0], :a [0.0 1.0]}})
+                        :versor {:e [5.0 0.0 0.0], :i [0.0 0.0 1.0], :a [0.0 1.0]}})
             cap (ref {:tdof {:# 3}, :rdof {:# 3},
-                      :q {:e [0.0 0.0 0.0], :i [0.0 0.0 1.0], :a [0.0 1.0]}})}}
+                      :versor {:e [0.0 0.0 0.0], :i [0.0 0.0 1.0], :a [0.0 1.0]}})}}
    (do (constraint-attempt? ikb
                             '{:type :coincident
                               :m1 [[ground g1] {:e [5.0 0.0 0.0]}]
@@ -221,12 +221,12 @@
             :z (ref #{[ground g1] [ground g3] [ground g2]})
             :x (ref #{[ground g1] [ground g3] [ground g2]})}
      :link {ground (ref {:tdof {:# 0}, :rdof {:# 0}
-                         :q {:e [0.0 0.0 0.0], :i [0.0 0.0 1.0], :a [0.0 1.0]}})
+                         :versor {:e [0.0 0.0 0.0], :i [0.0 0.0 1.0], :a [0.0 1.0]}})
             brick (ref {:tdof {:# 0, :p [5.0 0.0 0.0]}
                         :rdof {:# 1 :z [0.0 3.0 0.0] :a [1.0 0.0]}
-                        :q {:e [5.0 0.0 0.0], :i [0.0 0.0 -1.0], :a [1.0 0.0]}})
+                        :versor {:e [5.0 0.0 0.0], :i [0.0 0.0 -1.0], :a [1.0 0.0]}})
             cap (ref {:tdof {:# 3}, :rdof {:# 3},
-                      :q {:e [0.0 0.0 0.0], :i [0.0 0.0 1.0], :a [0.0 1.0]}})}}
+                      :versor {:e [0.0 0.0 0.0], :i [0.0 0.0 1.0], :a [0.0 1.0]}})}}
    (do (constraint-attempt? ikb
                             '{:type :coincident
                               :m1 [[ground g2] {:e [8.0 0.0 0.0]}]
@@ -238,20 +238,20 @@
             :z (ref #{[ground g1] [ground g3] [ground g2] [brick b1] [brick b2] [brick b3]})
             :x (ref #{[ground g1] [ground g3] [ground g2] [brick b1] [brick b2] [brick b3]})}
      :link {ground (ref {:tdof {:# 0}, :rdof {:# 0}
-                         :q {:e [0.0 0.0 0.0], :i [0.0 0.0 1.0], :a [0.0 1.0]}})
+                         :versor {:e [0.0 0.0 0.0], :i [0.0 0.0 1.0], :a [0.0 1.0]}})
             brick (ref {:tdof {:# 0, :p [5.0 0.0 0.0]}
                         :rdof {:# 1 :i [0.0 0.0 0.0] :a [0.0 1.0]}
-                        :q {:e [5.0 0.0 0.0], :i [0.0 0.0 1.0], :a [0.0 1.0]}})
+                        :versor {:e [5.0 0.0 0.0], :i [0.0 0.0 1.0], :a [0.0 1.0]}})
             cap (ref {:tdof {:# 3}, :rdof {:# 3},
-                      :q {:e [0.0 0.0 0.0], :i [0.0 0.0 1.0], :a [0.0 1.0]}})}}
+                      :versor {:e [0.0 0.0 0.0], :i [0.0 0.0 1.0], :a [0.0 1.0]}})}}
    (do (constraint-attempt? ikb
                             '{:type :coincident
                               :m1 [[ground g3] {:e [5.0 4.0 0.0]}]
                               :m2 [[brick b3] {:e [0.0 0.0 4.0]}]} )
      (ref->str ikb))))
 
-(defn action-analysis
-  "Algorithm for using the plan fragment table to perform action alalysis.
+(defn position-analysis
+  "Algorithm for using the plan fragment table to perform position alalysis.
   We update a link map and a marker map with invariants.
   The link map of invariants indicates just how well placed the link is.
   The marker map does a similar thing.
@@ -286,13 +286,13 @@
        :z (ref #{[ground g1] [ground g3] [ground g2] [brick b1] [brick b2] [brick b3] [cap c1] [cap c2] [cap c3]})
        :x (ref #{[ground g1] [ground g3] [ground g2] [brick b1] [brick b2] [brick b3] [cap c1] [cap c2] [cap c3]})}
    :link {ground (ref {:tdof {:# 0}, :rdof {:# 0}
-                    :q {:e [0.0 0.0 0.0], :i [0.0 0.0 1.0], :a [0.0 1.0]}})
+                    :versor {:e [0.0 0.0 0.0], :i [0.0 0.0 1.0], :a [0.0 1.0]}})
        brick (ref {:tdof {:# 0, :p [0.0 0.0 0.0]}, :rdof {:# 0}
-                   :q {:e [-5.0 0.0 -4.0], :i [0.0 0.0 1.0], :a [0.0 1.0]}})
+                   :versor {:e [-5.0 0.0 -4.0], :i [0.0 0.0 1.0], :a [0.0 1.0]}})
        cap (ref {:tdof {:# 0}, :rdof {:# 0},
-                 :q {:e [0.0 0.0 0.0], :i [0.0 0.0 1.0], :a [0.0 1.0]}})}}
+                 :versor {:e [0.0 0.0 0.0], :i [0.0 0.0 1.0], :a [0.0 1.0]}})}}
  '(let [graph @brick-graph]
-    (action-analysis
+    (position-analysis
      (joints->constraints graph)
      (graph->init-invariants graph))))
 

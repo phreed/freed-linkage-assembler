@@ -1,6 +1,6 @@
 (ns isis.geom.action.in-line-slice
   "The table of rules."
-  (:require [isis.geom.action-dispatch :as master]
+  (:require [isis.geom.position-dispatch :as master]
             [isis.geom.model.invariant :refer [marker->invariant?
                                                marker->add-invariant!]] ))
 

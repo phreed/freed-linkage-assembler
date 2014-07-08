@@ -1,4 +1,4 @@
-(ns isis.geom.new-action-dispatch
+(ns isis.geom.new-position-dispatch
   "Is it possible to have a single dispatch functions for performing actions?"
   )
 

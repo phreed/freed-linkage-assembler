@@ -167,7 +167,7 @@
   (let [[[link-name _] mp] marker
         me (get mp :e [0.0 0.0 0.0])
         link @(get-in ikb [:link link-name])
-        lp (get-in link [:q :e] [0.0 0.0 0.0])]
+        lp (get-in link [:versor :e] [0.0 0.0 0.0])]
     (into [] (map + lp me))))
 
 (defn gmx
@@ -412,10 +412,11 @@
 (defn double-angle
   "The angle specified in [sine cosine] form is doubled. "
   [[sine cosine]]
-  (let [new-sine (Math/sin (* 2.0 (Math/asin sine)))
-        new-cosine (Math/cos (* 2.0 (Math/acos cosine)))]
+  (let [new-sine (cond (= 0.0 sine) 0.0
+                       :else (Math/sin (* 2.0 (Math/asin sine))))
+        new-cosine (cond (= 1.0) 1.0
+                         :else (Math/cos (* 2.0 (Math/acos cosine))))]
     [new-sine new-cosine]))
-;    (if (equal? 0.0 new-cosine)))
 
 (defn vec-diff
   "Vector difference of vector-1 and vector-2.
@@ -476,11 +477,11 @@
   e(i*theta/2) = cos(theta/2) + i*sin(theta/2)
   "
   [link point axis angle]
-  (let [quat (:q link)
+  (let [quat (:versor link)
         q1 (quat-exp (:i quat) (half-angle (:a quat)))
         q2 (quat-exp axis (half-angle angle))
         r (quat-log (quat-prod q1 q2)) ]
-    (merge link {:q (merge (:q link) {:e point} r)})))
+    (merge link {:versor (merge (:versor link) {:e point} r)})))
 
 
 (defn translate
@@ -488,4 +489,4 @@
   This receives a full placement and returns a full placement.
   The vector points in the direction of the translation."
   [link vect]
-  (merge link {:q (merge-with vec-sum (:q link) {:e vect})}))
+  (merge link {:versor (merge-with vec-sum (:versor link) {:e vect})}))

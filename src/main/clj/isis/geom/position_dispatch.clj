@@ -1,4 +1,4 @@
-(ns isis.geom.action-dispatch
+(ns isis.geom.position-dispatch
   "The dispatch functions for performing actions."
   )
 
