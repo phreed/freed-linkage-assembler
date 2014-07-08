@@ -412,11 +412,12 @@
 (defn double-angle
   "The angle specified in [sine cosine] form is doubled. "
   [[sine cosine]]
-  (let [new-sine (cond (= 0.0 sine) 0.0
-                       :else (Math/sin (* 2.0 (Math/asin sine))))
-        new-cosine (cond (= 1.0) 1.0
-                         :else (Math/cos (* 2.0 (Math/acos cosine))))]
-    [new-sine new-cosine]))
+  (println "sine: " sine "  cosine: " cosine)
+  (let [double-sine (Math/sin (* 2.0 (Math/asin sine)))
+        double-cosine (Math/cos (* 2.0 (Math/acos cosine)))
+        double-cosine (cond (< -0.0001 double-cosine 0.0001) 0.0
+                            :else double-cosine)]
+    [double-sine double-cosine]))
 
 (defn vec-diff
   "Vector difference of vector-1 and vector-2.
