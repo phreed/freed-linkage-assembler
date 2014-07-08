@@ -1,6 +1,7 @@
 (ns isis.geom.machine.geobj
   (:require [isis.geom.machine
-             [tolerance :as tolerance]]) )
+             [tolerance :as tol]]) )
+
 
 (defn mag
   "If quantity is a vector, returns the magnitude of quantity.
@@ -154,12 +155,7 @@
   (println "error : " measure string) )
 
 
-(defn equal?
-  "Returns 'true' if quantity-1 equals quantity-2 within TOLERANCE.
-  Quantities may be scalars, points, or vectors."
-  [quantity-1 quantity-2]
-  (println "equal? unimplemented")
-  )
+
 
 (defn gmp
   "marker position (in global coordinate frame)."
@@ -290,7 +286,7 @@
   If ?direction-maters is 'false', then the axis
   may be either parallel or anti-parallel."
   [?axis-1 ?axis-2 ?direction-matters]
-  (tolerance/small-scalar? :default (mag (outer-prod (unit-ize ?axis-1) (unit-ize ?axis-2)))))
+  (tol/near-zero? :default (mag (outer-prod (unit-ize ?axis-1) (unit-ize ?axis-2)))))
 
 
 (defn pc-check
@@ -412,7 +408,6 @@
 (defn double-angle
   "The angle specified in [sine cosine] form is doubled. "
   [[sine cosine]]
-  (println "sine: " sine "  cosine: " cosine)
   (let [double-sine (Math/sin (* 2.0 (Math/asin sine)))
         double-cosine (Math/cos (* 2.0 (Math/acos cosine)))
         double-cosine (cond (< -0.0001 double-cosine 0.0001) 0.0

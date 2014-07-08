@@ -1,45 +1,62 @@
 ;; see C3.js https://github.com/weshoke/versor.js/blob/master/C4.js
 (ns isis.geom.machine.c3ga)
 
-(defn is-c3ga-working?
-  "A simple check to make sure c3ga is working."
-  []
-  (throw (UnsupportedOperationException. "is-c3ga-working"))
-  #_(let [ mv (c3ga/mv.)]
-    (.set mv 25.0)
-    (println "multi-vector =" (.toString mv)))
 
-  #_(let [ e1 (c3ga/vectorE1)
-         e2 (c3ga/vectorE2)
-         e3 (c3ga/vectorE3)
-         e1+e2 (c3ga/add e1 e2)]
-    (println "e1 + e2 = " (.toString e1+e2))) )
+(defprotocol MultiVector
+  "The multivector is an object of the
+  geometric algebra having basies."
+  (>< [mv1 mv2 & mvs] "The geometric product.")
+  (A [mv1 mv2 & mvs] "The outer product.")
+  (<< [mv1 mv2]  "The left conjunction (an inner product).")
+  (push-mink [mv] "A push Minkowski factory?")
+  (pull-mink [mv] "A pull Minkowski factory?"))
+
+(defprotocol Subspace
+  "A subspace of vectors."
+  (D [space] "produce the dual subspace.")
+  (rejection [ss1 ss2]
+             "(A^B)!B ")
+  (projection [ss1 ss2]
+             "(A<<B)!B ")
+  (meet [ss1 ss2]
+        "The intersection of the two subspaces.")
+  (join [ss1 ss2]
+        "The extension."))
+
+(defrecord Scalar [value]
+  MultiVector
+  (>< [mv1 mv2 & mvs] "unimplemented")
+  (A [mv1 mv2 & mvs] "unimplemented")
+  Subspace
+  (D [space] "unimplemented"))
+
+(defrecord Vector [value]
+  MultiVector
+  (>< [mv1 mv2 & mvs] "unimplemented")
+  (A [mv1 mv2 & mvs] "unimplemented")
+  Subspace
+  (D [space] "unimplemented"))
+
+(defrecord Bivector [value]
+  MultiVector
+  (>< [mv1 mv2 & mvs] ["unimplemented"])
+  (A [mv1 mv2 & mvs] ["unimplemented"])
+  Subspace
+  (D [space] "unimplemented"))
+
+(defrecord Trivector [value]
+  MultiVector
+  (>< [mv1 mv2 & mvs] ["unimplemented"])
+  (A [mv1 mv2 & mvs] ["unimplemented"])
+  Subspace
+  (D [space] "unimplemented"))
 
 
-(defn- dual-dispatch
-  [versor])
+(defprotocol Conformal
+  "?"
+  (weight [c] "The weight, magnitude, of the object.")
+  (dir [c] "The attitude, direction, of the object.")
+  (loc [c] "The location of the object."))
 
-(defmulti dual
-  #'dual-dispatch)
-
-(defmethod dual :vector
-  [versor]
-  (throw )
-  )
-
-(def vectorE1 1)
-(def vectorE2 2)
-(def vectorE3 3)
-
-(defn add
-  [a b]
-  (throw (UnsupportedOperationException. "c3ga/add")))
-
-(defn exp [versor])
-
-(defn trigh [fun versor]
-	(fun (exp versor) (* 0.5 (exp (- versor)))))
-
-(defn cosh [versor] (trigh + versor))
-(defn sinh [versor] (trigh - versor))
+(defprotocol Round)
 

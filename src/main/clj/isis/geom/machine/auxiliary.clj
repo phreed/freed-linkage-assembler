@@ -2,13 +2,36 @@
   "The geometric movement functions."
   (:require [isis.geom.machine
              [error-string :as emsg]
-             [tolerance :as tolerance]
+             [tolerance :as tol]
              [geobj
               :refer [vec-scale vec-diff mag
                       error outer-prod perp-base
                       vec-angle parallel? point?
                       null? rotate perp-dist
                       line intersect plane sphere]]]))
+
+(defn contextual-eval [ctx expr]
+    (eval
+        `(let [~@(mapcat (fn [[k v]] [k `'~v]) ctx)]
+             ~expr)))
+
+(defmacro local-context []
+    (let [symbols (keys &env)]
+        (zipmap (map (fn [sym] `(quote ~sym)) symbols) symbols)))
+
+(defn readr [prompt exit-code]
+    (let [input (clojure.main/repl-read prompt exit-code)]
+        (if (= input ::tl)
+            exit-code
+             input)))
+
+;;make a break point
+(defmacro break []
+  `(clojure.main/repl
+    :prompt #(print "debug=> ")
+    :read readr
+    :eval (partial contextual-eval (local-context))))
+
 
 (defn dof-2r:p->p
   "Procedure to rotate body ?link, about axes ?axis-1 and ?axis-2,
@@ -42,12 +65,12 @@
   (let [r0 (perp-base ?to-point (line ?center ?axis))
         r1 (vec-diff ?to-point r0)
         r2 (vec-diff ?from-point r0)]
-    (if-not (tolerance/in-range? :default (mag r1) (mag r2))
+    (if-not (tol/near-equal? :default (mag r1) (mag r2))
       (error [:r1 r1, :r2 r2] emsg/emsg-4)
       (let [r4 (outer-prod r1 r2)]
         (if-not (parallel? r4 ?axis false)
-          (error (vec-angle r4 ?axis
-                            (outer-prod r4 ?axis)) emsg/emsg-3)
+          (do (error (vec-angle r4 ?axis
+                            (outer-prod r4 ?axis)) emsg/emsg-3))
           (let [r5 (vec-angle r2 r1 ?axis)]
             (if (and (nil? ?axis-1) (nil? ?axis-2))
               (rotate ?link ?center ?axis r5)
@@ -60,8 +83,8 @@
   [?link ?center ?from-point ?to-point]
   (let [r0 (vec-diff ?from-point ?center)
         r1 (vec-diff ?to-point ?center)]
-    (cond (tolerance/equivalent? :default r0 r1) {:e [0.0 0.0 0.0]}
-          (not (tolerance/in-range? :default (mag r0) (mag r1))) (error [:r0 r0 :r1 r1] emsg/emsg-4)
+    (cond (tol/near-same? :default r0 r1) {:e [0.0 0.0 0.0]}
+          (not (tol/near-equal? :default (mag r0) (mag r1))) (error [:r0 r0 :r1 r1] emsg/emsg-4)
           :else (dof-1r:p->p ?link ?center ?from-point ?to-point
                    (outer-prod r0 r1) nil nil))))
 

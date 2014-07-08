@@ -3,8 +3,8 @@
   (:require [expectations :refer :all]
             [isis.geom.machine.tolerance :as tol]))
 
-(expect true (tol/equivalent? :default [1 2 3] [1 2 3]))
-(expect false (tol/equivalent? :default [1 2 3] [1 3 2]))
-(= false (tol/equivalent? :default [1 2 3] [1 2]))
+(expect true (tol/near-same? :default [1 2 3] [1 2 3]))
+(expect false (tol/near-same? :default [1 2 3] [1 3 2]))
+(= false (tol/near-same? :default [1 2 3] [1 2]))
 
-(expect false (tol/in-range? :default 1 2 3))
+(expect false (tol/near-equal? :default 1 2 3))

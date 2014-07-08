@@ -65,7 +65,7 @@ Plan fragment:
 
 New status:
   0-TDOF(?m2-link, ?m2-point)  <unchanged>
-  0-RDOF(?m2-link)
+  0-RDOF(?m2-link) <no need to forward information>
 
 Explanation:
   Geom ?link has only one rotational degree of freedom.
@@ -76,15 +76,15 @@ Explanation:
   [ikb m1 m2]
   (let [ [[m2-link-name m2-proper-name] _] m2
         m2-link (get-in ikb [:link m2-link-name])
-        m2-point (get-in @m2-link [:versor :e])
-        m2-axis (get-in @m2-link [:versor :i])
-        m2-axis-1 {} m2-axis-2 {}
-        gmp1 (gmp m1 ikb)
-        gmp2 (gmp m2 ikb)]
+        m2-point (get-in @m2-link [:tdof :point])
+        m2-axis (get-in @m2-link [:rdof :axis])
+        m2-axis-1 (get-in @m2-link [:rdof :axis-1])
+        m2-axis-2 (get-in @m2-link [:rdof :axis-2])]
     (dosync
      (alter (get-in ikb [:mark :loc]) disj [m2-link-name m2-proper-name])
      (alter m2-link merge
-            (dof-1r:p->p @m2-link m2-point gmp2 gmp1 m2-axis m2-axis-1 m2-axis-2)
+            (dof-1r:p->p @m2-link m2-point (gmp m2 ikb) (gmp m1 ikb)
+                         m2-axis m2-axis-1 m2-axis-2)
             {:rdof {:# 0}} ) )))
 
 (defmethod coincident->transform!
@@ -102,14 +102,11 @@ Initial status:
   3-RDOF(?m2-link)
 
 Plan fragment:
-  begin
-  3r/p-p(?m2-link, ?m2-point,
-    gmp(?m2), gmp(?m1));
+  3r/p-p(?m2-link, ?m2-point, gmp(?m2), gmp(?m1));
   R[0] = vec-diff(gmp(?m2), ?m2-point);
-  end;
 
 New status:
-  0-TDOF(?m2-link, ?m2-point)
+  0-TDOF(?m2-link, ?m2-point) <unchanged>
   1-RDOF(?m2-link, R[0], nil, nil)
 
 Explanation:
@@ -121,14 +118,12 @@ Explanation:
   [ikb m1 m2]
   (let [ [[m2-link-name m2-proper-name] _] m2
         m2-link (get-in ikb [:link m2-link-name])
-        m2-point (get-in @m2-link [:versor :e])
-        gmp1 (gmp m1 ikb)
-        gmp2 (gmp m2 ikb)]
+        m2-point (get-in @m2-link [:tdof :point])]
     (dosync
      (alter (get-in ikb [:mark :loc]) disj [m2-link-name m2-proper-name])
      (alter m2-link merge
-            (dof-3r:p->p @m2-link m2-point gmp2 gmp1)
-            {:rdof {:# 1, :z (vec-diff gmp2 m2-point)}} ) )))
+            (dof-3r:p->p @m2-link m2-point (gmp m2 ikb) (gmp m1 ikb))
+            {:rdof {:# 1, :axis (vec-diff (gmp m2 ikb) m2-point)}} ) )))
 
 (defmethod coincident->transform!
   {:tdof 0 :rdof 3}
@@ -145,13 +140,10 @@ Explanation:
   3-RDOF(?m2-link)
 
   Plan fragment:
-  begin
   translate(?m2-link, vec-diff(gmp(?m1), gmp(?m2));
-  R[0] = gmp(?m2);
-  end;
 
   New status:
-  0-TDOF(?m2-link, R[0])
+  0-TDOF(?m2-link, gmp(?m2))
   3-RDOF(?m2-link)  <no change>
 
   Explanation:
@@ -161,14 +153,12 @@ Explanation:
   "
   [ikb m1 m2]
   (let [[[m2-link-name m2-proper-name] _] m2
-        m2-link (get-in ikb [:link m2-link-name])
-        gmp1 (gmp m1 ikb)
-        gmp2 (gmp m2 ikb)]
+        m2-link (get-in ikb [:link m2-link-name])]
     (dosync
      (alter (get-in ikb [:mark :loc]) conj [m2-link-name m2-proper-name])
      (alter m2-link merge
-            (translate @m2-link (vec-diff gmp1 gmp2))
-            {:tdof {:# 0, :p gmp1}} ) )))
+            (translate @m2-link (vec-diff (gmp m1 ikb) (gmp m2 ikb)))
+            {:tdof {:# 0, :point (gmp m2 ikb)}} ) )))
 
 (defmethod coincident->transform!
   {:tdof 3 :rdof 3}
