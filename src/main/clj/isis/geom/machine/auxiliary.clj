@@ -66,7 +66,8 @@
         r1 (vec-diff ?to-point r0)
         r2 (vec-diff ?from-point r0)]
     (if-not (tol/near-equal? :default (mag r1) (mag r2))
-      (error [:r1 r1, :r2 r2] emsg/emsg-4)
+      (error [" to-point: " ?to-point " from-point: " ?from-point
+              " about-axis: " ?axis " about-center: " ?center] emsg/emsg-4)
       (let [r4 (outer-prod r1 r2)]
         (if-not (parallel? r4 ?axis false)
           (do (error (vec-angle r4 ?axis

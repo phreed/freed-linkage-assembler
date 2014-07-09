@@ -163,8 +163,11 @@
   (let [[[link-name _] marker-place] marker
         marker-loc (get marker-place :e [0.0 0.0 0.0])
         link @(get-in kb [:link link-name])
-        versor-translation (get-in link [:versor :e] [0.0 0.0 0.0])]
-    (into [] (map + versor-translation marker-loc))))
+        versor-axis (get-in link [:versor :i] [1.0 0.0 0.0])
+        versor-angle (get-in link [:versor :i] [1.0 0.0 0.0])
+        versor-translation (get-in link [:versor :e] [0.0 0.0 0.0])
+        rot-loc ]
+    (into [] (map + versor-translation rot-loc))))
 
 (defn gmx
   "marker x-axis vector (in global coordinate frame)."
