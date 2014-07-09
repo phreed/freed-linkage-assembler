@@ -12,7 +12,7 @@
         (vector? quantity) (Math/sqrt (reduce #(+ %1 (* %2 %2)) 0.0 quantity))
         :else 0.0))
 
-(defn unit-ize
+(defn normalize
   "make the object have size 1."
   [vect]
   (into [] (map #(/ % (mag vect)) vect)))
@@ -33,7 +33,7 @@
 (defn line
   "Returns a line object with direction axis passing through point."
   [point axis]
-  {:type :line :e point, :d (unit-ize axis)})
+  {:type :line :e point, :d (normalize axis)})
 
 (defn line?
   "Returns 'true' if object is a line."
@@ -70,7 +70,7 @@
 (defn plane
   "Create a plane object with normal vector passing through point."
   [point normal]
-  {:type :plane :e point :n (unit-ize normal)})
+  {:type :plane :e point :n (normalize normal)})
 
 
 (defn plane?
@@ -159,22 +159,22 @@
 
 (defn gmp
   "marker position (in global coordinate frame)."
-  [marker ikb]
-  (let [[[link-name _] mp] marker
-        me (get mp :e [0.0 0.0 0.0])
-        link @(get-in ikb [:link link-name])
-        lp (get-in link [:versor :e] [0.0 0.0 0.0])]
-    (into [] (map + lp me))))
+  [marker kb]
+  (let [[[link-name _] marker-place] marker
+        marker-loc (get marker-place :e [0.0 0.0 0.0])
+        link @(get-in kb [:link link-name])
+        versor-translation (get-in link [:versor :e] [0.0 0.0 0.0])]
+    (into [] (map + versor-translation marker-loc))))
 
 (defn gmx
   "marker x-axis vector (in global coordinate frame)."
-  [marker ikb]
+  [marker kb]
   (println "gmx unimplemented")
   )
 
 (defn gmz
   "marker z-axis vector (in global coordinate frame)."
-  [marker ikb]
+  [marker kb]
   (println "gmz unimplemented")
   )
 
@@ -211,7 +211,7 @@
  as its locating point and the cross product as the normal."
   [s1 s2 branch]
   (cond (and (plane? s1) (plane? s2))
-        (let [axis (unit-ize (outer-prod (:n s1) (:n s2)))
+        (let [axis (normalize (outer-prod (:n s1) (:n s2)))
               p1 (:e s1) p2 (:e s2)
               s3 (plane p1 axis)
               point (intersect-3-planes s1 s2 s3)]
@@ -286,7 +286,7 @@
   If ?direction-maters is 'false', then the axis
   may be either parallel or anti-parallel."
   [?axis-1 ?axis-2 ?direction-matters]
-  (tol/near-zero? :default (mag (outer-prod (unit-ize ?axis-1) (unit-ize ?axis-2)))))
+  (tol/near-zero? :default (mag (outer-prod (normalize ?axis-1) (normalize ?axis-2)))))
 
 
 (defn pc-check
@@ -442,7 +442,7 @@
   The axis need not be unit and the angle is [sine cosine] form.
   "
   [axis angle]
-  (let [uaxis (unit-ize axis)
+  (let [uaxis (normalize axis)
         [sine cosine] angle]
     (into [] (cons cosine (map #(* % sine) uaxis) ))))
 
@@ -461,7 +461,7 @@
   [q]
   (let [[q0 q1 q2 q3] q
         qi [q1 q2 q3]
-        i (unit-ize qi) ]
+        i (normalize qi) ]
     {:i i
      :a (double-angle [q0 (/ (mag qi) (mag i))]) } ))
 

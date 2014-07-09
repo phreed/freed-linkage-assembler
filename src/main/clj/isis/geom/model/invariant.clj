@@ -28,8 +28,8 @@
 (defn marker->invariant?
   "Abstract the testing of invariance so programs
   do not have to reference a global variable."
-  [ikb marker invariant-type]
-  (let [marker-invs (get-in ikb [:mark invariant-type]),
+  [kb marker invariant-type]
+  (let [marker-invs (get-in kb [:mark invariant-type]),
         [marker-name _] marker]
     (contains? @marker-invs marker-name)))
 

@@ -160,75 +160,80 @@
 
 
 ;; simulate the first point being repositioned, by 3-3-coincident
-(expect
- '{:mark {:loc (ref #{[ground g1] [ground g3] [ground g2] [brick b1]})
-          :z (ref #{[ground g1] [ground g3] [ground g2]})
-          :x (ref #{[ground g1] [ground g3] [ground g2]})}
-   :link {ground (ref {:tdof {:# 0} :rdof {:# 0}
-                       :versor {:e [0.0 0.0 0.0] :i [0.0 0.0 1.0] :a [0.0 1.0]}})
-          brick (ref {:tdof {:# 0 :point [-100.0 50.0 10.0]}, :rdof {:# 3}
-                      :versor {:e [100.0 -50.0 -10.0] :i [0.0 0.0 1.0] :a [0.0 1.0]}})
-          cap (ref {:tdof {:# 3} :rdof {:# 3}
-                    :versor {:e [0.0 0.0 0.0], :i [0.0 0.0 1.0], :a [0.0 1.0]}})}}
- (let [ikb (graph->init-invariants @brick-graph)]
-   (constraint-attempt? ikb
-                        '{:type :coincident
-                          :m1 [[ground g1] {}]
-                          :m2 [[brick b1] {:e [-100.0 50.0 10.0]}]} )
-   (ref->str ikb)))
+(let [kb (graph->init-invariants @brick-graph)
 
-(expect
- '{:mark {:loc (ref #{[ground g1] [ground g3] [ground g2] [brick b3]})
-          :z (ref #{[ground g1] [ground g3] [ground g2]})
-          :x (ref #{[ground g1] [ground g3] [ground g2]})}
-   :link {ground (ref {:tdof {:# 0}, :rdof {:# 0}
-                       :versor {:e [0.0 0.0 0.0], :i [0.0 0.0 1.0], :a [0.0 1.0]}})
-          brick (ref {:tdof {:# 0, :point [0.0 0.0 4.0]}, :rdof {:# 3}
-                      :versor {:e [5.0 4.0 -4.0], :i [0.0 0.0 1.0], :a [0.0 1.0]}})
-          cap (ref {:tdof {:# 3}, :rdof {:# 3},
-                    :versor {:e [0.0 0.0 0.0], :i [0.0 0.0 1.0], :a [0.0 1.0]}})}}
- (let [ikb (graph->init-invariants @brick-graph)]
-   (constraint-attempt? ikb
-                        '{:type :coincident
-                          :m1 [[ground g3] {:e [5.0 4.0 0.0]}]
-                          :m2 [[brick b3] {:e [0.0 0.0 4.0]}]} )
-   (ref->str ikb)))
+      input
+      '{:type :coincident
+        :m1 [[ground g1] {}]
+        :m2 [[brick b1] {:e [-100.0 50.0 10.0]}]}
+
+      pattern
+      '{:mark {:loc (ref #{[ground g1] [ground g3] [ground g2] [brick b1]})
+               :z (ref #{[ground g1] [ground g3] [ground g2]})
+               :x (ref #{[ground g1] [ground g3] [ground g2]})}
+        :link {ground (ref {:tdof {:# 0} :rdof {:# 0}
+                            :versor {:e [0.0 0.0 0.0] :i [0.0 0.0 1.0] :a [0.0 1.0]}})
+               brick (ref {:tdof {:# 0 :point [0.0 0.0 0.0]}, :rdof {:# 3}
+                           :versor {:e [100.0 -50.0 -10.0] :i [0.0 0.0 1.0] :a [0.0 1.0]}})
+               cap (ref {:tdof {:# 3} :rdof {:# 3}
+                         :versor {:e [0.0 0.0 0.0], :i [0.0 0.0 1.0], :a [0.0 1.0]}})}} ]
+  (expect pattern (do (constraint-attempt? kb input) (ref->str kb))))
+
+(let [kb (graph->init-invariants @brick-graph)
+
+      input
+      '{:type :coincident
+        :m1 [[ground g3] {:e [5.0 4.0 0.0]}]
+        :m2 [[brick b3] {:e [0.0 0.0 4.0]}]}
+
+      pattern
+      '{:mark {:loc (ref #{[ground g1] [ground g3] [ground g2] [brick b3]})
+               :z (ref #{[ground g1] [ground g3] [ground g2]})
+               :x (ref #{[ground g1] [ground g3] [ground g2]})}
+        :link {ground (ref {:tdof {:# 0}, :rdof {:# 0}
+                            :versor {:e [0.0 0.0 0.0], :i [0.0 0.0 1.0], :a [0.0 1.0]}})
+               brick (ref {:tdof {:# 0, :point [5.0 4.0 0.0]}, :rdof {:# 3}
+                           :versor {:e [5.0 4.0 -4.0], :i [0.0 0.0 1.0], :a [0.0 1.0]}})
+               cap (ref {:tdof {:# 3}, :rdof {:# 3},
+                         :versor {:e [0.0 0.0 0.0], :i [0.0 0.0 1.0], :a [0.0 1.0]}})}} ]
+  (expect pattern (do (constraint-attempt? kb input) (ref->str kb))))
 
 
 ;; simulate the second point being repositioned,
 
-(let [ikb (graph->init-invariants @brick-graph)
+(let [kb (graph->init-invariants @brick-graph)
       constraints (joints->constraints @brick-graph)
 
       first-input
       '{:type :coincident
         :m1 [[ground g1] {:e [5.0 0.0 0.0]}]
         :m2 [[brick b1] {:e [0.0 0.0 0.0]}]}
+
       first-pattern
       '{:mark {:loc (ref #{[ground g1] [ground g3] [ground g2] [brick b1]})
                :z (ref #{[ground g1] [ground g3] [ground g2]})
                :x (ref #{[ground g1] [ground g3] [ground g2]})}
         :link {ground (ref {:tdof {:# 0}, :rdof {:# 0}
                             :versor {:e [0.0 0.0 0.0], :i [0.0 0.0 1.0], :a [0.0 1.0]}})
-               brick (ref {:tdof {:# 0, :point [0.0 0.0 0.0]}
+               brick (ref {:tdof {:# 0, :point [5.0 0.0 0.0]}
                            :rdof {:# 3}
                            :versor {:e [5.0 0.0 0.0], :i [0.0 0.0 1.0], :a [0.0 1.0]}})
                cap (ref {:tdof {:# 3}, :rdof {:# 3},
                          :versor {:e [0.0 0.0 0.0], :i [0.0 0.0 1.0], :a [0.0 1.0]}})}}
 
-
       second-input
       '{:type :coincident
         :m1 [[ground g2] {:e [8.0 0.0 0.0]}]
         :m2 [[brick b2] {:e [0.0 3.0 0.0]}]}
+
       second-pattern
-      '{:mark {:loc (ref #{[ground g1] [ground g3] [ground g2] [brick b1]})
-               :z (ref #{[ground g1] [ground g3] [ground g2]})
+      '{:mark {:loc (ref #{[ground g1] [ground g3] [ground g2] [brick b1] [brick b2]})
+               :z (ref #{[ground g1] [ground g3] [ground g2] [brick b2]})
                :x (ref #{[ground g1] [ground g3] [ground g2]})}
         :link {ground (ref {:tdof {:# 0}, :rdof {:# 0}
                             :versor {:e [0.0 0.0 0.0], :i [0.0 0.0 1.0], :a [0.0 1.0]}})
                brick (ref {:tdof {:# 0, :point [5.0 0.0 0.0]}
-                           :rdof {:# 1 :axis [0.0 3.0 0.0]}
+                           :rdof {:# 1 :axis [0.0 1.0 0.0]}
                            :versor {:e [5.0 0.0 0.0], :i [0.0 0.0 -1.0], :a [1.0 0.0]}})
                cap (ref {:tdof {:# 3}, :rdof {:# 3},
                          :versor {:e [0.0 0.0 0.0], :i [0.0 0.0 1.0], :a [0.0 1.0]}})}}
@@ -237,26 +242,26 @@
       '{:type :coincident
         :m1 [[ground g3] {:e [5.0 4.0 0.0]}]
         :m2 [[brick b3] {:e [0.0 0.0 4.0]}]}
+
       third-pattern
-      `{:mark {:loc (ref #{[ground g1] [ground g3] [ground g2] [brick b1] [brick b2] [brick b3]})
+      '{:mark {:loc (ref #{[ground g1] [ground g3] [ground g2] [brick b1] [brick b2] [brick b3]})
                :z (ref #{[ground g1] [ground g3] [ground g2] [brick b1] [brick b2] [brick b3]})
                :x (ref #{[ground g1] [ground g3] [ground g2] [brick b1] [brick b2] [brick b3]})}
         :link {ground (ref {:tdof {:# 0}, :rdof {:# 0}
                             :versor {:e [0.0 0.0 0.0], :i [0.0 0.0 1.0], :a [0.0 1.0]}})
-               brick (ref {:tdof {:# 0, :p [5.0 0.0 0.0]}
-                           :rdof {:# 0 :i [0.0 0.0 0.0] :a [0.0 1.0]}
+               brick (ref {:tdof {:# 0 :p [5.0 0.0 0.0]}
+                           :rdof {:# 0}
                            :versor {:e [5.0 0.0 0.0],
                                     :i [1.0 1.0 -1.0],
                                     :a [~(Math/sin (* (/ 2 3) (Math/PI))) -0.5]}})
                cap (ref {:tdof {:# 3}, :rdof {:# 3},
-                         :versor {:e [0.0 0.0 0.0], :i [0.0 0.0 1.0], :a [0.0 1.0]}})}}
-      ]
+                         :versor {:e [0.0 0.0 0.0], :i [0.0 0.0 1.0], :a [0.0 1.0]}})}} ]
   ;; first by 3-3-coincident
-  (expect first-pattern (do (constraint-attempt? ikb first-input) (ref->str ikb)))
+  (expect first-pattern (do (constraint-attempt? kb first-input) (ref->str kb)))
   ;; then by 0-3-coincident
-  (expect second-pattern (do (constraint-attempt? ikb second-input) (ref->str ikb)))
+  (expect second-pattern (do (constraint-attempt? kb second-input) (ref->str kb)))
   ;; finally by 0-1-coincident
-  (expect third-pattern (do (constraint-attempt? ikb third-input) (ref->str ikb))))
+  (expect third-pattern (do (constraint-attempt? kb third-input) (ref->str kb))))
 
 (defn position-analysis
   "Algorithm for using the plan fragment table to perform position alalysis.
@@ -271,20 +276,20 @@
 
   ys : constraints which have been tried and failed.
   progress? : is the current round making progress?"
-  [ikb constraints]
+  [kb constraints]
   (loop [ [x & xs] constraints,
           ys [], progress? true]
     (if-not x
       (if (empty? ys)
         ;; all the constraints have been satisfied
-        ikb
+        kb
         (if progress?
           ;; still making progress, try again.
           (recur ys [] true)
           ;; no progress is possible.
-          ikb))
+          kb))
       ;; working through the constraint list.
-      (if (constraint-attempt? ikb x)
+      (if (constraint-attempt? kb x)
         (recur xs ys true)
         (recur xs ys progress?) ))))
 

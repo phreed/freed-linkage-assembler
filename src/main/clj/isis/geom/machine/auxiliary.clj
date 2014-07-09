@@ -79,12 +79,17 @@
 (defn dof-3r:p->p
   "Procedure to rotate body ?link about ?center,
   moving ?from-point on ?link to globally-fixed ?to-point.
-  Done by constructing a rotational axis and calling dof-1r:p->p."
+  Done by constructing an arbitrary rotational axis and calling dof-1r:p->p."
   [?link ?center ?from-point ?to-point]
   (let [r0 (vec-diff ?from-point ?center)
         r1 (vec-diff ?to-point ?center)]
-    (cond (tol/near-same? :default r0 r1) {:e [0.0 0.0 0.0]}
-          (not (tol/near-equal? :default (mag r0) (mag r1))) (error [:r0 r0 :r1 r1] emsg/emsg-4)
-          :else (dof-1r:p->p ?link ?center ?from-point ?to-point
-                   (outer-prod r0 r1) nil nil))))
+    (cond (tol/near-same? :default r0 r1)
+          {:e [0.0 0.0 0.0]}
+
+          (not (tol/near-equal? :default (mag r0) (mag r1)))
+          (error [" from: " ?from-point " to:" ?to-point " about: " ?center] emsg/emsg-4)
+
+          :else
+          (dof-1r:p->p ?link ?center ?from-point ?to-point
+                       (outer-prod r0 r1) nil nil))))
 

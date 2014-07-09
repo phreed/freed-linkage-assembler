@@ -5,10 +5,10 @@
 
 (defn- constraint-attempt-dispatch
   "The function which specifies which implementation to use."
-  [ikb constraint] (:type constraint))
+  [kb constraint] (:type constraint))
 
 (defn- constraint-attempt?<-default
-  [ikb constraint]
+  [kb constraint]
   nil)
 
 (defmulti constraint-attempt?
