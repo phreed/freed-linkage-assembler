@@ -468,7 +468,7 @@
 (defn rotate
   "rotate a link about the point and axis by an angle.
   Performed by composition of rotations.
-  e(-i*theta/2) = e(-i2*theta2/2) * (-i1*thata1/2)
+  e(-i*theta/2) = e(-i2*theta2/2) * (-i1*theta1/2)
   Where
   e(i*theta/2) = cos(theta/2) + i*sin(theta/2)
   "
