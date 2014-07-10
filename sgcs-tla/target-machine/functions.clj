@@ -72,10 +72,10 @@
 (defn error
   "Signals a run-time error, caused by degeneracies or over-constratin.
   measure is an expression which is zero if there is no error, an non-zero oterwise.
-  The magnitude of measuer increase iwht ht severity of the error.
-  If ERROR-MODE is 'fatal' and measuer is greater tahn TOLERANCE, then
+  The magnitude of measure increase iwht ht severity of the error.
+  If ERROR-MODE is 'fatal' and measure is greater tahn TOLERANCE, then
   string is returned with the error signal.
-  If ERROR-MODE is 'accumlate' and measuer is greater than TOLERANCE,
+  If ERROR-MODE is 'accumlate' and measure is greater than TOLERANCE,
   then ERROR-ACC is set to ERROR-ACC plus measure."
   [measure string]
   )

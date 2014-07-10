@@ -32,18 +32,22 @@
   "
   [quaternion point]
   (let [[p1 p2 p3] point
-        [q0 q1 q2 q3] quaternion]
-  [(+ (* q0 p1 q0 +1) (* q0 p2 q3 -2) (* q0 p3 q2 +2)
-      (* q1 p1 q1 +1) (* q2 p1 q2 +1) (* q3 p1 q3 +1)
-      (* q1 p2 q2 +2) (* q1 p3 q3 +2) )
-
-   (+ (* q0 p2 q0 +1) (* q0 p3 q1 -2) (* q0 p1 q2 +2)
-      (* q1 p2 q2 +1) (* q3 p2 q3 +1) (* q1 p2 q1 +1)
-      (* q2 p3 q3 +2) (* q2 p1 q1 +2) )
-
-   (+ (* q0 p3 q0 +1) (* q0 p1 q2 -2) (* q0 p2 q3 +2)
-      (* q2 p3 q3 +1) (* q1 p3 q1 +1) (* q2 p3 q2 +1)
-      (* q3 p1 q1 +2) (* q3 p2 q2 +2) ) ]))
+        [q0 q1 q2 q3] quaternion
+        r1 (+ (* q0 p1 q0 +1) (* q0 p2 q3 -2) (* q0 p3 q2 +2)
+              (* q1 p1 q1 +1) (* q1 p2 q2 +2) (* q1 p3 q3 +2)
+              (* q2 p1 q2 -1)
+              (* q3 p1 q3 -1))
+        r2 (+ (* q0 p2 q0 +1) (* q0 p3 q1 -2) (* q0 p1 q3 +2)
+              (* q2 p2 q2 +1) (* q2 p3 q3 +2) (* q2 p1 q1 +2)
+              (* q3 p2 q3 -1)
+              (* q1 p2 q1 -1) )
+        r3 (+ (* q0 p3 q0 +1) (* q0 p1 q2 -2) (* q0 p2 q1 +2)
+              (* q3 p3 q3 +1) (* q3 p1 q1 +2) (* q3 p2 q2 +2)
+              (* q1 p3 q1 -1)
+              (* q2 p3 q2 -1) ) ]
+    [(if (tol/near-zero? :tiny r1) 0.0 r1)
+     (if (tol/near-zero? :tiny r2) 0.0 r2)
+     (if (tol/near-zero? :tiny r3) 0.0 r3)]))
 
 
 (defn- quat-prod
@@ -205,19 +209,6 @@
 )
 
 
-(defn error
-  "Signals a run-time error, caused by degeneracies or over-constratin.
-  measure is an expression which is zero if there is no error, an non-zero oterwise.
-  The magnitude of measuer increase iwht ht severity of the error.
-  If ERROR-MODE is 'fatal' and measuer is greater tahn TOLERANCE, then
-  string is returned with the error signal.
-  If ERROR-MODE is 'accumlate' and measuer is greater than TOLERANCE,
-  then ERROR-ACC is set to ERROR-ACC plus measure."
-  [measure string]
-  (println "error : " measure string) )
-
-
-
 
 (defn gmp
   "marker position (in global coordinate frame)."
@@ -350,7 +341,11 @@
   If ?direction-maters is 'false', then the axis
   may be either parallel or anti-parallel."
   [?axis-1 ?axis-2 ?direction-matters]
-  (tol/near-zero? :default (mag (outer-prod (normalize ?axis-1) (normalize ?axis-2)))))
+  (let [size (mag (outer-prod (normalize ?axis-1) (normalize ?axis-2)))]
+    (cond (not (tol/near-zero? :default size)) false
+          (not ?direction-matters) true
+          (pos? size) true
+          :else false )))
 
 
 (defn pc-check

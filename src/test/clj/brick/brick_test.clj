@@ -189,15 +189,15 @@
 
       mark-pattern
       '{:loc [:ref #{[ground g1] [ground g3] [ground g2] [brick b3]}]
-               :z [:ref #{[ground g1] [ground g3] [ground g2]}]
-               :x [:ref #{[ground g1] [ground g3] [ground g2]}]}
+        :z [:ref #{[ground g1] [ground g3] [ground g2]}]
+        :x [:ref #{[ground g1] [ground g3] [ground g2]}]}
       link-pattern
       '{ground [:ref {:tdof {:# 0}, :rdof {:# 0}
-                             :versor {:xlate [0.0 0.0 0.0] :rotate [1.0 0.0 0.0 0.0]}}]
-               brick [:ref {:tdof {:# 0, :point [5.0 4.0 0.0]}, :rdof {:# 3}
-                             :versor {:xlate [5.0 4.0 -4.0] :rotate [1.0 0.0 0.0 0.0]}}]
-               cap [:ref {:tdof {:# 3}, :rdof {:# 3},
-                             :versor {:xlate [0.0 0.0 0.0] :rotate [1.0 0.0 0.0 0.0]}}] }]
+                      :versor {:xlate [0.0 0.0 0.0] :rotate [1.0 0.0 0.0 0.0]}}]
+        brick [:ref {:tdof {:# 0, :point [5.0 4.0 0.0]}, :rdof {:# 3}
+                     :versor {:xlate [5.0 4.0 -4.0] :rotate [1.0 0.0 0.0 0.0]}}]
+        cap [:ref {:tdof {:# 3}, :rdof {:# 3},
+                   :versor {:xlate [0.0 0.0 0.0] :rotate [1.0 0.0 0.0 0.0]}}] }]
   (let [_ (constraint-attempt? kb input)
         {result-mark :mark result-link :link} (ref->str kb)]
     (expect mark-pattern result-mark)
@@ -240,7 +240,7 @@
       second-link-pattern
       (assoc-in first-link-pattern ['brick]
                 [:ref {:tdof {:# 0 :point [2.0 0.0 0.0]}
-                       :rdof {:# 1 :axis [0.5773502691896257 0.5773502691896257 -0.5773502691896257]}
+                       :rdof {:# 1 :axis [1.0 0.0 0.0]}
                        :versor {:xlate [2.0 0.0 0.0]
                                 :rotate [0.7071067811865476 0.0 0.0 -0.7071067811865475]}}])
 
@@ -259,12 +259,7 @@
                 [:ref {:tdof {:# 0 :point [2.0 0.0 0.0]}
                        :rdof {:# 0}
                        :versor {:xlate [2.0 0.0 0.0]
-                                :rotate [1.0 0.0 0.0 0.0]} }])
-      ;;(into
-       ;;                             []
-        ;;                            (concat [-0.5]
-         ;;                                   (map #(* % (Math/sin (* (/ 2 3) (Math/PI))))
-          ;;                                       1.0 1.0 -1.0)))}}])
+                                :rotate [0.5000000000000001 -0.5 0.4999999999999999 -0.5]}}])
       ]
 
   ;; first by 3-3-coincident
@@ -279,9 +274,9 @@
     (expect second-link-pattern result-link))
   ;; finally by 0-1-coincident
   (let [_ (constraint-attempt? kb third-input)
-        {result-mark :mark result-link :link} (ref->str kb)]
-    (expect third-mark-pattern result-mark)
-    (expect third-link-pattern result-link)) )
+          {result-mark :mark result-link :link} (ref->str kb)]
+      (expect third-mark-pattern result-mark)
+      (expect third-link-pattern result-link)) )
 
 (defn position-analysis
   "Algorithm for using the plan fragment table to perform position alalysis.
@@ -314,18 +309,23 @@
         (recur xs ys progress?) ))))
 
 
-(expect
- '{:mark {:p [:ref #{[ground g1] [ground g3] [ground g2] [brick b1] [brick b2] [brick b3] [cap c1] [cap c2] [cap c3]}]
-          :z [:ref #{[ground g1] [ground g3] [ground g2] [brick b1] [brick b2] [brick b3] [cap c1] [cap c2] [cap c3]}]
-          :x [:ref #{[ground g1] [ground g3] [ground g2] [brick b1] [brick b2] [brick b3] [cap c1] [cap c2] [cap c3]}]}
-   :link {ground [:ref {:tdof {:# 0}, :rdof {:# 0}
-                        :versor {:xlate [0.0 0.0 0.0] :rotate [1.0 0.0 0.0 0.0]}}]
-          brick [:ref {:tdof {:# 0, :p [0.0 0.0 0.0]}, :rdof {:# 0}
-                       :versor {:xlate [-5.0 0.0 -4.0] :rotate [1.0 0.0 0.0 0.0]}}]
-          cap [:ref {:tdof {:# 0}, :rdof {:# 0},
-                       :versor {:xlate [-5.0 0.0 -4.0] :rotate [1.0 0.0 0.0 0.0]}}]}}
- '(let [graph @brick-graph]
-    (position-analysis
-     (joints->constraints graph)
-     (graph->init-invariants graph))))
+(let [graph @brick-graph
+      mark-pattern
+      '{:p [:ref #{[ground g1] [ground g3] [ground g2] [brick b1] [brick b2] [brick b3] [cap c1] [cap c2] [cap c3]}]
+        :z [:ref #{[ground g1] [ground g3] [ground g2] [brick b1] [brick b2] [brick b3] [cap c1] [cap c2] [cap c3]}]
+        :x [:ref #{[ground g1] [ground g3] [ground g2] [brick b1] [brick b2] [brick b3] [cap c1] [cap c2] [cap c3]}]}
+
+      link-pattern
+      '{ground [:ref {:tdof {:# 0}, :rdof {:# 0}
+                      :versor {:xlate [0.0 0.0 0.0] :rotate [1.0 0.0 0.0 0.0]}}]
+        brick [:ref {:tdof {:# 0, :p [0.0 0.0 0.0]}, :rdof {:# 0}
+                     :versor {:xlate [-5.0 0.0 -4.0] :rotate [1.0 0.0 0.0 0.0]}}]
+        cap [:ref {:tdof {:# 0}, :rdof {:# 0},
+                   :versor {:xlate [-5.0 0.0 -4.0] :rotate [1.0 0.0 0.0 0.0]}}]} ]
+  #_(let [_ (position-analysis
+             (joints->constraints graph)
+             (graph->init-invariants graph))
+          {result-mark :mark result-link :link} (ref->str kb)]
+      (expect third-mark-pattern result-mark)
+      (expect third-link-pattern result-link)) )
 

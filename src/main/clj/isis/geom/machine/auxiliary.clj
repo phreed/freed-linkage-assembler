@@ -1,11 +1,11 @@
 (ns isis.geom.machine.auxiliary
   "The geometric movement functions."
   (:require [isis.geom.machine
-             [error-string :as emsg]
+             [error-msg :as emsg]
              [tolerance :as tol]
              [geobj
               :refer [vec-scale vec-diff mag
-                      error outer-prod perp-base
+                      outer-prod perp-base
                       vec-angle parallel? point?
                       null? rotate perp-dist
                       line intersect plane sphere]]]))
@@ -47,7 +47,7 @@
         r5 (sphere ?center (perp-dist ?to-point ?center))
         r6 (intersect r5 r4 ?branch)]
     (if-not (point? r6)
-      (error (perp-dist r5 r4) emsg/emsg-7)
+      (emsg/emsg-7 perp-dist r5 r4)
       (let [r7 (vec-diff ?from-point r3)
             r8 (vec-diff r6 r2)
             r9 (vec-angle r7 r8 (outer-prod r7 r8))
@@ -66,16 +66,13 @@
         r1 (vec-diff ?to-point r0)
         r2 (vec-diff ?from-point r0)]
     (if-not (tol/near-equal? :default (mag r1) (mag r2))
-      (error [" to-point: " ?to-point " from-point: " ?from-point
-              " about-axis: " ?axis " about-center: " ?center] emsg/emsg-4)
+      (emsg/emsg-4 ?from-point ?to-point ?center ?axis)
       (let [r4 (outer-prod r1 r2)]
         (if-not (parallel? r4 ?axis false)
-          (do (error (vec-angle r4 ?axis
-                            (outer-prod r4 ?axis)) emsg/emsg-3))
-          (let [r5 (vec-angle r2 r1 ?axis)]
-            (if (and (nil? ?axis-1) (nil? ?axis-2))
-              (rotate ?link ?center ?axis r5)
-              (dof-2r:p->p ?link ?center ?from-point ?to-point ?axis-1 ?axis-2 1))))))))
+          (emsg/emsg-3 r4 ?axis)
+          (if (and (nil? ?axis-1) (nil? ?axis-2))
+            (rotate ?link ?center ?axis (vec-angle r2 r1 ?axis))
+            (dof-2r:p->p ?link ?center ?from-point ?to-point ?axis-1 ?axis-2 1)))))))
 
 (defn dof-3r:p->p
   "Procedure to rotate body ?link about ?center,
@@ -88,7 +85,7 @@
           {:xlate [0.0 0.0 0.0]}
 
           (not (tol/near-equal? :default (mag r0) (mag r1)))
-          (error [" from: " ?from-point " to:" ?to-point " about: " ?center] emsg/emsg-4)
+          (emsg/emsg-4 ?from-point ?to-point ?center nil)
 
           :else
           (dof-1r:p->p ?link ?center ?from-point ?to-point

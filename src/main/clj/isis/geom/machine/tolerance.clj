@@ -19,6 +19,7 @@
   [tol-value x]
   (< ((if (pos? x) + -) x)
      (cond (= :default tol-value) *default-tolerance*
+           (= :tiny tol-value) 1e-10
            :else tol-value)))
 
 (defn near-same?
