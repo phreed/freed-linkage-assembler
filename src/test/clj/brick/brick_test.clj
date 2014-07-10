@@ -293,39 +293,69 @@
   progress? : is the current round making progress?"
   [kb constraints]
   (loop [ [x & xs] constraints,
-          ys [], progress? true]
+          ys [], progress? true
+          plan []]
     (if-not x
       (if (empty? ys)
         ;; all the constraints have been satisfied
-        kb
+        [true kb plan]
         (if progress?
           ;; still making progress, try again.
-          (recur ys [] true)
+          (recur ys [] true plan)
           ;; no progress is possible.
-          kb))
+          [false kb plan]))
       ;; working through the constraint list.
       (if (constraint-attempt? kb x)
-        (recur xs ys true)
-        (recur xs ys progress?) ))))
+        (recur xs ys true (conj plan x))
+        (recur xs ys progress? x) ))))
 
 
 (let [graph @brick-graph
       mark-pattern
-      '{:p [:ref #{[ground g1] [ground g3] [ground g2] [brick b1] [brick b2] [brick b3] [cap c1] [cap c2] [cap c3]}]
+      '{:loc [:ref #{[ground g1] [ground g3] [ground g2] [brick b1] [brick b2] [brick b3] [cap c1] [cap c2] [cap c3]}]
         :z [:ref #{[ground g1] [ground g3] [ground g2] [brick b1] [brick b2] [brick b3] [cap c1] [cap c2] [cap c3]}]
         :x [:ref #{[ground g1] [ground g3] [ground g2] [brick b1] [brick b2] [brick b3] [cap c1] [cap c2] [cap c3]}]}
 
       link-pattern
-      '{ground [:ref {:tdof {:# 0}, :rdof {:# 0}
-                      :versor {:xlate [0.0 0.0 0.0] :rotate [1.0 0.0 0.0 0.0]}}]
-        brick [:ref {:tdof {:# 0, :p [0.0 0.0 0.0]}, :rdof {:# 0}
-                     :versor {:xlate [-5.0 0.0 -4.0] :rotate [1.0 0.0 0.0 0.0]}}]
-        cap [:ref {:tdof {:# 0}, :rdof {:# 0},
-                   :versor {:xlate [-5.0 0.0 -4.0] :rotate [1.0 0.0 0.0 0.0]}}]} ]
-  #_(let [_ (position-analysis
-             (joints->constraints graph)
-             (graph->init-invariants graph))
-          {result-mark :mark result-link :link} (ref->str kb)]
-      (expect third-mark-pattern result-mark)
-      (expect third-link-pattern result-link)) )
+      '{ground [:ref {:versor {:xlate [0.0 0.0 0.0]
+                               :rotate [1.0 0.0 0.0 0.0]}
+                      :tdof {:# 0} :rdof {:# 0}}]
+        brick [:ref {:versor {:xlate [5.0 -3.0 0.0]
+                              :rotate [0.7071067811865476 0.0 0.0 -0.7071067811865475]}
+                     :tdof {:# 0 :point [5.0 0.0 0.0]}
+                     :rdof {:# 0}}]
+        cap [:ref {:versor {:xlate [8.0 -6.0 0.0]
+                            :rotate [1.0 0.0 0.0 0.0]}
+                   :tdof {:# 0 :point [8.0 -3.0 0.0]}
+                   :rdof {:# 3}}]}
+
+      plan-pattern
+      '[
+        {:type :coincident
+         :m1 [[ground g2] {:e [5.0 0.0 0.0] :z [nil nil nil] :x [nil nil nil]}]
+         :m2 [[brick b2] {:e [0.0 3.0 0.0], :z [nil nil nil], :x [nil nil nil]}]}
+        {:type :coincident
+         :m1 [[brick b4] {:e [1.0 0.0 0.0], :z [nil nil nil], :x [nil nil nil]}]
+         :m2 [[cap c4] {:e [-1.0 0.0 0.0], :z [nil nil nil], :x [nil nil nil]}]}
+        {:type :coincident
+         :m1 [[ground g1] {:e [2.0 0.0 0.0], :z [nil nil nil], :x [nil nil nil]}]
+         :m2 [[brick b1] {:e [0.0 0.0 0.0], :z [nil nil nil], :x [nil nil nil]}]}
+        {:type :coincident
+         :m1 [[brick b3] {:e [0.0 0.0 4.0], :z [nil nil nil], :x [nil nil nil]}]
+         :m2 [[cap c3] {:e [0.0 0.0 4.0], :z [nil nil nil], :x [nil nil nil]}]}
+        {:type :coincident
+         :m1 [[brick b3] {:e [0.0 0.0 4.0], :z [nil nil nil], :x [nil nil nil]}]
+         :m2 [[ground g3] {:e [2.0 4.0 0.0], :z [nil nil nil], :x [nil nil nil]}]}
+        {:type :coincident
+         :m1 [[cap c2] {:e [0.0 3.0 0.0], :z [nil nil nil], :x [nil nil nil]}]
+         :m2 [[brick b2] {:e [0.0 3.0 0.0], :z [nil nil nil], :x [nil nil nil]}]}]
+      ]
+
+  (let [constraints (joints->constraints graph)
+        kb (graph->init-invariants graph)
+        [success? result-kb result-plan] (position-analysis kb constraints)
+        {result-mark :mark result-link :link} (ref->str result-kb)]
+    (expect mark-pattern result-mark)
+    (expect link-pattern result-link)
+    (expect plan-pattern result-plan)) )
 
