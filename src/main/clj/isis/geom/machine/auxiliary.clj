@@ -85,7 +85,7 @@
   (let [r0 (vec-diff ?from-point ?center)
         r1 (vec-diff ?to-point ?center)]
     (cond (tol/near-same? :default r0 r1)
-          {:e [0.0 0.0 0.0]}
+          {:xlate [0.0 0.0 0.0]}
 
           (not (tol/near-equal? :default (mag r0) (mag r1)))
           (error [" from: " ?from-point " to:" ?to-point " about: " ?center] emsg/emsg-4)

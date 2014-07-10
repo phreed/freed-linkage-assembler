@@ -17,6 +17,68 @@
   [vect]
   (into [] (map #(/ % (mag vect)) vect)))
 
+(defn- quat-exp
+  "Produce a quaternion from an axis and and angle.
+  The axis need not be unit and the angle is [sine cosine] form.
+  "
+  [axis angle]
+  (let [uaxis (normalize axis)
+        [sine cosine] angle]
+    (into [] (cons cosine (map #(* % sine) uaxis) ))))
+
+(defn- quat-sandwich
+  "Perform a transformation using the quaternion.
+  q v q-1 = v'
+  "
+  [quaternion point]
+  (let [[p1 p2 p3] point
+        [q0 q1 q2 q3] quaternion]
+  [(+ (* q0 p1 q0 +1) (* q0 p2 q3 -2) (* q0 p3 q2 +2)
+      (* q1 p1 q1 +1) (* q2 p1 q2 +1) (* q3 p1 q3 +1)
+      (* q1 p2 q2 +2) (* q1 p3 q3 +2) )
+
+   (+ (* q0 p2 q0 +1) (* q0 p3 q1 -2) (* q0 p1 q2 +2)
+      (* q1 p2 q2 +1) (* q3 p2 q3 +1) (* q1 p2 q1 +1)
+      (* q2 p3 q3 +2) (* q2 p1 q1 +2) )
+
+   (+ (* q0 p3 q0 +1) (* q0 p1 q2 -2) (* q0 p2 q3 +2)
+      (* q2 p3 q3 +1) (* q1 p3 q1 +1) (* q2 p3 q2 +1)
+      (* q3 p1 q1 +2) (* q3 p2 q2 +2) ) ]))
+
+
+(defn- quat-prod
+  "Multiply two quaternion."
+  [q1 q2]
+  (let [[a1 b1 c1 d1] q1
+        [a2 b2 c2 d2] q2]
+    [(+ (+ (* a1 a2)) (- (* b1 b2)) (- (* c1 c2)) (- (* d1 d2)))
+     (+ (+ (* a1 b2)) (+ (* b1 a2)) (+ (* c1 d2)) (- (* d1 c2)))
+     (+ (+ (* a1 c2)) (- (* b1 d2)) (+ (* c1 a2)) (+ (* d1 b2)))
+     (+ (+ (* a1 d2)) (+ (* b1 c2)) (- (* c1 b2)) (+ (* d1 a2)))]))
+
+(defn- axis-angle->quat
+  "Create a quaternion from an axis-angle.
+  axis : a vector representing the rotation axis.
+  angle : the rotation specified in radians,
+     as viewed looking out along the axis. "
+  [axis angle]
+  (let [[u1 u2 u3] (normalize axis)
+        hangle (* 0.5 angle)
+        cosine (Math/cos hangle)
+        sine (Math/sin hangle)]
+    [cosine (* sine u1) (* sine u2) (* sine u3)]))
+
+
+(defn- quat-log
+  "Convert quaternion into axis angle representation."
+  [q]
+  (let [[q0 q1 q2 q3] q
+        qi [q1 q2 q3]
+        i (normalize qi) ]
+    {:axis i
+     :hangle [q0 (/ (mag qi) (mag i))] } ))
+
+
 (defn point
   "No special typing on a point.
   It is simply a 3-tuple."
@@ -163,10 +225,9 @@
   (let [[[link-name _] marker-place] marker
         marker-loc (get marker-place :e [0.0 0.0 0.0])
         link @(get-in kb [:link link-name])
-        versor-axis (get-in link [:versor :i] [1.0 0.0 0.0])
-        versor-angle (get-in link [:versor :i] [1.0 0.0 0.0])
-        versor-translation (get-in link [:versor :e] [0.0 0.0 0.0])
-        rot-loc ]
+        versor-rotate (get-in link [:versor :rotate] [1.0 0.0 0.0 0.0])
+        versor-translation (get-in link [:versor :xlate] [0.0 0.0 0.0])
+        rot-loc (quat-sandwich versor-rotate marker-loc)]
     (into [] (map + versor-translation rot-loc))))
 
 (defn gmx
@@ -440,34 +501,6 @@
   (println "x-mul unimplemented")
   )
 
-(defn- quat-exp
-  "Produce a quaternion from an axis and and angle.
-  The axis need not be unit and the angle is [sine cosine] form.
-  "
-  [axis angle]
-  (let [uaxis (normalize axis)
-        [sine cosine] angle]
-    (into [] (cons cosine (map #(* % sine) uaxis) ))))
-
-(defn- quat-prod
-  "Multiply two quaternion."
-  [q1 q2]
-  (let [[a1 b1 c1 d1] q1
-        [a2 b2 c2 d2] q2]
-    [(+ (+ (* a1 a2)) (- (* b1 b2)) (- (* c1 c2)) (- (* d1 d2)))
-     (+ (+ (* a1 b2)) (+ (* b1 a2)) (+ (* c1 d2)) (- (* d1 c2)))
-     (+ (+ (* a1 c2)) (- (* b1 d2)) (+ (* c1 a2)) (+ (* d1 b2)))
-     (+ (+ (* a1 d2)) (+ (* b1 c2)) (- (* c1 b2)) (+ (* d1 a2)))]))
-
-(defn- quat-log
-  "Convert quaternion into axis angle representation."
-  [q]
-  (let [[q0 q1 q2 q3] q
-        qi [q1 q2 q3]
-        i (normalize qi) ]
-    {:i i
-     :a (double-angle [q0 (/ (mag qi) (mag i))]) } ))
-
 (defn rotate
   "rotate a link about the point and axis by an angle.
   Performed by composition of rotations.
@@ -476,11 +509,11 @@
   e(i*theta/2) = cos(theta/2) + i*sin(theta/2)
   "
   [link point axis angle]
-  (let [quat (:versor link)
-        q1 (quat-exp (:i quat) (half-angle (:a quat)))
+  (let [x1 (get-in link [:versor :xlate])
+        q1 (get-in link [:versor :rotate])
         q2 (quat-exp axis (half-angle angle))
-        r (quat-log (quat-prod q1 q2)) ]
-    (merge link {:versor (merge (:versor link) {:e point} r)})))
+        q12 (quat-prod q1 q2) ]
+    (merge link {:versor {:xlate x1 :rotate q12} })))
 
 
 (defn translate
@@ -488,4 +521,4 @@
   This receives a full placement and returns a full placement.
   The vector points in the direction of the translation."
   [link vect]
-  (merge link {:versor (merge-with vec-sum (:versor link) {:e vect})}))
+  (merge link {:versor (merge-with vec-sum (:versor link) {:xlate vect})}))
