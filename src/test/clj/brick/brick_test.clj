@@ -279,42 +279,48 @@
       (expect third-link-pattern result-link)) )
 
 (defn position-analysis
-  "Algorithm for using the plan fragment table to perform position alalysis.
+  "Algorithm for using the plan fragment table to perform position analysis.
   We update a link map and a marker map with invariants.
   The link map of invariants indicates just how well placed the link is.
   The marker map does a similar thing.
   - We will repeatedly evaluate all constraints, making marker properties
-  invariant and producing link motors, until no more constraints can be satisfied.
-  The link motors are then returned.
-  constraints : the list of constraints needing to be satisfied.
-  invariants : invariant properties of markers and links.
+  invariant and producing link versors, until no more constraints can be satisfied.
+  The link versors are then returned along with the constraint plan.
 
-  ys : constraints which have been tried and failed.
-  progress? : is the current round making progress?"
+  constraints : the list of constraints needing to be satisfied.
+  kb : invariant properties of markers and links.
+
+  progress? : is the current round making progress?
+  xs : active constraints which are being tried.
+  plan : constraints which have been successfully applied.
+  ys : constraints which have been tried and failed. "
+
   [kb constraints]
-  (loop [ [x & xs] constraints,
-          ys [], progress? true
-          plan []]
-    (if-not x
+  (loop [progress? false
+         [x & xs] constraints
+         plan [] ys[]]
+    (if x
+      ;; working through the active constraint list.
+      (if (constraint-attempt? kb x)
+        (recur true xs (conj plan x) ys)
+        (recur progress? xs plan (conj ys x)))
+      ;; active constraint list is exhausted.
       (if (empty? ys)
         ;; all the constraints have been satisfied
-        [true kb plan]
+        [true kb plan []]
+        ;; not all constraints have been satisfied
         (if progress?
-          ;; still making progress, try again.
-          (recur ys [] true plan)
+          ;; still making progress, go again.
+          (recur false ys plan [])
           ;; no progress is possible.
-          [false kb plan]))
-      ;; working through the constraint list.
-      (if (constraint-attempt? kb x)
-        (recur xs ys true (conj plan x))
-        (recur xs ys progress? x) ))))
+          [false kb plan ys])))))
 
 
 (let [graph @brick-graph
       mark-pattern
-      '{:loc [:ref #{[ground g1] [ground g3] [ground g2] [brick b1] [brick b2] [brick b3] [cap c1] [cap c2] [cap c3]}]
-        :z [:ref #{[ground g1] [ground g3] [ground g2] [brick b1] [brick b2] [brick b3] [cap c1] [cap c2] [cap c3]}]
-        :x [:ref #{[ground g1] [ground g3] [ground g2] [brick b1] [brick b2] [brick b3] [cap c1] [cap c2] [cap c3]}]}
+      '{:loc [:ref #{[cap c2] [ground g1] [brick b2] [brick b1] [cap c3] [brick b3] [ground g3] [ground g2]}]
+        :z [:ref #{[ground g1] [brick b1] [cap c3] [brick b3] [ground g3] [ground g2]}]
+        :x [:ref #{[ground g1] [brick b3] [ground g3] [ground g2]} ]}
 
       link-pattern
       '{ground [:ref {:tdof {:# 0} :rdof {:# 0}
@@ -325,36 +331,40 @@
                      :versor {:xlate [2.0 0.0 0.0]
                               :rotate [0.5000000000000001 -0.5 0.4999999999999999 -0.5]}}]
         cap [:ref {:tdof {:# 0, :point [2.0 0.0 -3.0]}
-                   :rdof {:# 3}
+                   :rdof {:# 1 :axis [0.0 -0.6 0.8]}
                    :versor {:xlate [2.0 -3.0 -3.0] :rotate [1.0 0.0 0.0 0.0]}}] }
 
-      plan-pattern
+      success-pattern
       '[
         {:type :coincident
-         :m1 [[ground g2] {:e [5.0 0.0 0.0] :z [nil nil nil] :x [nil nil nil]}]
+         :m1 [[ground g2] {:e [5.0 0.0 0.0], :z [nil nil nil], :x [nil nil nil]}]
          :m2 [[brick b2] {:e [0.0 3.0 0.0], :z [nil nil nil], :x [nil nil nil]}]}
-        {:type :coincident
-         :m1 [[brick b4] {:e [1.0 0.0 0.0], :z [nil nil nil], :x [nil nil nil]}]
-         :m2 [[cap c4] {:e [-1.0 0.0 0.0], :z [nil nil nil], :x [nil nil nil]}]}
         {:type :coincident
          :m1 [[ground g1] {:e [2.0 0.0 0.0], :z [nil nil nil], :x [nil nil nil]}]
          :m2 [[brick b1] {:e [0.0 0.0 0.0], :z [nil nil nil], :x [nil nil nil]}]}
         {:type :coincident
          :m1 [[brick b3] {:e [0.0 0.0 4.0], :z [nil nil nil], :x [nil nil nil]}]
-         :m2 [[cap c3] {:e [0.0 0.0 4.0], :z [nil nil nil], :x [nil nil nil]}]}
-        {:type :coincident
-         :m1 [[brick b3] {:e [0.0 0.0 4.0], :z [nil nil nil], :x [nil nil nil]}]
          :m2 [[ground g3] {:e [2.0 4.0 0.0], :z [nil nil nil], :x [nil nil nil]}]}
         {:type :coincident
          :m1 [[cap c2] {:e [0.0 3.0 0.0], :z [nil nil nil], :x [nil nil nil]}]
-         :m2 [[brick b2] {:e [0.0 3.0 0.0], :z [nil nil nil], :x [nil nil nil]}]}]
+         :m2 [[brick b2] {:e [0.0 3.0 0.0], :z [nil nil nil], :x [nil nil nil]}]}
+        {:type :coincident
+         :m1 [[brick b3] {:e [0.0 0.0 4.0], :z [nil nil nil], :x [nil nil nil]}]
+         :m2 [[cap c3] {:e [0.0 0.0 4.0], :z [nil nil nil], :x [nil nil nil]}]}]
+
+      failure-pattern
+      '[
+        {:type :coincident
+         :m1 [[brick b4] {:e [1.0 0.0 0.0], :z [nil nil nil], :x [nil nil nil]}]
+         :m2 [[cap c4] {:e [-1.0 0.0 0.0], :z [nil nil nil], :x [nil nil nil]}]}]
       ]
 
   (let [constraints (joints->constraints graph)
         kb (graph->init-invariants graph)
-        [success? result-kb result-plan] (position-analysis kb constraints)
+        [success? result-kb result-success result-failure] (position-analysis kb constraints)
         {result-mark :mark result-link :link} (ref->str result-kb)]
     (expect mark-pattern result-mark)
     (expect link-pattern result-link)
-    (expect plan-pattern result-plan)) )
+    (expect success-pattern result-success)
+    (expect failure-pattern result-failure)) )
 

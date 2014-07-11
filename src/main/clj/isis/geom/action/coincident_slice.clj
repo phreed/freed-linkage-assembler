@@ -45,10 +45,13 @@
 (defmethod master/constraint-attempt?
   :coincident
   [kb constraint]
-  (let [{m1 :m1 m2 :m2} constraint]
-    (when-let [ [ma1 ma2] (coincident->precondition? kb m1 m2) ]
-      (coincident->transform! kb ma1 ma2)))
-  true)
+  (let [{m1 :m1 m2 :m2} constraint
+        result (coincident->precondition? kb m1 m2) ]
+    (if (false? result)
+      false
+      (let [[ma1 ma2] result]
+        (coincident->transform! kb ma1 ma2)
+        true))))
 
 (defn- transform!->0-1-coincident
   "PFT entry: (0,1,coincident)
