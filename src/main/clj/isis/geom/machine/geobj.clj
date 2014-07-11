@@ -209,16 +209,21 @@
 
 
 
+(defn versor-apply
+  "Place the point into the global coordinate frame using the versor."
+  [versor point]
+  (let [versor-rotate (get versor :rotate [1.0 0.0 0.0 0.0])
+        versor-translation (get versor :xlate [0.0 0.0 0.0])
+        rot-loc (quat-sandwich versor-rotate point)]
+    (into [] (map + versor-translation rot-loc))))
+
 (defn gmp
   "marker position (in global coordinate frame)."
   [marker kb]
   (let [[[link-name _] marker-place] marker
         marker-loc (get marker-place :e [0.0 0.0 0.0])
-        link @(get-in kb [:link link-name])
-        versor-rotate (get-in link [:versor :rotate] [1.0 0.0 0.0 0.0])
-        versor-translation (get-in link [:versor :xlate] [0.0 0.0 0.0])
-        rot-loc (quat-sandwich versor-rotate marker-loc)]
-    (into [] (map + versor-translation rot-loc))))
+        link @(get-in kb [:link link-name])]
+    (versor-apply (:versor link) marker-loc)))
 
 (defn gmx
   "marker x-axis vector (in global coordinate frame)."
@@ -506,7 +511,7 @@
   (let [x1 (get-in link [:versor :xlate])
         q1 (get-in link [:versor :rotate])
         q2 (quat-exp axis (half-angle angle))
-        q12 (quat-prod q1 q2)
+        q12 (quat-prod q2 q1)
         x2 (vec-diff x1 point)
         x3 (quat-sandwich q2 x2)
         x12 (vec-sum x3 point)]

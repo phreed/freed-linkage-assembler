@@ -62,16 +62,17 @@
   The procedure keeps the position of point ?center invariant,
   and moves ?from-point on ?link to globally-fixed ?to-point."
   [?link ?center ?from-point ?to-point ?axis ?axis-1 ?axis-2]
-  (let [r0 (perp-base ?to-point (line ?center ?axis))
-        r1 (vec-diff ?to-point r0)
-        r2 (vec-diff ?from-point r0)]
-    (if-not (tol/near-equal? :default (mag r1) (mag r2))
+  (let [pivot (perp-base ?to-point (line ?center ?axis))
+        to-vec (vec-diff ?to-point pivot)
+        from-vec (vec-diff ?from-point pivot)]
+    (if-not (tol/near-equal? :default (mag to-vec) (mag from-vec))
       (emsg/emsg-4 ?from-point ?to-point ?center ?axis)
-      (let [r4 (outer-prod r1 r2)]
+      (let [r4 (outer-prod to-vec from-vec)]
         (if-not (parallel? r4 ?axis false)
           (emsg/emsg-3 r4 ?axis)
           (if (and (nil? ?axis-1) (nil? ?axis-2))
-            (rotate ?link ?center ?axis (vec-angle r2 r1 ?axis))
+            (rotate ?link ?center ?axis
+                    (vec-angle from-vec to-vec ?axis))
             (dof-2r:p->p ?link ?center ?from-point ?to-point ?axis-1 ?axis-2 1)))))))
 
 (defn dof-3r:p->p

@@ -259,7 +259,8 @@
                 [:ref {:tdof {:# 0 :point [2.0 0.0 0.0]}
                        :rdof {:# 0}
                        :versor {:xlate [2.0 0.0 0.0]
-                                :rotate [0.5000000000000001 -0.5 0.4999999999999999 -0.5]}}])
+                                :rotate [0.5000000000000001
+                                   -0.5 -0.4999999999999999 -0.5]}}])
       ]
 
   ;; first by 3-3-coincident
@@ -275,8 +276,8 @@
   ;; finally by 0-1-coincident
   (let [_ (constraint-attempt? kb third-input)
           {result-mark :mark result-link :link} (ref->str kb)]
-      (expect third-mark-pattern result-mark)
-      (expect third-link-pattern result-link)) )
+    (expect third-mark-pattern result-mark)
+    (expect third-link-pattern result-link)) )
 
 (defn position-analysis
   "Algorithm for using the plan fragment table to perform position analysis.
@@ -323,16 +324,17 @@
         :x [:ref #{[ground g1] [brick b3] [ground g3] [ground g2]} ]}
 
       link-pattern
-      '{ground [:ref {:tdof {:# 0} :rdof {:# 0}
-                      :versor {:xlate [0.0 0.0 0.0]
-                               :rotate [1.0 0.0 0.0 0.0]} }]
-        brick [:ref {:tdof {:# 0 :point [5.0 0.0 0.0]}
-                     :rdof {:# 0}
-                     :versor {:xlate [2.0 0.0 0.0]
-                              :rotate [0.5000000000000001 -0.5 0.4999999999999999 -0.5]}}]
-        cap [:ref {:tdof {:# 0, :point [2.0 0.0 -3.0]}
-                   :rdof {:# 1 :axis [0.0 -0.6 0.8]}
-                   :versor {:xlate [2.0 -3.0 -3.0] :rotate [1.0 0.0 0.0 0.0]}}] }
+      '{ground [:ref {:versor {:xlate [0.0 0.0 0.0]
+                               :rotate [1.0 0.0 0.0 0.0]}
+                      :tdof {:# 0}, :rdof {:# 0}}]
+        brick [:ref {:versor {:xlate [2.0 0.0 0.0]
+                              :rotate [0.5000000000000001 -0.5 -0.4999999999999999 -0.5]}
+                     :tdof {:# 0 :point [5.0 0.0 0.0]}
+                     :rdof {:# 0}}]
+        cap [:ref {:versor {:xlate [5.0 -3.0 0.0]
+                            :rotate [1.0 0.0 0.0 0.0]}
+                   :tdof {:# 0 :point [5.0 0.0 0.0]}
+                   :rdof {:# 1 :axis [0.0 -0.6 0.8]}}]}
 
       success-pattern
       '[
