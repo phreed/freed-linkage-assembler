@@ -317,17 +317,16 @@
         :x [:ref #{[ground g1] [ground g3] [ground g2] [brick b1] [brick b2] [brick b3] [cap c1] [cap c2] [cap c3]}]}
 
       link-pattern
-      '{ground [:ref {:versor {:xlate [0.0 0.0 0.0]
-                               :rotate [1.0 0.0 0.0 0.0]}
-                      :tdof {:# 0} :rdof {:# 0}}]
-        brick [:ref {:tdof {:# 0 :point [2.0 0.0 0.0]}
+      '{ground [:ref {:tdof {:# 0} :rdof {:# 0}
+                      :versor {:xlate [0.0 0.0 0.0]
+                               :rotate [1.0 0.0 0.0 0.0]} }]
+        brick [:ref {:tdof {:# 0 :point [5.0 0.0 0.0]}
                      :rdof {:# 0}
                      :versor {:xlate [2.0 0.0 0.0]
-                              :rotate [0.5 -0.5 0.5 -0.5]}}]
-        cap [:ref {:tdof {:# 0 :point [8.0 -3.0 0.0]}
-                   :rdof {:# 0}
-                   :versor {:xlate [2.57 0.4 1.71]
-                            :rotate [0.5 0.7298 0.417028 0.208515]} }]}
+                              :rotate [0.5000000000000001 -0.5 0.4999999999999999 -0.5]}}]
+        cap [:ref {:tdof {:# 0, :point [2.0 0.0 -3.0]}
+                   :rdof {:# 3}
+                   :versor {:xlate [2.0 -3.0 -3.0] :rotate [1.0 0.0 0.0 0.0]}}] }
 
       plan-pattern
       '[

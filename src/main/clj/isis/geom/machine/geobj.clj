@@ -2,7 +2,6 @@
   (:require [isis.geom.machine
              [tolerance :as tol]]) )
 
-
 (defn mag
   "If quantity is a vector, returns the magnitude of quantity.
   If quantity is a scalar, returns the absolute value of quantity."
@@ -507,8 +506,11 @@
   (let [x1 (get-in link [:versor :xlate])
         q1 (get-in link [:versor :rotate])
         q2 (quat-exp axis (half-angle angle))
-        q12 (quat-prod q1 q2) ]
-    (merge link {:versor {:xlate x1 :rotate q12} })))
+        q12 (quat-prod q1 q2)
+        x2 (vec-diff x1 point)
+        x3 (quat-sandwich q2 x2)
+        x12 (vec-sum x3 point)]
+    (merge link {:versor {:xlate x12 :rotate q12} })))
 
 
 (defn translate
