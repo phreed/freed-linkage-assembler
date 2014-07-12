@@ -73,9 +73,10 @@
       #{#{[ground j1] [brick jg1]}
         #{[ground j2] [brick jg2]}
         #{[ground j3] [brick jg3]}
-        #{[brick jc1] [cap j1]}
+       ;; #{[brick jc1] [cap j1]}
         #{[brick jc2] [cap j2]}
-        #{[cap j3] [brick jc3]}} }))
+        #{[cap j3] [brick jc3]}
+        } }))
 
 (def brick-graph-goal
   "This shows the ultimate goal for the position-analysis.
@@ -326,15 +327,21 @@
       link-pattern
       '{ground [:ref {:versor {:xlate [0.0 0.0 0.0]
                                :rotate [1.0 0.0 0.0 0.0]}
-                      :tdof {:# 0}, :rdof {:# 0}}]
+                      :tdof {:# 0} :rdof {:# 0}}]
         brick [:ref {:versor {:xlate [2.0 0.0 0.0]
                               :rotate [0.5000000000000001 -0.5 -0.4999999999999999 -0.5]}
-                     :tdof {:# 0 :point [5.0 0.0 0.0]}
-                     :rdof {:# 0}}]
-        cap [:ref {:versor {:xlate [5.0 -3.0 0.0]
-                            :rotate [1.0 0.0 0.0 0.0]}
-                   :tdof {:# 0 :point [5.0 0.0 0.0]}
-                   :rdof {:# 1 :axis [0.0 -0.6 0.8]}}]}
+                     :tdof {:# 0 :point [5.0 0.0 0.0]} :rdof {:# 0}}]
+        cap
+        #_[:ref {:versor {:xlate [0.0 0.0 0.0], :rotate [1.0 0.0 0.0 0.0]} :tdof {:# 3} :rdof {:# 3}}]
+        [:ref {:versor {:xlate [5.0 -3.0 0.0] :rotate [1.0 0.0 0.0 0.0]}
+               :tdof {:# 0 :point [5.0 0.0 0.0]}, :rdof {:# 3}}]
+
+        #_[:ref {:versor {:xlate [3.4895427658483675 -1.1870270270270273 1.22796000786116]
+                            :rotate [0.7071067811865476 -0.37199244398022174 -0.2789943329851663 -0.20924574973887472]}
+                   :tdof {:# 0, :point [5.0 0.0 0.0]}
+                   :rdof {:# 1, :axis [-0.6489433709421998 0.3642913256601508 0.6679553363503764]}}]
+        }
+
 
       success-pattern
       '[

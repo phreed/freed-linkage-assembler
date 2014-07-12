@@ -379,30 +379,6 @@
   (println "pc-locus unimplemented")
   )
 
-(defmulti perp-base
-  "Returns the point on the surface closest to the specified point.
-  The surface can be 0d 1d 2d."
-  (fn [point surface] (:type surface)))
-
-(defmethod perp-base
-  :line
-  [point line]
-  (into [] (map #(- %2 (* %3 (- %1 %2))) point (:e line) (:d line)) ))
-
-(defmethod perp-base
-  :plane
-  [point plane]
-  (let [[p1 p2 p3] point
-        {[s1 s2 s3] :e, [sn1 sn2 sn3] :n} plane
-        q [(- p1 s1) (- p2 s2) (- p3 s3)]
-        s-m (mag [sn1 sn2 sn3])
-        s-u [(/ sn1 s-m) (/ sn2 s-m) (/ sn3 s-m)]
-        sq-in-prod (reduce + (map * s-u q))
-        sn (map #(* % sq-in-prod) s-u)
-        pu ()
-        ]
-    )
-  )
 
 
 (defn screw
@@ -443,40 +419,6 @@
   (cond (vector? quantity-or-pair) (nth quantity-or-pair 1)
         :else (Math/cos quantity-or-pair)))
 
-(defn vec-angle
-  "The angle between vector-1 and vector-2,
-  viewed from the positive direction of axis,
-  measured counter-clockwise from vector-1 to vector-2.
-  The angle is represented as a (sine cosine) pair.
-
-  |a.b| = |a| |b| cos 0 & |a^b| = |a| |b| sin 0
-  or [sine cosine] = [|a^b| a.b]/(|a|*|b|).
-  The sign for sine is determined by comparing the
-  direction of the axis to a^b."
-  [vector-1 vector-2 axis]
-  (let [ab-outer (outer-prod vector-1 vector-2)
-        ab-inner (inner-prod vector-2 axis)
-        ab-mag (* (mag vector-1) (mag vector-2))
-        aligned? (pos? (inner-prod ab-outer axis))
-        sine (/ (mag ab-outer) ab-mag)
-        cosine (/ ab-inner ab-mag)]
-    (cond aligned? [sine cosine]
-          :else [(- sine) cosine] )))
-
-(defn half-angle
-  "The angle specified in [sine cosine] form is in halved. "
-  [[sine cosine]]
-  [(Math/sin (* 0.5 (Math/asin sine))) (Math/cos (* 0.5 (Math/acos cosine)))])
-
-(defn double-angle
-  "The angle specified in [sine cosine] form is doubled. "
-  [[sine cosine]]
-  (let [double-sine (Math/sin (* 2.0 (Math/asin sine)))
-        double-cosine (Math/cos (* 2.0 (Math/acos cosine)))
-        double-cosine (cond (< -0.0001 double-cosine 0.0001) 0.0
-                            :else double-cosine)]
-    [double-sine double-cosine]))
-
 (defn vec-diff
   "Vector difference of vector-1 and vector-2.
   Produces a vector from vector-subtrahend to vector-minuend."
@@ -492,7 +434,73 @@
 (defn vec-sum
   "Vector sum of vector-1 and vector-2."
   [vector-1 vector-2]
-  (into [] (map + vector-1 vector-2)))
+  (into [] (map (fn [a b] (let [ab (+ a b)] (if (tol/near-zero? :tiny ab) 0.0 ab))) vector-1 vector-2)))
+
+(defn vec-angle
+  "The angle between vector-1 and vector-2,
+  viewed from the positive direction of axis,
+  measured counter-clockwise from vector-1 to vector-2.
+  The angle is represented as a (sine cosine) pair.
+
+  |a.b| = |a| |b| cos 0 & |a^b| = |a| |b| sin 0
+  or [sine cosine] = [|a^b| a.b]/(|a|*|b|).
+  The sign for sine is determined by comparing the
+  direction of the axis to a^b."
+  [vector-1 vector-2 axis]
+  (let [scale (inner-prod vector-2 axis)
+        center (into [] (map #(* % scale) axis))
+        diff-1 (normalize (vec-diff vector-1 center))
+        diff-2 (normalize (vec-diff vector-2 center))
+
+        cosine (inner-prod diff-1 diff-2)
+
+        sine-vec (outer-prod diff-1 diff-2)
+        sine (if (pos? (inner-prod sine-vec axis))
+              (mag sine-vec)
+              (- (mag sine-vec)))]
+    [sine cosine]))
+
+(defn half-angle
+  "The angle specified in [sine cosine] form is in halved. "
+  [[sine cosine]]
+  [(Math/sin (* 0.5 (Math/asin sine))) (Math/cos (* 0.5 (Math/acos cosine)))])
+
+(defn double-angle
+  "The angle specified in [sine cosine] form is doubled. "
+  [[sine cosine]]
+  (let [double-sine (Math/sin (* 2.0 (Math/asin sine)))
+        double-cosine (Math/cos (* 2.0 (Math/acos cosine)))
+        double-cosine (cond (< -0.0001 double-cosine 0.0001) 0.0
+                            :else double-cosine)]
+    [double-sine double-cosine]))
+
+(defmulti perp-base
+  "Returns the point on the surface closest to the specified point.
+  The surface can be 0d 1d 2d."
+  (fn [point surface] (:type surface)))
+
+(defmethod perp-base
+  :line
+  [point line]
+  (let [{anchor :e, axis :d} line
+        point-diff (vec-diff point anchor)
+        scale (inner-prod point-diff axis)]
+    (vec-sum anchor (map #(* % scale) axis))))
+
+(defmethod perp-base
+  :plane
+  [point plane]
+  (let [[p1 p2 p3] point
+        {[s1 s2 s3] :e, [sn1 sn2 sn3] :n} plane
+        q [(- p1 s1) (- p2 s2) (- p3 s3)]
+        s-m (mag [sn1 sn2 sn3])
+        s-u [(/ sn1 s-m) (/ sn2 s-m) (/ sn3 s-m)]
+        sq-in-prod (reduce + (map * s-u q))
+        sn (map #(* % sq-in-prod) s-u)
+        pu ()
+        ]
+    )
+  )
 
 (defn x-mul
   "Multiply transform times vector-or transform."

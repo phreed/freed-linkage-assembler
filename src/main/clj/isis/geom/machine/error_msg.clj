@@ -20,10 +20,10 @@
 
 (defn emsg-3
   [axis-1 axis-2]
-  (error 1 (axis-1 axis-2)
+  (error 1 [axis-1 axis-2]
   "Required rotation is inconsistent with available DOF's."))
 
-(defn emsg-4
+(defn e-dim-oc
   [from to center axis]
   (error 1 [" from-point: " from " to-point: " to
           " about-axis: " axis " about-center: " center]
@@ -33,7 +33,7 @@
 
 (def emsg-6 "Surfaces do not intersect in a 1D curve.")
 
-(defn emsg-7
+(defn e-mark-place-ic
   [dist from to]
   (error 1 [" distance: " dist " from-point: " from " to-point: " to]
          "Cannot put marker into position with available DOF's."))
