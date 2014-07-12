@@ -16,13 +16,32 @@
   [vect]
   (into [] (map #(/ % (mag vect)) vect)))
 
-(defn- quat-exp
+
+(defn half-angle
+  "The angle specified in [sine cosine] form is in halved. "
+  [angle]
+  (let [[sine cosine] angle
+        rad-cos (/ (Math/acos cosine) 2.0)
+        rads ((if (pos? sine) + -) rad-cos)]
+  [(Math/sin rads) (Math/cos rads)]))
+
+(defn double-angle
+  "The angle specified in [sine cosine] form is doubled. "
+  [[sine cosine]]
+  (let [double-sine (Math/sin (* 2.0 (Math/asin sine)))
+        double-cosine (Math/cos (* 2.0 (Math/acos cosine)))
+        double-cosine (cond (< -0.0001 double-cosine 0.0001) 0.0
+                            :else double-cosine)]
+    [double-sine double-cosine]))
+
+
+(defn axis-angle->quaternion
   "Produce a quaternion from an axis and and angle.
   The axis need not be unit and the angle is [sine cosine] form.
   "
   [axis angle]
   (let [uaxis (normalize axis)
-        [sine cosine] angle]
+        [sine cosine] (half-angle angle)]
     (into [] (cons cosine (map #(* % sine) uaxis) ))))
 
 (defn- quat-sandwich
@@ -460,20 +479,6 @@
               (- (mag sine-vec)))]
     [sine cosine]))
 
-(defn half-angle
-  "The angle specified in [sine cosine] form is in halved. "
-  [[sine cosine]]
-  [(Math/sin (* 0.5 (Math/asin sine))) (Math/cos (* 0.5 (Math/acos cosine)))])
-
-(defn double-angle
-  "The angle specified in [sine cosine] form is doubled. "
-  [[sine cosine]]
-  (let [double-sine (Math/sin (* 2.0 (Math/asin sine)))
-        double-cosine (Math/cos (* 2.0 (Math/acos cosine)))
-        double-cosine (cond (< -0.0001 double-cosine 0.0001) 0.0
-                            :else double-cosine)]
-    [double-sine double-cosine]))
-
 (defmulti perp-base
   "Returns the point on the surface closest to the specified point.
   The surface can be 0d 1d 2d."
@@ -518,11 +523,12 @@
   [link point axis angle]
   (let [x1 (get-in link [:versor :xlate])
         q1 (get-in link [:versor :rotate])
-        q2 (quat-exp axis (half-angle angle))
+        q2 (axis-angle->quaternion axis angle)
         q12 (quat-prod q2 q1)
-        x2 (vec-diff x1 point)
-        x3 (quat-sandwich q2 x2)
-        x12 (vec-sum x3 point)]
+
+        x2 (vec-diff point x1)
+        x3 (quat-sandwich q12 x2)
+        x12 (vec-diff point x3)]
     (merge link {:versor {:xlate x12 :rotate q12} })))
 
 
