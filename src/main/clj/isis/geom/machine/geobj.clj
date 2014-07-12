@@ -26,13 +26,14 @@
   [(Math/sin rads) (Math/cos rads)]))
 
 (defn double-angle
-  "The angle specified in [sine cosine] form is doubled. "
-  [[sine cosine]]
-  (let [double-sine (Math/sin (* 2.0 (Math/asin sine)))
-        double-cosine (Math/cos (* 2.0 (Math/acos cosine)))
-        double-cosine (cond (< -0.0001 double-cosine 0.0001) 0.0
-                            :else double-cosine)]
-    [double-sine double-cosine]))
+  "The angle specified in [sine cosine] form is doubled. 
+    Make sure to handle the different quadrants.
+    Probably should handle tolerance around zero as well."
+  [angle]
+  (let [[sine cosine] angle
+      rad-cos (* 2.0 (Math/acos cosine))
+      rads ((if (pos? sine) + -) rad-cos)]
+    [(Math/sin rads) (Math/cos rads)]))
 
 
 (defn axis-angle->quaternion
