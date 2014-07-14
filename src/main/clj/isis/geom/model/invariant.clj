@@ -12,17 +12,15 @@
   "Create a map of link invariants within references."
   [] {})
 
-(defn marker->add-invariant!
+
+(defn set-marker-invariant!
   "Abstract away the addition of the invariant so
   programs do not have to reference a global variable.
-  This is a set of lists: position, z-axis, and x-axis vectors."
-  [marker-invs marker-name invariant-type]
-  (let [{loc :loc, z :z, x :x} marker-invs]
-    (dosync
-     (case invariant-type
-       :loc (alter loc conj marker-name)
-       :z (alter z conj marker-name)
-       :x (alter x conj marker-name))) ))
+  The current types of invariant are:
+    position, z-axis, and x-axis vectors."
+  [kb link-name proper-name invariant-type]
+  (alter (get-in kb [:mark invariant-type])
+         conj [link-name proper-name]) )
 
 
 (defn marker->invariant?
@@ -30,8 +28,29 @@
   do not have to reference a global variable."
   [kb marker invariant-type]
   (let [marker-invs (get-in kb [:mark invariant-type]),
-        [marker-name _] marker]
-    (contains? @marker-invs marker-name)))
+        [marker-name _] marker
+        [marker-link-name _] marker-name ]
+    (cond (contains? @marker-invs marker-name) true
+          (contains? @marker-invs [marker-link-name]) true
+          :else false )))
+
+(defn- link-invariant-filter
+  [inv-set link-name]
+  (into #{[link-name]}
+        (filter #(let [[lname] %] (not= link-name lname))
+                (seq inv-set))))
+
+(defn set-link-invariant!
+  "When a link has no degrees of freedom all properties
+  for all of its markers become invariant."
+  [kb link-name]
+  (let [loc-inv (get-in kb [:mark :loc])
+        z-axis-inv (get-in kb [:mark :z])
+        x-axis-inv (get-in kb [:mark :x]) ]
+    (alter loc-inv link-invariant-filter link-name)
+    (alter z-axis-inv link-invariant-filter link-name)
+    (alter x-axis-inv link-invariant-filter link-name)
+    kb ))
 
 
 (defn make->invariant

@@ -1,8 +1,7 @@
 (ns isis.geom.action.in-plane-slice
   "The table of rules."
   (:require [isis.geom.position-dispatch :as master]
-            [isis.geom.model.invariant :refer [marker->invariant?
-                                               marker->add-invariant!]] ))
+            [isis.geom.model.invariant :refer [marker->invariant?]] ))
 
 
 (defn in-plane->precondition?
@@ -14,14 +13,5 @@
         (and (marker->invariant? inv m2 :loc)
              (marker->invariant? inv m2 :z))
         m1))
-
-
-
-
-
-(defn in-plane->postcondition!
-  "Associated with each constraint type is a function which
-  checks/sets the postconditions for after the constraint has been satisfied."
-  [_ _ _])
 
 

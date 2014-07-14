@@ -1,8 +1,7 @@
 (ns isis.geom.action.helical-slice
   "The table of rules."
   (:require [isis.geom.position-dispatch :as master]
-            [isis.geom.model.invariant :refer [marker->invariant?
-                                               marker->add-invariant!]] ))
+            [isis.geom.model.invariant :refer [marker->invariant?]] ))
 
 
 
@@ -16,11 +15,4 @@
              (marker->invariant? inv m1 :x))
     m2))
 
-
-
-
-(defn helical->postcondition!
-  "Associated with each constraint type is a function which
-  checks/sets the postconditions for once the constraint has been satisfied."
-  [_ _ _])
 

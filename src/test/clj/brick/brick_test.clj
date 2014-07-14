@@ -13,7 +13,6 @@
              [invariant :refer [init-marker-invariant-s
                                 init-link-invariant-s
                                 init-link-invariant
-                                marker->add-invariant!
                                 make->invariant]]]
             [isis.geom.position-dispatch
              :refer [constraint-attempt?]]
@@ -78,15 +77,6 @@
         #{[cap j3] [brick jc3]}
         } }))
 
-(def brick-graph-goal
-  "This shows the ultimate goal for the position-analysis.
-  Notice that the ground has no properties, this idicates the
-  use of the default values, it also indicates the 'base' object.
-  In this example there is no rotation so the {:z3 :z1 :z2} values
-  could be anything."
-  '{:link-motors
-    {ground {}
-     brick {:e [8.0 -5.0 -1.0] :z []}}})
 
 
 (declare graph->position-analysis)
@@ -120,9 +110,9 @@
 
 
 (expect
- '{:mark {:loc [:ref #{[ground g1] [ground g3] [ground g2]}],
-          :z [:ref #{[ground g1] [ground g3] [ground g2]}],
-          :x [:ref #{[ground g1] [ground g3] [ground g2]}]},
+ '{:mark {:loc [:ref #{[ground]}],
+          :z [:ref #{[ground]}],
+          :x [:ref #{[ground]}]},
    :link {brick [:ref {:tdof {:# 3}, :rdof {:# 3},
                        :versor {:xlate [0.0 0.0 0.0] :rotate [1.0 0.0 0.0 0.0]}}]
           ground [:ref {:tdof {:# 0}, :rdof {:# 0},
@@ -170,9 +160,9 @@
         :m2 [[brick b1] {:e [-100.0 50.0 10.0]}]}
 
       pattern
-      '{:mark {:loc [:ref #{[ground g1] [ground g3] [ground g2] [brick b1]}]
-               :z [:ref #{[ground g1] [ground g3] [ground g2]}]
-               :x [:ref #{[ground g1] [ground g3] [ground g2]}]}
+      '{:mark {:loc [:ref #{[ground] [brick b1]}]
+               :z [:ref #{[ground]}]
+               :x [:ref #{[ground]}]}
         :link {ground [:ref {:tdof {:# 0} :rdof {:# 0}
                              :versor {:xlate [0.0 0.0 0.0] :rotate [1.0 0.0 0.0 0.0]}}]
                brick [:ref {:tdof {:# 0 :point [0.0 0.0 0.0]}, :rdof {:# 3}
@@ -189,9 +179,9 @@
         :m2 [[brick b3] {:e [0.0 0.0 4.0]}]}
 
       mark-pattern
-      '{:loc [:ref #{[ground g1] [ground g3] [ground g2] [brick b3]}]
-        :z [:ref #{[ground g1] [ground g3] [ground g2]}]
-        :x [:ref #{[ground g1] [ground g3] [ground g2]}]}
+      '{:loc [:ref #{[ground] [brick b3]}]
+        :z [:ref #{[ground]}]
+        :x [:ref #{[ground]}]}
       link-pattern
       '{ground [:ref {:tdof {:# 0}, :rdof {:# 0}
                       :versor {:xlate [0.0 0.0 0.0] :rotate [1.0 0.0 0.0 0.0]}}]
@@ -216,9 +206,9 @@
         :m2 [[brick b1] {:e [0.0 0.0 0.0]}]}
 
       first-mark-pattern
-      '{:loc [:ref #{[ground g1] [ground g3] [ground g2] [brick b1]}]
-        :z [:ref #{[ground g1] [ground g3] [ground g2]}]
-        :x [:ref #{[ground g1] [ground g3] [ground g2]}]}
+      '{:loc [:ref #{[ground] [brick b1]}]
+        :z [:ref #{[ground]}]
+        :x [:ref #{[ground]}]}
       first-link-pattern
       '{ground [:ref {:tdof {:# 0}, :rdof {:# 0}
                       :versor {:xlate [0.0 0.0 0.0] :rotate [1.0 0.0 0.0 0.0]}}]
@@ -234,9 +224,9 @@
         :m2 [[brick b2] {:e [0.0 3.0 0.0]}]}
 
       second-mark-pattern
-      '{:loc [:ref #{[ground g1] [ground g3] [ground g2] [brick b1] [brick b2]}]
-        :z [:ref #{[ground g1] [ground g3] [ground g2] [brick b2]}]
-        :x [:ref #{[ground g1] [ground g3] [ground g2]}]}
+      '{:loc [:ref #{[ground] [brick b1] [brick b2]}]
+        :z [:ref #{[ground] [brick b2]}]
+        :x [:ref #{[ground]}]}
 
       second-link-pattern
       (assoc-in first-link-pattern ['brick]
@@ -251,9 +241,9 @@
         :m2 [[brick b3] {:e [0.0 0.0 4.0]}]}
 
       third-mark-pattern
-      '{:loc [:ref #{[ground g1] [ground g3] [ground g2] [brick b1] [brick b2] [brick b3]}]
-        :z [:ref #{[ground g1] [ground g3] [ground g2] [brick b2] [brick b3]}]
-        :x [:ref #{[ground g1] [ground g3] [ground g2] [brick b3]}]}
+      '{:loc [:ref #{[ground] [brick]}]
+        :z [:ref #{[ground] [brick]}]
+        :x [:ref #{[ground] [brick]}]}
 
       third-link-pattern
       (assoc-in second-link-pattern ['brick]
@@ -320,58 +310,56 @@
 
 (let [graph @brick-graph
       mark-pattern
-      '{:loc [:ref #{[cap c2] [ground g1] [brick b2] [brick b1] [cap c3] [brick b3] [ground g3] [ground g2]}]
-        :z [:ref #{[ground g1] [brick b1] [cap c3] [brick b3] [ground g3] [ground g2]}]
-        :x [:ref #{[ground g1] [brick b3] [ground g3] [ground g2]} ]}
+      '{:loc [:ref #{[cap] [ground] [brick] }]
+        :z [:ref #{[ground] [brick] [cap]}]
+        :x [:ref #{[ground] [brick] [cap]} ]}
 
       link-pattern
       '{ground [:ref {:versor {:xlate [0.0 0.0 0.0]
                                :rotate [1.0 0.0 0.0 0.0]}
                       :tdof {:# 0} :rdof {:# 0}}]
         brick [:ref {:versor {:xlate [2.0 0.0 0.0]
-                              :rotate [0.5000000000000001 -0.5 -0.4999999999999999 -0.5]}
-                     :tdof {:# 0 :point [5.0 0.0 0.0]} :rdof {:# 0}}]
-        cap
-        #_[:ref {:versor {:xlate [0.0 0.0 0.0], :rotate [1.0 0.0 0.0 0.0]}
-                 :tdof {:# 3} :rdof {:# 3}}]
-        #_[:ref {:versor {:xlate [5.0 -3.0 0.0] :rotate [1.0 0.0 0.0 0.0]}
-                 :tdof {:# 0 :point [5.0 0.0 0.0]}, :rdof {:# 3}}]
-        [:ref {:versor {:xlate [2.1476923076923073
-                                0.11076923076923095
-                                0.9230769230769234]
-                        :rotate [0.5099019513592785
-                                 -0.6275716324421889
-                                 -0.47067872433164165
-                                 -0.3530090432487313]}
-               :tdof {:# 0 :point [5.0 0.0 0.0]}
-               :rdof {:# 1, :axis [-0.5999999999999999
-                                   0.8 4.440892098500625E-17]}}]}
+                              :rotate [0.5000000000000001
+                                       -0.5
+                                       -0.4999999999999999
+                                       -0.5]}
+                     :tdof {:# 0 :point [5.0 0.0 0.0]}
+                     :rdof {:# 0}}]
+        cap [:ref {:versor {:xlate [1.5615384615384618
+                                    0.34615384615384615
+                                    1.3846153846153855]
+                            :rotate [0.5
+                                     -0.7307692307692308
+                                     -0.4230769230769231
+                                     -0.1923076923076923]}
+                   :tdof {:# 0 :point [5.0 0.0 0.0]}
+                   :rdof {:# 0}}]}
 
 
       success-pattern
       '[
         {:type :coincident
-         :m1 [[ground g2] {:e [5.0 0.0 0.0], :z [nil nil nil], :x [nil nil nil]}]
-         :m2 [[brick b2] {:e [0.0 3.0 0.0], :z [nil nil nil], :x [nil nil nil]}]}
+         :m1 [[ground g2] {:e [5.0 0.0 0.0] :z [nil nil nil ] :x [nil nil nil]}]
+         :m2 [[brick b2] {:e [0.0 3.0 0.0] :z [nil nil nil] :x [nil nil nil]} ]}
         {:type :coincident
-         :m1 [[ground g1] {:e [2.0 0.0 0.0], :z [nil nil nil], :x [nil nil nil]}]
-         :m2 [[brick b1] {:e [0.0 0.0 0.0], :z [nil nil nil], :x [nil nil nil]}]}
+         :m1 [[ground g1] {:e [2.0 0.0 0.0] :z [nil nil nil] :x [nil nil nil] }]
+         :m2 [[brick b1] {:e [0.0 0.0 0.0] :z [nil nil nil] :x [nil nil nil]}]}
         {:type :coincident
-         :m1 [[brick b3] {:e [0.0 0.0 4.0], :z [nil nil nil], :x [nil nil nil]}]
-         :m2 [[ground g3] {:e [2.0 4.0 0.0], :z [nil nil nil], :x [nil nil nil]}]}
+         :m1 [[brick b3] {:e [0.0 0.0 4.0] :z [nil nil nil] :x [nil nil nil]}]
+         :m2 [[ground g3] {:e [2.0 4.0 0.0] :z [nil nil nil] :x [nil nil nil]}]}
         {:type :coincident
-         :m1 [[cap c2] {:e [0.0 3.0 0.0], :z [nil nil nil], :x [nil nil nil]}]
-         :m2 [[brick b2] {:e [0.0 3.0 0.0], :z [nil nil nil], :x [nil nil nil]}]}
+         :m1 [[cap c2] { :e [0.0 3.0 0.0] :z [nil nil nil] :x [nil nil nil]}]
+         :m2 [[brick b2] {:e [0.0 3.0 0.0] :z [nil nil nil] :x [nil nil nil]}]}
         {:type :coincident
-         :m1 [[brick b3] {:e [0.0 0.0 4.0], :z [nil nil nil], :x [nil nil nil]}]
-         :m2 [[cap c3] {:e [0.0 0.0 4.0], :z [nil nil nil], :x [nil nil nil]}]}]
+         :m1 [[brick b4] {:e [1.0 0.0 0.0] :z [nil nil nil] :x [nil nil nil]}]
+         :m2 [[cap c4] {:e [-1.0 0.0 0.0] :z [nil nil nil] :x [nil nil nil]}]}
+        {:type :coincident
+         :m1 [[brick b3] {:e [0.0 0.0 4.0] :z [nil nil nil] :x [nil nil nil]}]
+         :m2 [[cap c3] {:e [0.0 0.0 4.0] :z [nil nil nil] :x [nil nil nil]}]} ]
 
-      failure-pattern
-      '[
-        {:type :coincident
-         :m1 [[brick b4] {:e [1.0 0.0 0.0], :z [nil nil nil], :x [nil nil nil]}]
-         :m2 [[cap c4] {:e [-1.0 0.0 0.0], :z [nil nil nil], :x [nil nil nil]}]}]
+      failure-pattern []
       ]
+
 
   (let [constraints (joints->constraints graph)
         kb (graph->init-invariants graph)

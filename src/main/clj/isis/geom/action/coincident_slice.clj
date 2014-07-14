@@ -3,7 +3,8 @@
   (:require [isis.geom.position-dispatch :as master]
             [isis.geom.model.invariant
              :refer [marker->invariant?
-                     marker->add-invariant!]]
+                     set-marker-invariant!
+                     set-link-invariant!]]
             [isis.geom.machine
              [geobj :refer [translate
                            vec-diff
@@ -22,10 +23,6 @@
         (marker->invariant? kb m1 :loc) [m1 m2]
         :else false))
 
-(defn- coincident->postcondition!
-  "Associated with each constraint type is a function which
-  checks/sets the postconditions for after the constraint has been satisfied."
-  [kb _ m2] (marker->add-invariant! kb m2 :loc))
 
 
 (defn coincident->transform-dispatch
@@ -53,6 +50,8 @@
       (let [[ma1 ma2] result]
         (coincident->transform! kb ma1 ma2)
         true))))
+
+;;;;==================================
 
 (defn- transform!->0-1-coincident
   "PFT entry: (0,1,coincident)
@@ -85,13 +84,11 @@ Explanation:
         m2-axis-1 (get-in @m2-link [:rdof :axis-1])
         m2-axis-2 (get-in @m2-link [:rdof :axis-2])]
     (dosync
-     (alter (get-in kb [:mark :loc]) conj [m2-link-name m2-proper-name])
-     (alter (get-in kb [:mark :z]) conj [m2-link-name m2-proper-name])
-     (alter (get-in kb [:mark :x]) conj [m2-link-name m2-proper-name])
      (alter m2-link merge
             (dof-1r:p->p @m2-link m2-point
                          (gmp m2 kb) (gmp m1 kb)
                          m2-axis m2-axis-1 m2-axis-2))
+     (set-link-invariant! kb m2-link-name)
      (alter m2-link assoc
             :rdof {:# 0} ) )))
 
@@ -128,8 +125,8 @@ Explanation:
         m2-link (get-in kb [:link m2-link-name])
         m2-point (get-in @m2-link [:tdof :point])]
     (dosync
-     (alter (get-in kb [:mark :loc]) conj [m2-link-name m2-proper-name])
-     (alter (get-in kb [:mark :z]) conj [m2-link-name m2-proper-name])
+     (set-marker-invariant! kb m2-link-name m2-proper-name :loc)
+     (set-marker-invariant! kb m2-link-name m2-proper-name :z)
      (alter m2-link merge
             (dof-3r:p->p @m2-link m2-point
                          (gmp m2 kb) (gmp m1 kb)))
@@ -167,10 +164,10 @@ Explanation:
   (let [[[m2-link-name m2-proper-name] _] m2
         m2-link (get-in kb [:link m2-link-name])]
     (dosync
+     (set-marker-invariant! kb m2-link-name m2-proper-name :loc)
      (alter m2-link merge
             (translate @m2-link
                        (vec-diff (gmp m1 kb) (gmp m2 kb))))
-     (alter (get-in kb [:mark :loc]) conj [m2-link-name m2-proper-name])
      (alter m2-link assoc
             :tdof {:# 0
                    :point (gmp m2 kb)} ) )))

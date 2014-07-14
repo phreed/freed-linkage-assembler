@@ -4,7 +4,7 @@
              [invariant :refer [init-marker-invariant-s
                                 init-link-invariant-s
                                 init-link-invariant
-                                marker->add-invariant!
+                                set-link-invariant!
                                 make->invariant]]]))
 
 
@@ -103,19 +103,17 @@
          links (:links graph)
          free-links (remove #{base-link-name} (keys links))
          base-link (base-link-name links)
-         markers (:markers base-link)]
-     (doseq [ marker-name (keys markers) ]
-       (let [marker-key [base-link-name marker-name]]
-         (alter mis-l conj marker-key)
-         (alter mis-z conj marker-key)
-         (alter mis-x conj marker-key) ))
-     {:mark mis
-      :link (into
-          {}
-          (map #(hash-map % (if (= % base-link-name)
-                              (init-link-invariant :fixed)
-                              (init-link-invariant :free)
-                              )) (keys links)))}) ))
+         markers (:markers base-link)
+         kb {:mark mis
+             :link (into
+                    {}
+                    (map #(hash-map
+                           %
+                           (if (= % base-link-name)
+                             (init-link-invariant :fixed)
+                             (init-link-invariant :free)
+                             )) (keys links)))} ]
+     (set-link-invariant! kb base-link-name))))
 
 
 (defn joints->constraints

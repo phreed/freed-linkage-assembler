@@ -1,8 +1,7 @@
 (ns isis.geom.action.offset-z-slice
   "The table of rules."
   (:require [isis.geom.position-dispatch :as master]
-            [isis.geom.model.invariant :refer [marker->invariant?
-                                               marker->add-invariant!]] ))
+            [isis.geom.model.invariant :refer [marker->invariant?]] ))
 
 
 
@@ -15,11 +14,5 @@
 
 
 
-
-
-(defn offset-z->postcondition!
-  "Associated with each constraint type is a function which
-  checks/sets the postconditions for after the constraint has been satisfied."
-  [_ _ _])
 
 
