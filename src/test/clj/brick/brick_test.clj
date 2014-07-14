@@ -202,7 +202,7 @@
   (let [_ (constraint-attempt? kb input)
         {result-mark :mark result-link :link} (ref->str kb)]
     (expect mark-pattern result-mark)
-    (= link-pattern result-link)) )
+    (expect link-pattern result-link)) )
 
 
 ;; simulate the second point being repositioned,
@@ -332,15 +332,20 @@
                               :rotate [0.5000000000000001 -0.5 -0.4999999999999999 -0.5]}
                      :tdof {:# 0 :point [5.0 0.0 0.0]} :rdof {:# 0}}]
         cap
-        #_[:ref {:versor {:xlate [0.0 0.0 0.0], :rotate [1.0 0.0 0.0 0.0]} :tdof {:# 3} :rdof {:# 3}}]
+        #_[:ref {:versor {:xlate [0.0 0.0 0.0], :rotate [1.0 0.0 0.0 0.0]}
+                 :tdof {:# 3} :rdof {:# 3}}]
         #_[:ref {:versor {:xlate [5.0 -3.0 0.0] :rotate [1.0 0.0 0.0 0.0]}
-               :tdof {:# 0 :point [5.0 0.0 0.0]}, :rdof {:# 3}}]
-        [:ref {:versor {:xlate [5.147692307692307
-                                0.11076923076923095 -2.0769230769230766]
+                 :tdof {:# 0 :point [5.0 0.0 0.0]}, :rdof {:# 3}}]
+        [:ref {:versor {:xlate [2.1476923076923073
+                                0.11076923076923095
+                                0.9230769230769234]
                         :rotate [0.5099019513592785
-                                 -0.6275716324421889 -0.47067872433164165 -0.3530090432487313]}
-               :tdof {:# 0 :point [8.0 0.0 -3.0]}
-               :rdof {:# 1, :axis [-0.5999999999999999 0.8 0.0]}}]}
+                                 -0.6275716324421889
+                                 -0.47067872433164165
+                                 -0.3530090432487313]}
+               :tdof {:# 0 :point [5.0 0.0 0.0]}
+               :rdof {:# 1, :axis [-0.5999999999999999
+                                   0.8 4.440892098500625E-17]}}]}
 
 
       success-pattern

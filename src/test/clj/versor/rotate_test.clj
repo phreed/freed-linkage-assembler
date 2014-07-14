@@ -71,3 +71,34 @@
                       -0.47067872433164165
                       -0.3530090432487313]}}
      new-link))
+
+;; mimic dof-1r:p->p
+(let [link {:versor {:xlate [2.0 0.0 0.0]
+                     :rotate
+                     [0.7071067811865475
+                      0.0 0.0 -0.7071067811865475]}}
+      center [5.0 0.0 0.0]
+      from-point [2.0 0.0 4.0]
+      to-point [2.0 4.0 0.0]
+      axis [-1.0 0.0 0.0]
+
+      a-line (ga/line center axis)
+      pivot (ga/perp-base to-point a-line)
+      to-diff (ga/vec-diff to-point pivot)
+      from-diff (ga/vec-diff from-point pivot)
+      angle (ga/vec-angle from-diff to-diff axis)
+      new-link (ga/rotate link pivot axis angle)]
+
+  (expect '{:type :line :e [5.0 0.0 0.0]
+            :d [-1.0 0.0 0.0]} a-line)
+  (expect '[2.0 0.0 0.0] pivot)
+  (expect '[0.0 4.0 0.0] to-diff)
+  (expect '[0.0 0.0 4.0] from-diff)
+  (expect '[1.0 0.0] angle)
+  (expect '{:versor
+            {:xlate [2.0 0.0 0.0]
+             :rotate [0.5
+                      -0.4999999999999999
+                      -0.4999999999999999
+                      -0.5]}}
+     new-link))

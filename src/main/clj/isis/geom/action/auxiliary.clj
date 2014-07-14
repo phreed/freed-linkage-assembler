@@ -71,7 +71,7 @@
         (if-not (parallel? possible-axis ?axis false)
           (emsg/emsg-3 possible-axis ?axis)
           (if (and (nil? ?axis-1) (nil? ?axis-2))
-            (rotate ?link ?center ?axis
+            (rotate ?link pivot ?axis
                     (vec-angle from-diff to-diff ?axis))
             (dof-2r:p->p ?link ?center ?from-point ?to-point ?axis-1 ?axis-2 1)))))))
 

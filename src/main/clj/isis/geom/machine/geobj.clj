@@ -17,16 +17,9 @@
   (into [] (map #(/ % (mag vect)) vect)))
 
 
-(defn half-angle
-  "The angle specified in [sine cosine] form is in halved. "
-  [angle]
-  (let [[sine cosine] angle
-        rad-cos (/ (Math/acos cosine) 2.0)
-        rads ((if (pos? sine) + -) rad-cos)]
-  [(Math/sin rads) (Math/cos rads)]))
 
 (defn double-angle
-  "The angle specified in [sine cosine] form is doubled. 
+  "The angle specified in [sine cosine] form is doubled.
     Make sure to handle the different quadrants.
     Probably should handle tolerance around zero as well."
   [angle]
@@ -39,11 +32,31 @@
 (defn axis-angle->quaternion
   "Produce a quaternion from an axis and and angle.
   The axis need not be unit and the angle is [sine cosine] form.
-  "
+  The angle specified in [sine cosine] form is in halved. "
   [axis angle]
   (let [uaxis (normalize axis)
-        [sine cosine] (half-angle angle)]
-    (into [] (cons cosine (map #(* % sine) uaxis) ))))
+        [a1 a2 a3] uaxis]
+    (if (zero? (reduce + angle))
+      [1.0 (* 0.5 a1) (* 0.5 a2) (* 0.5 a3)]
+      (let [[sine cosine] angle
+        rad-cos (/ (Math/acos cosine) 2.0)
+        rads ((if (pos? sine) + -) rad-cos)
+        half-sine  (Math/sin rads)
+        half-cosine (Math/cos rads)]
+    (into [] (cons half-cosine (map #(* % half-sine) uaxis) ))))))
+
+(defn quaternion->axis-angle
+  "Produce an axis and an angle from a quaternion.
+  The angle specified in [sine cosine] form is in halved. "
+  [quaternion]
+  (let [[q0 q1 q2 q3] quaternion
+        sin-squared (+ (* q1 q1) (* q2 q2) (* q3 q3))]
+    (if (zero? sin-squared)
+      [[(* 2.0 q1) (* 2.0 q2) (* 2.0 q3)] [0.0 1.0]]
+      (let [sine-theta (Math/sqrt sin-squared)
+            k (* 2.0 (/ (Math/atan2 sine-theta q0) sine-theta))]
+        [[(* k q1) (* k q2) (* k q3)] []]))))
+
 
 (defn- quat-sandwich
   "Perform a transformation using the quaternion.
@@ -485,6 +498,7 @@
   The surface can be 0d 1d 2d."
   (fn [point surface] (:type surface)))
 
+;; project the point onto the line
 (defmethod perp-base
   :line
   [point line]
@@ -493,6 +507,7 @@
         scale (inner-prod point-diff axis)]
     (vec-sum anchor (map #(* % scale) axis))))
 
+;; project the point onto the plane
 (defmethod perp-base
   :plane
   [point plane]
@@ -520,6 +535,8 @@
   e(-i*theta/2) = e(-i2*theta2/2) * (-i1*theta1/2)
   Where
   e(i*theta/2) = cos(theta/2) + i*sin(theta/2)
+  Note it is assumed that the translation
+  is expressed in terms of the point.
   "
   [link point axis angle]
   (let [x1 (get-in link [:versor :xlate])
