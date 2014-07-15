@@ -1,4 +1,7 @@
-(ns isis.geom.analysis.position-analysis)
+(ns isis.geom.analysis.position-analysis
+  (:require   [isis.geom.position-dispatch
+               :refer [constraint-attempt?]]
+              [isis.geom.machine.misc :as misc]))
 
 (defn- model->graph [model])
 (defn- model->connectivity [model])
@@ -15,7 +18,8 @@
 (defn- found-spherical-sub-chains? [])
 
 
-(defn position-analysis
+;;;; not yet completed
+(defn position-analysis-outline
   "Algorithm for finding a closed-form assembly
   procedure for a given constraint system, if one exists.
   Otherwise, the algorithm finds an iterative solution
@@ -62,4 +66,40 @@
                     (recur new-graph new-conn new-constrained new-non-rigid new-plan new-redundant))) ))))))
 
 
+(defn position-analysis
+  "Algorithm for using the plan fragment table to perform position analysis.
+  We update a link map and a marker map with invariants.
+  The link map of invariants indicates just how well placed the link is.
+  The marker map does a similar thing.
+  - We will repeatedly evaluate all constraints, making marker properties
+  invariant and producing link versors, until no more constraints can be satisfied.
+  The link versors are then returned along with the constraint plan.
+
+  constraints : the list of constraints needing to be satisfied.
+  kb : invariant properties of markers and links.
+
+  progress? : is the current round making progress?
+  xs : active constraints which are being tried.
+  plan : constraints which have been successfully applied.
+  ys : constraints which have been tried and failed. "
+
+  [kb constraints]
+  (loop [progress? false
+         [x & xs] constraints
+         plan [] ys[]]
+    (if x
+      ;; working through the active constraint list.
+      (if (constraint-attempt? kb x)
+        (recur true xs (conj plan x) ys)
+        (recur progress? xs plan (conj ys x)))
+      ;; active constraint list is exhausted.
+      (if (empty? ys)
+        ;; all the constraints have been satisfied
+        [true kb plan []]
+        ;; not all constraints have been satisfied
+        (if progress?
+          ;; still making progress, go again.
+          (recur false ys plan [])
+          ;; no progress is possible.
+          [false kb plan ys])))))
 
