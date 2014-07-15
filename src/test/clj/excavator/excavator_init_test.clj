@@ -1,5 +1,5 @@
-(ns brick.brick-initialize-test
-  "Sample assembly for brick and ground."
+(ns excavator.excavator-init-test
+  "Sample assembly consisting of a boom and a dipper."
   (:require [expectations :refer :all]
             [isis.geom.machine.misc :as misc]
             [isis.geom.model
@@ -9,20 +9,79 @@
                              joint-pair->constraint
                              joints->constraints]] ]
             [clojure.java.io :as jio]
-            [clojure.xml :as xml]
             [clojure.zip :as zip]
+            [clojure.data.xml :as xml]
             [clojure.data.zip.xml :as zml]))
 
-(def root (->
-            "excavator/cad_assembly_boom_dipper.xml"
-           jio/resource jio/file xml/parse zip/xml-zip))
+(defn- parse-numeric
+  "xml represents numeric values as strings.
+  This converts them into numbers."
+  [string]
+  (Double/parseDouble string))
 
-(zml/xml-> root :Assembly :CADComponent )
+(defn- reform-marker
+  "The xml file forms the marker hash a bit differently."
+  [input]
+  (let [orig (:attrs (first input))]
+    {:e [(parse-numeric (:x orig))
+         (parse-numeric (:y orig))
+         (parse-numeric (:z orig))] }))
 
-(let [input (jio/resource
-            "excavator/cad_assembly_boom_dipper.xml")
-      cad-assy (xml/parse (jio/file input))]
-  cad-assy)
+
+(defn- extract-constraints-for-single-link
+  ""
+  [constraint]
+  (let [pair-list (zml/xml-> constraint :Pair)]
+    (for [pair pair-list]
+      (let [
+            feature-pair (zml/xml-> pair :ConstraintFeature)
+            c-type (zml/attr pair :FeatureGeometryType)
+
+            a-feat (first feature-pair)
+            a-link-name (zml/attr a-feat :ComponentID)
+            a-proper-name (zml/attr a-feat :FeatureName)
+            a-marker (reform-marker (zml/xml1-> a-feat :GeometryMarker))
+
+            b-feat (second feature-pair)
+            b-link-name (zml/attr b-feat :ComponentID)
+            b-proper-name (zml/attr b-feat :FeatureName)
+            b-marker (reform-marker (zml/xml1-> b-feat :GeometryMarker))
+            ]
+        {:type c-type
+         :m1 [[a-link-name a-proper-name] a-marker]
+         :m2 [[b-link-name b-proper-name] b-marker]} ))))
+
+
+(defn- extract-constraints-for-all-links
+  "Extract constraints for all children of the top link."
+  [asm-link]
+  (into []
+        (for [ link-constraints (zml/xml-> asm-link  :CADComponent :Constraint) ]
+          (extract-constraints-for-single-link link-constraints)) ))
+
+
+(defn- extract-link-map
+  "Build a map with keys being the link names."
+  [link-list]
+  (into {} (for [ link (zml/xml-> link-list :CADComponent) ]
+             [(keyword (zml/attr link :ComponentID)) (zml/text link)])))
+
+(def excavator-graph
+  (ref
+   (let [root (->
+               "excavator/cad_assembly_boom_dipper.xml"
+               jio/resource jio/input-stream xml/parse zip/xml-zip)]
+     (let [asm-link (zml/xml1-> root :Assembly :CADComponent)]
+       (let [base-link-id (zml/attr asm-link :ComponentID)
+             link-map (extract-link-map asm-link)
+             constraint-list (extract-constraints-for-all-links asm-link)]
+         {:constraints constraint-list
+          :links link-map
+          :base base-link-id
+          :mark {} } )))))
+
+excavator-graph
+
 
 
 (defn ref->str
@@ -32,106 +91,26 @@
   (clojure.walk/postwalk #(if (misc/reference? %) [:ref @%] %) form))
 
 
-
-(def brick-graph
-  "From section 3.4 : Example 1: the brick
-  This object is composed of the prime data for an assembly.
-  The derived data should not be stored in this object directly,
-  but be stored in other objects with simliar keys."
-  (ref
-   '{ :links
-      {ground {
-               :markers {g1 {:e1 2.0 :e2 0.0 :e3 0.0}
-                         g2 {:e1 5.0 :e2 0.0 :e3 0.0}
-                         g3 {:e1 2.0 :e2 4.0 :e3 0.0} }
-               :ports {j1 {:type :spherical :marker g1}
-                       j2 {:type :spherical :marker g2}
-                       j3 {:type :spherical :marker g3}} }
-       brick {
-              :markers {b1 {:e1 0.0 :e2 0.0 :e3 0.0}
-                        b2 {:e1 0.0 :e2 3.0 :e3 0.0}
-                        b3 {:e1 0.0 :e2 0.0 :e3 4.0}
-                        b4 {:e1 1.0 :e2 0.0 :e3 0.0} }
-              :ports {jg1 {:type :spherical :marker b1}
-                      jg2 {:type :spherical :marker b2}
-                      jg3 {:type :spherical :marker b3}
-
-                      jc1 {:type :spherical :marker b4}
-                      jc2 {:type :spherical :marker b2}
-                      jc3 {:type :spherical :marker b3}} }
-       cap {
-            :markers {c2 {:e1 0.0 :e2 3.0 :e3 0.0}
-                      c3 {:e1 0.0 :e2 0.0 :e3 4.0}
-                      c4 {:e1 -1.0 :e2 0.0 :e3 0.0} }
-            :ports {j1 {:type :spherical :marker c4}
-                    j2 {:type :spherical :marker c2}
-                    j3 {:type :spherical :marker c3}} } }
-      :base ground
-      :joints
-      #{#{[ground j1] [brick jg1]}
-        #{[ground j2] [brick jg2]}
-        #{[ground j3] [brick jg3]}
-        #{[brick jc1] [cap j1]}
-        #{[brick jc2] [cap j2]}
-        #{[cap j3] [brick jc3]}
-        } }))
-
-
-
-(expect
- '[[ground g1 :coincident {:e1 2.0, :e2 0.0, :e3 0.0}]]
- (port->expand @brick-graph '[ground j1]))
-
-(expect
- '{:type :coincident,
-   :m1 [[ground g2] {:e [ 1.0 0.0 0.0] :z [nil nil nil] :x [nil nil nil]}],
-   :m2 [[brick b2] {:e [101.0 0.0 0.0] :z [nil nil nil] :x [nil nil nil]}]}
- (port-pair->make-constraint
-  @brick-graph
-  '[[ground g2 :coincident {:e1 1.0, :e2 0.0, :e3 0.0}]
-    [brick b2 :coincident {:e1 101.0, :e2 0.0, :e3 0.0}]] ))
-
-
-
-(expect
- '{:mark {:loc [:ref #{[ground]}],
-          :z [:ref #{[ground]}],
-          :x [:ref #{[ground]}]},
-   :link {brick [:ref {:tdof {:# 3}, :rdof {:# 3},
-                       :versor {:xlate [0.0 0.0 0.0] :rotate [1.0 0.0 0.0 0.0]}}]
-          ground [:ref {:tdof {:# 0}, :rdof {:# 0},
-                        :versor {:xlate [0.0 0.0 0.0] :rotate [1.0 0.0 0.0 0.0]}}]
-          cap [:ref {:tdof {:# 3}, :rdof {:# 3},
-                     :versor {:xlate [0.0 0.0 0.0], :rotate [1.0 0.0 0.0 0.0]}}]}}
- (ref->str (graph->init-invariants @brick-graph)))
-
-(expect
- '({:type :coincident
-    :m1 [[ground g1] {:e [2.0 0.0 0.0], :z [nil nil nil], :x [nil nil nil]}]
-    :m2 [[brick b1] {:e [0.0 0.0 0.0], :z [nil nil nil], :x [nil nil nil]}]})
- (joint-pair->constraint @brick-graph '#{[ground j1] [brick jg1]}))
-
-
-(expect
- '(
-   {:type :coincident
-    :m1 [[ground g2] {:e [5.0 0.0 0.0], :z [nil nil nil], :x [nil nil nil]}]
-    :m2 [[brick b2] {:e [0.0 3.0 0.0], :z [nil nil nil], :x [nil nil nil]}]}
-   {:type :coincident
-    :m1 [[brick b4] {:e [1.0 0.0 0.0], :z [nil nil nil], :x [nil nil nil]}]
-    :m2 [[cap c4] {:e [-1.0 0.0 0.0], :z [nil nil nil], :x [nil nil nil]}]}
-   {:type :coincident
-    :m1 [[ground g1] {:e [2.0 0.0 0.0], :z [nil nil nil], :x [nil nil nil]}]
-    :m2 [[brick b1] {:e [0.0 0.0 0.0], :z [nil nil nil], :x [nil nil nil]}]}
-   {:type :coincident
-    :m1 [[brick b3] {:e [0.0 0.0 4.0], :z [nil nil nil], :x [nil nil nil]}]
-    :m2 [[cap c3] {:e [0.0 0.0 4.0], :z [nil nil nil], :x [nil nil nil]}]}
-   {:type :coincident
-    :m1 [[brick b3] {:e [0.0 0.0 4.0], :z [nil nil nil], :x [nil nil nil]}]
-    :m2 [[ground g3] {:e [2.0 4.0 0.0], :z [nil nil nil], :x [nil nil nil]}]}
-   {:type :coincident
-    :m1 [[cap c2] {:e [0.0 3.0 0.0], :z [nil nil nil], :x [nil nil nil]}]
-    :m2 [[brick b2] {:e [0.0 3.0 0.0], :z [nil nil nil], :x [nil nil nil]}]})
- (joints->constraints @brick-graph))
+#_(expect
+   '(
+     {:type :coincident
+      :m1 [[ground g2] {:e [5.0 0.0 0.0], :z [nil nil nil], :x [nil nil nil]}]
+      :m2 [[brick b2] {:e [0.0 3.0 0.0], :z [nil nil nil], :x [nil nil nil]}]}
+     {:type :coincident
+      :m1 [[brick b4] {:e [1.0 0.0 0.0], :z [nil nil nil], :x [nil nil nil]}]
+      :m2 [[cap c4] {:e [-1.0 0.0 0.0], :z [nil nil nil], :x [nil nil nil]}]}
+     {:type :coincident
+      :m1 [[ground g1] {:e [2.0 0.0 0.0], :z [nil nil nil], :x [nil nil nil]}]
+      :m2 [[brick b1] {:e [0.0 0.0 0.0], :z [nil nil nil], :x [nil nil nil]}]}
+     {:type :coincident
+      :m1 [[brick b3] {:e [0.0 0.0 4.0], :z [nil nil nil], :x [nil nil nil]}]
+      :m2 [[cap c3] {:e [0.0 0.0 4.0], :z [nil nil nil], :x [nil nil nil]}]}
+     {:type :coincident
+      :m1 [[brick b3] {:e [0.0 0.0 4.0], :z [nil nil nil], :x [nil nil nil]}]
+      :m2 [[ground g3] {:e [2.0 4.0 0.0], :z [nil nil nil], :x [nil nil nil]}]}
+     {:type :coincident
+      :m1 [[cap c2] {:e [0.0 3.0 0.0], :z [nil nil nil], :x [nil nil nil]}]
+      :m2 [[brick b2] {:e [0.0 3.0 0.0], :z [nil nil nil], :x [nil nil nil]}]})
+   @excavator-graph)
 
 

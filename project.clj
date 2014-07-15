@@ -10,6 +10,7 @@
                  [org.clojure/tools.logging "0.3.0"]
                  [expectations "2.0.7"]
                  [org.clojure/math.numeric-tower "0.0.4"]
+                 [org.clojure/data.xml "0.0.7"]
                  [org.clojure/data.zip "0.1.1"]]
   :plugins [[lein-expectations "0.0.7"]
             [lein-autoexpect "1.2.2"]
