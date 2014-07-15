@@ -6,3 +6,5 @@ target/
 *.swp
 junk*
 *.pyc
+.idea
+*.iml
