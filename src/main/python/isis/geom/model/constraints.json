@@ -1,0 +1,53 @@
+[
+    {
+        "type": "coincident", 
+        "m1": {
+            "FeatureName": "ARM_GUIDE", 
+            "ComponentID": "{6583db19-8672-48bb-a143-16bba49c562b}", 
+            "ARM_GUIDE": [
+                false, 
+                false, 
+                false
+            ], 
+            "{6583db19-8672-48bb-a143-16bba49c562b}": {
+                "RDOF": {
+                    "LocationData": null, 
+                    "Value": 3
+                }, 
+                "Versor": 1, 
+                "TDOF": {
+                    "LocationData": null, 
+                    "Value": 3
+                }
+            }
+        }, 
+        "m2": {
+            "FeatureName": "BOOM_GUIDE", 
+            "{599679cf-2a4d-416f-89a3-dab9735d0a43}": {
+                "RDOF": {
+                    "LocationData": null, 
+                    "Value": 3
+                }, 
+                "Versor": 1, 
+                "TDOF": {
+                    "LocationData": null, 
+                    "Value": 3
+                }
+            }, 
+            "ComponentID": "{599679cf-2a4d-416f-89a3-dab9735d0a43}", 
+            "BOOM_GUIDE": [
+                false, 
+                false, 
+                false
+            ]
+        }
+    }, 
+    {
+        "type": "coincident", 
+        "m1": {
+            "CENTER_PLANE": [
+                false, 
+                false, 
+                false
+            ], 
+            "Data": 

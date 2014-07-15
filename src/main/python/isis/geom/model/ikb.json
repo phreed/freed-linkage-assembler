@@ -1,0 +1,347 @@
+{
+    "versor_map": {
+        "{5090e51f-274f-4034-ba2a-f6ff2289dd55}": {
+            "RDOF": {
+                "LocationData": null, 
+                "Value": 3
+            }, 
+            "Versor": 1, 
+            "TDOF": {
+                "LocationData": null, 
+                "Value": 3
+            }
+        }, 
+        "{d8434652-3305-4af0-9d4f-2c5bba71ebd3}": {
+            "RDOF": {
+                "LocationData": null, 
+                "Value": 3
+            }, 
+            "Versor": 1, 
+            "TDOF": {
+                "LocationData": null, 
+                "Value": 3
+            }
+        }, 
+        "{35878e11-4d47-4c7c-9117-d07d6d91c41e}": {
+            "RDOF": {
+                "LocationData": null, 
+                "Value": 3
+            }, 
+            "Versor": 1, 
+            "TDOF": {
+                "LocationData": null, 
+                "Value": 3
+            }
+        }, 
+        "{c22740bd-46ed-4f1c-aefc-02be28c9c089}": {
+            "RDOF": {
+                "LocationData": null, 
+                "Value": 3
+            }, 
+            "Versor": 1, 
+            "TDOF": {
+                "LocationData": null, 
+                "Value": 3
+            }
+        }, 
+        "{599679cf-2a4d-416f-89a3-dab9735d0a43}": {
+            "RDOF": {
+                "LocationData": null, 
+                "Value": 3
+            }, 
+            "Versor": 1, 
+            "TDOF": {
+                "LocationData": null, 
+                "Value": 3
+            }
+        }, 
+        "{f699360f-60e7-4a74-8028-11279cc81487}": {
+            "RDOF": {
+                "LocationData": null, 
+                "Value": 3
+            }, 
+            "Versor": 1, 
+            "TDOF": {
+                "LocationData": null, 
+                "Value": 3
+            }
+        }, 
+        "{6583db19-8672-48bb-a143-16bba49c562b}": {
+            "RDOF": {
+                "LocationData": null, 
+                "Value": 3
+            }, 
+            "Versor": 1, 
+            "TDOF": {
+                "LocationData": null, 
+                "Value": 3
+            }
+        }, 
+        "{0a8f19a8-2889-43fc-928a-822906ff21e0}": {
+            "RDOF": {
+                "LocationData": null, 
+                "Value": 3
+            }, 
+            "Versor": 1, 
+            "TDOF": {
+                "LocationData": null, 
+                "Value": 3
+            }
+        }, 
+        "{e2e41e17-3f53-4bec-852a-1501d99c1df3}": {
+            "RDOF": {
+                "LocationData": null, 
+                "Value": 3
+            }, 
+            "Versor": 1, 
+            "TDOF": {
+                "LocationData": null, 
+                "Value": 3
+            }
+        }, 
+        "{b9993c35-258e-4e72-8534-57bebb10016f}": {
+            "RDOF": {
+                "LocationData": null, 
+                "Value": 3
+            }, 
+            "Versor": 1, 
+            "TDOF": {
+                "LocationData": null, 
+                "Value": 3
+            }
+        }, 
+        "{5ed3276a-555c-40d6-9686-455e2cba299c}": {
+            "RDOF": {
+                "LocationData": null, 
+                "Value": 3
+            }, 
+            "Versor": 1, 
+            "TDOF": {
+                "LocationData": null, 
+                "Value": 3
+            }
+        }
+    }, 
+    "invariant_map": {
+        "RIGHT_PLANE_{6583db19-8672-48bb-a143-16bba49c562b}": [
+            false, 
+            false, 
+            false
+        ], 
+        "RIGHT_PLANE_{f699360f-60e7-4a74-8028-11279cc81487}": [
+            false, 
+            false, 
+            false
+        ], 
+        "CYLINDER_PLANE_{b9993c35-258e-4e72-8534-57bebb10016f}": [
+            false, 
+            false, 
+            false
+        ], 
+        "UPPER_CYLINDER_AXIS_{6583db19-8672-48bb-a143-16bba49c562b}": [
+            false, 
+            false, 
+            false
+        ], 
+        "RIGHT_PLANE_{35878e11-4d47-4c7c-9117-d07d6d91c41e}": [
+            false, 
+            false, 
+            false
+        ], 
+        "JACK_AXIS_{c22740bd-46ed-4f1c-aefc-02be28c9c089}": [
+            false, 
+            false, 
+            false
+        ], 
+        "CYLINDER_PLANE_{d8434652-3305-4af0-9d4f-2c5bba71ebd3}": [
+            false, 
+            false, 
+            false
+        ], 
+        "LOWER_HOLE_{e2e41e17-3f53-4bec-852a-1501d99c1df3}": [
+            false, 
+            false, 
+            false
+        ], 
+        "AXIS1_{35878e11-4d47-4c7c-9117-d07d6d91c41e}": [
+            false, 
+            false, 
+            false
+        ], 
+        "AXIS2_{35878e11-4d47-4c7c-9117-d07d6d91c41e}": [
+            false, 
+            false, 
+            false
+        ], 
+        "GUIDE_PLANE_{6583db19-8672-48bb-a143-16bba49c562b}": [
+            false, 
+            false, 
+            false
+        ], 
+        "JACK_AXIS_{d8434652-3305-4af0-9d4f-2c5bba71ebd3}": [
+            false, 
+            false, 
+            false
+        ], 
+        "CENTER_PLANE_{35878e11-4d47-4c7c-9117-d07d6d91c41e}": [
+            false, 
+            false, 
+            false
+        ], 
+        "CENTER_PLANE_{e2e41e17-3f53-4bec-852a-1501d99c1df3}": [
+            false, 
+            false, 
+            false
+        ], 
+        "JACK_AXIS_{b9993c35-258e-4e72-8534-57bebb10016f}": [
+            false, 
+            false, 
+            false
+        ], 
+        "UPPER_AXIS_{f699360f-60e7-4a74-8028-11279cc81487}": [
+            false, 
+            false, 
+            false
+        ], 
+        "JACK_PLANE_{b9993c35-258e-4e72-8534-57bebb10016f}": [
+            false, 
+            false, 
+            false
+        ], 
+        "CENTER_PLANE_{5090e51f-274f-4034-ba2a-f6ff2289dd55}": [
+            false, 
+            false, 
+            false
+        ], 
+        "BOOM_GUIDE_{f699360f-60e7-4a74-8028-11279cc81487}": [
+            false, 
+            false, 
+            false
+        ], 
+        "LEFT_PLANE_{35878e11-4d47-4c7c-9117-d07d6d91c41e}": [
+            false, 
+            false, 
+            false
+        ], 
+        "CYLINDER_AXIS_{5090e51f-274f-4034-ba2a-f6ff2289dd55}": [
+            false, 
+            false, 
+            false
+        ], 
+        "CYLINDER_AXIS_{c22740bd-46ed-4f1c-aefc-02be28c9c089}": [
+            false, 
+            false, 
+            false
+        ], 
+        "CYLINDER_AXIS_{d8434652-3305-4af0-9d4f-2c5bba71ebd3}": [
+            false, 
+            false, 
+            false
+        ], 
+        "ROD_AXIS_{0a8f19a8-2889-43fc-928a-822906ff21e0}": [
+            false, 
+            false, 
+            false
+        ], 
+        "BOOM_AXIS_{599679cf-2a4d-416f-89a3-dab9735d0a43}": [
+            false, 
+            false, 
+            false
+        ], 
+        "CENTER_PLANE_{5ed3276a-555c-40d6-9686-455e2cba299c}": [
+            false, 
+            false, 
+            false
+        ], 
+        "LEFT_PLANE_{6583db19-8672-48bb-a143-16bba49c562b}": [
+            false, 
+            false, 
+            false
+        ], 
+        "BOOM_GUIDE_{599679cf-2a4d-416f-89a3-dab9735d0a43}": [
+            false, 
+            false, 
+            false
+        ], 
+        "ARM_GUIDE_{6583db19-8672-48bb-a143-16bba49c562b}": [
+            false, 
+            false, 
+            false
+        ], 
+        "CENTER_PLANE_{6583db19-8672-48bb-a143-16bba49c562b}": [
+            false, 
+            false, 
+            false
+        ], 
+        "ROD_PLANE_{0a8f19a8-2889-43fc-928a-822906ff21e0}": [
+            false, 
+            false, 
+            false
+        ], 
+        "CYLINDER_AXIS_{599679cf-2a4d-416f-89a3-dab9735d0a43}": [
+            false, 
+            false, 
+            false
+        ], 
+        "CENTER_PLANE_{599679cf-2a4d-416f-89a3-dab9735d0a43}": [
+            false, 
+            false, 
+            false
+        ], 
+        "CYLINDER_AXIS_{b9993c35-258e-4e72-8534-57bebb10016f}": [
+            false, 
+            false, 
+            false
+        ], 
+        "JACK_PLANE_{c22740bd-46ed-4f1c-aefc-02be28c9c089}": [
+            false, 
+            false, 
+            false
+        ], 
+        "LOWER_AXIS_{f699360f-60e7-4a74-8028-11279cc81487}": [
+            false, 
+            false, 
+            false
+        ], 
+        "CENTER_PLANE_{f699360f-60e7-4a74-8028-11279cc81487}": [
+            false, 
+            false, 
+            false
+        ], 
+        "ARM_AXIS_{6583db19-8672-48bb-a143-16bba49c562b}": [
+            false, 
+            false, 
+            false
+        ], 
+        "BODY_CYLINDER_AXIS_{6583db19-8672-48bb-a143-16bba49c562b}": [
+            false, 
+            false, 
+            false
+        ], 
+        "CYLINDER_AXIS_{5ed3276a-555c-40d6-9686-455e2cba299c}": [
+            false, 
+            false, 
+            false
+        ], 
+        "JACK_PLANE_{d8434652-3305-4af0-9d4f-2c5bba71ebd3}": [
+            false, 
+            false, 
+            false
+        ], 
+        "CYLINDER_PLANE_{c22740bd-46ed-4f1c-aefc-02be28c9c089}": [
+            false, 
+            false, 
+            false
+        ], 
+        "LEFT_PLANE_{f699360f-60e7-4a74-8028-11279cc81487}": [
+            false, 
+            false, 
+            false
+        ], 
+        "BODY_AXIS_{6583db19-8672-48bb-a143-16bba49c562b}": [
+            false, 
+            false, 
+            false
+        ]
+    }
+}
