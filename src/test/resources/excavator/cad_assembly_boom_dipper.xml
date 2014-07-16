@@ -4,17 +4,29 @@
     <CADComponent ComponentID="{059166f0-b3c0-474f-9dcb-d5e865754d77}|1" Name="Boom_Arm_POINT_1" DisplayName="Boom_Arm_POINT_1" Type="ASSEMBLY" SpecialInstruction="" MaterialID="" Representation="" _id="id2">
       <CADComponent ComponentID="{bb160c79-5ba3-4379-a6c1-8603f29079f2}" Name="BOOM_EX_375" DisplayName="Arm" Type="PART" SpecialInstruction="" MaterialID="" Representation="" _id="id19">
         <Constraint _id="id23">
-          <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="SURFACE" FeatureAlignmentType="ALIGN" _id="id24">
-            <ConstraintFeature ComponentID="{bb160c79-5ba3-4379-a6c1-8603f29079f2}" FeatureName="FRONT" FeatureOrientationType="SIDE_A" _id="id25" />
-            <ConstraintFeature ComponentID="{059166f0-b3c0-474f-9dcb-d5e865754d77}|1" FeatureName="ASM_FRONT" FeatureOrientationType="SIDE_A" _id="id26" />
+          <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="POINT" FeatureAlignmentType="ALIGN" _id="id24">
+            <ConstraintFeature ComponentID="{bb160c79-5ba3-4379-a6c1-8603f29079f2}" FeatureName="FRONT" FeatureOrientationType="SIDE_A" _id="id25">
+              <GeometryMarker x="1.0" y="0" z="0" i="0" j="0" k="0" pi="0" _id="id8" />
+            </ConstraintFeature>
+            <ConstraintFeature ComponentID="{059166f0-b3c0-474f-9dcb-d5e865754d77}|1" FeatureName="ASM_FRONT" FeatureOrientationType="SIDE_A" _id="id26">
+              <GeometryMarker x="1.0" y="0" z="0" i="0" j="0" k="0" pi="0" _id="id8" />
+            </ConstraintFeature>
           </Pair>
-          <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="SURFACE" FeatureAlignmentType="ALIGN" _id="id27">
-            <ConstraintFeature ComponentID="{bb160c79-5ba3-4379-a6c1-8603f29079f2}" FeatureName="TOP" FeatureOrientationType="SIDE_A" _id="id28" />
-            <ConstraintFeature ComponentID="{059166f0-b3c0-474f-9dcb-d5e865754d77}|1" FeatureName="ASM_TOP" FeatureOrientationType="SIDE_A" _id="id29" />
+          <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="POINT" FeatureAlignmentType="ALIGN" _id="id27">
+            <ConstraintFeature ComponentID="{bb160c79-5ba3-4379-a6c1-8603f29079f2}" FeatureName="TOP" FeatureOrientationType="SIDE_A" _id="id28">
+              <GeometryMarker x="0.0" y="1.0" z="0" i="0" j="0" k="0" pi="0" _id="id8" />
+            </ConstraintFeature>
+            <ConstraintFeature ComponentID="{059166f0-b3c0-474f-9dcb-d5e865754d77}|1" FeatureName="ASM_TOP" FeatureOrientationType="SIDE_A" _id="id29">
+              <GeometryMarker x="0.0" y="1.0" z="0" i="0" j="0" k="0" pi="0" _id="id8" />
+            </ConstraintFeature>
           </Pair>
-          <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="SURFACE" FeatureAlignmentType="ALIGN" _id="id30">
-            <ConstraintFeature ComponentID="{bb160c79-5ba3-4379-a6c1-8603f29079f2}" FeatureName="RIGHT" FeatureOrientationType="SIDE_A" _id="id31" />
-            <ConstraintFeature ComponentID="{059166f0-b3c0-474f-9dcb-d5e865754d77}|1" FeatureName="ASM_RIGHT" FeatureOrientationType="SIDE_A" _id="id32" />
+          <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="POINT" FeatureAlignmentType="ALIGN" _id="id30">
+            <ConstraintFeature ComponentID="{bb160c79-5ba3-4379-a6c1-8603f29079f2}" FeatureName="RIGHT" FeatureOrientationType="SIDE_A" _id="id31">
+              <GeometryMarker x="0.0" y="0" z="1.0" i="0" j="0" k="0" pi="0" _id="id8" />
+            </ConstraintFeature>
+            <ConstraintFeature ComponentID="{059166f0-b3c0-474f-9dcb-d5e865754d77}|1" FeatureName="ASM_RIGHT" FeatureOrientationType="SIDE_A" _id="id32" >
+              <GeometryMarker x="0.0" y="0" z="1.0" i="0" j="0" k="0" pi="0" _id="id8" />
+            </ConstraintFeature>
           </Pair>
         </Constraint>
         <ParametricParameters _id="id20">

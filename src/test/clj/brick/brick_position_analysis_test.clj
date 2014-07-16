@@ -73,8 +73,6 @@
 
 
 
-(declare graph->position-analysis)
-
 (defn make-graph-watcher
   "This function is suitable to use as a watch function.
   When a graph changes it will compute the placement of

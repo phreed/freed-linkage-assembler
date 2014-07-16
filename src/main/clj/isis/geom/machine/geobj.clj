@@ -14,7 +14,10 @@
 (defn normalize
   "make the object have size 1."
   [vect]
-  (into [] (map #(/ % (mag vect)) vect)))
+  (let [weight (mag vect)]
+    (if (tol/near-zero? :default weight)
+      nil
+      (into [] (map #(/ % weight) vect)))))
 
 
 

@@ -86,12 +86,18 @@
 
 (defn- extract-link-map
   "Build a map with keys being the link names."
-  [link-list]
-  (into {} (for [ link (zml/xml-> link-list :CADComponent) ]
+  [base-link-name asm-link]
+  (into {}
+        (conj
+         (for [ link (zml/xml-> asm-link :CADComponent) ]
              [(zml/attr link :ComponentID)
               (ref {:tdof {:# 3} :rdof {:# 3}
                     :versor {:xlate [0.0 0.0 0.0]
-                             :rotate [1.0 0.0 0.0 0.0]}})])))
+                             :rotate [1.0 0.0 0.0 0.0]}})])
+         [base-link-name
+              (ref {:tdof {:# 0} :rdof {:# 0}
+                    :versor {:xlate [0.0 0.0 0.0]
+                             :rotate [1.0 0.0 0.0 0.0]}})] )))
 
 (def excavator-graph
   (ref
@@ -100,7 +106,7 @@
                jio/resource jio/input-stream xml/parse zip/xml-zip)]
      (let [asm-link (zml/xml1-> root :Assembly :CADComponent)]
        (let [base-link-id (zml/attr asm-link :ComponentID)
-             link-map (extract-link-map asm-link)
+             link-map (extract-link-map base-link-id asm-link)
              constraint-list (extract-constraints-for-all-links asm-link)]
          {:constraint constraint-list
           :link link-map
@@ -120,17 +126,16 @@
 
 
 (expect
- '{:constraint
-   [
-    {:type :planar
-     :m1 [["{bb160c79-5ba3-4379-a6c1-8603f29079f2}" "FRONT"] {:e [0.0 0.0 0.0]}]
-     :m2 [["{059166f0-b3c0-474f-9dcb-d5e865754d77}|1" "ASM_FRONT"] {:e [0.0 0.0 0.0]}]}
-    {:type :planar
-     :m1 [["{bb160c79-5ba3-4379-a6c1-8603f29079f2}" "TOP"] {:e [0.0 0.0 0.0]}]
-     :m2 [["{059166f0-b3c0-474f-9dcb-d5e865754d77}|1" "ASM_TOP"] {:e [0.0 0.0 0.0]}]}
-    {:type :planar
-     :m1 [["{bb160c79-5ba3-4379-a6c1-8603f29079f2}" "RIGHT"] {:e [0.0 0.0 0.0]}]
-     :m2 [["{059166f0-b3c0-474f-9dcb-d5e865754d77}|1" "ASM_RIGHT"] {:e [0.0 0.0 0.0]}]}
+'[
+    {:type :coincident
+     :m1 [["{bb160c79-5ba3-4379-a6c1-8603f29079f2}" "FRONT"] {:e [1.0 0.0 0.0]}]
+     :m2 [["{059166f0-b3c0-474f-9dcb-d5e865754d77}|1" "ASM_FRONT"] {:e [1.0 0.0 0.0]}]}
+    {:type :coincident
+     :m1 [["{bb160c79-5ba3-4379-a6c1-8603f29079f2}" "TOP"] {:e [0.0 1.0 0.0]}]
+     :m2 [["{059166f0-b3c0-474f-9dcb-d5e865754d77}|1" "ASM_TOP"] {:e [0.0 1.0 0.0]}]}
+    {:type :coincident
+     :m1 [["{bb160c79-5ba3-4379-a6c1-8603f29079f2}" "RIGHT"] {:e [0.0 0.0 1.0]}]
+     :m2 [["{059166f0-b3c0-474f-9dcb-d5e865754d77}|1" "ASM_RIGHT"] {:e [0.0 0.0 1.0]}]}
     {:type :coincident
      :m1 [["{62243423-b7fd-4a10-8a98-86209a6620a4}" "APNT_2"] {:e [-8649.51 4688.51 0.0]}]
      :m2 [["{bb160c79-5ba3-4379-a6c1-8603f29079f2}" "APNT_2"] {:e [4557.58 679.734 0.0]}]}
@@ -140,59 +145,66 @@
     {:type :coincident
      :m1 [["{62243423-b7fd-4a10-8a98-86209a6620a4}" "APNT_1"] {:e [-8625.71 4720.65 0.0]}]
      :m2 [["{bb160c79-5ba3-4379-a6c1-8603f29079f2}" "APNT_1"] {:e [4545.3 641.665 0.0]}]}]
-   :link {"{bb160c79-5ba3-4379-a6c1-8603f29079f2}"
-          [:ref {:versor {:xlate [0.0 0.0 0.0]  :rotate [1.0 0.0 0.0 0.0]}
-                 :tdof {:# 3} :rdof {:# 3}}]
-          "{62243423-b7fd-4a10-8a98-86209a6620a4}"
-          [:ref {:versor {:xlate [0.0 0.0 0.0] :rotate [1.0 0.0 0.0 0.0]}
-                 :tdof {:# 3} :rdof {:# 3}}]}
-   :base "{059166f0-b3c0-474f-9dcb-d5e865754d77}|1"
-   :mark {:loc [:ref #{["{059166f0-b3c0-474f-9dcb-d5e865754d77}|1"]}]
-          :z [:ref #{["{059166f0-b3c0-474f-9dcb-d5e865754d77}|1"]}]
-          :x [:ref #{["{059166f0-b3c0-474f-9dcb-d5e865754d77}|1"]}]}}
-   (ref->str @excavator-graph))
+   (:constraint @excavator-graph))
 
+
+   :base "{059166f0-b3c0-474f-9dcb-d5e865754d77}|1"
 
 (let [graph @excavator-graph
       mark-pattern
-      '{:loc [:ref #{["{059166f0-b3c0-474f-9dcb-d5e865754d77}|1"]}]
-        :z [:ref #{["{059166f0-b3c0-474f-9dcb-d5e865754d77}|1"]}]
-        :x [:ref #{["{059166f0-b3c0-474f-9dcb-d5e865754d77}|1"]}]}
+      '{:loc [:ref #{["{059166f0-b3c0-474f-9dcb-d5e865754d77}|1"]
+                       ["{62243423-b7fd-4a10-8a98-86209a6620a4}"]
+                       ["{bb160c79-5ba3-4379-a6c1-8603f29079f2}"]}]
+          :z [:ref #{["{059166f0-b3c0-474f-9dcb-d5e865754d77}|1"]
+                     ["{62243423-b7fd-4a10-8a98-86209a6620a4}"]
+                     ["{bb160c79-5ba3-4379-a6c1-8603f29079f2}"]}]
+          :x [:ref #{["{059166f0-b3c0-474f-9dcb-d5e865754d77}|1"]
+                     ["{62243423-b7fd-4a10-8a98-86209a6620a4}"]
+                     ["{bb160c79-5ba3-4379-a6c1-8603f29079f2}"]}]}
 
       link-pattern
-      '{"{bb160c79-5ba3-4379-a6c1-8603f29079f2}"
-        [:ref {:versor {:xlate [0.0 0.0 0.0]
-                        :rotate [1.0 0.0 0.0 0.0]}
-               :tdof {:# 3} :rdof {:# 3}}]
+      '{"{059166f0-b3c0-474f-9dcb-d5e865754d77}|1"
+          [:ref {:versor {:xlate [0.0 0.0 0.0]
+                          :rotate [1.0 0.0 0.0 0.0]}
+                 :tdof {:# 0}
+                 :rdof {:# 0}}]
 
-        "{62243423-b7fd-4a10-8a98-86209a6620a4}"
-        [:ref {:versor {:xlate [0.0 0.0 0.0]
-                        :rotate [1.0 0.0 0.0 0.0]}
-               :tdof {:# 3} :rdof {:# 3}}]}
+          "{bb160c79-5ba3-4379-a6c1-8603f29079f2}"
+          [:ref {:versor {:xlate [0.0 0.0 0.0]
+                          :rotate [1.0 0.0 0.0 0.0]}
+                 :tdof {:# 0, :point [1.0 0.0 0.0]}
+                 :rdof {:# 0}}]
+
+          "{62243423-b7fd-4a10-8a98-86209a6620a4}"
+          [:ref {:versor {:xlate [13207.09 -4008.7760000000003 0.0]
+                          :rotate [1.0 0.0 0.0 0.0]}
+                 :tdof {:# 0 :point [4557.58 679.7339999999999 0.0]}
+                 :rdof {:# 0}}]}
 
 
       success-pattern
-      '[]
+      '[
+    {:type :coincident
+     :m1 [["{bb160c79-5ba3-4379-a6c1-8603f29079f2}" "FRONT"] {:e [1.0 0.0 0.0]}]
+     :m2 [["{059166f0-b3c0-474f-9dcb-d5e865754d77}|1" "ASM_FRONT"] {:e [1.0 0.0 0.0]}]}
+    {:type :coincident
+     :m1 [["{bb160c79-5ba3-4379-a6c1-8603f29079f2}" "TOP"] {:e [0.0 1.0 0.0]}]
+     :m2 [["{059166f0-b3c0-474f-9dcb-d5e865754d77}|1" "ASM_TOP"] {:e [0.0 1.0 0.0]}]}
+    {:type :coincident
+     :m1 [["{bb160c79-5ba3-4379-a6c1-8603f29079f2}" "RIGHT"] {:e [0.0 0.0 1.0]}]
+     :m2 [["{059166f0-b3c0-474f-9dcb-d5e865754d77}|1" "ASM_RIGHT"] {:e [0.0 0.0 1.0]}]}
+    {:type :coincident
+     :m1 [["{62243423-b7fd-4a10-8a98-86209a6620a4}" "APNT_2"] {:e [-8649.51 4688.51 0.0]}]
+     :m2 [["{bb160c79-5ba3-4379-a6c1-8603f29079f2}" "APNT_2"] {:e [4557.58 679.734 0.0]}]}
+    {:type :coincident
+     :m1 [["{62243423-b7fd-4a10-8a98-86209a6620a4}" "APNT_0"] {:e [-8625.71 4720.65 0.0]}]
+     :m2 [["{bb160c79-5ba3-4379-a6c1-8603f29079f2}" "APNT_0"] {:e [4545.3 641.665 0.0]}]}
+    {:type :coincident
+     :m1 [["{62243423-b7fd-4a10-8a98-86209a6620a4}" "APNT_1"] {:e [-8625.71 4720.65 0.0]}]
+     :m2 [["{bb160c79-5ba3-4379-a6c1-8603f29079f2}" "APNT_1"] {:e [4545.3 641.665 0.0]}]}]
 
       failure-pattern
-      '[{:type :planar
-         :m1 [["{bb160c79-5ba3-4379-a6c1-8603f29079f2}" "FRONT"] {:e [0.0 0.0 0.0]}]
-         :m2 [["{059166f0-b3c0-474f-9dcb-d5e865754d77}|1" "ASM_FRONT"] {:e [0.0 0.0 0.0]}]}
-        {:type :planar
-         :m1 [["{bb160c79-5ba3-4379-a6c1-8603f29079f2}" "TOP"] {:e [0.0 0.0 0.0]}]
-         :m2 [["{059166f0-b3c0-474f-9dcb-d5e865754d77}|1" "ASM_TOP"] {:e [0.0 0.0 0.0]}]}
-        {:type :planar
-         :m1 [["{bb160c79-5ba3-4379-a6c1-8603f29079f2}" "RIGHT"] {:e [0.0 0.0 0.0]}]
-         :m2 [["{059166f0-b3c0-474f-9dcb-d5e865754d77}|1" "ASM_RIGHT"] {:e [0.0 0.0 0.0]}]}
-        {:type :coincident
-         :m1 [["{62243423-b7fd-4a10-8a98-86209a6620a4}" "APNT_2"] {:e [-8649.51 4688.51 0.0]}]
-         :m2 [["{bb160c79-5ba3-4379-a6c1-8603f29079f2}" "APNT_2"] {:e [4557.58 679.734 0.0]}]}
-        {:type :coincident
-         :m1 [["{62243423-b7fd-4a10-8a98-86209a6620a4}" "APNT_0"] {:e [-8625.71 4720.65 0.0]}]
-         :m2 [["{bb160c79-5ba3-4379-a6c1-8603f29079f2}" "APNT_0"] {:e [4545.3 641.665 0.0]}]}
-        {:type :coincident
-         :m1 [["{62243423-b7fd-4a10-8a98-86209a6620a4}" "APNT_1"] {:e [-8625.71 4720.65 0.0]}]
-         :m2 [["{bb160c79-5ba3-4379-a6c1-8603f29079f2}" "APNT_1"] {:e [4545.3 641.665 0.0]}]}]
+      []
       ]
   (let [constraints (:constraint graph)
         kb graph

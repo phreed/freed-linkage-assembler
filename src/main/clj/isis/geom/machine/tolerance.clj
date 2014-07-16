@@ -12,15 +12,17 @@
        (cond (= :default tol-value) *default-tolerance*
                 :else tol-value))))
 
-
 (defn near-zero?
   "A function which takes a scalar argument
   and verifies that its magnitude is sufficiently small."
   [tol-value x]
-  (< ((if (pos? x) + -) x)
-     (cond (= :default tol-value) *default-tolerance*
-           (= :tiny tol-value) 1e-10
-           :else tol-value)))
+  (let [tv (cond (number? tol-value) tol-value
+                 (= :default tol-value) *default-tolerance*
+                 (= :tiny tol-value) 1e-10
+                 :else tol-value)]
+    (cond (number? x) (< (- tv) x tv)
+          (vector? x) (near-zero? tol-value (reduce #(+ %1 (* %2 %2)) x)))))
+
 
 (defn near-same?
   "A function which compares a set of objects.

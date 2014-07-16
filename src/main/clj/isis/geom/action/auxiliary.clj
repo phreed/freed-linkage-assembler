@@ -48,12 +48,18 @@
     (if-not (tol/near-equal? :default (mag to-diff) (mag from-diff))
       (emsg/e-dim-oc ?from-point ?to-point ?center ?axis)
       (let [possible-axis (outer-prod to-diff from-diff)]
-        (if-not (parallel? possible-axis ?axis false)
-          (emsg/emsg-3 possible-axis ?axis)
-          (if (and (nil? ?axis-1) (nil? ?axis-2))
-            (rotate ?link pivot ?axis
-                    (vec-angle from-diff to-diff ?axis))
-            (dof-2r:p->p ?link ?center ?from-point ?to-point ?axis-1 ?axis-2 1)))))))
+        (cond (tol/near-zero? :default possible-axis)
+              ?link ;; no change
+
+              (not (parallel? possible-axis ?axis false))
+              (emsg/emsg-3 possible-axis ?axis)
+
+              :else
+              (if (and (nil? ?axis-1) (nil? ?axis-2))
+                (rotate ?link pivot ?axis
+                        (vec-angle from-diff to-diff ?axis))
+                (dof-2r:p->p ?link ?center
+                             ?from-point ?to-point ?axis-1 ?axis-2 1)))))))
 
 (defn dof-3r:p->p
   "Procedure to rotate body ?link about ?center,
@@ -63,7 +69,7 @@
   (let [from-diff (vec-diff ?from-point ?center)
         to-diff (vec-diff ?to-point ?center)]
     (cond (tol/near-same? :default from-diff to-diff)
-          {:xlate [0.0 0.0 0.0]}
+          ?link
 
           (not (tol/near-equal? :default (mag from-diff) (mag to-diff)))
           (emsg/e-dim-oc ?from-point ?to-point ?center nil)

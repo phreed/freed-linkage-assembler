@@ -30,7 +30,7 @@
   The key is the [#tdof #rdof] of the m2 link."
   [kb m1 m2]
   (let [[[link-name _] _] m2
-        link @(link-name (:link kb))]
+        link @(get (:link kb) link-name)]
     {:tdof (:# (:tdof link)) :rdof (:# (:rdof link))}))
 
 (defmulti coincident->transform!
