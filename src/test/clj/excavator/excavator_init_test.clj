@@ -11,13 +11,29 @@
             [clojure.java.io :as jio]
             [clojure.zip :as zip]
             [clojure.data.xml :as xml]
-            [clojure.data.zip.xml :as zml]))
+            [clojure.data.zip.xml :as zml]
+
+           [isis.geom.analysis
+             [position-analysis :refer [position-analysis]]]
+
+            [isis.geom.machine.misc :as misc]
+            [isis.geom.position-dispatch
+             :refer [constraint-attempt?]]
+            [isis.geom.action
+             [coincident-slice]
+             [helical-slice]
+             [in-line-slice]
+             [in-plane-slice]
+             [offset-x-slice]
+             [offset-z-slice]
+             [parallel-z-slice]]))
 
 (defn- parse-numeric
   "xml represents numeric values as strings.
   This converts them into numbers."
   [string]
-  (Double/parseDouble string))
+  (cond (nil? string) 0.0
+        :else (Double/parseDouble string)))
 
 (defn- reform-marker
   "The xml file forms the marker hash a bit differently."
@@ -27,14 +43,17 @@
          (parse-numeric (:y orig))
          (parse-numeric (:z orig))] }))
 
+(def constraint-type-map
+  "A mapping between the types specified in the xml and the type required."
+  {'"SURFACE" :planar, '"POINT" :coincident, '"PLANE" :planar})
 
 (defn- extract-constraints-for-single-link
   ""
   [constraint]
   (let [pair-list (zml/xml-> constraint :Pair)]
-    (for [pair pair-list]
-      (let [
-            feature-pair (zml/xml-> pair :ConstraintFeature)
+      (for [pair pair-list]
+        (let [
+              feature-pair (zml/xml-> pair :ConstraintFeature)
             c-type (zml/attr pair :FeatureGeometryType)
 
             a-feat (first feature-pair)
@@ -47,7 +66,7 @@
             b-proper-name (zml/attr b-feat :FeatureName)
             b-marker (reform-marker (zml/xml1-> b-feat :GeometryMarker))
             ]
-        {:type c-type
+        {:type (get constraint-type-map c-type "UNKNOWN")
          :m1 [[a-link-name a-proper-name] a-marker]
          :m2 [[b-link-name b-proper-name] b-marker]} ))))
 
@@ -55,16 +74,24 @@
 (defn- extract-constraints-for-all-links
   "Extract constraints for all children of the top link."
   [asm-link]
-  (into []
-        (for [ link-constraints (zml/xml-> asm-link  :CADComponent :Constraint) ]
-          (extract-constraints-for-single-link link-constraints)) ))
+  (loop [result [], component-links (zml/xml-> asm-link :CADComponent :Constraint)]
+    (cond (empty? component-links)
+          (into [] result)
+
+          :else
+          (let [link-constraints (first component-links)
+                spec-constraints (extract-constraints-for-single-link link-constraints)]
+            (recur (concat result spec-constraints) (rest component-links))))))
 
 
 (defn- extract-link-map
   "Build a map with keys being the link names."
   [link-list]
   (into {} (for [ link (zml/xml-> link-list :CADComponent) ]
-             [(keyword (zml/attr link :ComponentID)) (zml/text link)])))
+             [(zml/attr link :ComponentID)
+              (ref {:tdof {:# 3} :rdof {:# 3}
+                    :versor {:xlate [0.0 0.0 0.0]
+                             :rotate [1.0 0.0 0.0 0.0]}})])))
 
 (def excavator-graph
   (ref
@@ -75,12 +102,13 @@
        (let [base-link-id (zml/attr asm-link :ComponentID)
              link-map (extract-link-map asm-link)
              constraint-list (extract-constraints-for-all-links asm-link)]
-         {:constraints constraint-list
-          :links link-map
+         {:constraint constraint-list
+          :link link-map
           :base base-link-id
-          :mark {} } )))))
+          :mark {:loc (ref #{[base-link-id]})
+                 :z (ref #{[base-link-id]})
+                 :x (ref #{[base-link-id]})} } )))))
 
-excavator-graph
 
 
 
@@ -91,26 +119,88 @@ excavator-graph
   (clojure.walk/postwalk #(if (misc/reference? %) [:ref @%] %) form))
 
 
-#_(expect
-   '(
-     {:type :coincident
-      :m1 [[ground g2] {:e [5.0 0.0 0.0], :z [nil nil nil], :x [nil nil nil]}]
-      :m2 [[brick b2] {:e [0.0 3.0 0.0], :z [nil nil nil], :x [nil nil nil]}]}
-     {:type :coincident
-      :m1 [[brick b4] {:e [1.0 0.0 0.0], :z [nil nil nil], :x [nil nil nil]}]
-      :m2 [[cap c4] {:e [-1.0 0.0 0.0], :z [nil nil nil], :x [nil nil nil]}]}
-     {:type :coincident
-      :m1 [[ground g1] {:e [2.0 0.0 0.0], :z [nil nil nil], :x [nil nil nil]}]
-      :m2 [[brick b1] {:e [0.0 0.0 0.0], :z [nil nil nil], :x [nil nil nil]}]}
-     {:type :coincident
-      :m1 [[brick b3] {:e [0.0 0.0 4.0], :z [nil nil nil], :x [nil nil nil]}]
-      :m2 [[cap c3] {:e [0.0 0.0 4.0], :z [nil nil nil], :x [nil nil nil]}]}
-     {:type :coincident
-      :m1 [[brick b3] {:e [0.0 0.0 4.0], :z [nil nil nil], :x [nil nil nil]}]
-      :m2 [[ground g3] {:e [2.0 4.0 0.0], :z [nil nil nil], :x [nil nil nil]}]}
-     {:type :coincident
-      :m1 [[cap c2] {:e [0.0 3.0 0.0], :z [nil nil nil], :x [nil nil nil]}]
-      :m2 [[brick b2] {:e [0.0 3.0 0.0], :z [nil nil nil], :x [nil nil nil]}]})
-   @excavator-graph)
+(expect
+ '{:constraint
+   [
+    {:type :planar
+     :m1 [["{bb160c79-5ba3-4379-a6c1-8603f29079f2}" "FRONT"] {:e [0.0 0.0 0.0]}]
+     :m2 [["{059166f0-b3c0-474f-9dcb-d5e865754d77}|1" "ASM_FRONT"] {:e [0.0 0.0 0.0]}]}
+    {:type :planar
+     :m1 [["{bb160c79-5ba3-4379-a6c1-8603f29079f2}" "TOP"] {:e [0.0 0.0 0.0]}]
+     :m2 [["{059166f0-b3c0-474f-9dcb-d5e865754d77}|1" "ASM_TOP"] {:e [0.0 0.0 0.0]}]}
+    {:type :planar
+     :m1 [["{bb160c79-5ba3-4379-a6c1-8603f29079f2}" "RIGHT"] {:e [0.0 0.0 0.0]}]
+     :m2 [["{059166f0-b3c0-474f-9dcb-d5e865754d77}|1" "ASM_RIGHT"] {:e [0.0 0.0 0.0]}]}
+    {:type :coincident
+     :m1 [["{62243423-b7fd-4a10-8a98-86209a6620a4}" "APNT_2"] {:e [-8649.51 4688.51 0.0]}]
+     :m2 [["{bb160c79-5ba3-4379-a6c1-8603f29079f2}" "APNT_2"] {:e [4557.58 679.734 0.0]}]}
+    {:type :coincident
+     :m1 [["{62243423-b7fd-4a10-8a98-86209a6620a4}" "APNT_0"] {:e [-8625.71 4720.65 0.0]}]
+     :m2 [["{bb160c79-5ba3-4379-a6c1-8603f29079f2}" "APNT_0"] {:e [4545.3 641.665 0.0]}]}
+    {:type :coincident
+     :m1 [["{62243423-b7fd-4a10-8a98-86209a6620a4}" "APNT_1"] {:e [-8625.71 4720.65 0.0]}]
+     :m2 [["{bb160c79-5ba3-4379-a6c1-8603f29079f2}" "APNT_1"] {:e [4545.3 641.665 0.0]}]}]
+   :link {"{bb160c79-5ba3-4379-a6c1-8603f29079f2}"
+          [:ref {:versor {:xlate [0.0 0.0 0.0]  :rotate [1.0 0.0 0.0 0.0]}
+                 :tdof {:# 3} :rdof {:# 3}}]
+          "{62243423-b7fd-4a10-8a98-86209a6620a4}"
+          [:ref {:versor {:xlate [0.0 0.0 0.0] :rotate [1.0 0.0 0.0 0.0]}
+                 :tdof {:# 3} :rdof {:# 3}}]}
+   :base "{059166f0-b3c0-474f-9dcb-d5e865754d77}|1"
+   :mark {:loc [:ref #{["{059166f0-b3c0-474f-9dcb-d5e865754d77}|1"]}]
+          :z [:ref #{["{059166f0-b3c0-474f-9dcb-d5e865754d77}|1"]}]
+          :x [:ref #{["{059166f0-b3c0-474f-9dcb-d5e865754d77}|1"]}]}}
+   (ref->str @excavator-graph))
+
+
+(let [graph @excavator-graph
+      mark-pattern
+      '{:loc [:ref #{["{059166f0-b3c0-474f-9dcb-d5e865754d77}|1"]}]
+        :z [:ref #{["{059166f0-b3c0-474f-9dcb-d5e865754d77}|1"]}]
+        :x [:ref #{["{059166f0-b3c0-474f-9dcb-d5e865754d77}|1"]}]}
+
+      link-pattern
+      '{"{bb160c79-5ba3-4379-a6c1-8603f29079f2}"
+        [:ref {:versor {:xlate [0.0 0.0 0.0]
+                        :rotate [1.0 0.0 0.0 0.0]}
+               :tdof {:# 3} :rdof {:# 3}}]
+
+        "{62243423-b7fd-4a10-8a98-86209a6620a4}"
+        [:ref {:versor {:xlate [0.0 0.0 0.0]
+                        :rotate [1.0 0.0 0.0 0.0]}
+               :tdof {:# 3} :rdof {:# 3}}]}
+
+
+      success-pattern
+      '[]
+
+      failure-pattern
+      '[{:type :planar
+         :m1 [["{bb160c79-5ba3-4379-a6c1-8603f29079f2}" "FRONT"] {:e [0.0 0.0 0.0]}]
+         :m2 [["{059166f0-b3c0-474f-9dcb-d5e865754d77}|1" "ASM_FRONT"] {:e [0.0 0.0 0.0]}]}
+        {:type :planar
+         :m1 [["{bb160c79-5ba3-4379-a6c1-8603f29079f2}" "TOP"] {:e [0.0 0.0 0.0]}]
+         :m2 [["{059166f0-b3c0-474f-9dcb-d5e865754d77}|1" "ASM_TOP"] {:e [0.0 0.0 0.0]}]}
+        {:type :planar
+         :m1 [["{bb160c79-5ba3-4379-a6c1-8603f29079f2}" "RIGHT"] {:e [0.0 0.0 0.0]}]
+         :m2 [["{059166f0-b3c0-474f-9dcb-d5e865754d77}|1" "ASM_RIGHT"] {:e [0.0 0.0 0.0]}]}
+        {:type :coincident
+         :m1 [["{62243423-b7fd-4a10-8a98-86209a6620a4}" "APNT_2"] {:e [-8649.51 4688.51 0.0]}]
+         :m2 [["{bb160c79-5ba3-4379-a6c1-8603f29079f2}" "APNT_2"] {:e [4557.58 679.734 0.0]}]}
+        {:type :coincident
+         :m1 [["{62243423-b7fd-4a10-8a98-86209a6620a4}" "APNT_0"] {:e [-8625.71 4720.65 0.0]}]
+         :m2 [["{bb160c79-5ba3-4379-a6c1-8603f29079f2}" "APNT_0"] {:e [4545.3 641.665 0.0]}]}
+        {:type :coincident
+         :m1 [["{62243423-b7fd-4a10-8a98-86209a6620a4}" "APNT_1"] {:e [-8625.71 4720.65 0.0]}]
+         :m2 [["{bb160c79-5ba3-4379-a6c1-8603f29079f2}" "APNT_1"] {:e [4545.3 641.665 0.0]}]}]
+      ]
+  (let [constraints (:constraint graph)
+        kb graph
+        [success? result-kb result-success result-failure] (position-analysis kb constraints)
+        {result-mark :mark result-link :link} (ref->str result-kb)]
+    (expect mark-pattern result-mark)
+    (expect link-pattern result-link)
+    (expect success-pattern result-success)
+    (expect failure-pattern result-failure)) )
 
 

@@ -17,3 +17,7 @@
   #'constraint-attempt-dispatch
   :default constraint-attempt?<-default)
 
+(defmethod constraint-attempt?
+  :planar
+  [kb constraint]
+  nil)
