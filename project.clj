@@ -6,6 +6,7 @@
   :source-paths ["src/main/clj"]
   ;; :java-source-paths ["src/main/java"]
   :dependencies [[org.clojure/clojure "1.6.0"]
+                 [org.clojure/tools.cli "0.3.1"]
                  [org.clojure/core.match "0.2.1"]
                  [org.clojure/tools.logging "0.3.0"]
                  [expectations "2.0.7"]
