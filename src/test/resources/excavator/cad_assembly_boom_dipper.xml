@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Assemblies xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" VersionInfo="" xsi:noNamespaceSchemaLocation="AssemblyInterface.xsd">
+<Assemblies>
   <Assembly ConfigurationID="{059166f0-b3c0-474f-9dcb-d5e865754d77}|1" _id="id1">
     <CADComponent ComponentID="{059166f0-b3c0-474f-9dcb-d5e865754d77}|1" Name="Boom_Arm_POINT_1" DisplayName="Boom_Arm_POINT_1" Type="ASSEMBLY" SpecialInstruction="" MaterialID="" Representation="" _id="id2">
       <CADComponent ComponentID="{bb160c79-5ba3-4379-a6c1-8603f29079f2}" Name="BOOM_EX_375" DisplayName="Arm" Type="PART" SpecialInstruction="" MaterialID="" Representation="" _id="id19">
