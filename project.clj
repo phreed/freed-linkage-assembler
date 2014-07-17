@@ -28,4 +28,4 @@
     :uberjar
     {:aot :all} }
 
-  :aliases {"slamhound" ["run" "-m" "slam.hound"]} )
+  :aliases {} )

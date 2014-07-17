@@ -4,6 +4,7 @@
             [isis.geom.machine.misc :as misc]
             [isis.geom.lang.cyphy-cad :as cyphy]
 
+            [clojure.java.io :as jio]
             [clojure.zip :as zip]
             [clojure.data.xml :as xml]
             [clojure.data.zip.xml :as zx]
@@ -25,8 +26,9 @@
 
 
 (def excavator-graph
-  (cyphy/graph-from-cyphy-file
-               "excavator/cad_assembly_boom_dipper.xml" ))
+  (cyphy/graph-from-cyphy-input-stream
+   (-> "excavator/cad_assembly_boom_dipper.xml"
+       jio/resource jio/input-stream)))
 
 
 

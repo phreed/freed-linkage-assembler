@@ -140,11 +140,10 @@
     (tree-edit (:root graph) match-link? node-editor))))
 
 
-(defn graph-from-cyphy-file
-  [file-path]
+(defn graph-from-cyphy-input-stream
+  [file-is]
   (graph-from-cyphy-zipper
-   (-> file-path
-       jio/resource jio/input-stream xml/parse zip/xml-zip)))
+   (-> file-is xml/parse zip/xml-zip)))
 
 
 (defn graph-to-cyphy-file
