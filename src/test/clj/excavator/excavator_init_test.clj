@@ -26,9 +26,9 @@
 
 
 (def excavator-graph
-  (cyphy/graph-from-cyphy-input-stream
-   (-> "excavator/cad_assembly_boom_dipper.xml"
-       jio/resource jio/input-stream)))
+  (with-open [is (-> "excavator/cad_assembly_boom_dipper.xml"
+                     jio/resource jio/input-stream)]
+    (cyphy/graph-from-cyphy-input-stream is)))
 
 
 
