@@ -30,8 +30,11 @@
   The key is the [#tdof #rdof] of the m2 link."
   [kb m1 m2]
   (let [[[link-name _] _] m2
-        link @(get (:link kb) link-name)]
-    {:tdof (:# (:tdof link)) :rdof (:# (:rdof link))}))
+        link @(get (:link kb) link-name)
+        tdof (get-in link [:tdof :#])
+        rdof (get-in link [:rdof :#]) ]
+    (println tdof "-" rdof "- coincident")
+    {:tdof tdof :rdof rdof}))
 
 (defmulti coincident->transform!
   "Transform the links and kb so that the constraint is met."

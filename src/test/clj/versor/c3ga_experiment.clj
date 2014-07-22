@@ -153,6 +153,8 @@
                [[(a blade-label-hash) (b blade-label-hash)] v])
              {[:no :ni] -1, [:e1 :e1] 1, [:e2 :e2] 1, [:e3 :e3] 1, [:ni :no] -1})))
 
+(declare mp-bb)
+
 (defn metric-transform
   "Transform a basis-blade to a new basis."
   [a m]
