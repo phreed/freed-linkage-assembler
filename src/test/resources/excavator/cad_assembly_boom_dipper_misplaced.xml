@@ -34,47 +34,47 @@
             <Units Value="" _id="id22" />
           </CADParameter>
         </ParametricParameters>
-      </CADComponent>-->
-      <CADComponent ComponentID="{62243423-b7fd-4a10-8a98-86209a6620a4}" Name="BOOM" DisplayName="Boom" Type="PART" SpecialInstruction="" MaterialID="" Representation="" _id="id106">
-        <Constraint _id="id76">
-          <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="POINT" FeatureAlignmentType="ALIGN" _id="id77">
-            <ConstraintFeature ComponentID="{62243423-b7fd-4a10-8a98-86209a6620a4}" FeatureName="APNT_2" FeatureOrientationType="NONE" _id="id78">
-              <GeometryMarker x="-8649.51" y="4688.51" z="0" i="0" j="0" k="0" pi="0" _id="id79" />
+      </CADComponent>
+      <CADComponent ComponentID="{62243423-b7fd-4a10-8a98-86209a6620a4}" Name="BOOM" DisplayName="Boom" Type="PART" SpecialInstruction="" MaterialID="" Representation="" _id="id33">
+        <Constraint _id="id3">
+          <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="POINT" FeatureAlignmentType="ALIGN" _id="id4">
+            <ConstraintFeature ComponentID="{62243423-b7fd-4a10-8a98-86209a6620a4}" FeatureName="APNT_2" FeatureOrientationType="NONE" _id="id5">
+              <GeometryMarker x="-8649.51" y="4688.51" z="600.0" i="0" j="0" k="0" pi="0" _id="id6" />
             </ConstraintFeature>
-            <ConstraintFeature ComponentID="{bb160c79-5ba3-4379-a6c1-8603f29079f2}" FeatureName="PNT2" FeatureOrientationType="NONE" _id="id80">
-              <GeometryMarker x="3467.85" y="43.0687" z="0" i="0" j="0" k="0" pi="0" _id="id81" />
-            </ConstraintFeature>
-          </Pair>
-          <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="POINT" FeatureAlignmentType="ALIGN" _id="id82">
-            <ConstraintFeature ComponentID="{62243423-b7fd-4a10-8a98-86209a6620a4}" FeatureName="APNT_1" FeatureOrientationType="NONE" _id="id83">
-              <GeometryMarker x="-8625.71" y="4720.65" z="0" i="0" j="0" k="0" pi="0" _id="id84" />
-            </ConstraintFeature>
-            <ConstraintFeature ComponentID="{bb160c79-5ba3-4379-a6c1-8603f29079f2}" FeatureName="PNT1" FeatureOrientationType="NONE" _id="id85">
-              <GeometryMarker x="3455.57" y="5" z="0" i="0" j="0" k="0" pi="0" _id="id86" />
+            <ConstraintFeature ComponentID="{bb160c79-5ba3-4379-a6c1-8603f29079f2}" FeatureName="APNT_2" FeatureOrientationType="NONE" _id="id7">
+              <GeometryMarker x="4557.58" y="679.734" z="302.5" i="0" j="0" k="0" pi="0" _id="id8" />
             </ConstraintFeature>
           </Pair>
-          <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="POINT" FeatureAlignmentType="ALIGN" _id="id87">
-            <ConstraintFeature ComponentID="{62243423-b7fd-4a10-8a98-86209a6620a4}" FeatureName="APNT_0" FeatureOrientationType="NONE" _id="id88">
-              <GeometryMarker x="-8625.71" y="4720.65" z="0" i="0" j="0" k="0" pi="0" _id="id89" />
+          <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="POINT" FeatureAlignmentType="ALIGN" _id="id9">
+            <ConstraintFeature ComponentID="{62243423-b7fd-4a10-8a98-86209a6620a4}" FeatureName="APNT_0" FeatureOrientationType="NONE" _id="id10">
+              <GeometryMarker x="-8625.71" y="4720.65" z="600.0" i="0" j="0" k="0" pi="0" _id="id11" />
             </ConstraintFeature>
-            <ConstraintFeature ComponentID="{bb160c79-5ba3-4379-a6c1-8603f29079f2}" FeatureName="PNT0" FeatureOrientationType="NONE" _id="id90">
-              <GeometryMarker x="3455.57" y="5" z="0" i="0" j="0" k="0" pi="0" _id="id91" />
+            <ConstraintFeature ComponentID="{bb160c79-5ba3-4379-a6c1-8603f29079f2}" FeatureName="APNT_0" FeatureOrientationType="NONE" _id="id12">
+              <GeometryMarker x="4545.3" y="641.665" z="302.5" i="0" j="0" k="0" pi="0" _id="id13" />
+            </ConstraintFeature>
+          </Pair>
+          <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="POINT" FeatureAlignmentType="ALIGN" _id="id14">
+            <ConstraintFeature ComponentID="{62243423-b7fd-4a10-8a98-86209a6620a4}" FeatureName="APNT_1" FeatureOrientationType="NONE" _id="id15">
+              <GeometryMarker x="-8625.71" y="4720.65" z="570.0" i="0" j="0" k="0" pi="0" _id="id16" />
+            </ConstraintFeature>
+            <ConstraintFeature ComponentID="{bb160c79-5ba3-4379-a6c1-8603f29079f2}" FeatureName="APNT_1" FeatureOrientationType="NONE" _id="id17">
+              <GeometryMarker x="4545.3" y="641.665" z="272.5" i="0" j="0" k="0" pi="0" _id="id18" />
             </ConstraintFeature>
           </Pair>
         </Constraint>
-        <ParametricParameters _id="id107">
-          <CADParameter Name="PTC_MATERIAL_NAME" Type="String" Value="STEEL_LOW_ALLOY_A500_B" _id="id108">
-            <Units Value="" _id="id109" />
+        <ParametricParameters _id="id34">
+          <CADParameter Name="PTC_MATERIAL_NAME" Type="String" Value="STEEL_LOW_ALLOY_A500_B" _id="id35">
+            <Units Value="" _id="id36" />
           </CADParameter>
         </ParametricParameters>
       </CADComponent>
     </CADComponent>
-    <Properties _id="id110">
-      <Units Value="value1" _id="id111" />
+    <Properties _id="id37">
+      <Units Value="value1" _id="id38" />
     </Properties>
   </Assembly>
-  <DataExchange _id="id112">
-    <STEPFormat Name="AP203_E2_Single_File" _id="id113" />
-    <STEPFormat Name="AP203_E2_Separate_Part_Files" _id="id114" />
+  <DataExchange _id="id39">
+    <STEPFormat Name="AP203_E2_Single_File" _id="id40" />
+    <STEPFormat Name="AP203_E2_Separate_Part_Files" _id="id41" />
   </DataExchange>
 </Assemblies>
