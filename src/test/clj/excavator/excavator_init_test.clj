@@ -1,7 +1,6 @@
 (ns excavator.excavator-init-test
   "Sample assembly consisting of a boom and a dipper."
   (:require [expectations :refer :all]
-            [isis.geom.machine.misc :as misc]
             [isis.geom.lang.cyphy-cad :as cyphy]
 
             [clojure.java.io :as jio]
@@ -12,7 +11,10 @@
             [isis.geom.analysis
              [position-analysis :refer [position-analysis]]]
 
-            [isis.geom.machine.misc :as misc]
+            [isis.geom.machine
+             [misc :as misc]
+             [tolerance :as tol]]
+
             [isis.geom.position-dispatch
              :refer [constraint-attempt?]]
             [isis.geom.action
@@ -25,11 +27,6 @@
              [parallel-z-slice]]))
 
 
-(def excavator-graph
-  (with-open [is (-> "excavator/cad_assembly_boom_dipper.xml"
-                     jio/resource jio/input-stream)]
-    (cyphy/graph-from-cyphy-input-stream is)))
-
 
 
 (defn ref->str
@@ -39,32 +36,41 @@
   (clojure.walk/postwalk #(if (misc/reference? %) [:ref @%] %) form))
 
 
-(expect
- '[
-   {:type :coincident
-    :m1 [["{bb160c79-5ba3-4379-a6c1-8603f29079f2}" "FRONT"] {:e [1.0 0.0 0.0]}]
-    :m2 [["{059166f0-b3c0-474f-9dcb-d5e865754d77}|1" "ASM_FRONT"] {:e [1.0 0.0 0.0]}]}
-   {:type :coincident
-    :m1 [["{bb160c79-5ba3-4379-a6c1-8603f29079f2}" "TOP"] {:e [0.0 1.0 0.0]}]
-    :m2 [["{059166f0-b3c0-474f-9dcb-d5e865754d77}|1" "ASM_TOP"] {:e [0.0 1.0 0.0]}]}
-   {:type :coincident
-    :m1 [["{bb160c79-5ba3-4379-a6c1-8603f29079f2}" "RIGHT"] {:e [0.0 0.0 1.0]}]
-    :m2 [["{059166f0-b3c0-474f-9dcb-d5e865754d77}|1" "ASM_RIGHT"] {:e [0.0 0.0 1.0]}]}
-   {:type :coincident
-    :m1 [["{62243423-b7fd-4a10-8a98-86209a6620a4}" "APNT_2"] {:e [-8649.51 4688.51 0.0]}]
-    :m2 [["{bb160c79-5ba3-4379-a6c1-8603f29079f2}" "APNT_2"] {:e [4557.58 679.734 0.0]}]}
-   {:type :coincident
-    :m1 [["{62243423-b7fd-4a10-8a98-86209a6620a4}" "APNT_0"] {:e [-8625.71 4720.65 0.0]}]
-    :m2 [["{bb160c79-5ba3-4379-a6c1-8603f29079f2}" "APNT_0"] {:e [4545.3 641.665 0.0]}]}
-   {:type :coincident
-    :m1 [["{62243423-b7fd-4a10-8a98-86209a6620a4}" "APNT_1"] {:e [-8625.71 4720.65 0.0]}]
-    :m2 [["{bb160c79-5ba3-4379-a6c1-8603f29079f2}" "APNT_1"] {:e [4545.3 641.665 0.0]}]}]
- (:constraint excavator-graph))
+(let [_ (println "excavator init test : constraints")
+      excavator-graph
+      (with-open [is (-> "excavator/cad_assembly_boom_dipper.xml"
+                         jio/resource jio/input-stream)]
+        (cyphy/graph-from-cyphy-input-stream is))]
+  (expect
+   '[
+     {:type :coincident
+      :m1 [["{bb160c79-5ba3-4379-a6c1-8603f29079f2}" "FRONT"] {:e [1.0 0.0 0.0]}]
+      :m2 [["{059166f0-b3c0-474f-9dcb-d5e865754d77}|1" "ASM_FRONT"] {:e [1.0 0.0 0.0]}]}
+     {:type :coincident
+      :m1 [["{bb160c79-5ba3-4379-a6c1-8603f29079f2}" "TOP"] {:e [0.0 1.0 0.0]}]
+      :m2 [["{059166f0-b3c0-474f-9dcb-d5e865754d77}|1" "ASM_TOP"] {:e [0.0 1.0 0.0]}]}
+     {:type :coincident
+      :m1 [["{bb160c79-5ba3-4379-a6c1-8603f29079f2}" "RIGHT"] {:e [0.0 0.0 1.0]}]
+      :m2 [["{059166f0-b3c0-474f-9dcb-d5e865754d77}|1" "ASM_RIGHT"] {:e [0.0 0.0 1.0]}]}
+     {:type :coincident
+      :m1 [["{62243423-b7fd-4a10-8a98-86209a6620a4}" "APNT_2"] {:e [-8649.51 4688.51 0.0]}]
+      :m2 [["{bb160c79-5ba3-4379-a6c1-8603f29079f2}" "APNT_2"] {:e [4557.58 679.734 0.0]}]}
+     {:type :coincident
+      :m1 [["{62243423-b7fd-4a10-8a98-86209a6620a4}" "APNT_0"] {:e [-8625.71 4720.65 0.0]}]
+      :m2 [["{bb160c79-5ba3-4379-a6c1-8603f29079f2}" "APNT_0"] {:e [4545.3 641.665 0.0]}]}
+     {:type :coincident
+      :m1 [["{62243423-b7fd-4a10-8a98-86209a6620a4}" "APNT_1"] {:e [-8625.71 4720.65 0.0]}]
+      :m2 [["{bb160c79-5ba3-4379-a6c1-8603f29079f2}" "APNT_1"] {:e [4545.3 641.665 0.0]}]}]
+   (:constraint excavator-graph)))
 
 
-:base "{059166f0-b3c0-474f-9dcb-d5e865754d77}|1"
 
-(let [graph excavator-graph
+(let [_ (println "excavator init test : position analysis")
+      graph
+      (with-open [is (-> "excavator/cad_assembly_boom_dipper.xml"
+                         jio/resource jio/input-stream)]
+        (cyphy/graph-from-cyphy-input-stream is))
+
       mark-pattern
       '{:loc [:ref #{["{059166f0-b3c0-474f-9dcb-d5e865754d77}|1"]
                      ["{62243423-b7fd-4a10-8a98-86209a6620a4}"]
@@ -123,9 +129,9 @@
       augmented-pattern
       '#clojure.data.xml.Element
       {:tag :versor
-        :attrs {:x 13207.09 :y -4008.7760000000003 :z 0.0
-                :i 0.0, :j 0.0, :k 0.0, :pi 0.0}
-        :content ()}
+       :attrs {:x 13207.09 :y -4008.7760000000003 :z 0.0
+               :i 0.0, :j 0.0, :k 0.0, :pi 0.0}
+       :content ()}
 
       ]
   (let [constraints (:constraint graph)
@@ -134,7 +140,8 @@
         {result-mark :mark result-link :link} (ref->str result-kb)
         augmented-zipper (zip/xml-zip (:augmented (cyphy/graph-to-cyphy-zipper graph)))
         augmented-sample (zip/node (zx/xml1-> augmented-zipper :Assembly :CADComponent :CADComponent
-                     (zx/attr= :Name "BOOM") :versor )) ]
+                                              (zx/attr= :Name "BOOM") :versor )) ]
+    (tol/set-default-tolerance 0.01)
     (expect mark-pattern result-mark)
     (expect link-pattern result-link)
     (expect success-pattern result-success)

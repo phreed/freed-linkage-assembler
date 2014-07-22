@@ -15,9 +15,39 @@
 (defn -+- "the component sum" [a b] (* a b))
 (defn --- "the component difference" [a b] (* a b))
 
+;;;; ======== Some general purpose functions
+
+(defn minus-pow
+  "determine a sign based on the exponent."
+  [exp] (if (even? exp) +1 -1))
 
 
-(def blade-hash
+(defn bit-count-kernigan
+  "Kernigan's bit counting algorithm."
+  [n0]
+  (loop [count 0, n n0]
+    (if (zero? n)
+      count
+      (recur (inc count) (bit-and n (dec n))))))
+
+(defn bit-count-faster
+  "Faster bit count, from numerous sources.
+  I have some doubts that this is faster
+  when working with a maximum of five bits."
+  [a]
+  (let [b (- a (bit-and 16r55555555 (bit-shift-right a 1)))
+        c (+ (bit-and b 16r33333333) (bit-and (bit-shift-right b 2) 16r33333333))
+        d (bit-and (+ c (bit-shift-right c 4)))
+        e (+ d (bit-shift-right d 8))
+        f (+ e (bit-shift-right e 16))]
+    (bit-and f 16r0000003F)))
+
+(def bit-count bit-count-kernigan)
+
+
+;;;;========= Basis-blades are represented by a bitmap (blade) and a weight
+
+(def blade-label-hash
   {:s [2r00000 0] :n0-e1-e2-e3-ni [2r11111 5] :I [2r11111 5]
 
    :no [2r00001 1] :e1-e2-e3-ni [2r11110 4]
@@ -37,62 +67,235 @@
    :e2-ni [2r10100 2]  :no-e1-e3 [2r01011 3]
    :e3-ni [2r11000 2]  :no-e1-e2 [2r00111 3]  })
 
-(def blade-title-hash
+(def blade-bitmap-hash
   (into {}
-        (map (fn [[title [id _]]] [id title]) blade-hash)))
+        (map (fn [[label [id _]]] [id label]) blade-label-hash)))
 
-(defn make-bb
-  "Make a weighted blade."
-  [title weight] {:weight weight
-                  :blade (get-in blade-hash [title 0])
-                  :grade (get-in blade-hash [title 1])})
+(defn ->bb
+  "Make a weighted blade.
+  If a single arity call is made we have the weight of a scalar.
+  The blade can be specified by keyword or bitmap."
+  ;; the empty basis blade
+  ([] {:weight 0.0 :blade 0 :grade 0})
+  ;; a scalar basis blade
+  ([weight]
+   {:weight weight :blade 0 :grade 0})
+  ;; a proper basis blade
+  ([blade weight]
+   (cond (keyword blade)
+         (let [[blade grade] (blade blade-label-hash)]
+           {:weight weight :blade blade :grade grade})
+         :else
+         {:weight weight :blade blade :grade (bit-count blade)})))
 
-(defn bit-count
-  "Kernigan's bit counting algorithm."
-  [n0]
-  (loop [count 0, n n0]
-    (if (zero? n)
-      count
-      (recur (inc count) (bit-and n (dec n))))))
+(defn ->bb-rev
+  "Produce a reversed basis blade."
+  [a]
+  (let [{blade :blade weight :weight grade :grade} a]
+    (->bb blade (* weight (minus-pow 0.5 grade (dec grade))))))
+
+(defn ->bb-inversion
+  "Produce a grade inversion of the basis blade."
+  [a]
+  (let [{blade :blade weight :weight grade :grade} a]
+    (->bb blade (* weight (minus-pow grade)))))
+
+(defn ->bb-conj
+  "Produce a clifford conjugate of the basis blade."
+  [a]
+  (let [{blade :blade weight :weight grade :grade} a]
+    (->bb blade (* weight (minus-pow 0.5 grade (inc grade))))))
+
+(defn ->bb-clone [bb] (->bb (:blade bb) (:weight bb)))
+(defn ->bb-copy [bb] (->bb (:blade bb) (:weight bb)))
+
+(defn show-bb [bb]
+  "not implemented")
+
 
 
 (defn order-bb
   "Determine the order of blades and return 1 or -1.
+  An even number of swaps : return +1.
+  An odd number of swaps : return -1.
   This is for anticommutivity.
   It checks the relative positions of the bits
-  and determines whether the result needs to be flipped."
+  and determines whether the result needs to be flipped.
+  (see GAfCS fig. 19.1"
   [a b]
-  (loop [a (bit-shift-right a 1)
-         n 0]
+  (loop [a (bit-shift-right a 1), sum 0]
     (if (= 0 a)
-      (if (bit-test n 0) -1 1)
+      (if (even? sum) +1 -1)
       (recur (bit-shift-right a 1)
-             (+ n (bit-count (bit-and a b)))))))
+             (+ sum (bit-count (bit-and a b)))))))
 
 (defn gp-bb
-  "Geometric product of basis blades."
+  "Geometric product of basis blades.
+  (see GAfCS fig. 19.2"
   [a b]
-  (let [a- (:blade a) b- (:blade b)
-        r (bit-xor a- b-)
-        w (* (:weight a) (:weight b))
-        s (order-bb a- b-)]
-    {:blade r :weight (* w s) :grade (bit-count r)}) )
-
-(defn ip-bb
-  "Inner (left contraction) product of basis blades."
-  [a b]
-  (let [r (gp-bb a b)]
-    (cond (> (:grade a) (:grade b)) {}
-          (not= (:grade r) (- (:grade a) (:grade b))) {}
-          :else r)))
-
+  (let [a-blade (:blade a), b-blade (:blade b)]
+    (->bb (bit-xor a-blade b-blade)
+          (* (order-bb a-blade b-blade) (:weight a) (:weight b)))))
 
 (defn op-bb
-  "Outer product of basis blades."
+  "Outer product of basis blades.
+  Check for dependencies.
+  (see GAfCS fig. 19.2"
+  [a b] (if (= 0 (bit-and a b)) (gp-bb a b) (->bb 0.0)))
+
+
+
+;;;;========= Metric are used in metric product of basis-blades
+
+(def metric-r4:1-values
+  (into {}
+        (map (fn [[[a b] v]]
+               [[(a blade-label-hash) (b blade-label-hash)] v])
+             {[:no :ni] -1, [:e1 :e1] 1, [:e2 :e2] 1, [:e3 :e3] 1, [:ni :no] -1})))
+
+(defn metric-transform
+  "Transform a basis-blade to a new basis."
+  [a m]
+  (loop [ix 0, blade (:blade a), new-blades [(->bb (:weight a))]]
+    (cond (= 0 blade) new-blades
+          (even? blade) (recur (inc ix) (bit-shift-right blade 1) new-blades)
+          :else (for [[[i j] v] m, nb new-blades
+                      :when (= ix i)]
+                  (mp-bb nb (->bb (bit-shift-left 1 i) v))))))
+
+(defmacro build-metric-inverse-eigen-hash [basis-blades])
+
+(metric-transform (->bb :e1 3.0) metric-r4:1-values)
+
+;(defn ->metric
+;  "INCOMPLETE : Construct a metric from the input matrix."
+;  [m]
+;  (let [eig (metric-eigen-value-decomp m)
+;        inv-eig (transpose eig)
+;        eig-metric (for #() (get eig :real))
+;        is-diagonal? (is-diagnonal m)
+;
+;        [is-euclidean? is-anti-euclidean?]
+;        (if (not is-diagonal?) [false false]
+;          (loop [is? true, anti? true, ix 0]
+;            (let [value (get-in m [ix ix])]
+;              (cond value [is? anti?]
+;                    (not= 1.0 value)
+;                    (recur false anti? (inc ix))
+;                    (not= -1.0 value)
+;                    (recur is? false (inc ix))
+;                    ))))]
+;    {:is-diagonal? is-diagonal?
+;     :eigen-basis (fn [bb & bbs] nil)} ))
+
+
+; (def metric-r4:1
+;   {:keys metric-r4:1-values
+;    :eigen-metric []
+;    :bb->eigen-basis #(get metric:r4-1-inverse-eigen % %) })
+
+
+;;;;========= Basis-blade functions which use a Metric
+
+
+(defn mp-bb-res
+  "Metric product of basis blades in a specified metric.
+  Computes the geometric product of two basis blades in
+  restricted non-euclidian metric."
+  [a b metric]
+  (loop [metric-index 0
+         result (gp-bb a b)
+         blade (bit-and (:blade a) (:blade b))]
+    (if
+     ;; no annihilating blades
+     (= 0 blade) result
+     (recur
+      (inc metric-index)
+      (if (= 0 (bit-and blade 1)) result
+        ;; multiply annihilating blade's weight by metric
+        (update-in result [:weight] * (get metric metric-index)))
+      (bit-shift-right blade 1)))))
+
+(defn mp-bb
+  "Computes the geometric product of two basis blades in
+  arbitrary non-euclidian metric.
+  Returns an array list of "
+  [a b m]
+  (let [{:keys [bb->eigen-basis eigen-metric bb->metric-basis]} m]
+  (bb->metric-basis
+    (map (fn [a b] (mp-bb-res a b eigen-metric))
+         (for [eba (bb->eigen-basis a) ebb (bb->eigen-basis b)]
+           [eba ebb])))))
+
+
+(defn ip-bb-aux0
+  "Applies the rules to turn a geometric product into an inner product
+   * ga : Grade of argument 'a'
+   * gb : Grade of argument 'b'
+   * bb : the basis blade to be filtered
+   * prod-type : the type of inner product required:
+                 LEFT_CONTRACTION
+                 RIGHT_CONTRACTION
+                 HESTENES_INNER_PRODUCT or
+                 MODIFIED_HESTENES_INNER_PRODUCT
+   return either a 0 basis blade, or result. "
+  [ga gb bb prod-type]
+  (case prod-type
+    :left-contraction
+    (cond (> ga gb) (->bb 0.0)
+          (= (:grade bb) (- ga gb)) (->bb 0.0)
+          :else bb)
+    :right-contraction
+    (cond (< ga gb) (->bb 0.0)
+          (= (:grade bb) (- gb ga)) (->bb 0.0)
+          :else bb)
+    :hestenes-inner-product
+    (cond (zero? ga) (->bb 0.0)
+          (zero? gb) (->bb 0.0)
+          (not= (:grade bb) (Math/abs (- ga gb))) (->bb 0.0)
+          :else bb)
+    :modified-hestenes-inner-product
+    (cond (not= (:grade bb) (Math/abs (- ga gb))) (->bb 0.0)
+          :else bb) ))
+
+
+(defn ip-bb-aux1
+  "Convert a geometric product into an inner product."
+  [ga gb bb prod-type]
+  (filter #(not (zero? (:weight %)))
+          (map #(ip-bb-aux0 ga gb % prod-type) bb)))
+
+
+(defn ip-bb
+  "Inner product of basis blades."
+  [a b metric prod-type]
+  (ip-bb-aux1 (:grade a) (:grade b)
+              (mp-bb a b metric) prod-type))
+
+(defn =bb
+  "Check for equality."
   [a b]
-  (if (not= 0 (bit-and (:grade a) (:grade b)))
-    {}
-    (gp-bb a b)))
+  (cond (not= (:blade a) (:blade b)) false
+        (not= (:weight a) (:weight b)) false
+        :else true))
+
+(defn ->round-bb
+  "Rounds the weight of a basis blade to the nearest multiple of scale.
+  This is useful when eigen-basis is used to perform products in
+  arbitrary metric, leading to small round off errors.
+  You do not want to keep these round off errors when
+  you are computing a multiplication table."
+  [a scale epsilon]
+  (let [weight (:weight a)
+        new-weight (* scale (rem (:weight a) scale))
+        change (Math/abs (- weight new-weight))]
+    (if (< (- epsilon) change (+ epsilon))
+      (->bb (:blade a) new-weight)
+      a)))
+
+
+
+;;;;========= Multivectors are represented by a list of weighted basis-blades
 
 (defn clean-mv
   "Eliminate zero terms."
@@ -110,25 +313,25 @@
   [a b]
   (let [a-bases (:bases a)
         b-bases (:bases b)]
-    (loop [a- a-bases, b- b-bases, c {}]
+    (loop [a-s a-bases, b-s b-bases, c {}]
       (cond
-       (empty? a-) (clean-mv (compress-mv c))
-       (empty? b-) (recur (rest a-) b-bases c)
-       :else (let [prod (gp-bb (second (first a-))
-                               (second (first b-))) ]
-               (recur a- (rest b-) (conj c [(:blade prod) prod] ) ))))))
+       (empty? a-s) (clean-mv (compress-mv c))
+       (empty? b-s) (recur (rest a-s) b-bases c)
+       :else (let [prod (gp-bb (second (first a-s))
+                               (second (first b-s))) ]
+               (recur a-s (rest b-s) (conj c [(:blade prod) prod] ) ))))))
 
 
 
-(defn make-mv
+(defn ->mv
   "Make a multivector from a set of weighted blades."
-  [b1 b2]
-  {:bases {(get b1 :blade) b1 (get b2 :blade) b2}} )
+  [a b]
+  {:bases {(get a :blade) a (get b :blade) b}} )
 
 (expect 2 (bit-count 3))
 
-(let [a (make-bb :e1 5)
-      b (make-bb :e2 11)]
+(let [a (->bb :e1 5)
+      b (->bb :e2 11)]
   (expect
    '{:blade 6, :weight 55, :grade 2}
    (gp-bb a b)))
@@ -136,23 +339,10 @@
 (expect
  '{ 6 {:blade 6 :weight -22 :grade 2}
     0 {:blade 0 :weight 33 :grade 0} }
- (gp-mv (make-mv (make-bb :e1 5) (make-bb :e2 11))
-        (make-mv (make-bb :e1 2) (make-bb :e2 3))))
+ (gp-mv (->mv (->bb :e1 5) (->bb :e2 11))
+        (->mv (->bb :e1 2) (->bb :e2 3))))
 
 
-(def metric:r4-1 [1.0 1.0 1.0 1.0 -1.0])
-
-(defn mp-bb
-  "Geometric product of basis blades in R^4,1."
-  [a b]
-  (loop [i 0
-         r (gp-bb a b)
-         t (bit-and a b)]
-    (cond (= 0 t) r
-          (not= 0 (bit-and t 1))
-          (recur (inc i) (* r (get metric:r4-1 i)) (bit-shift-right t 1))
-
-          :else (recur (inc i) r (bit-shift-right t 1)))))
 
 (def e-plane 2r11000)
 (def no-ni 2r11000)
@@ -179,7 +369,7 @@
      (let [b (bit-xor t no)
            b1 (bit-xor b e+)
            b2 (bit-xor b e-)]
-       (make-mv {:blade b1 :grade (bit-count b1) :weight (/ w 2.0) }
+       (->mv {:blade b1 :grade (bit-count b1) :weight (/ w 2.0) }
                 {:blade b2 :grade (bit-count b2) :weight (/ w 2.0) }))
 
      ;; contains the infinite
@@ -187,7 +377,7 @@
      (let [b (bit-xor t no)
            b1 (bit-xor b e+)
            b2 (bit-xor b e-)]
-       (make-mv {:blade b1 :grade (bit-count b1) :weight (* w -1.0) }
+       (->mv {:blade b1 :grade (bit-count b1) :weight (* w -1.0) }
                 {:blade b2 :grade (bit-count b2) :weight w })) )))
 
 
@@ -208,7 +398,7 @@
      (let [b (bit-xor t e+)
            b1 (bit-xor b no)
            b2 (bit-xor b ni)]
-       (make-mv {:blade b1 :grade (bit-count b1) :weight w}
+       (->mv {:blade b1 :grade (bit-count b1) :weight w}
                 {:blade b2 :grade (bit-count b2) :weight (/ w -2.0) }))
 
      ;; contains the infinite
@@ -216,7 +406,7 @@
      (let [b (bit-xor t e-)
            b1 (bit-xor b no)
            b2 (bit-xor b ni)]
-       (make-mv {:blade b1 :grade (bit-count b1) :weight w }
+       (->mv {:blade b1 :grade (bit-count b1) :weight w }
                 {:blade b2 :grade (bit-count b2) :weight (/ w 2.0)})) )))
 
 

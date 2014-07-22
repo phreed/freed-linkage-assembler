@@ -1,6 +1,9 @@
 (ns isis.geom.machine.tolerance)
 
-(def ^:dynamic *default-tolerance* 0.001)
+(def ^:dynamic *default-tolerance* 0.01)
+(defn set-default-tolerance
+  ""
+  [value] (binding [*default-tolerance* value] *default-tolerance*))
 
 (defn near-equal?
   "A function which takes a set of scalar arguments
