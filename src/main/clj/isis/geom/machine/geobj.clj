@@ -60,15 +60,17 @@
             k (* 2.0 (/ (Math/atan2 sine-theta q0) sine-theta))]
         [[(* k q1) (* k q2) (* k q3)] []]))))
 
+(defn quat-conj
+  "Produce the quaternion conjugate, it does the opposite."
+  [[q0 q1 q2 q3]]  [q0 (- q1) (- q2) (- q3)])
 
-(defn- quat-sandwich
+(defn quat-sandwich
   "Perform a transformation using the quaternion.
   q v q-1 = v'
   "
-  [quaternion point reverse?]
+  [quaternion point]
   (let [[p1 p2 p3] point
         [q0 q1 q2 q3] quaternion
-        [q0 q1 q2 q3] (if reverse? [q0 (- q1) (- q2) (- q3)] [q0 q1 q2 q3])
         r1 (+ (* q0 p1 q0 +1) (* q0 p2 q3 -2) (* q0 p3 q2 +2)
               (* q1 p1 q1 +1) (* q1 p2 q2 +2) (* q1 p3 q3 +2)
               (* q2 p1 q2 -1)
@@ -251,7 +253,7 @@
   [versor point]
   (let [versor-rotate (get versor :rotate [1.0 0.0 0.0 0.0])
         versor-translation (get versor :xlate [0.0 0.0 0.0])
-        rot-loc (quat-sandwich versor-rotate point false)]
+        rot-loc (quat-sandwich versor-rotate point)]
     (into [] (map + versor-translation rot-loc))))
 
 (defn gmp
@@ -549,8 +551,8 @@
 
         x1 (get-in link [:versor :xlate])
         x2 (vec-diff point x1)
-        x3 (quat-sandwich q1 x2 true)
-        x4 (quat-sandwich q12 x3 false)
+        x3 (quat-sandwich (quat-conj q1) x2)
+        x4 (quat-sandwich q12 x3)
         x12 (vec-diff point x4)]
     (merge link {:versor {:xlate x12 :rotate q12} })))
 

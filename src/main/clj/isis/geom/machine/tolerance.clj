@@ -36,3 +36,13 @@
     false
     (every? identity (apply map #(apply near-equal? tol-value %&) xs))))
 
+(defn snap
+  "Rounds the weight of a value to the nearest multiple of scale.
+  This is useful when transendental functions are used and
+  numerical cruft appears in the result due to small round-off errors."
+  [value scale epsilon]
+  (let [new-value (* scale (rem value scale))
+        change (Math/abs (- value new-value))]
+    (if (< (- epsilon) change (+ epsilon))
+      new-value
+      value)))
