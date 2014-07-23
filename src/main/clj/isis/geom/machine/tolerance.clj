@@ -1,6 +1,8 @@
 (ns isis.geom.machine.tolerance)
 
 (def ^:dynamic *default-tolerance* 0.01)
+(def ^:dynamic *tiny-tolerance* 1e-10)
+
 (defn set-default-tolerance
   ""
   [value] (binding [*default-tolerance* value] *default-tolerance*))
@@ -13,6 +15,7 @@
   (let [[amin amax] (apply (juxt min max) xs)]
     (< (- amax amin)
        (cond (= :default tol-value) *default-tolerance*
+             (= :tiny tol-value) *tiny-tolerance*
                 :else tol-value))))
 
 (defn near-zero?
@@ -21,7 +24,7 @@
   [tol-value x]
   (let [tv (cond (number? tol-value) tol-value
                  (= :default tol-value) *default-tolerance*
-                 (= :tiny tol-value) 1e-10
+                 (= :tiny tol-value) *tiny-tolerance*
                  :else tol-value)]
     (cond (number? x) (< (- tv) x tv)
           (vector? x) (near-zero? tol-value (reduce #(+ %1 (* %2 %2)) x)))))

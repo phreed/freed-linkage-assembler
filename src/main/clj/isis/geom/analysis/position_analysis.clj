@@ -1,7 +1,8 @@
 (ns isis.geom.analysis.position-analysis
   (:require   [isis.geom.position-dispatch
                :refer [constraint-attempt?]]
-              [isis.geom.machine.misc :as misc]))
+              [isis.geom.machine.misc :as misc]
+              [clojure.pprint :as pp]))
 
 (defn- model->graph [model])
 (defn- model->connectivity [model])
@@ -65,6 +66,8 @@
                         [new-graph new-conn new-constrained new-non-rigid new-plan]  (solve-loop graph conn constrained non-rigid aloop)]
                     (recur new-graph new-conn new-constrained new-non-rigid new-plan new-redundant))) ))))))
 
+(def trace? (atom false))
+(defn enable-trace! [] (compare-and-set! trace? false true))
 
 (defn position-analysis
   "Algorithm for using the plan fragment table to perform position analysis.
@@ -90,7 +93,13 @@
     (if x
       ;; working through the active constraint list.
       (if (constraint-attempt? kb x)
-        (recur true xs (conj plan x) ys)
+        (do
+          (when @trace?
+              (println "constraint: ")
+              (pp/pprint x)
+              (println "versor: ")
+              (pp/pprint (:link kb)))
+          (recur true xs (conj plan x) ys) )
         (recur progress? xs plan (conj ys x)))
       ;; active constraint list is exhausted.
       (if (empty? ys)

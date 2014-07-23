@@ -19,6 +19,11 @@
       nil
       (into [] (map #(/ % weight) vect)))))
 
+(defn quat-normalize
+  "Take a quaternion and normalize it to a unit quaternion."
+  [[q0 q1 q2 q3]]
+  (let [magnitude (Math/sqrt (+ (* q0 q0) (* q1 q1) (* q2 q2) (* q3 q3)))]
+    [(/ q0 magnitude) (/ q1 magnitude) (/ q2 magnitude) (/ q3 magnitude)]) )
 
 
 (defn double-angle
