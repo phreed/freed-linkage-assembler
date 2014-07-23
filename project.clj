@@ -4,6 +4,7 @@
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :source-paths ["src/main/clj"]
+  :java-options ["-target" "1.7" "-source" "1.7" "-Xlint:-options"]
   ;; :java-source-paths ["src/main/java"]
   :dependencies [[org.clojure/clojure "1.6.0"]
                  [org.clojure/tools.cli "0.3.1"]
@@ -18,7 +19,7 @@
             [lein-autoexpect "1.2.2"]
             [lein-ancient "0.5.5"]]
   :main isis.geom.linkage-assembler
-  :target-path "target/%s"
+  :target-path "target/%s/"
   :dev-resources ["src/test/resources"]
   :profiles
   { :dev
