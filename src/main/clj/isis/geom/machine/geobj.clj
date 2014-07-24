@@ -2,19 +2,26 @@
   (:require [isis.geom.machine
              [tolerance :as tol]]) )
 
-(defn mag
+(defn norm2
   "If quantity is a vector, returns the magnitude of quantity.
   If quantity is a scalar, returns the absolute value of quantity."
   [quantity]
   (cond (number? quantity) (Math/abs quantity)
         (empty? quantity) 0.0
-        (vector? quantity) (Math/sqrt (reduce #(+ %1 (* %2 %2)) 0.0 quantity))
+        (vector? quantity) (reduce #(+ %1 (* %2 %2)) 0.0 quantity)
         :else 0.0))
+
+(defn norm
+  "If quantity is a vector, returns the magnitude of quantity.
+  If quantity is a scalar, returns the absolute value of quantity."
+  [quantity]
+  (Math/sqrt (norm2 quantity)))
+
 
 (defn normalize
   "make the object have size 1."
   [vect]
-  (let [weight (mag vect)]
+  (let [weight (norm vect)]
     (if (tol/near-zero? :default weight)
       nil
       (into [] (map #(/ % weight) vect)))))
@@ -123,7 +130,7 @@
         qi [q1 q2 q3]
         i (normalize qi) ]
     {:axis i
-     :hangle [q0 (/ (mag qi) (mag i))] } ))
+     :hangle [q0 (/ (norm qi) (norm i))] } ))
 
 
 (defn point
@@ -294,10 +301,10 @@
   (let [{a- :e, an :n} a
         {b- :e, bn :n} b
         {c- :e, cn :n} c
-        anbncn (mag (outer-prod-3 an bn cn))
-        a-bncn (mag (outer-prod-3 a- bn cn))
-        anb-cn (mag (outer-prod-3 an b- cn))
-        anbnc- (mag (outer-prod-3 an bn c-))]
+        anbncn (norm (outer-prod-3 an bn cn))
+        a-bncn (norm (outer-prod-3 a- bn cn))
+        anb-cn (norm (outer-prod-3 an b- cn))
+        anbnc- (norm (outer-prod-3 an bn c-))]
     (if (zero? anbncn) nil
       [(/ a-bncn anbncn) (/ anb-cn anbncn) (/ anbnc- anbncn)])))
 
@@ -370,17 +377,17 @@
   (println "null? unimplemented")
   )
 
-(defn perp-dist
+(defn rejection
   "Distance between surface-1 and serface-2.
   The surfaces may be zero-, one-, or two-dimensional."
   [surface-1 surface-2]
-  (println "perp-dist unimplemented")
+  (println "rejection unimplemented")
   )
 
 (defn on-surface?
   "Returns 'true' if ?point lies on ?surface."
   [?point ?surface]
-  (zero? (perp-dist ?point ?surface)) )
+  (zero? (rejection ?point ?surface)) )
 
 (defn parallel?
   "Returns 'true' if ?axis-1 and ?axis-2 are parallel.
@@ -389,7 +396,7 @@
   If ?direction-maters is 'false', then the axis
   may be either parallel or anti-parallel."
   [?axis-1 ?axis-2 ?direction-matters]
-  (let [size (mag (outer-prod (normalize ?axis-1) (normalize ?axis-2)))]
+  (let [size (norm (outer-prod (normalize ?axis-1) (normalize ?axis-2)))]
     (cond (not (tol/near-zero? :default size)) false
           (not ?direction-matters) true
           (pos? size) true
@@ -500,17 +507,17 @@
 
         sine-vec (outer-prod diff-1 diff-2)
         sine (if (pos? (inner-prod sine-vec axis))
-              (mag sine-vec)
-              (- (mag sine-vec)))]
+              (norm sine-vec)
+              (- (norm sine-vec)))]
     [sine cosine]))
 
-(defmulti perp-base
+(defmulti projection
   "Returns the point on the surface closest to the specified point.
   The surface can be 0d 1d 2d."
   (fn [point surface] (:type surface)))
 
 ;; project the point onto the line
-(defmethod perp-base
+(defmethod projection
   :line
   [point line]
   (let [{anchor :e, axis :d} line
@@ -519,13 +526,13 @@
     (vec-sum anchor (map #(* % scale) axis))))
 
 ;; project the point onto the plane
-(defmethod perp-base
+(defmethod projection
   :plane
   [point plane]
   (let [[p1 p2 p3] point
         {[s1 s2 s3] :e, [sn1 sn2 sn3] :n} plane
         q [(- p1 s1) (- p2 s2) (- p3 s3)]
-        s-m (mag [sn1 sn2 sn3])
+        s-m (norm [sn1 sn2 sn3])
         s-u [(/ sn1 s-m) (/ sn2 s-m) (/ sn3 s-m)]
         sq-in-prod (reduce + (map * s-u q))
         sn (map #(* % sq-in-prod) s-u)

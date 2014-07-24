@@ -137,7 +137,7 @@
       ]
   (let [constraints (:constraint graph)
         kb graph
-        _ (enable-trace!)
+        ;; _ (enable-trace!)
         [success? result-kb result-success result-failure] (position-analysis kb constraints)
         {result-mark :mark result-link :link} (ref->str result-kb)
         augmented-zipper (zip/xml-zip (:augmented (cyphy/graph-to-cyphy-zipper graph)))
