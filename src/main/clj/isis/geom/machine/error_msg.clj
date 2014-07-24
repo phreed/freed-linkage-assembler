@@ -18,25 +18,25 @@
 
 (def emsg-2 "Required translation is inconsistent with coupled rotation.")
 
-(defn emsg-3
+(defn inconst-rot
   [axis-1 axis-2]
   (error 1 [axis-1 axis-2]
-  "Required rotation is inconsistent with available DOF's."))
+  "inconst-rot : Required rotation is inconsistent with available DOF's."))
 
-(defn e-dim-oc
+(defn dim-oc
   [from to center axis]
   (error 1 [" from-point: " from " to-point: " to
           " about-axis: " axis " about-center: " center]
-         "Dimensional over-constraint."))
+         "dim-oc : Dimensional over-constraint."))
 
 (def emsg-5 "Surfaces do not intersect in a point.")
 
 (def emsg-6 "Surfaces do not intersect in a 1D curve.")
 
-(defn e-mark-place-ic
+(defn mark-place-ic
   [dist from to]
   (error 1 [" distance: " dist " from-point: " from " to-point: " to]
-         "Cannot put marker into position with available DOF's."))
+         "e-mark-place-ic : Cannot put marker into position with available DOF's."))
 
 (def emsg-8 "Cannot put marker into alignment with available DOF's.")
 

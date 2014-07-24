@@ -28,7 +28,7 @@
         r5 (sphere ?center (rejection ?to-point ?center))
         r6 (intersect r5 r4 ?branch)]
     (if-not (point? r6)
-      (emsg/e-mark-place-ic rejection r5 r4)
+      (emsg/mark-place-ic rejection r5 r4)
       (let [r7 (vec-diff ?from-point r3)
             r8 (vec-diff r6 r2)
             r9 (vec-angle r7 r8 (outer-prod r7 r8))
@@ -44,23 +44,29 @@
   and moves ?from-point on ?link to globally-fixed ?to-point."
   [?link ?center ?from-point ?to-point ?axis ?axis-1 ?axis-2]
   (let [pivot (projection ?to-point (line ?center ?axis))
-        to-dir (vec-diff ?to-point pivot)
-        from-dir (vec-diff ?from-point pivot)]
-    (if-not (tol/near-equal? :default (norm to-dir) (norm from-dir))
-      (emsg/e-dim-oc ?from-point ?to-point ?center ?axis)
-      (let [possible-axis (outer-prod (normalize to-dir)
-                                      (normalize from-dir))]
-        (cond
-         (and (not (tol/near-zero? :default possible-axis))
-              (not (parallel? possible-axis ?axis false)))
-         (emsg/emsg-3 possible-axis ?axis)
+        from-dir (vec-diff ?from-point pivot)
+        to-dir (vec-diff ?to-point pivot)]
+    (cond (tol/near-same? :default from-dir to-dir)
+          ?link
 
-         :else
-         (if (and (nil? ?axis-1) (nil? ?axis-2))
-           (rotate ?link pivot ?axis
-                   (vec-angle from-dir to-dir ?axis))
-           (dof-2r:p->p ?link ?center
-                        ?from-point ?to-point ?axis-1 ?axis-2 1)))))))
+          (not (tol/near-equal? :default (norm to-dir) (norm from-dir)))
+          (emsg/dim-oc ?from-point ?to-point ?center ?axis)
+
+          :else
+          (let [possible-axis
+                (outer-prod (normalize to-dir)
+                            (normalize from-dir))]
+            (cond
+             (and (not (tol/near-zero? :default possible-axis))
+                  (not (parallel? possible-axis ?axis false)))
+             (emsg/inconst-rot possible-axis ?axis)
+
+             :else
+             (if (and (nil? ?axis-1) (nil? ?axis-2))
+               (rotate ?link pivot ?axis
+                       (vec-angle from-dir to-dir ?axis))
+               (dof-2r:p->p ?link ?center
+                            ?from-point ?to-point ?axis-1 ?axis-2 1)))))))
 
 (defn dof-3r:p->p
   "Procedure to rotate body ?link about ?center,
@@ -73,7 +79,7 @@
           ?link
 
           (not (tol/near-equal? :default (norm from-dir) (norm to-dir)))
-          (emsg/e-dim-oc ?from-point ?to-point ?center nil)
+          (emsg/dim-oc ?from-point ?to-point ?center nil)
 
           :else
           (dof-1r:p->p ?link ?center ?from-point ?to-point
