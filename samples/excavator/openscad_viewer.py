@@ -12,7 +12,7 @@ import re
 # "Name" attribute (multiple instances will be
 # dealt with in this file by making a copy of STL
 # to new name and adding that component's data to
-# the dictionary under the updated name. 
+# the dictionary under the updated name.
 
 #####################################################################
 # QUATERNION FROM ASSEMBLY_CSYS TO COMPONENT_TO_BE_ADDED LOCAL_CSYS #
@@ -25,7 +25,7 @@ import re
 #           Component:
 #               - Name
 #               - Translation vector
-#               - Rotation matrix    
+#               - Rotation matrix
 
 
 def Parse_Assembly_File(asm_xml):
@@ -38,7 +38,7 @@ def Parse_Assembly_File(asm_xml):
             eltree = ET.parse(asm_xml, parser=ET.XMLParser(encoding="us-ascii"))
         except ET.ParseError: # can't read the file
             print "Unable to parse CAD assembly xml."
-    
+
     # Get assembly file name
     assembly = eltree.getroot().find('.//Assembly')
     tla = {}
@@ -57,12 +57,12 @@ def Parse_Assembly_File(asm_xml):
         if xform is None:
             msg = "Transform data not found for component {0}.".format(component.get('Name'))
             raise(msg)
-        if len(xform) > 1: 
+        if len(xform) > 1:
             msg = "More than 1 XForm tag encountered for component {0}; "\
                     "grabbing first transform.".format(component.get('Name'))
-        
+
         """ FOR TESTING - skip if not found (not all components populated for now) """
-        try: 
+        try:
             x = float(xform[0].get("x", None))
         except:
             continue
@@ -71,8 +71,9 @@ def Parse_Assembly_File(asm_xml):
         i = float(xform[0].get("i", None))
         j = float(xform[0].get("j", None))
         k = float(xform[0].get("k", None))
-        p = float(xform[0].get("pi", None)) 
-         
+        p = math.cos(float(xform[0].get("pi", None)) * math.pi / 2.0)
+
+
         vars = [x, y, z, i, j, k, p]
 
         if ( any(v is None for v in vars) ):
@@ -84,7 +85,7 @@ def Parse_Assembly_File(asm_xml):
         rot_matrix = quaternion_to_rotation(i, j, k, p, component.get('Name'))
         comp = { 'translation': [x, y, z],
                  'rotation': rot_matrix }
-        
+
         # Check for unique name to avoid writing over data with duplicate key
 
         if component.get('Name') in comps:
@@ -118,7 +119,7 @@ def quaternion_to_rotation(i, j, k, p, name):
     yp = 2.0*j*p
     yz = 2.0*j*k
     xp = 2.0*i*p
-    
+
     matrix = [0] * 9
     matrix[0] = 1.0-yy-zz
     matrix[1] = xy-zp
@@ -129,55 +130,54 @@ def quaternion_to_rotation(i, j, k, p, name):
     matrix[6] = xz-yp
     matrix[7] = yz+xp
     matrix[8] = 1.0-xx-yy
-    return matrix      
+    return matrix
 
 def build_assembly(struct):
     stl_loc = os.getcwd() + '\\STL'
     if not (os.path.isdir(stl_loc)):
         raise Exception('STL directory does not exist.')
-        
+
     asm = ''
     for component in struct['Components']:
         print "Adding component " + component
         temp = add_component_to_assembly(struct, component, stl_loc)
         asm = asm + temp
-    
+
     return asm
-    
-    
+
+
 def add_component_to_assembly(struct, component, file_loc):
     comp_path = "STL" + r'\\' + component + '.stl'
-    
+
     if not (os.path.isfile(comp_path)):
         raise Exception('{0} does not exist.'.format(comp_path))
-    
+
     stl = import_stl(comp_path)
     rot = struct['Components'][component]['rotation']
     trans = struct['Components'][component]['translation']
-    
+
     comp = multmatrix(m = [ [ rot[0], rot[3], rot[6], trans[0] ],
                             [ rot[1], rot[4], rot[7], trans[1], ],
                             [ rot[2], rot[5], rot[8], trans[2] ],
                             [     0,      0,      0,        1  ] ])( stl)
-                           
+
     return scad_render(comp)
-    
+
 def launch_openscad(file):
     print "Launching OpenSCAD..."
     os.startfile(file)
-    
+
 if __name__ == "__main__":
     start = time.time()
     struct = Parse_Assembly_File('CADAssembly_aug.xml')
     asm = build_assembly(struct)
     file_path = os.getcwd() + "\\" + struct['TLA']['name'] + ".scad"
-    
+
     with open(file_path, 'w') as f:
         f.write(asm)
     print "\nOpenSCAD object saved to {0}".format(file_path)
     launch_openscad(file_path)
-    
+
     print "Time: ", time.time() - start
 
-    
-    
+
