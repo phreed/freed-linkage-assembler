@@ -71,7 +71,7 @@ def Parse_Assembly_File(asm_xml):
         i = float(xform[0].get("i", None))
         j = float(xform[0].get("j", None))
         k = float(xform[0].get("k", None))
-        p = math.cos(float(xform[0].get("pi", None)) * math.pi / 2.0)
+        p = float(xform[0].get("pi", None))
 
 
         vars = [x, y, z, i, j, k, p]
@@ -82,7 +82,8 @@ def Parse_Assembly_File(asm_xml):
             raise Exception(msg)
 
         # Convert to rotation matrix
-        rot_matrix = quaternion_to_rotation(i, j, k, p, component.get('Name'))
+        # rot_matrix = quaternion_to_rotation(i, j, k, p, component.get('Name'))
+        rot_matrix = euler_angle_axis_to_rotation(i, j, k, p, component.get('Name'))
         comp = { 'translation': [x, y, z],
                  'rotation': rot_matrix }
 
@@ -131,6 +132,37 @@ def quaternion_to_rotation(i, j, k, p, name):
     matrix[7] = yz+xp
     matrix[8] = 1.0-xx-yy
     return matrix
+
+def euler_angle_axis_to_rotation(i, j, k, p, name):
+    """ Convert euler axis-angle data to rotation matrix """
+    # http://en.wikipedia.org/wiki/Rotation_formalisms_in_three_dimensions#Rotation_matrix_.E2.86.94_Euler_axis.2Fangle
+    matrix = [0] * 9
+    norm_a = math.sqrt( i**2 + j**2 + k**2 )
+    if norm_a == 0.0:
+      matrix[0] = matrix[4] = matrix[8] = 1
+      return matrix
+
+    e_i = i / norm_a
+    e_j = j / norm_a
+    e_k = k / norm_a
+    theta = p * math.pi
+    c_t = math.cos( theta )
+    c1_t = 1 - c_t
+    s_t = math.sin( theta )
+
+    matrix[0] = c1_t * e_i * e_i + c_t
+    matrix[1] = c1_t * e_i * e_j - s_t * e_k
+    matrix[2] = c1_t * e_i * e_k + s_t * e_j
+
+    matrix[3] = c1_t * e_j * e_i + s_t * e_k
+    matrix[4] = c1_t * e_j * e_j + c_t
+    matrix[5] = c1_t * e_j * e_k - s_t * e_i
+
+    matrix[6] = c1_t * e_k * e_i - s_t * e_j
+    matrix[7] = c1_t * e_k * e_j + s_t * e_i
+    matrix[8] = c1_t * e_k * e_k + c_t
+    return matrix
+
 
 def build_assembly(struct):
     stl_loc = os.getcwd() + '\\STL'
