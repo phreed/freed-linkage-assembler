@@ -85,7 +85,9 @@ def Parse_Assembly_File(asm_xml):
         # rot_matrix = quaternion_to_rotation(i, j, k, p, component.get('Name'))
         rot_matrix = euler_angle_axis_to_rotation(i, j, k, p, component.get('Name'))
         comp = { 'translation': [x, y, z],
-                 'rotation': rot_matrix }
+                 'rotation': rot_matrix,
+                 'axis': [i, j, k],
+                 'angle': p * 180.0}
 
         # Check for unique name to avoid writing over data with duplicate key
 
@@ -185,13 +187,19 @@ def add_component_to_assembly(struct, component, file_loc):
         raise Exception('{0} does not exist.'.format(comp_path))
 
     stl = import_stl(comp_path)
-    rot = struct['Components'][component]['rotation']
     trans = struct['Components'][component]['translation']
+    # rot = struct['Components'][component]['rotation']
+    axis = struct['Components'][component]['axis']
+    angle = struct['Components'][component]['angle']
 
-    comp = multmatrix(m = [ [ rot[0], rot[3], rot[6], trans[0] ],
-                            [ rot[1], rot[4], rot[7], trans[1], ],
-                            [ rot[2], rot[5], rot[8], trans[2] ],
-                            [     0,      0,      0,        1  ] ])( stl)
+    # comp = multmatrix(m = r'$t * ' [ [ rot[0], rot[3], rot[6], trans[0] ],
+    #                        [ rot[1], rot[4], rot[7], trans[1], ],
+    #                        [ rot[2], rot[5], rot[8], trans[2] ],
+    #                        [     0,      0,      0,        1  ] ])( stl)
+
+    comp = (translate(v = [trans[0], trans[1], trans[2]])
+            (rotate(a=angle, v= [axis[0], axis[1], axis[2]])
+            (stl)))
 
     return scad_render(comp)
 

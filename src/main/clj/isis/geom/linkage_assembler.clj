@@ -9,7 +9,7 @@
             [clojure.java.io :as jio]
 
             [isis.geom.lang.cyphy-cad
-             :refer [graph-from-cyphy-input-stream
+             :refer [graph-from-cyphy-file
                      graph-to-cyphy-zipper
                      graph-to-cyphy-file]]
             [isis.geom.analysis.position-analysis
@@ -81,7 +81,7 @@
       (println " java version = "(System/getProperty "java.vm.version")) )
 
     (println " input file = "  (:input options))
-    (let [kb (graph-from-cyphy-input-stream (jio/input-stream (:input options)))
+    (let [kb (graph-from-cyphy-file (:input options))
           constraints (:constraint kb)
           [success? result-kb result-success result-failure] (position-analysis kb constraints)
           augmented (graph-to-cyphy-zipper kb)]
