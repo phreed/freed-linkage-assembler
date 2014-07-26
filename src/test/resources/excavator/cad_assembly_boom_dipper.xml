@@ -34,7 +34,7 @@
             <Units Value="" _id="id22" />
           </CADParameter>
         </ParametricParameters>
-      </CADComponent>-->
+      </CADComponent>
       <CADComponent ComponentID="{62243423-b7fd-4a10-8a98-86209a6620a4}" Name="BOOM" DisplayName="Boom" Type="PART" SpecialInstruction="" MaterialID="" Representation="" _id="id106">
         <Constraint _id="id76">
           <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="POINT" FeatureAlignmentType="ALIGN" _id="id77">

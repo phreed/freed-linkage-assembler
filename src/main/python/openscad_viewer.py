@@ -192,7 +192,7 @@ def add_component_to_assembly(struct, component, file_loc):
     axis = struct['Components'][component]['axis']
     angle = struct['Components'][component]['angle']
 
-    # comp = multmatrix(m = r'$t * ' [ [ rot[0], rot[3], rot[6], trans[0] ],
+    # comp = multmatrix(m =  [ [ rot[0], rot[3], rot[6], trans[0] ],
     #                        [ rot[1], rot[4], rot[7], trans[1], ],
     #                        [ rot[2], rot[5], rot[8], trans[2] ],
     #                        [     0,      0,      0,        1  ] ])( stl)

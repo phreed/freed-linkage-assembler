@@ -4,12 +4,13 @@
 ;;  lein run -- -i  ./src/test/resources/excavator/cad_assembly_boom_dipper.xml -o ./src/test/resources/excavator/cad_assembly_boom_dipper_aug.xml
 ;;
 (ns isis.geom.linkage-assembler
+  (:gen-class :main true)
   (:require [clojure.tools.cli :refer [parse-opts]]
             [clojure.string :as string]
             [clojure.java.io :as jio]
 
             [isis.geom.lang.cyphy-cad
-             :refer [graph-from-cyphy-file
+             :refer [graph-from-cyphy-input-stream
                      graph-to-cyphy-zipper
                      graph-to-cyphy-file]]
             [isis.geom.analysis.position-analysis
@@ -69,7 +70,6 @@
 
 
 (defn -main
-
   [& args]
   (let [{:keys [options arguments errors summary]} (parse-opts args parse-options)]
     (cond
@@ -81,13 +81,14 @@
       (println " java version = "(System/getProperty "java.vm.version")) )
 
     (println " input file = "  (:input options))
-    (let [kb (graph-from-cyphy-file (:input options))
+    (with-open [is (jio/resource jio/input-stream)]
+    (let [kb (graph-from-cyphy-input-stream is)
           constraints (:constraint kb)
           [success? result-kb result-success result-failure] (position-analysis kb constraints)
           augmented (graph-to-cyphy-zipper kb)]
       ;; (println " result : " augmented )
       (println " output file = " (:output options))
-      (graph-to-cyphy-file augmented (:output options))  )))
+      (graph-to-cyphy-file augmented (:output options))  ))))
 
 
 
