@@ -60,6 +60,18 @@
         half-cosine (Math/cos rads)]
     (into [] (cons half-cosine (map #(* % half-sine) uaxis) ))))))
 
+(defn axis-pi-angle->quaternion
+  "Produce a quaternion from an axis and and angle.
+  The axis need not be unit and the angle is [sine cosine] form.
+  The angle specified in [sine cosine] form is in halved. "
+  [axis angle]
+  (let [uaxis (normalize axis)
+        [a1 a2 a3] uaxis
+        half-angle (* 0.5 angle Math/PI)
+        half-sine (Math/sin half-angle)
+        half-cosine (Math/cos half-angle)]
+    (into [] (cons half-cosine (map #(* % half-sine) uaxis) ))))
+
 (defn quaternion->axis-angle
   "Produce an axis and an angle from a quaternion.
   The angle specified in [sine cosine] form is in halved. "
