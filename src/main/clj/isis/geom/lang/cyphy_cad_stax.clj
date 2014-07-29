@@ -1,9 +1,6 @@
-(ns xml.stax-test
-  "test the xml stax java interoperability."
-
-  (:require [expectations :refer :all]
-            [clojure.java.io :as jio]
-            [clojure.pprint :as pp]
+(ns isis.geom.lang.cyphy-cad-stax
+  "Manipulating the CyPhy2CAD produced CADAssembly.xml file using stax."
+  (:require
             [isis.geom.machine.geobj :as ga]
             [isis.geom.machine.tolerance :as tol])
   (:import (javax.xml.stream  XMLInputFactory events.XMLEvent XMLStreamConstants)
@@ -44,7 +41,6 @@
     "PLANE" :planar,
     "CSYS" :csys})
 
-(println (get constraint-type-map "CSYS"))
 
 (defn- update-kb-grounded
   "When a component is fixed to the ground it gets
@@ -115,8 +111,9 @@
       :csys (update-in kb [:constraint] #(expand-csys-constraint % constraint)))))
 
 
-(with-open [fis (-> "excavator/cad_assembly_boom_dipper_csys.xml"
-                    jio/resource jio/input-stream)]
+(defn extract-knowledge-from-cad-assembly
+  "Extract the constraints, links and others from a Cyph2Cad cad-assembly.xml input."
+  [fis]
   (let [factory (XMLInputFactory/newInstance)
         ;(XMLInputFactory/newFactory "com.fasterxml.aalto.stax.InputFactoryImpl" nil)
         _ (.setProperty factory XMLInputFactory/IS_COALESCING true)
@@ -128,7 +125,7 @@
       (if-not (.hasNext reader)
         (do
           (println "you have reached the end of the input file")
-          (pp/pprint kb) )
+          kb)
 
         (let [event (.nextEvent reader)
               event-type (.getEventType event)]
@@ -139,9 +136,9 @@
                   new-zip (conj zip [elem-type 0])
                   parent-type (first (peek zip))]
 
-              (println "start element " elem-type)
-              (pp/pprint zip)
-              (pp/pprint wip)
+              ;; (println "start element " elem-type)
+              ;; (pp/pprint zip)
+              ;; (pp/pprint wip)
 
               (case elem-type
                 :Assemblies (recur reader kb new-zip wip)
@@ -184,8 +181,6 @@
                 (if (:grounded wip)
                   (recur reader kb new-zip wip)
                   (let [c-type (parse-string-attribute event "FeatureGeometryType")]
-                    (println " pair : " c-type)
-
                     (recur reader kb new-zip
                            (assoc wip
                              :active-marker :m1
@@ -207,7 +202,6 @@
                         constraint (:constraint wip)
                         marker [[link-name proper-name] nil]
                         active (:active-marker wip)]
-                    (pp/pprint marker)
                     (cond (= link-name (:base-link-id wip))
                           (recur reader kb new-zip (assoc wip :grounded true))
 
@@ -244,7 +238,7 @@
                   new-zip (conj (pop new-zip)
                                 (update-in (peek new-zip) [1] inc))]
 
-              (println "end element " (.toString (.getName event)))
+              ;; (println "end element " (.toString (.getName event)))
 
               (case elem-type
                 ;; The end of a pair indicates that a (set of)
@@ -272,22 +266,22 @@
 
             XMLStreamConstants/ATTRIBUTE
             (do
-              (println "attribute " (.toString (.getName event)))
+              ;; (println "attribute " (.toString (.getName event)))
               (recur reader kb zip wip))
 
             XMLStreamConstants/CDATA
             (do
-              (println "cdata " (.toString (.getName event)))
+              ;; (println "cdata " (.toString (.getName event)))
               (recur reader kb zip wip))
 
             XMLStreamConstants/CHARACTERS
             (do
-              (println "chars " (.toString (.getData event)))
+              ;; (println "chars " (.toString (.getData event)))
               (recur reader kb zip wip))
 
             XMLStreamConstants/DTD
             (do
-              (println "dtd " (.toString (.getName event)))
+              ;; (println "dtd " (.toString (.getName event)))
               (recur reader kb zip wip))
 
             XMLStreamConstants/START_DOCUMENT
@@ -302,26 +296,29 @@
 
             XMLStreamConstants/ENTITY_DECLARATION
             (do
-              (println "entity " (.toString (.getLocalName event)))
+              ;; (println "entity " (.toString (.getLocalName event)))
               (recur reader kb zip wip))
 
             XMLStreamConstants/NAMESPACE
             (do
-              (println "namespace " (.toString (.getName event)))
+              ;; (println "namespace " (.toString (.getName event)))
               (recur reader kb zip wip))
 
             XMLStreamConstants/NOTATION_DECLARATION
             (do
-              (println "notation " (.toString (.getName event)))
+              ;; (println "notation " (.toString (.getName event)))
               (recur reader kb zip wip))
 
             XMLStreamConstants/PROCESSING_INSTRUCTION
             (do
-              (println "processing " (.toString (.getName event)))
+              ;; (println "processing " (.toString (.getName event)))
               (recur reader kb zip wip))
 
             (do
-              (println "default " (.toString event))
+              ;; (println "default " (.toString event))
               (recur reader kb zip wip))
 
             ))))))
+
+
+

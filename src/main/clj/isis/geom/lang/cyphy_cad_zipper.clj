@@ -1,4 +1,4 @@
-(ns isis.geom.lang.cyphy-cad
+(ns isis.geom.lang.cyphy-cad-zipper
   "Manipulating the CyPhy2CAD produced CADAssembly.xml file."
   (:require [isis.geom.machine.misc :as misc]
 

@@ -1,7 +1,7 @@
 (ns excavator.excavator-init-test
   "Sample assembly consisting of a boom and a dipper."
   (:require [expectations :refer :all]
-            [isis.geom.lang.cyphy-cad :as cyphy]
+            [isis.geom.lang.cyphy-cad-zipper :as cyphy]
 
             [clojure.java.io :as jio]
             [clojure.zip :as zip]

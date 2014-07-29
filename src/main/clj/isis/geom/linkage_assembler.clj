@@ -9,7 +9,7 @@
             [clojure.string :as string]
             [clojure.java.io :as jio]
 
-            [isis.geom.lang.cyphy-cad
+            [isis.geom.lang.cyphy-cad-zipper
              :refer [graph-from-cyphy-input-stream
                      graph-to-cyphy-zipper
                      graph-to-cyphy-file]]

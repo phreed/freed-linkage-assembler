@@ -10,7 +10,7 @@
                              joints->constraints]] ] ))
 
 
-(defn ref->str
+(defn- ref->str
   "takes an arbitrary tree and replaces all futures
   with agnostic strings."
   [form]
