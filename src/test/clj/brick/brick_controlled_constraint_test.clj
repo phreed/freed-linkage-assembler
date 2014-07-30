@@ -1,6 +1,7 @@
 (ns brick.brick-controlled-constraint-test
   "Sample assembly for brick and ground."
-  (:require [expectations :refer :all]
+  (:require [midje.sweet :refer [facts fact]]
+
             [isis.geom.machine.misc :as misc]
             [isis.geom.model
              [graph :refer [ graph->init-invariants
@@ -89,7 +90,9 @@
                             :versor {:xlate [100.0 -50.0 -10.0] :rotate [1.0 0.0 0.0 0.0]}}]
                cap [:ref {:tdof {:# 3} :rdof {:# 3}
                           :versor {:xlate [0.0 0.0 0.0], :rotate [1.0 0.0 0.0 0.0]}}]}} ]
-  (expect pattern (do (constraint-attempt? kb input) (ref->str kb))))
+  (facts "simulate a brick being repositioned"
+         (fact "by 0-3-coincident"
+               (do (constraint-attempt? kb input) (ref->str kb)) => pattern)))
 
 (let [kb (graph->init-invariants @brick-graph)
 
@@ -111,11 +114,13 @@
                    :versor {:xlate [0.0 0.0 0.0] :rotate [1.0 0.0 0.0 0.0]}}] }]
   (let [_ (constraint-attempt? kb input)
         {result-mark :mark result-link :link} (ref->str kb)]
-    (expect mark-pattern result-mark)
-    (expect link-pattern result-link)) )
+    (facts "simulate the brick being repositioned"
+           (fact "about marker invariant by 0-3-coincident"
+                 result-mark => mark-pattern)
+           (fact "about link placement by 0-3-coincident"
+                 result-link => link-pattern))))
 
 
-;; simulate the second point being repositioned,
 
 (let [kb (graph->init-invariants @brick-graph)
       constraints (joints->constraints @brick-graph)
@@ -171,22 +176,28 @@
                        :rdof {:# 0}
                        :versor {:xlate [2.0 0.0 0.0]
                                 :rotate [0.5000000000000001
-                                   -0.5 -0.4999999999999999 -0.5]}}])
+                                         -0.5 -0.4999999999999999 -0.5]}}])
       ]
 
-  ;; first by 3-3-coincident
   (let [_ (constraint-attempt? kb first-input)
         {result-mark :mark result-link :link} (ref->str kb)]
-    (expect first-mark-pattern result-mark)
-    (expect first-link-pattern result-link))
-  ;; then by 0-3-coincident
+    (facts "simulate the second point being repositioned, by 3-3-coincident"
+           (fact "about marker invariant by 0-3-coincident"
+                 result-mark => first-mark-pattern)
+           (fact "about link placement by 0-3-coincident"
+                 result-link => first-link-pattern)))
   (let [_ (constraint-attempt? kb second-input)
         {result-mark :mark result-link :link} (ref->str kb)]
-    (expect second-mark-pattern result-mark)
-    (expect second-link-pattern result-link))
-  ;; finally by 0-1-coincident
+    (facts "simulate the second point being repositioned, by 0-3-coincident"
+           (fact "about marker invariant by 0-3-coincident"
+                 result-mark => second-mark-pattern)
+           (fact "about link placement by 0-3-coincident"
+                 result-link => second-link-pattern)))
   (let [_ (constraint-attempt? kb third-input)
-          {result-mark :mark result-link :link} (ref->str kb)]
-    (expect third-mark-pattern result-mark)
-    (expect third-link-pattern result-link)) )
+        {result-mark :mark result-link :link} (ref->str kb)]
+    (facts "simulate the second point being repositioned, by 0-1-coincident"
+           (fact "about marker invariant by 0-3-coincident"
+                 result-mark => third-mark-pattern)
+           (fact "about link placement by 0-3-coincident"
+                 result-link => third-link-pattern))))
 

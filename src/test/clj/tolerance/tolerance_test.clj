@@ -1,10 +1,16 @@
 (ns tolerance.tolerance-test
   "test the tolerance functions."
-  (:require [expectations :refer :all]
+  (:require [midje.sweet :refer [facts fact]]
+
             [isis.geom.machine.tolerance :as tol]))
 
-(expect true (tol/near-same? :default [1 2 3] [1 2 3]))
-(expect false (tol/near-same? :default [1 2 3] [1 3 2]))
-(= false (tol/near-same? :default [1 2 3] [1 2]))
+(facts "about tolerances"
+       (fact "about near-same?"
+             (tol/near-same? :default [1 2 3] [1 2 3]) => true)
+       (fact "about near-same? differ in value"
+             (tol/near-same? :default [1 2 3] [1 3 2]) => false)
+       (fact "about near-same? differ is arity"
+             (tol/near-same? :default [1 2 3] [1 2]) => false)
 
-(expect false (tol/near-equal? :default 1 2 3))
+       (fact "about tol/near-equal?"
+             (tol/near-equal? :default 1 2 3) => false))

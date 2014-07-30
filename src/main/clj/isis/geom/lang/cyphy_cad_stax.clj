@@ -374,8 +374,7 @@
         link-versor (:versor link-ref)
         { [x y z] :xlate, [qw q1 q2 q3] :rotate} link-versor
         pi (* 2.0 Math/PI (Math/acos (if (nil? qw) 0.0 qw)))]
-    (pp/pprint link-ref)
-    (pp/pprint link-versor)
+    ;;(pp/pprint link-ref)
     (.add writer (.createAttribute event-factory "x" (str x)))
     (.add writer (.createAttribute event-factory "y" (str y)))
     (.add writer (.createAttribute event-factory "z" (str z)))

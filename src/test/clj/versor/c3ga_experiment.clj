@@ -1,5 +1,5 @@
 (ns versor.c3ga-experiment
-  (:require [expectations :refer [expect]]))
+  (:require [midje.sweet :refer [facts fact]] ))
 
 (defn -*- "the outer product" [a b] (* a b))
 
@@ -209,14 +209,14 @@
          result (gp-bb a b)
          blade (bit-and (:blade a) (:blade b))]
     (if
-     ;; no annihilating blades
-     (= 0 blade) result
-     (recur
-      (inc metric-index)
-      (if (= 0 (bit-and blade 1)) result
-        ;; multiply annihilating blade's weight by metric
-        (update-in result [:weight] * (get metric metric-index)))
-      (bit-shift-right blade 1)))))
+      ;; no annihilating blades
+      (= 0 blade) result
+      (recur
+       (inc metric-index)
+       (if (= 0 (bit-and blade 1)) result
+         ;; multiply annihilating blade's weight by metric
+         (update-in result [:weight] * (get metric metric-index)))
+       (bit-shift-right blade 1)))))
 
 (defn mp-bb
   "Computes the geometric product of two basis blades in
@@ -224,23 +224,23 @@
   Returns an array list of "
   [a b m]
   (let [{:keys [bb->eigen-basis eigen-metric bb->metric-basis]} m]
-  (bb->metric-basis
-    (map (fn [a b] (mp-bb-res a b eigen-metric))
-         (for [eba (bb->eigen-basis a) ebb (bb->eigen-basis b)]
-           [eba ebb])))))
+    (bb->metric-basis
+     (map (fn [a b] (mp-bb-res a b eigen-metric))
+          (for [eba (bb->eigen-basis a) ebb (bb->eigen-basis b)]
+            [eba ebb])))))
 
 
 (defn ip-bb-aux0
   "Applies the rules to turn a geometric product into an inner product
-   * ga : Grade of argument 'a'
-   * gb : Grade of argument 'b'
-   * bb : the basis blade to be filtered
-   * prod-type : the type of inner product required:
-                 LEFT_CONTRACTION
-                 RIGHT_CONTRACTION
-                 HESTENES_INNER_PRODUCT or
-                 MODIFIED_HESTENES_INNER_PRODUCT
-   return either a 0 basis blade, or result. "
+  * ga : Grade of argument 'a'
+  * gb : Grade of argument 'b'
+  * bb : the basis blade to be filtered
+  * prod-type : the type of inner product required:
+  LEFT_CONTRACTION
+  RIGHT_CONTRACTION
+  HESTENES_INNER_PRODUCT or
+  MODIFIED_HESTENES_INNER_PRODUCT
+  return either a 0 basis blade, or result. "
   [ga gb bb prod-type]
   (case prod-type
     :left-contraction
@@ -330,19 +330,22 @@
   [a b]
   {:bases {(get a :blade) a (get b :blade) b}} )
 
-(expect 2 (bit-count 3))
 
 (let [a (->bb :e1 5)
       b (->bb :e2 11)]
-  (expect
-   '{:blade 6, :weight 55, :grade 2}
-   (gp-bb a b)))
+  (facts "about blades"
+         (fact "about blade products"
+               (gp-bb a b) =>
+               '{:blade 6, :weight 55, :grade 2})))
 
-(expect
- '{ 6 {:blade 6 :weight -22 :grade 2}
-    0 {:blade 0 :weight 33 :grade 0} }
- (gp-mv (->mv (->bb :e1 5) (->bb :e2 11))
-        (->mv (->bb :e1 2) (->bb :e2 3))))
+(facts "about multivectors"
+       (fact "check bit count on 2r0011"
+             (bit-count 3) => 2)
+       (fact "check general product"
+             (gp-mv (->mv (->bb :e1 5) (->bb :e2 11))
+                    (->mv (->bb :e1 2) (->bb :e2 3))) =>
+             '{ 6 {:blade 6 :weight -22 :grade 2}
+                0 {:blade 0 :weight 33 :grade 0} }))
 
 
 
@@ -372,7 +375,7 @@
            b1 (bit-xor b e+)
            b2 (bit-xor b e-)]
        (->mv {:blade b1 :grade (bit-count b1) :weight (/ w 2.0) }
-                {:blade b2 :grade (bit-count b2) :weight (/ w 2.0) }))
+             {:blade b2 :grade (bit-count b2) :weight (/ w 2.0) }))
 
      ;; contains the infinite
      (not= 0 (bit-and t ni))
@@ -380,7 +383,7 @@
            b1 (bit-xor b e+)
            b2 (bit-xor b e-)]
        (->mv {:blade b1 :grade (bit-count b1) :weight (* w -1.0) }
-                {:blade b2 :grade (bit-count b2) :weight w })) )))
+             {:blade b2 :grade (bit-count b2) :weight w })) )))
 
 
 (defn pull-bb
@@ -401,7 +404,7 @@
            b1 (bit-xor b no)
            b2 (bit-xor b ni)]
        (->mv {:blade b1 :grade (bit-count b1) :weight w}
-                {:blade b2 :grade (bit-count b2) :weight (/ w -2.0) }))
+             {:blade b2 :grade (bit-count b2) :weight (/ w -2.0) }))
 
      ;; contains the infinite
      (not= 0 (bit-and t e-))
@@ -409,7 +412,7 @@
            b1 (bit-xor b no)
            b2 (bit-xor b ni)]
        (->mv {:blade b1 :grade (bit-count b1) :weight w }
-                {:blade b2 :grade (bit-count b2) :weight (/ w 2.0)})) )))
+             {:blade b2 :grade (bit-count b2) :weight (/ w 2.0)})) )))
 
 
 

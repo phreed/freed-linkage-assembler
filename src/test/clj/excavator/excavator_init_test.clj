@@ -1,6 +1,7 @@
 (ns excavator.excavator-init-test
   "Sample assembly consisting of a boom and a dipper."
-  (:require [expectations :refer :all]
+  (:require [midje.sweet :refer [facts fact]]
+
             [isis.geom.lang.cyphy-cad-zipper :as cyphy]
 
             [clojure.java.io :as jio]
@@ -37,37 +38,37 @@
   (clojure.walk/postwalk #(if (misc/reference? %) [:ref @%] %) form))
 
 
-(let [_ (println "excavator init test : constraints")
-      excavator-graph
+(let [excavator-graph
       (with-open [is (-> "excavator/cad_assembly_boom_dipper.xml"
                          jio/resource jio/input-stream)]
         (cyphy/graph-from-cyphy-input-stream is))]
-  (expect
-   '[
-     {:type :coincident
-      :m1 [["{bb160c79-5ba3-4379-a6c1-8603f29079f2}" "FRONT"] {:e [1.0 0.0 0.0]}]
-      :m2 [["{059166f0-b3c0-474f-9dcb-d5e865754d77}|1" "ASM_FRONT"] {:e [1.0 0.0 0.0]}]}
-     {:type :coincident
-      :m1 [["{bb160c79-5ba3-4379-a6c1-8603f29079f2}" "TOP"] {:e [0.0 1.0 0.0]}]
-      :m2 [["{059166f0-b3c0-474f-9dcb-d5e865754d77}|1" "ASM_TOP"] {:e [0.0 1.0 0.0]}]}
-     {:type :coincident
-      :m1 [["{bb160c79-5ba3-4379-a6c1-8603f29079f2}" "RIGHT"] {:e [0.0 0.0 1.0]}]
-      :m2 [["{059166f0-b3c0-474f-9dcb-d5e865754d77}|1" "ASM_RIGHT"] {:e [0.0 0.0 1.0]}]}
-     {:type :coincident
-      :m1 [["{62243423-b7fd-4a10-8a98-86209a6620a4}" "APNT_2"] {:e [-8649.51 4688.51 600.0]}]
-      :m2 [["{bb160c79-5ba3-4379-a6c1-8603f29079f2}" "PNT2"] {:e [3467.85 43.0687 302.5]}]}
-     {:type :coincident
-      :m1 [["{62243423-b7fd-4a10-8a98-86209a6620a4}" "APNT_1"] {:e [-8625.71 4720.65 570.0]}]
-      :m2 [["{bb160c79-5ba3-4379-a6c1-8603f29079f2}" "PNT1"] {:e [3455.57 5.0 332.5]}]}
-     {:type :coincident
-      :m1 [["{62243423-b7fd-4a10-8a98-86209a6620a4}" "APNT_0"] {:e [-8625.71 4720.65 600.0]}]
-      :m2 [["{bb160c79-5ba3-4379-a6c1-8603f29079f2}" "PNT0"] {:e [3455.57 5.0 302.5]}]}]
-   (:constraint excavator-graph)))
+
+  (facts "excavator init test : constraints"
+         (fact "excavator graph"
+               (:constraint excavator-graph) =>
+               '[
+                 {:type :coincident
+                  :m1 [["{bb160c79-5ba3-4379-a6c1-8603f29079f2}" "FRONT"] {:e [1.0 0.0 0.0]}]
+                  :m2 [["{059166f0-b3c0-474f-9dcb-d5e865754d77}|1" "ASM_FRONT"] {:e [1.0 0.0 0.0]}]}
+                 {:type :coincident
+                  :m1 [["{bb160c79-5ba3-4379-a6c1-8603f29079f2}" "TOP"] {:e [0.0 1.0 0.0]}]
+                  :m2 [["{059166f0-b3c0-474f-9dcb-d5e865754d77}|1" "ASM_TOP"] {:e [0.0 1.0 0.0]}]}
+                 {:type :coincident
+                  :m1 [["{bb160c79-5ba3-4379-a6c1-8603f29079f2}" "RIGHT"] {:e [0.0 0.0 1.0]}]
+                  :m2 [["{059166f0-b3c0-474f-9dcb-d5e865754d77}|1" "ASM_RIGHT"] {:e [0.0 0.0 1.0]}]}
+                 {:type :coincident
+                  :m1 [["{62243423-b7fd-4a10-8a98-86209a6620a4}" "APNT_2"] {:e [-8649.51 4688.51 600.0]}]
+                  :m2 [["{bb160c79-5ba3-4379-a6c1-8603f29079f2}" "PNT2"] {:e [3467.85 43.0687 302.5]}]}
+                 {:type :coincident
+                  :m1 [["{62243423-b7fd-4a10-8a98-86209a6620a4}" "APNT_1"] {:e [-8625.71 4720.65 570.0]}]
+                  :m2 [["{bb160c79-5ba3-4379-a6c1-8603f29079f2}" "PNT1"] {:e [3455.57 5.0 332.5]}]}
+                 {:type :coincident
+                  :m1 [["{62243423-b7fd-4a10-8a98-86209a6620a4}" "APNT_0"] {:e [-8625.71 4720.65 600.0]}]
+                  :m2 [["{bb160c79-5ba3-4379-a6c1-8603f29079f2}" "PNT0"] {:e [3455.57 5.0 302.5]}]}])))
 
 
 
-(let [_ (println "excavator init test : position analysis")
-      graph
+(let [graph
       (with-open [is (-> "excavator/cad_assembly_boom_dipper.xml"
                          jio/resource jio/input-stream)]
         (cyphy/graph-from-cyphy-input-stream is))
@@ -148,11 +149,17 @@
         augmented-sample (zip/node (zx/xml1-> augmented-zipper :Assembly :CADComponent :CADComponent
                                               (zx/attr= :Name "BOOM") :versor )) ]
     (tol/set-default-tolerance 0.01)
-    (expect mark-pattern result-mark)
-    (expect link-pattern result-link)
-    (expect success-pattern result-success)
-    (expect failure-pattern result-failure)
-    (expect augmented-pattern augmented-sample)) )
+    (facts "excavator init test : position analysis"
+           (fact "about marker invariants"
+                 result-mark => mark-pattern)
+           (fact "about marker invariants"
+                 result-link => link-pattern)
+           (fact "about marker invariants"
+                 result-success => success-pattern)
+           (fact "about marker invariants"
+                 result-failure => failure-pattern)
+           (fact "about marker invariants"
+                 augmented-sample => augmented-pattern)) ))
 
 
 

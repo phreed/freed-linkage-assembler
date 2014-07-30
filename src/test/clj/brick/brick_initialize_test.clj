@@ -1,6 +1,7 @@
 (ns brick.brick-initialize-test
   "Sample assembly for brick and ground."
-  (:require [expectations :refer :all]
+  (:require [midje.sweet :refer [facts fact]]
+
             [isis.geom.machine.misc :as misc]
             [isis.geom.model
              [graph :refer [ port->expand
@@ -62,61 +63,60 @@
         } }))
 
 
+(facts "about transforming the ground-brick-cap"
+       (fact "check the expanded ground"
+             (port->expand @brick-graph '[ground j1]) =>
+             '[[ground g1 :coincident {:e1 2.0, :e2 0.0, :e3 0.0}]] )
 
-(expect
- '[[ground g1 :coincident {:e1 2.0, :e2 0.0, :e3 0.0}]]
- (port->expand @brick-graph '[ground j1]))
-
-(expect
- '{:type :coincident,
-   :m1 [[ground g2] {:e [ 1.0 0.0 0.0] :z [nil nil nil] :x [nil nil nil]}],
-   :m2 [[brick b2] {:e [101.0 0.0 0.0] :z [nil nil nil] :x [nil nil nil]}]}
- (port-pair->make-constraint
-  @brick-graph
-  '[[ground g2 :coincident {:e1 1.0, :e2 0.0, :e3 0.0}]
-    [brick b2 :coincident {:e1 101.0, :e2 0.0, :e3 0.0}]] ))
-
-
-
-(expect
- '{:mark {:loc [:ref #{[ground]}],
-          :z [:ref #{[ground]}],
-          :x [:ref #{[ground]}]},
-   :link {brick [:ref {:tdof {:# 3}, :rdof {:# 3},
-                       :versor {:xlate [0.0 0.0 0.0] :rotate [1.0 0.0 0.0 0.0]}}]
-          ground [:ref {:tdof {:# 0}, :rdof {:# 0},
-                        :versor {:xlate [0.0 0.0 0.0] :rotate [1.0 0.0 0.0 0.0]}}]
-          cap [:ref {:tdof {:# 3}, :rdof {:# 3},
-                     :versor {:xlate [0.0 0.0 0.0], :rotate [1.0 0.0 0.0 0.0]}}]}}
- (ref->str (graph->init-invariants @brick-graph)))
-
-(expect
- '({:type :coincident
-    :m1 [[ground g1] {:e [2.0 0.0 0.0], :z [nil nil nil], :x [nil nil nil]}]
-    :m2 [[brick b1] {:e [0.0 0.0 0.0], :z [nil nil nil], :x [nil nil nil]}]})
- (joint-pair->constraint @brick-graph '#{[ground j1] [brick jg1]}))
+       (fact "about making constraints"
+             (port-pair->make-constraint
+              @brick-graph
+              '[[ground g2 :coincident {:e1 1.0, :e2 0.0, :e3 0.0}]
+                [brick b2 :coincident {:e1 101.0, :e2 0.0, :e3 0.0}]] ) =>
+             '{:type :coincident,
+               :m1 [[ground g2] {:e [ 1.0 0.0 0.0] :z [nil nil nil] :x [nil nil nil]}],
+               :m2 [[brick b2] {:e [101.0 0.0 0.0] :z [nil nil nil] :x [nil nil nil]}]})
 
 
-(expect
- '(
-   {:type :coincident
-    :m1 [[ground g2] {:e [5.0 0.0 0.0], :z [nil nil nil], :x [nil nil nil]}]
-    :m2 [[brick b2] {:e [0.0 3.0 0.0], :z [nil nil nil], :x [nil nil nil]}]}
-   {:type :coincident
-    :m1 [[brick b4] {:e [1.0 0.0 0.0], :z [nil nil nil], :x [nil nil nil]}]
-    :m2 [[cap c4] {:e [-1.0 0.0 0.0], :z [nil nil nil], :x [nil nil nil]}]}
-   {:type :coincident
-    :m1 [[ground g1] {:e [2.0 0.0 0.0], :z [nil nil nil], :x [nil nil nil]}]
-    :m2 [[brick b1] {:e [0.0 0.0 0.0], :z [nil nil nil], :x [nil nil nil]}]}
-   {:type :coincident
-    :m1 [[brick b3] {:e [0.0 0.0 4.0], :z [nil nil nil], :x [nil nil nil]}]
-    :m2 [[cap c3] {:e [0.0 0.0 4.0], :z [nil nil nil], :x [nil nil nil]}]}
-   {:type :coincident
-    :m1 [[brick b3] {:e [0.0 0.0 4.0], :z [nil nil nil], :x [nil nil nil]}]
-    :m2 [[ground g3] {:e [2.0 4.0 0.0], :z [nil nil nil], :x [nil nil nil]}]}
-   {:type :coincident
-    :m1 [[cap c2] {:e [0.0 3.0 0.0], :z [nil nil nil], :x [nil nil nil]}]
-    :m2 [[brick b2] {:e [0.0 3.0 0.0], :z [nil nil nil], :x [nil nil nil]}]})
- (joints->constraints @brick-graph))
+       (fact "about initializing invariants"
+             (ref->str (graph->init-invariants @brick-graph)) =>
+             '{:mark {:loc [:ref #{[ground]}],
+                      :z [:ref #{[ground]}],
+                      :x [:ref #{[ground]}]},
+               :link {brick [:ref {:tdof {:# 3}, :rdof {:# 3},
+                                   :versor {:xlate [0.0 0.0 0.0] :rotate [1.0 0.0 0.0 0.0]}}]
+                      ground [:ref {:tdof {:# 0}, :rdof {:# 0},
+                                    :versor {:xlate [0.0 0.0 0.0] :rotate [1.0 0.0 0.0 0.0]}}]
+                      cap [:ref {:tdof {:# 3}, :rdof {:# 3},
+                                 :versor {:xlate [0.0 0.0 0.0], :rotate [1.0 0.0 0.0 0.0]}}]}})
+
+       (fact "about building a joint pair constraint"
+             (joint-pair->constraint @brick-graph '#{[ground j1] [brick jg1]}) =>
+             '({:type :coincident
+                :m1 [[ground g1] {:e [2.0 0.0 0.0], :z [nil nil nil], :x [nil nil nil]}]
+                :m2 [[brick b1] {:e [0.0 0.0 0.0], :z [nil nil nil], :x [nil nil nil]}]}))
+
+
+       (fact "about the joint constraints"
+             (joints->constraints @brick-graph) =>
+             '(
+               {:type :coincident
+                :m1 [[ground g2] {:e [5.0 0.0 0.0], :z [nil nil nil], :x [nil nil nil]}]
+                :m2 [[brick b2] {:e [0.0 3.0 0.0], :z [nil nil nil], :x [nil nil nil]}]}
+               {:type :coincident
+                :m1 [[brick b4] {:e [1.0 0.0 0.0], :z [nil nil nil], :x [nil nil nil]}]
+                :m2 [[cap c4] {:e [-1.0 0.0 0.0], :z [nil nil nil], :x [nil nil nil]}]}
+               {:type :coincident
+                :m1 [[ground g1] {:e [2.0 0.0 0.0], :z [nil nil nil], :x [nil nil nil]}]
+                :m2 [[brick b1] {:e [0.0 0.0 0.0], :z [nil nil nil], :x [nil nil nil]}]}
+               {:type :coincident
+                :m1 [[brick b3] {:e [0.0 0.0 4.0], :z [nil nil nil], :x [nil nil nil]}]
+                :m2 [[cap c3] {:e [0.0 0.0 4.0], :z [nil nil nil], :x [nil nil nil]}]}
+               {:type :coincident
+                :m1 [[brick b3] {:e [0.0 0.0 4.0], :z [nil nil nil], :x [nil nil nil]}]
+                :m2 [[ground g3] {:e [2.0 4.0 0.0], :z [nil nil nil], :x [nil nil nil]}]}
+               {:type :coincident
+                :m1 [[cap c2] {:e [0.0 3.0 0.0], :z [nil nil nil], :x [nil nil nil]}]
+                :m2 [[brick b2] {:e [0.0 3.0 0.0], :z [nil nil nil], :x [nil nil nil]}]})) )
 
 
