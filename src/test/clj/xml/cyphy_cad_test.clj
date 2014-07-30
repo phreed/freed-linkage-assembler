@@ -63,18 +63,15 @@
      '{"{c1fb29d9-0a81-423c-bc8f-459735cb4db3}"
        [:ref
         {:versor {:xlate [0.0 0.0 0.0], :rotate [1.0 0.0 0.0 0.0]},
-         :tdof {:# 3},
-         :rdof {:# 3}}],
+         :tdof {:# 3} :rdof {:# 3}}],
        "{51f63ec8-cde2-4ac0-886f-7f9389faad04}"
        [:ref
         {:versor {:xlate [0.0 0.0 0.0], :rotate [1.0 0.0 0.0 0.0]},
-         :tdof {:# 3},
-         :rdof {:# 3}}],
+         :tdof {:# 3} :rdof {:# 3}}],
        "{cd51d123-aab8-4d6e-b27f-fd94701e0007}|1"
        [:ref
         {:versor {:xlate [0.0 0.0 0.0], :rotate [1.0 0.0 0.0 0.0]},
-         :tdof {:# 0},
-         :rdof {:# 0}}]}
+         :tdof {:# 0} :rdof {:# 0}}]}
      (ref->str (:link kb)))
 
 
@@ -146,3 +143,12 @@
 
 ;;    (pp/pprint (ref->str result-link))
 
+(with-open [fos (-> "cad_assembly_boom_dipper_csys_aug.xml"
+                    jio/output-stream)]
+  ;; (let [kb (cyphy/extract-knowledge-from-cad-assembly fis)
+  ;;      constraints (:constraint kb)]
+
+(cyphy/write-cad-assembly-using-knowledge fos nil)
+(with-open [fis (-> "cad_assembly_boom_dipper_csys_aug.xml"
+                    jio/input-stream)]
+(cyphy/read-cad-assembly-using-knowledge fis nil)))

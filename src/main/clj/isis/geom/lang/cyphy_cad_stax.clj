@@ -1,12 +1,23 @@
 (ns isis.geom.lang.cyphy-cad-stax
   "Manipulating the CyPhy2CAD produced CADAssembly.xml file using stax."
   (:require
-            [isis.geom.machine.geobj :as ga]
-            [isis.geom.machine.tolerance :as tol])
-  (:import (javax.xml.stream  XMLInputFactory events.XMLEvent XMLStreamConstants)
-           (javax.xml.namespace QName)
-           (org.codehaus.stax2 XMLInputFactory2 XMLStreamReader2)
-           (com.fasterxml.aalto.stax.InputFactoryImpl)))
+   [isis.geom.machine.geobj :as ga]
+   [isis.geom.machine.tolerance :as tol]
+   [clojure.pprint :as pp] )
+  (:import
+   (java.util Date)
+   (javax.xml.stream  XMLInputFactory
+                      XMLOutputFactory
+                      events.XMLEvent
+                      XMLStreamConstants
+                      XMLStreamException)
+   (javax.xml.namespace QName)
+   (org.codehaus.stax2 XMLInputFactory2
+                       XMLStreamReader2
+                       XMLStreamWriter2)
+   (org.codehaus.staxmate SMOutputFactory
+                          SMInputFactory)
+   (com.fasterxml.aalto.stax  InputFactoryImpl)))
 
 
 (defn- parse-numeric
@@ -65,7 +76,7 @@
 (defn- expand-point-constraint
   [kb-constraint wip-constraint]
   (conj kb-constraint
-     (assoc-in wip-constraint [:type] :coincident)))
+        (assoc-in wip-constraint [:type] :coincident)))
 
 
 (defn- expand-csys-constraint
@@ -111,6 +122,197 @@
       :csys (update-in kb [:constraint] #(expand-csys-constraint % constraint)))))
 
 
+
+(defn- extract-knowledge-from-cad-assembly-aux
+  [event kb zip wip]
+  (let [event-type (.getEventType event)]
+    (condp = event-type
+
+      XMLStreamConstants/START_ELEMENT
+      (let [elem-type (keyword (.toString (.getName event)))
+            new-zip (conj zip [elem-type 0])
+            parent-type (first (peek zip))]
+
+        ;; (println "start element " elem-type)
+        ;; (pp/pprint zip)
+        ;; (pp/pprint wip)
+
+        (case elem-type
+          :Assemblies [kb new-zip wip]
+          :Assembly [kb new-zip wip]
+          :CADComponent
+          (case (first (peek zip))
+            :Assembly
+            (let [base-link-id (parse-string-attribute event "ComponentID")]
+              [{:constraint []
+                :base base-link-id
+                :link {base-link-id
+                       (ref {:tdof {:# 0} :rdof {:# 0}
+                             :versor {:xlate [0.0 0.0 0.0]
+                                      :rotate [1.0 0.0 0.0 0.0]}})}
+                :mark {:loc (ref #{[base-link-id]})
+                       :z (ref #{[base-link-id]})
+                       :x (ref #{[base-link-id]})}}
+               new-zip
+               (assoc wip :base-link-id base-link-id)])
+
+            :CADComponent
+            (let [comp-link-id (parse-string-attribute event "ComponentID")]
+              [(assoc-in kb [:link comp-link-id]
+                         (ref {:tdof {:# 3} :rdof {:# 3}
+                               :versor {:xlate [0.0 0.0 0.0]
+                                        :rotate [1.0 0.0 0.0 0.0]}}))
+               new-zip
+               (assoc wip :link comp-link-id)])
+
+            (do
+              (println "you have a hierarchy problem. " wip)
+              [kb new-zip wip])  )
+
+          :Constraint
+          [kb new-zip (assoc wip :grounded false)]
+
+          :Pair
+          (if (:grounded wip)
+            [kb new-zip wip]
+            (let [c-type (parse-string-attribute event "FeatureGeometryType")]
+              [kb new-zip
+               (assoc wip
+                 :active-marker :m1
+
+                 :constraint
+                 {:type (get constraint-type-map c-type "UNKNOWN")
+                  :m1 nil, :m2 nil} )]))
+
+          ;; If either of the constraint features for the pair
+          ;; make reference to the ground then the component is
+          ;; presumed to be fixed to the ground and a standard
+          ;; set of coincident points can be assumed.
+          ;; Any other pairs in the constraint can be ignored.
+          :ConstraintFeature
+          (if (:grounded wip)
+            [kb new-zip wip]
+            (let [link-name (parse-string-attribute event "ComponentID")
+                  proper-name (parse-string-attribute event "FeatureName")
+                  constraint (:constraint wip)
+                  marker [[link-name proper-name] nil]
+                  active (:active-marker wip)]
+              (cond (= link-name (:base-link-id wip))
+                    [kb new-zip (assoc wip :grounded true)]
+
+                    :else
+                    [kb new-zip
+                     (assoc-in wip [:constraint active] marker)])) )
+
+
+          :GeometryMarker
+          (if (:grounded wip)
+            [kb new-zip wip]
+            (let [x (parse-numeric-attribute event "x")
+                  y (parse-numeric-attribute event "y")
+                  z (parse-numeric-attribute event "z")
+
+                  i (parse-numeric-attribute event "i")
+                  j (parse-numeric-attribute event "j")
+                  k (parse-numeric-attribute event "k")
+
+                  pi (parse-numeric-attribute event "pi")
+
+                  active (:active-marker wip)
+                  new-wip (assoc-in wip [:constraint active 1]
+                                    {:e [x y z] :q [i j k] :pi pi})]
+              [kb new-zip
+               (update-in new-wip [:active-marker] inc-marker)]))
+
+          [kb new-zip wip] ))
+
+
+      XMLStreamConstants/END_ELEMENT
+      (let [current-type (first (peek zip))
+            elem-type (keyword (.toString (.getName event)))
+            new-zip (pop zip)
+            new-zip (conj (pop new-zip)
+                          (update-in (peek new-zip) [1] inc))]
+
+        ;; (println "end element " (.toString (.getName event)))
+
+        (case elem-type
+          ;; The end of a pair indicates that a (set of)
+          ;; constraint can be added to the knowledge base.
+          :Pair
+          (let [new-wip (dissoc wip :active-marker :constraint)]
+            (if (:grounded wip)
+              [kb new-zip new-wip]
+              [(update-kb-jointed kb wip) new-zip new-wip ]))
+
+          ;; the end of the constraint signifies the wrapping
+          ;; up for the component's constraints.
+          :Constraint
+          (let [new-wip (dissoc wip :grounded)]
+            (if (:grounded wip)
+              [(update-kb-grounded kb wip) new-zip new-wip]
+              [kb new-zip new-wip] ))
+
+          ;; the default
+          [kb new-zip wip]))
+
+      XMLStreamConstants/ATTRIBUTE
+      (do
+        ;; (println "attribute " (.toString (.getName event)))
+        [kb zip wip])
+
+      XMLStreamConstants/CDATA
+      (do
+        ;; (println "cdata " (.toString (.getName event)))
+        [kb zip wip])
+
+      XMLStreamConstants/CHARACTERS
+      (do
+        ;; (println "chars " (.toString (.getData event)))
+        [kb zip wip])
+
+      XMLStreamConstants/DTD
+      (do
+        ;; (println "dtd " (.toString (.getName event)))
+        [kb zip wip])
+
+      XMLStreamConstants/START_DOCUMENT
+      (do
+        (println "start doc " (.toString event))
+        [kb zip wip])
+
+      XMLStreamConstants/END_DOCUMENT
+      (do
+        (println "end doc " (.toString event))
+        [kb zip wip])
+
+      XMLStreamConstants/ENTITY_DECLARATION
+      (do
+        ;; (println "entity " (.toString (.getLocalName event)))
+        [kb zip wip])
+
+      XMLStreamConstants/NAMESPACE
+      (do
+        ;; (println "namespace " (.toString (.getName event)))
+        [kb zip wip])
+
+      XMLStreamConstants/NOTATION_DECLARATION
+      (do
+        ;; (println "notation " (.toString (.getName event)))
+        [kb zip wip])
+
+      XMLStreamConstants/PROCESSING_INSTRUCTION
+      (do
+        ;; (println "processing " (.toString (.getName event)))
+        [kb zip wip])
+
+      (do
+        ;; (println "default " (.toString event))
+        [kb zip wip])
+
+      )))
+
+
 (defn extract-knowledge-from-cad-assembly
   "Extract the constraints, links and others from a Cyph2Cad cad-assembly.xml input."
   [fis]
@@ -126,199 +328,66 @@
         (do
           (println "you have reached the end of the input file")
           kb)
-
         (let [event (.nextEvent reader)
-              event-type (.getEventType event)]
-          (condp = event-type
-
-            XMLStreamConstants/START_ELEMENT
-            (let [elem-type (keyword (.toString (.getName event)))
-                  new-zip (conj zip [elem-type 0])
-                  parent-type (first (peek zip))]
-
-              ;; (println "start element " elem-type)
-              ;; (pp/pprint zip)
-              ;; (pp/pprint wip)
-
-              (case elem-type
-                :Assemblies (recur reader kb new-zip wip)
-                :Assembly (recur reader kb new-zip wip)
-                :CADComponent
-                (case (first (peek zip))
-                  :Assembly
-                  (let [base-link-id (parse-string-attribute event "ComponentID")]
-                    (recur reader
-                           {:constraint []
-                            :base base-link-id
-                            :link {base-link-id
-                                   (ref {:tdof {:# 0} :rdof {:# 0}
-                                         :versor {:xlate [0.0 0.0 0.0]
-                                                  :rotate [1.0 0.0 0.0 0.0]}})}
-                            :mark {:loc (ref #{[base-link-id]})
-                                   :z (ref #{[base-link-id]})
-                                   :x (ref #{[base-link-id]})}}
-                           new-zip
-                           (assoc wip :base-link-id base-link-id)))
-
-                  :CADComponent
-                  (let [comp-link-id (parse-string-attribute event "ComponentID")]
-                    (recur reader
-                           (assoc-in kb [:link comp-link-id]
-                                     (ref {:tdof {:# 3} :rdof {:# 3}
-                                           :versor {:xlate [0.0 0.0 0.0]
-                                                    :rotate [1.0 0.0 0.0 0.0]}}))
-                           new-zip
-                           (assoc wip :link comp-link-id)))
-
-                  (do
-                    (println "you have a hierarchy problem. " wip)
-                    kb)  )
-
-                :Constraint
-                (recur reader kb new-zip (assoc wip :grounded false))
-
-                :Pair
-                (if (:grounded wip)
-                  (recur reader kb new-zip wip)
-                  (let [c-type (parse-string-attribute event "FeatureGeometryType")]
-                    (recur reader kb new-zip
-                           (assoc wip
-                             :active-marker :m1
-
-                             :constraint
-                             {:type (get constraint-type-map c-type "UNKNOWN")
-                              :m1 nil, :m2 nil} ))))
-
-                ;; If either of the constraint features for the pair
-                ;; make reference to the ground then the component is
-                ;; presumed to be fixed to the ground and a standard
-                ;; set of coincident points can be assumed.
-                ;; Any other pairs in the constraint can be ignored.
-                :ConstraintFeature
-                (if (:grounded wip)
-                  (recur reader kb new-zip wip)
-                  (let [link-name (parse-string-attribute event "ComponentID")
-                        proper-name (parse-string-attribute event "FeatureName")
-                        constraint (:constraint wip)
-                        marker [[link-name proper-name] nil]
-                        active (:active-marker wip)]
-                    (cond (= link-name (:base-link-id wip))
-                          (recur reader kb new-zip (assoc wip :grounded true))
-
-                          :else
-                          (recur reader kb new-zip
-                                 (assoc-in wip [:constraint active] marker)))) )
-
-
-                :GeometryMarker
-                (if (:grounded wip) (recur reader kb new-zip wip)
-                  (let [x (parse-numeric-attribute event "x")
-                        y (parse-numeric-attribute event "y")
-                        z (parse-numeric-attribute event "z")
-
-                        i (parse-numeric-attribute event "i")
-                        j (parse-numeric-attribute event "j")
-                        k (parse-numeric-attribute event "k")
-
-                        pi (parse-numeric-attribute event "pi")
-
-                        active (:active-marker wip)
-                        new-wip (assoc-in wip [:constraint active 1]
-                                          {:e [x y z] :q [i j k] :pi pi})]
-                    (recur reader kb new-zip
-                           (update-in new-wip [:active-marker] inc-marker))))
-
-                (recur reader kb new-zip wip) ))
-
-
-            XMLStreamConstants/END_ELEMENT
-            (let [current-type (first (peek zip))
-                  elem-type (keyword (.toString (.getName event)))
-                  new-zip (pop zip)
-                  new-zip (conj (pop new-zip)
-                                (update-in (peek new-zip) [1] inc))]
-
-              ;; (println "end element " (.toString (.getName event)))
-
-              (case elem-type
-                ;; The end of a pair indicates that a (set of)
-                ;; constraint can be added to the knowledge base.
-                :Pair
-                (let [new-wip (dissoc wip :active-marker :constraint)]
-                  (if (:grounded wip)
-                    (recur reader kb new-zip new-wip)
-                    (recur reader
-                           (update-kb-jointed kb wip)
-                           new-zip new-wip) ))
-
-                ;; the end of the constraint signifies the wrapping
-                ;; up for the component's constraints.
-                :Constraint
-                (let [new-wip (dissoc wip :grounded)]
-                  (if (:grounded wip)
-                    (recur reader
-                           (update-kb-grounded kb wip)
-                           new-zip new-wip)
-                    (recur reader kb new-zip new-wip) ))
-
-                ;; the default
-                (recur reader kb new-zip wip)))
-
-            XMLStreamConstants/ATTRIBUTE
-            (do
-              ;; (println "attribute " (.toString (.getName event)))
-              (recur reader kb zip wip))
-
-            XMLStreamConstants/CDATA
-            (do
-              ;; (println "cdata " (.toString (.getName event)))
-              (recur reader kb zip wip))
-
-            XMLStreamConstants/CHARACTERS
-            (do
-              ;; (println "chars " (.toString (.getData event)))
-              (recur reader kb zip wip))
-
-            XMLStreamConstants/DTD
-            (do
-              ;; (println "dtd " (.toString (.getName event)))
-              (recur reader kb zip wip))
-
-            XMLStreamConstants/START_DOCUMENT
-            (do
-              (println "start doc " (.toString event))
-              (recur reader kb zip wip))
-
-            XMLStreamConstants/END_DOCUMENT
-            (do
-              (println "end doc " (.toString event))
-              (recur reader kb zip wip))
-
-            XMLStreamConstants/ENTITY_DECLARATION
-            (do
-              ;; (println "entity " (.toString (.getLocalName event)))
-              (recur reader kb zip wip))
-
-            XMLStreamConstants/NAMESPACE
-            (do
-              ;; (println "namespace " (.toString (.getName event)))
-              (recur reader kb zip wip))
-
-            XMLStreamConstants/NOTATION_DECLARATION
-            (do
-              ;; (println "notation " (.toString (.getName event)))
-              (recur reader kb zip wip))
-
-            XMLStreamConstants/PROCESSING_INSTRUCTION
-            (do
-              ;; (println "processing " (.toString (.getName event)))
-              (recur reader kb zip wip))
-
-            (do
-              ;; (println "default " (.toString event))
-              (recur reader kb zip wip))
-
-            ))))))
+              [new-kb new-wip new-zip]
+              (extract-knowledge-from-cad-assembly-aux event kb zip wip) ]
+          (recur reader new-kb new-wip new-zip))))))
 
 
 
+(defn write-cad-assembly-using-knowledge
+  "Update the CAD-Assembly.xml using the link information."
+  [fos kb]
+  (let [factory (SMOutputFactory. (XMLOutputFactory/newInstance))
+        doc (.createOutputDocument factory fos)]
+    (.setIndentation doc "\n  " 1 1)
+    (.addComment doc (str " generated: " (.toString (Date.))))
+
+    (let [empl (.addElement doc "employee")
+          empl-id (.addAttribute empl nil "id" 123)
+          ename (.addElement empl "name")]
+      (.addCharacters (.addElement ename "proper") "fred")
+      (.addCharacters (.addElement ename "surname") "eisele")
+      (.closeRoot doc) )  ))
+
+(defn read-cad-assembly-using-knowledge
+  "Update the CAD-Assembly.xml using the link information."
+  [fis kb]
+  (let [factory (SMInputFactory. (XMLInputFactory/newInstance))
+        root-cursor (.rootElementCursor factory fis)
+        _ (.advance root-cursor)
+        employee-id (.getAttrIntValue root-cursor 0)
+        employee-name-cursor (.advance (.childElementCursor root-cursor "name"))
+        leaf-cursor (.advance (.childElementCursor employee-name-cursor))
+        proper-name (.collectDescendantText leaf-cursor false)
+        _ (.advance leaf-cursor)
+        surname (.collectDescendantText leaf-cursor false)
+        _ (.closeCompletely (.getStreamReader root-cursor))
+        ]
+    (pp/pprint [:id employee-id :proper proper-name :surname surname])))
+
+#_(defn update-cad-assembly-using-knowledge
+    "Update the CAD-Assembly.xml using the link information."
+    [fis fos kb]
+    (let [in-factory (SMInputFactory. (XMLInputFactory/newInstance))
+          root-cursor (.rootElementCursor in-factory fis)
+
+          out-factory (SMOutputFactory. (XMLOutputFactory/newInstance))
+          out-doc (.createOutputDocument out-factory fos)
+
+          bridge nil]
+      (.setIndentation doc "\n  " 1 1)
+      (.addComment doc (str " generated: " (.toString (Date.))))
+
+      (let [empl (.addElement doc "employee")
+            empl-id (.addAttribute empl nil "id" 123)
+            ename (.addElement empl "name")]
+        (.addCharacters (.addElement ename "proper") "fred")
+        (.addCharacters (.addElement ename "surname") "eisele")
+        (.closeRoot doc) )  ))
+
+
+;; Refs:
+;; Stax2 API : http://woodstox.codehaus.org/4.2.0/javadoc/index.html
+;;
+;; Aalto-xml : http://fasterxml.github.io/aalto-xml/javadoc/0.9.7/
