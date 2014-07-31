@@ -6,6 +6,7 @@ import os, sys
 import shutil
 import math
 import re
+import getopt
 
 # Assumes all CAD files are in 'STL' directory
 # with name following that of the <CADComponent>
@@ -207,17 +208,46 @@ def launch_openscad(file):
     print "Launching OpenSCAD..."
     os.startfile(file)
 
+def usage():
+  print '''
+  Usage :
+  -i (--input) <input file path (defaults to CADAssembly_aug.xml)>
+  -o (--output) <output openSCAD file path (default to CADAssembly.scad)>
+  -h shows this help information.
+  '''
+def main(argv):
+  cad_assembly_file = 'CADAssembly_aug.xml'
+  open_scad_file = None
+
+  try:
+    opts, args = getopt.getopt(argv, "hi:o:", ["help", "input", "output"])
+  except getopt.GetoptError:
+    usage()
+    sys.exit(2)
+
+  for opt, arg in opts:
+    if opt in ("-h", "--help"):
+      usage()
+      sys.exit()
+    elif opt in ("-i", "--input"):
+      cad_assembly_file = arg
+    elif opt in ("-o", "--output"):
+      open_scad_file = arg
+
+  struct = Parse_Assembly_File( cad_assembly_file )
+  if open_scad_file is None:
+      open_scad_file = os.getcwd() + "\\" + struct['TLA']['name'] + ".scad"
+
+  start = time.time()
+  asm = build_assembly(struct)
+
+  with open(open_scad_file, 'w') as f:
+      f.write(asm)
+  print "\nOpenSCAD object saved to {0}".format(open_scad_file)
+  launch_openscad(open_scad_file)
+
+  print "Time: ", time.time() - start
+
+
 if __name__ == "__main__":
-    start = time.time()
-    struct = Parse_Assembly_File('CADAssembly_aug.xml')
-    asm = build_assembly(struct)
-    file_path = os.getcwd() + "\\" + struct['TLA']['name'] + ".scad"
-
-    with open(file_path, 'w') as f:
-        f.write(asm)
-    print "\nOpenSCAD object saved to {0}".format(file_path)
-    launch_openscad(file_path)
-
-    print "Time: ", time.time() - start
-
-
+  main(sys.argv[1:])
