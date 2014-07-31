@@ -13,6 +13,7 @@
                  [org.codehaus.woodstox/stax2-api "3.1.4"]
                  [com.fasterxml/aalto-xml "0.9.9"]
                  [com.fasterxml.staxmate/staxmate "2.2.0"]
+                 ;; [net.java.dev.stax-utils/stax-utils "20070216"]
                  [midje "1.6.3"]]
   :plugins [[lein-autoexpect "1.2.2"]
             [lein-ancient "0.5.5"]

@@ -5,14 +5,12 @@
 ;;
 (ns isis.geom.linkage-assembler
   (:gen-class :main true)
-  (:require [clojure.tools.cli :refer [parse-opts]]
+  (:require [isis.geom.lang.cyphy-cad-stax :as cyphy]
+
+            [clojure.tools.cli :refer [parse-opts]]
             [clojure.string :as string]
             [clojure.java.io :as jio]
 
-            [isis.geom.lang.cyphy-cad-zipper
-             :refer [graph-from-cyphy-input-stream
-                     graph-to-cyphy-zipper
-                     graph-to-cyphy-file]]
             [isis.geom.analysis.position-analysis
              :refer [position-analysis]]
 
@@ -80,15 +78,18 @@
     (when (< 2 (:verbosity options))
       (println " java version = "(System/getProperty "java.vm.version")) )
 
-    (println " input file = "  (:input options))
-    (with-open [is (jio/resource jio/input-stream)]
-    (let [kb (graph-from-cyphy-input-stream is)
-          constraints (:constraint kb)
-          [success? result-kb result-success result-failure] (position-analysis kb constraints)
-          augmented (graph-to-cyphy-zipper kb)]
-      ;; (println " result : " augmented )
-      (println " output file = " (:output options))
-      (graph-to-cyphy-file augmented (:output options))  ))))
+    (println " input file = "  (.toString (:input options)))
+    (println " output file = "  (.toString (:output options)))
+    (with-open [fis (-> (:input options) jio/input-stream)]
+      ;; (let [kb (graph-from-cyphy-input-stream is)
+      (let [kb (cyphy/extract-knowledge-from-cad-assembly fis)
+            constraints (:constraint kb)
+            ;; here is the call to the position analysis
+            [success? result-kb result-success result-failure]
+            (position-analysis kb constraints)]
+        (with-open [fis (-> (:input options) jio/input-stream)
+                    fos (-> (:output options) jio/output-stream)]
 
+          (cyphy/update-cad-assembly-using-knowledge fis fos kb) ) ) )))
 
 

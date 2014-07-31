@@ -13,6 +13,8 @@
                       XMLStreamConstants
                       XMLStreamException)
    (javax.xml.namespace QName)
+   ;; (javanet.staxutils IndentingXMLEventWriter)
+
    (org.codehaus.stax2 XMLInputFactory2
                        XMLStreamReader2
                        XMLStreamWriter2)
@@ -49,7 +51,7 @@
 (def constraint-type-map
   "A mapping between the types specified in the xml and the type required."
   '{"SURFACE" :planar,
-    "POINT" :coincident,
+    "POINT" :point,
     "PLANE" :planar,
     "CSYS" :csys})
 
@@ -369,7 +371,8 @@
 
 (defn- add-versor-element
   [writer event-factory link-map comp-link-id]
-  (let [elem (.add writer (.createStartElement event-factory "" nil "versor"))
+  (let [_ (.add writer (.createSpace event-factory "\n    "))
+        elem (.add writer (.createStartElement event-factory "" nil "versor"))
         link-ref @(get link-map comp-link-id)
         link-versor (:versor link-ref)
         { [x y z] :xlate, [qw q1 q2 q3] :rotate} link-versor
@@ -396,6 +399,7 @@
 
         out-factory (XMLOutputFactory/newInstance)
         writer (.createXMLEventWriter out-factory fos)
+        ;; writer (IndentingXMLEventWriter. writer)
 
         event-factory (XMLEventFactory/newInstance)
         link-map (:link kb) ]
