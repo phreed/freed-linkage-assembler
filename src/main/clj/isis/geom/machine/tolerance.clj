@@ -35,9 +35,9 @@
   They must all be of the same type and there
   values must be individually in range."
   [tol-value & xs]
-  (if (not= (apply map #(count %) xs))
-    false
-    (every? identity (apply map #(apply near-equal? tol-value %&) xs))))
+  (cond (apply not= (map #(count %) xs)) false
+        :else (every? identity
+                      (apply map #(apply near-equal? tol-value %&) xs))))
 
 (defn snap
   "Rounds the weight of a value to the nearest multiple of scale.

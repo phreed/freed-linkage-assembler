@@ -1,6 +1,6 @@
 (ns xml.cyphy-cad-test
-  (:require [isis.geom.lang.cyphy-cad-stax :as cyphy]
-            [midje.sweet :refer [facts fact]]
+  (:require [midje.sweet :refer [facts fact]]
+            [isis.geom.lang.cyphy-cad-stax :as cyphy]
 
             [clojure.java.io :as jio]
             [clojure.pprint :as pp]
