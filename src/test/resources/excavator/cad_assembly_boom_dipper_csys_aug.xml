@@ -25,14 +25,14 @@
         </ParametricParameters>
       </CADComponent>
       <CADComponent ComponentID="{c1fb29d9-0a81-423c-bc8f-459735cb4db3}" Name="BOOM" DisplayName="Boom" Type="PART" SpecialInstruction="" MaterialID="" Representation="" _id="id134">
-    <versor x="-6226.578982993215" y="1720.6341386564595" z="-297.5000000000001" pi="8.847409473268527" i="0.0" j="0.0" k="-0.9867955711659037"/>
+    <versor x="2204.590945944376" y="-9748.074429784388" z="902.4999999999989" pi="1.0" i="-0.45399049973954625" j="0.8910065241883681" k="5.455841439333469E-17"/>
         <Constraint _id="id114">
           <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="CSYS" FeatureAlignmentType="CSYS" _id="id115">
             <ConstraintFeature ComponentID="{c1fb29d9-0a81-423c-bc8f-459735cb4db3}" FeatureName="ARM_CSYS" FeatureOrientationType="NONE" _id="id116">
-              <GeometryMarker x="-8625.71" y="4720.65" z="600" i="0" j="0" k="1" pi="0.29711" _id="id117"/>
+              <GeometryMarker x="-8625.71" y="4720.65" z="600" i="0" j="0" k="1" pi="1.30" _id="id117"/>
             </ConstraintFeature>
             <ConstraintFeature ComponentID="{51f63ec8-cde2-4ac0-886f-7f9389faad04}" FeatureName="BOOM_CSYS" FeatureOrientationType="NONE" _id="id118">
-              <GeometryMarker x="3455.57" y="5" z="302.5" i="0" j="0" k="-1" pi="0.59932" _id="id119"/>
+              <GeometryMarker x="3455.57" y="5" z="302.5" i="1" j="0" k="0" pi="1.0" _id="id119"/>
             </ConstraintFeature>
           </Pair>
         </Constraint>

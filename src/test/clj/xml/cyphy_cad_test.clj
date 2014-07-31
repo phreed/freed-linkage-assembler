@@ -32,33 +32,53 @@
   (let [kb (cyphy/extract-knowledge-from-cad-assembly fis)
         constraints (:constraint kb)]
 
+    ;; (pp/pprint constraints)
     (facts "about the parsed cad-assembly file with csys"
            (fact "about the constraints"
                  constraints =>
-                 '[{:type :coincident,
-                    :m1 [["{cd51d123-aab8-4d6e-b27f-fd94701e0007}|1" "TOP"] {:e [1.0 0.0 0.0]}],
-                    :m2 [["{51f63ec8-cde2-4ac0-886f-7f9389faad04}" "TOP"] {:e [1.0 0.0 0.0]}]}
-                   {:type :coincident,
-                    :m1 [["{cd51d123-aab8-4d6e-b27f-fd94701e0007}|1" "RIGHT"] {:e [0.0 1.0 0.0]}],
-                    :m2 [["{51f63ec8-cde2-4ac0-886f-7f9389faad04}" "RIGHT"] {:e [0.0 1.0 0.0]}]}
-                   {:type :coincident,
-                    :m1 [["{cd51d123-aab8-4d6e-b27f-fd94701e0007}|1" "FRONT"] {:e [0.0 0.0 1.0]}],
-                    :m2 [["{51f63ec8-cde2-4ac0-886f-7f9389faad04}" "FRONT"] {:e [0.0 0.0 1.0]}]}
-                   {:type :coincident,
-                    :m1 [["{c1fb29d9-0a81-423c-bc8f-459735cb4db3}" "ARM_CSYS-origin"]
-                         {:e [-8625.71 4720.65 600.0]}],
-                    :m2 [["{51f63ec8-cde2-4ac0-886f-7f9389faad04}" "BOOM_CSYS-origin"]
-                         {:e [3455.57 5.0 302.5]}]}
-                   {:type :coincident,
-                    :m1 [["{c1fb29d9-0a81-423c-bc8f-459735cb4db3}" "ARM_CSYS-3x"]
-                         {:e [-8447.17815357595 4961.744130605494 600.0]}],
-                    :m2 [["{51f63ec8-cde2-4ac0-886f-7f9389faad04}" "BOOM_CSYS-3x"]
-                         {:e [3363.474630524797 -280.51434801289025 302.5]}]}
-                   {:type :coincident,
-                    :m1 [["{c1fb29d9-0a81-423c-bc8f-459735cb4db3}" "ARM_CSYS-4y"]
-                         {:e [-8947.168840807326 4958.692461898733 600.0]}],
-                    :m2 [["{51f63ec8-cde2-4ac0-886f-7f9389faad04}" "BOOM_CSYS-4y"]
-                         {:e [3836.2557973505204 -117.7938259669377 302.5]}]}])
+                 [{:type :coincident,
+                   :m1
+                   [["{cd51d123-aab8-4d6e-b27f-fd94701e0007}|1" "TOP"]
+                    {:e [1.0 0.0 0.0]}],
+                   :m2
+                   [["{51f63ec8-cde2-4ac0-886f-7f9389faad04}" "TOP"]
+                    {:e [1.0 0.0 0.0]}]}
+                  {:type :coincident,
+                   :m1
+                   [["{cd51d123-aab8-4d6e-b27f-fd94701e0007}|1" "RIGHT"]
+                    {:e [0.0 1.0 0.0]}],
+                   :m2
+                   [["{51f63ec8-cde2-4ac0-886f-7f9389faad04}" "RIGHT"]
+                    {:e [0.0 1.0 0.0]}]}
+                  {:type :coincident,
+                   :m1
+                   [["{cd51d123-aab8-4d6e-b27f-fd94701e0007}|1" "FRONT"]
+                    {:e [0.0 0.0 1.0]}],
+                   :m2
+                   [["{51f63ec8-cde2-4ac0-886f-7f9389faad04}" "FRONT"]
+                    {:e [0.0 0.0 1.0]}]}
+                  {:type :coincident,
+                   :m1
+                   [["{c1fb29d9-0a81-423c-bc8f-459735cb4db3}" "ARM_CSYS-origin"]
+                    {:e [-8625.71 4720.65 600.0]}],
+                   :m2
+                   [["{51f63ec8-cde2-4ac0-886f-7f9389faad04}" "BOOM_CSYS-origin"]
+                    {:e [3455.57 5.0 302.5]}]}
+                  {:type :coincident,
+                   :m1
+                   [["{c1fb29d9-0a81-423c-bc8f-459735cb4db3}" "ARM_CSYS-3x"]
+                    {:e [-8802.045575687742 4477.944901687515 600.0]}],
+                   :m2
+                   [["{51f63ec8-cde2-4ac0-886f-7f9389faad04}" "BOOM_CSYS-3x"]
+                    {:e [3755.57 5.0 302.5]}]}
+                  {:type :coincident,
+                   :m1
+                   [["{c1fb29d9-0a81-423c-bc8f-459735cb4db3}" "ARM_CSYS-4y"]
+                    {:e [-8302.10320225002 4485.53589908301 600.0]}],
+                   :m2
+                   [["{51f63ec8-cde2-4ac0-886f-7f9389faad04}" "BOOM_CSYS-4y"]
+                    {:e [3455.57 -395.0 302.5]}]}])
+
 
            (fact "about the initial link settings"
                  (ref->str (:link kb)) =>
@@ -98,55 +118,80 @@
                        ["{cd51d123-aab8-4d6e-b27f-fd94701e0007}|1"]}]}
 
           link-pattern
-          '{"{c1fb29d9-0a81-423c-bc8f-459735cb4db3}"
-            [:ref
-             {:versor
-              {:xlate [-6226.578982993215 1720.6341386564595 -297.5000000000001],
-               :rotate [0.16197067860374603 0.0 0.0 -0.9867955711659037]},
-              :tdof {:# 0, :point [3455.5699999999997 5.0 302.5]},
-              :rdof {:# 0}}],
-            "{51f63ec8-cde2-4ac0-886f-7f9389faad04}"
-            [:ref
-             {:versor {:xlate [0.0 0.0 0.0], :rotate [1.0 0.0 0.0 0.0]},
-              :tdof {:# 0, :point [1.0 0.0 0.0]},
-              :rdof {:# 0}}],
-            "{cd51d123-aab8-4d6e-b27f-fd94701e0007}|1"
-            [:ref
-             {:versor {:xlate [0.0 0.0 0.0], :rotate [1.0 0.0 0.0 0.0]},
-              :tdof {:# 0},
-              :rdof {:# 0}}]}
+          {"{c1fb29d9-0a81-423c-bc8f-459735cb4db3}"
+           [:ref
+            {:versor
+             {:xlate [2204.590945944376 -9748.074429784388 902.4999999999989],
+              :rotate
+              [2.779890061746713E-17
+               -0.45399049973954625
+               0.8910065241883681
+               5.455841439333469E-17]},
+             :tdof {:# 0, :point [3455.5699999999997 5.0 302.5]},
+             :rdof {:# 0}}],
+           "{51f63ec8-cde2-4ac0-886f-7f9389faad04}"
+           [:ref
+            {:versor {:xlate [0.0 0.0 0.0], :rotate [1.0 0.0 0.0 0.0]},
+             :tdof {:# 0, :point [1.0 0.0 0.0]},
+             :rdof {:# 0}}],
+           "{cd51d123-aab8-4d6e-b27f-fd94701e0007}|1"
+           [:ref
+            {:versor {:xlate [0.0 0.0 0.0], :rotate [1.0 0.0 0.0 0.0]},
+             :tdof {:# 0},
+             :rdof {:# 0}}]}
+
 
           success-pattern
           '[{:type :coincident,
-             :m1 [["{cd51d123-aab8-4d6e-b27f-fd94701e0007}|1" "TOP"] {:e [1.0 0.0 0.0]}],
-             :m2 [["{51f63ec8-cde2-4ac0-886f-7f9389faad04}" "TOP"] {:e [1.0 0.0 0.0]}]}
+             :m1
+             [["{cd51d123-aab8-4d6e-b27f-fd94701e0007}|1" "TOP"]
+              {:e [1.0 0.0 0.0]}],
+             :m2
+             [["{51f63ec8-cde2-4ac0-886f-7f9389faad04}" "TOP"]
+              {:e [1.0 0.0 0.0]}]}
             {:type :coincident,
-             :m1 [["{cd51d123-aab8-4d6e-b27f-fd94701e0007}|1" "RIGHT"] {:e [0.0 1.0 0.0]}],
-             :m2 [["{51f63ec8-cde2-4ac0-886f-7f9389faad04}" "RIGHT"] {:e [0.0 1.0 0.0]}]}
+             :m1
+             [["{cd51d123-aab8-4d6e-b27f-fd94701e0007}|1" "RIGHT"]
+              {:e [0.0 1.0 0.0]}],
+             :m2
+             [["{51f63ec8-cde2-4ac0-886f-7f9389faad04}" "RIGHT"]
+              {:e [0.0 1.0 0.0]}]}
             {:type :coincident,
-             :m1 [["{cd51d123-aab8-4d6e-b27f-fd94701e0007}|1" "FRONT"] {:e [0.0 0.0 1.0]}],
-             :m2 [["{51f63ec8-cde2-4ac0-886f-7f9389faad04}" "FRONT"] {:e [0.0 0.0 1.0]}]}
+             :m1
+             [["{cd51d123-aab8-4d6e-b27f-fd94701e0007}|1" "FRONT"]
+              {:e [0.0 0.0 1.0]}],
+             :m2
+             [["{51f63ec8-cde2-4ac0-886f-7f9389faad04}" "FRONT"]
+              {:e [0.0 0.0 1.0]}]}
             {:type :coincident,
-             :m1 [["{c1fb29d9-0a81-423c-bc8f-459735cb4db3}" "ARM_CSYS-origin"]
-                  {:e [-8625.71 4720.65 600.0]}],
-             :m2 [["{51f63ec8-cde2-4ac0-886f-7f9389faad04}" "BOOM_CSYS-origin"]
-                  {:e [3455.57 5.0 302.5]}]}
+             :m1
+             [["{c1fb29d9-0a81-423c-bc8f-459735cb4db3}" "ARM_CSYS-origin"]
+              {:e [-8625.71 4720.65 600.0]}],
+             :m2
+             [["{51f63ec8-cde2-4ac0-886f-7f9389faad04}" "BOOM_CSYS-origin"]
+              {:e [3455.57 5.0 302.5]}]}
             {:type :coincident,
-             :m1 [["{c1fb29d9-0a81-423c-bc8f-459735cb4db3}" "ARM_CSYS-3x"]
-                  {:e [-8447.17815357595 4961.744130605494 600.0]}],
-             :m2 [["{51f63ec8-cde2-4ac0-886f-7f9389faad04}" "BOOM_CSYS-3x"]
-                  {:e [3363.474630524797 -280.51434801289025 302.5]}]}
+             :m1
+             [["{c1fb29d9-0a81-423c-bc8f-459735cb4db3}" "ARM_CSYS-3x"]
+              {:e [-8802.045575687742 4477.944901687515 600.0]}],
+             :m2
+             [["{51f63ec8-cde2-4ac0-886f-7f9389faad04}" "BOOM_CSYS-3x"]
+              {:e [3755.57 5.0 302.5]}]}
             {:type :coincident,
-             :m1 [["{c1fb29d9-0a81-423c-bc8f-459735cb4db3}" "ARM_CSYS-4y"]
-                  {:e [-8947.168840807326 4958.692461898733 600.0]}],
-             :m2 [["{51f63ec8-cde2-4ac0-886f-7f9389faad04}" "BOOM_CSYS-4y"]
-                  {:e [3836.2557973505204 -117.7938259669377 302.5]}]}]
+             :m1
+             [["{c1fb29d9-0a81-423c-bc8f-459735cb4db3}" "ARM_CSYS-4y"]
+              {:e [-8302.10320225002 4485.53589908301 600.0]}],
+             :m2
+             [["{51f63ec8-cde2-4ac0-886f-7f9389faad04}" "BOOM_CSYS-4y"]
+              {:e [3455.57 -395.0 302.5]}]}]
 
           failure-pattern []
           ]
       (let [[success? result-kb result-success result-failure] (position-analysis kb constraints)
             {result-mark :mark result-link :link} (ref->str result-kb) ]
 
+        ;; (pp/pprint result-success)
+        ;; (pp/pprint result-link)
         (facts "about results of linkage-assembly"
                (fact "about the mark result"
                      result-mark => mark-pattern )

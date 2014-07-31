@@ -27,10 +27,10 @@
         <Constraint _id="id114">
           <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="CSYS" FeatureAlignmentType="CSYS" _id="id115">
             <ConstraintFeature ComponentID="{c1fb29d9-0a81-423c-bc8f-459735cb4db3}" FeatureName="ARM_CSYS" FeatureOrientationType="NONE" _id="id116">
-              <GeometryMarker x="-8625.71" y="4720.65" z="600" i="0" j="0" k="1" pi="0.29711" _id="id117" />
+              <GeometryMarker x="-8625.71" y="4720.65" z="600" i="0" j="0" k="1" pi="1.30" _id="id117" />
             </ConstraintFeature>
             <ConstraintFeature ComponentID="{51f63ec8-cde2-4ac0-886f-7f9389faad04}" FeatureName="BOOM_CSYS" FeatureOrientationType="NONE" _id="id118">
-              <GeometryMarker x="3455.57" y="5" z="302.5" i="0" j="0" k="-1" pi="0.59932" _id="id119" />
+              <GeometryMarker x="3455.57" y="5" z="302.5" i="1" j="0" k="0" pi="1.0" _id="id119" />
             </ConstraintFeature>
           </Pair>
         </Constraint>
