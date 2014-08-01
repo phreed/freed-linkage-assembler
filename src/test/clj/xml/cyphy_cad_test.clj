@@ -204,7 +204,7 @@
 
         (with-open [fis (-> "excavator/cad_assembly_boom_dipper_csys.xml"
                             jio/resource jio/input-stream)
-                    fos (-> "/temp/cad_assembly_boom_dipper_csys_aug.xml"
+                    fos (-> "/tmp/cad_assembly_boom_dipper_csys_aug.xml"
                             jio/output-stream)]
 
           (cyphy/update-cad-assembly-using-knowledge fis fos kb) ) ) )))

@@ -2,7 +2,8 @@ import time
 import xml.etree.ElementTree as ET
 from solid import *
 from solid.utils import *
-import os, sys
+import os, sys, subprocess
+import os.path
 import shutil
 import math
 import re
@@ -168,7 +169,7 @@ def euler_angle_axis_to_rotation(i, j, k, p, name):
 
 
 def build_assembly(struct):
-    stl_loc = os.getcwd() + '\\STL'
+    stl_loc = os.path.join(os.getcwd(), 'STL')
     if not (os.path.isdir(stl_loc)):
         raise Exception('STL directory does not exist.')
 
@@ -182,7 +183,7 @@ def build_assembly(struct):
 
 
 def add_component_to_assembly(struct, component, file_loc):
-    comp_path = "STL" + r'\\' + component + '.stl'
+    comp_path = os.path.join("STL", component + '.stl')
 
     if not (os.path.isfile(comp_path)):
         raise Exception('{0} does not exist.'.format(comp_path))
@@ -204,9 +205,13 @@ def add_component_to_assembly(struct, component, file_loc):
 
     return scad_render(comp)
 
-def launch_openscad(file):
+def launch_openscad(file_path):
     print "Launching OpenSCAD..."
-    os.startfile(file)
+    if sys.platform == "win32":
+      os.startfile(file_path)
+    else:
+      opener = "open" if sys.platform == "darwin" else "xdg-open"
+      subprocess.call([opener, file_path])
 
 def usage():
   print '''
@@ -236,7 +241,7 @@ def main(argv):
 
   struct = Parse_Assembly_File( cad_assembly_file )
   if open_scad_file is None:
-      open_scad_file = os.getcwd() + "\\" + struct['TLA']['name'] + ".scad"
+      open_scad_file = os.path.join(os.getcwd(), struct['TLA']['name'] + ".scad")
 
   start = time.time()
   asm = build_assembly(struct)
