@@ -1,7 +1,7 @@
-geometric-assembler
+freed-linkage-assembler
 ===================
 
-A geometric assembler for 3D kinematic assemblies.
+A linkage assembler for 3D kinematic assemblies.
 
 History
 =======
@@ -9,11 +9,12 @@ History
 This work is based on that of Glenn A. Kramer and implements the technique found in US patents.
 5427531 and 5617510
 The detail for this work is published in "Solving Geometric Constraint Systems: A Case Study in Kinematics", 1992.
+The name for this project is taken from "The Linkage Assembler" found in that book.
 
 Status
 ======
 
-Checking the copyright on the code provided in the [Kramer-1992].
+Glenn Kramer and MIT press have granted permission to replicate and use the copyright material found in the text [Kramer-1992].
 
 
 Implementation
@@ -26,6 +27,13 @@ Adaptors to specific engineering environments are provided:
   * WebGME : via ClojureScript or Wisp.
   * FreeCAD : via Jython and Clojure.
   * BRL-CAD : via ?
+The implementation is proceeding but is not yet complete.
+Presently the coincident points are being placed.
+The higher joint, csys, has been implemented via a set of three point constraints.
+The line and plane primitive constraints will be implemented soon.
+The plan is to replace the vector based geometry with a geometric algebra implementation.
+
+This project is not ready for production use.
 
  
 References
@@ -39,6 +47,7 @@ References
   * http://www.isis.vanderbilt.edu/Projects/gme/
   * http://www.freecadweb.org/
   * http://brlcad.org/
+  * http://en.wikipedia.org/wiki/Conformal_geometric_algebra
 
 
 Inspiration
