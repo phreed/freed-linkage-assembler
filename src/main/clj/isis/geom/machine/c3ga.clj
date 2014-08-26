@@ -2,61 +2,116 @@
 (ns isis.geom.machine.c3ga)
 
 
-(defprotocol MultiVector
-  "The multivector is an object of the
-  geometric algebra having basies."
-  (>< [mv1 mv2 & mvs] "The geometric product.")
-  (A [mv1 mv2 & mvs] "The outer product.")
-  (<< [mv1 mv2]  "The left conjunction (an inner product).")
-  (push-mink [mv] "A push Minkowski factory?")
-  (pull-mink [mv] "A pull Minkowski factory?"))
+;; (defrecord Basis [^long blade ^double weight]
+;;   (involution [this]
 
-(defprotocol Subspace
-  "A subspace of vectors."
-  (D [space] "produce the dual subspace.")
-  (rejection [ss1 ss2]
-             "(A^B)!B ")
-  (projection [ss1 ss2]
-             "(A<<B)!B ")
-  (meet [ss1 ss2]
-        "The intersection of the two subspaces.")
-  (join [ss1 ss2]
-        "The extension."))
+;;               "construct by involution" )
+;;   (revertion [this] "construct by involution")
+;;   (conjugation [this] "construct by involution")
 
-(defrecord Scalar [value]
-  MultiVector
-  (>< [mv1 mv2 & mvs] "unimplemented")
-  (A [mv1 mv2 & mvs] "unimplemented")
-  Subspace
-  (D [space] "unimplemented"))
+;;   (gp [this that] "total product")
+;;   (ip [this that] "inner product")
+;;   (op [this that] "outer product")
 
-(defrecord Vector [value]
-  MultiVector
-  (>< [mv1 mv2 & mvs] "unimplemented")
-  (A [mv1 mv2 & mvs] "unimplemented")
-  Subspace
-  (D [space] "unimplemented"))
+;;   (gt [this that] "is the this greater than that")
+;;   (eq [this that] "is the this equal to that") )
 
-(defrecord Bivector [value]
-  MultiVector
-  (>< [mv1 mv2 & mvs] ["unimplemented"])
-  (A [mv1 mv2 & mvs] ["unimplemented"])
-  Subspace
-  (D [space] "unimplemented"))
+;; (defprotocol MultiVector
+;;   "The multivector is an object of the
+;;   geometric algebra having basies."
+;;   (gp [mv1 mv2 & mvs] "The geometric product.")
+;;   (op [mv1 mv2 & mvs] "The outer product.")
+;;   (lp [mv1 mv2]  "The left conjunction (an inner product).")
 
-(defrecord Trivector [value]
-  MultiVector
-  (>< [mv1 mv2 & mvs] ["unimplemented"])
-  (A [mv1 mv2 & mvs] ["unimplemented"])
-  Subspace
-  (D [space] "unimplemented"))
+;;   (push-mink [mv] "A push Minkowski factory?")
+;;   (pull-mink [mv] "A pull Minkowski factory?"))
+
+;; (defprotocol Subspace
+;;   "A subspace of vectors."
+;;   (dual [space] "produce the dual subspace.")
+;;   (rejection [ss1 ss2] "(A^B)!B ")
+;;   (projection [ss1 ss2] "(A<<B)!B ")
+;;   (meet [ss1 ss2] "The intersection of the two subspaces.")
+;;   (join [ss1 ss2] "The extension."))
+
+;; (defrecord Scalar [value]
+;;   MultiVector
+;;   (ip [mv1 mv2 & mvs]
+;;       ())
+;;   (op [mv1 mv2 & mvs] "unimplemented")
+;;   Subspace
+;;   (dual [space] "unimplemented")
+;;   rej)
+
+;; (defrecord Vector [value]
+;;   MultiVector
+;;   (ip [mv1 mv2 & mvs] "unimplemented")
+;;   (op [mv1 mv2 & mvs] "unimplemented")
+;;   Subspace
+;;   (dual [space] "unimplemented"))
+
+;; (defrecord Bivector [value]
+;;   MultiVector
+;;   (ip [mv1 mv2 & mvs] ["unimplemented"])
+;;   (op [mv1 mv2 & mvs] ["unimplemented"])
+;;   Subspace
+;;   (dual [space] "unimplemented"))
+
+;; (defrecord Trivector [value]
+;;   MultiVector
+;;   (ip [mv1 mv2 & mvs] ["unimplemented"])
+;;   (op [mv1 mv2 & mvs] ["unimplemented"])
+;;   Subspace
+;;   (dual [space] "unimplemented"))
 
 
-(defprotocol Conformal
-  "?"
-  (weight [c] "The weight, magnitude, of the object.")
-  (dir [c] "The attitude, direction, of the object.")
-  (loc [c] "The location of the object."))
+;; (defprotocol Conformal
+;;   "Objects whose angles are preserved over transformation"
+;;   (weight [c] "The weight, magnitude, of the object.")
+;;   (dir [c] "The attitude, direction, of the object.")
+;;   (loc [c] "The location of the object."))
 
-(defprotocol Round)
+;; (defprotocol Round
+;;   "A round does not contain the infinity basis")
+
+;; (defrecord Point
+;;   MultiVector
+;;   [^double e1 ^double e2 ^double e3])
+
+;; (defrecord PointPair  )
+;; (defrecord Circle  )
+;; (defrecord Sphere  )
+
+;; (defprotocol Flat
+;;   "A flat does contain the infinity basis" )
+
+;; (defrecord Line  )
+;; (defrecord Plane  )
+
+
+;; (defprotocol Versor
+;;   (spin [this mv] "apply the versor to a multi-vector")
+;;   (pin [this mv] "apply the versor to a multi-vector"))
+
+
+;; (defprotocol Rotor
+;;   (space-like [this] "returns the space-like component of this rotor")
+;;   (time-like [this] "returns the time-like component of this rotor")
+;;   (light-like [this] "returns the light-like component of this rotor")
+;;   (exp [this mv] "applies this rotor to the provided bivector")
+;;   (log [this] "applies this rotor to the provided bivector")
+;;   )
+
+;; (defrecord Translator
+;;   (log [this] "applies this rotor to the provided bivector"))
+
+
+;; (defrecord Motor
+;;   (rot [this] "returns the Rotor component of this Motor")
+;;   (dir [this] "returns the Translator component of this Motor")
+;;   (exp [this line] "applies this rotor to the provided line")
+;;   (log [this] "applies this rotor to the provided bivector") )
+
+;; (defrecord Dilator
+;;   (exp [this pnt-pair] "applies this dilator to the provided point-pair"))
 

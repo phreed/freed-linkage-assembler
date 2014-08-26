@@ -81,6 +81,16 @@
   (conj kb-constraint
         (assoc-in wip-constraint [:type] :coincident)))
 
+(defn- expand-planar-constraint
+  [kb-constraint wip-constraint]
+  (println "expand-planar-constraint not implemented")
+  nil)
+
+(defn- expand-unknown-constraint
+  [kb-constraint wip-constraint]
+  (println "expand-unknown-constraint")
+  nil)
+
 
 (defn- expand-csys-constraint
   "When a component is placed with a csys it
@@ -119,11 +129,18 @@
 (defn- update-kb-jointed
   "Mutate the constraints as needed."
   [kb wip]
-  (let [constraint (:constraint wip)]
-    (case (:type constraint)
-      :point (update-in kb [:constraint] #(expand-point-constraint % constraint))
-      :csys (update-in kb [:constraint] #(expand-csys-constraint % constraint)))))
+  (let [constraint (:constraint wip)
+        mutation (fn [x]
+                   (case (:type constraint)
+                     :point expand-point-constraint
+                     :csys expand-csys-constraint
+                     :planar expand-planar-constraint
+                     expand-unknown-constraint)
+                   x constraint) ]
 
+    (if (nil? mutation)
+      kb
+      (update-in kb [:constraint] mutation))))
 
 
 (defn- extract-knowledge-from-cad-assembly-aux

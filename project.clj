@@ -21,7 +21,7 @@
   :main isis.geom.linkage-assembler
   :target-path "target/%s/"
   :dev-resources ["src/test/resources"]
-  :uberjar-name "linkage_assembler.jar"
+  :uberjar-name "freed_linkage_assembler.jar"
   :profiles
   { :dev
     {:aot :all

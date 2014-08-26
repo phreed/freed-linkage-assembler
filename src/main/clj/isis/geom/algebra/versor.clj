@@ -1,17 +1,34 @@
-;; see C3.js https://github.com/weshoke/versor.js/blob/master/C4.js
+(ns isis.geom.algebra.versor
+   "The functions for developing and working with versors.
+ see https://github.com/weshoke/versor.js/blob/master/versor.js
+  " )
 
-(ns isis.geom.machine.versor)
+
+ (defrecord Blade [^int bitmap ^double weight])
+;;    (involution [this]  "construct by involution" )
+;;    (revertion [this] "construct by involution")
+;;    (conjugation [this] "construct by involution")
+
+;;    (gp [this that] "total product")
+;;    (ip [this that] "inner product")
+;;    (op [this that] "outer product")
+
+;;    (gt [this that] "is the this greater than that")
+;;    (eq [this that] "is the this equal to that") )
+
 
 (defn make->blade
   "Data structure representing a blade (coordinate + scale factor)
 
 	bc - bitwise representation of coordinate
 	wt - scale factor"
-  [bc, wt] {:id bc, :w wt })
+  [bc wt] (->Blade bc wt))
+
+(defrecord Type [key bases name generated? dual?])
 
 (defn make->type
   ""
-  [key bases name] { :key key, :bases bases, :name name, :generated false, :dual false })
+  [key bases name] (->Type key bases name false false))
 
 
 (defn classname [name] (str "_" name))
@@ -47,7 +64,7 @@
 	b - bitwise representation of coordinate
 	returns a blade."
   [a  b]
-  (make->blade (^ a b) (sign a b)))
+  (make->blade (bit-xor a b) (sign a b)))
 
 
 (defn outer
@@ -63,23 +80,24 @@
 
 (defn reversed [x]
   (let [g (grade x)
-        o (/ (* g (- g 1)) 2)]
+        o (/ (* g (dec g)) 2)]
     (make->blade x (if (odd? o) -1 1))))
 
 (defn conjugate [x]
   (let [g (grade x)
-        o (/ (* g (+ g 1)) 2)]
+        o (/ (* g (inc g)) 2)]
     (make->blade x (if (odd? o) -1 1))))
 
 
 (defn basis-string
   "Calculate the name of a coordinate
   b - bitwise representation of coordinate.
-  2r1001 => e14 "
-  [b0]
-  (loop [b b0, n 0, res ""]
+  2r01101 => e134 "
+  [basis]
+  (loop [b basis, n 0, res ""]
     (if (< 1 b)
-      (if (< 0 n) (str "e" res) "s")
+      (cond (> 1 n) "s"
+            :else (str "e" res))
       (recur (bit-shift-right b 1)
              (inc n)
              (if (bit-test b 0) (str res (inc n)) res)) )))
@@ -88,12 +106,15 @@
 (defn basis-bit
   "The inverse of basis-string.
   Given a string compute the basis.
-  e14 => 2r1001 "
+  e134 => 2r1101 "
   [name]
   (if (= "s" name) 0
-    (reduce #(if (Character/isDigit %2)
-               (bit-set %1 (dec (Integer/parseInt (clojure.string/join [%2]))))
-               %1) 0 name)))
+    (reduce
+     (fn [w c]
+       (if (Character/isDigit c)
+         (bit-set w (dec (Integer/parseInt c)))
+         w))
+       0 (clojure.string/split))))
 
 (defn basis-bits
   "Given a seq of basis names build a seq of bitwise coordinates."
@@ -106,7 +127,7 @@
   [ty] (map basis-string (sort < ty)))
 
 (defn key-check
-  "Compare tow lists of names"
+  "Compare two lists of names"
   [k1 k2] (= k1 k2))
 
 (defn order
@@ -120,6 +141,14 @@
   "Collect like terms"
   [x]
   )
+
+
+(defn versor->create [thing])
+(defn ip [a b] )
+(defn op [a b] )
+(defn gp [a b] )
+(defn dual [a] )
+
 ;	var tally = {};
 ;
 ;	// collect like terms
