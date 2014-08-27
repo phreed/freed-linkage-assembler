@@ -1,7 +1,8 @@
 (ns isis.geom.algebra.versor
    "The functions for developing and working with versors.
  see https://github.com/weshoke/versor.js/blob/master/versor.js
-  " )
+  "
+  (:import [java.lang.Character]))
 
 
  (defrecord Blade [^int bitmap ^double weight])
@@ -95,7 +96,7 @@
   2r01101 => e134 "
   [basis]
   (loop [b basis, n 0, res ""]
-    (if (< 1 b)
+    (if (> 1 b)
       (cond (> 1 n) "s"
             :else (str "e" res))
       (recur (bit-shift-right b 1)
@@ -106,15 +107,16 @@
 (defn basis-bit
   "The inverse of basis-string.
   Given a string compute the basis.
-  e134 => 2r1101 "
-  [name]
-  (if (= "s" name) 0
+  e134 => 2r1101
+  s => 2r0000 "
+  [basis-name]
+  (if (= "s" basis-name) 0
     (reduce
      (fn [w c]
        (if (Character/isDigit c)
-         (bit-set w (dec (Integer/parseInt c)))
+         (bit-set w (dec (Character/digit c 10)))
          w))
-       0 (clojure.string/split))))
+       0 basis-name)))
 
 (defn basis-bits
   "Given a seq of basis names build a seq of bitwise coordinates."
@@ -143,11 +145,20 @@
   )
 
 
-(defn versor->create [thing])
-(defn ip [a b] )
-(defn op [a b] )
-(defn gp [a b] )
-(defn dual [a] )
+(defmacro versor->create
+  [name-space props]
+  `(do
+      (defn ~(symbol "i*") [~(symbol 'a) ~(symbol 'b)] )
+      (defn ~(symbol "o*") [~(symbol 'a) ~(symbol 'b)] )
+      (defn ~(symbol "t*") [~(symbol 'a) ~(symbol 'b)] )
+      (defn ~(symbol "dual") [~(symbol 'a)] )
+      (defn ~(symbol "pnt")
+        [~(symbol 'x) ~(symbol 'y) ~(symbol 'z)
+        ~(symbol 'no) ~(symbol 'ni) ]
+        {:e1 ~(symbol 'x) :e2 ~(symbol 'y) :e3 ~(symbol 'z) :e4 ~(symbol 'no) :e5 ~(symbol 'ni)})
+     ))
+
+
 
 ;	var tally = {};
 ;

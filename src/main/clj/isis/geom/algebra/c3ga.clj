@@ -3,12 +3,16 @@
   (:require [isis.geom.algebra [versor :as versor]]))
 
 
-(def c3ga (versor/versor->create
-  {
+(def c3ga-spec {
    :conformal true
-   :bases #{:s :e1 :e2 :e3 :e4 :e5 }
+   :bases #{:e1 :e2 :e3 :e4 :e5 }
    :metric [1  1  1  1  -1]
-   :types
+   })
+
+(versor/versor->create c3ga c3ga-spec)
+
+
+(def c3ga-named-types
    { :vec {:name 'univector
            :bases #{:e1 :e2 :e3} }
      :biv {:name 'bivector
@@ -20,7 +24,7 @@
      :rot {:name 'rotor
            :bases #{:s :e12 :e13 :e23} }
      :pnt {:name 'point
-           :bases #{:e1 :e2 :e3 :e4 :e+} :dual true }
+           :bases #{:e1 :e2 :e3 :e4 :e5} :dual true }
      :dlp {:name 'dual-point
            :bases #{:e1 :e2 :e3 :e5} :dual true }
      :pln {:name 'plane
@@ -52,7 +56,7 @@
      :drt {:name 'drt
            :bases #{:e1235} }
      :tnv {:name 'tnv
-           :bases #{:e14 :e24 :e34} } } }))
+           :bases #{:e14 :e24 :e34} } } )
 
 (defn cosh [versor]
   (+ (.exp Math versor) (/ (.exp Math (- versor)) 2.0)))
@@ -63,3 +67,33 @@
 ;; (def no ((:e4 c3ga) 1))
 ;; (def ni ((:e5 c3ga) 1))
 
+
+(defn round-point
+  "A null vector : "
+  [x y z]
+  (pnt x y z 1.0
+   (/ (+ (* x x) (* y y) (* z z)) 2.0)))
+
+(defn round-ipoint
+  [x y z]
+  (pnt x y z -1.0
+   (/ (+ (* x x) (* y y) (* z z)) 2.0)))
+
+(defn dual-sphere
+  [x y z r]
+  (update-in
+   (round-point x y z) [4]
+   (fn [r]
+     ((if (pos? r) - +)
+      (* 0.5 r r)))))
+
+(defn circle
+  [cen dir r]
+  (let [{cx :cx cy :cy cz :cz} cen]
+    (i*
+     (dual-sphere cx cy cz r)
+     (i* cen (dual dir))) ))
+
+(defn size
+  [a]
+  )
