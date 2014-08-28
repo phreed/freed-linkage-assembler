@@ -5,17 +5,8 @@
   (:import [java.lang.Character]))
 
 
- (defrecord Blade [^int bitmap ^double weight])
-;;    (involution [this]  "construct by involution" )
-;;    (revertion [this] "construct by involution")
-;;    (conjugation [this] "construct by involution")
+(defrecord Blade [^int bitmap ^double weight])
 
-;;    (gp [this that] "total product")
-;;    (ip [this that] "inner product")
-;;    (op [this that] "outer product")
-
-;;    (gt [this that] "is the this greater than that")
-;;    (eq [this that] "is the this equal to that") )
 
 
 (defn make->blade
@@ -38,12 +29,12 @@
   "Calculate the grade of a coordinate
   bc - bitwise representation of coordinate.
   Count the number of active bits."
-  [bc]
-  (loop [cnt 0 b0 bc]
-    (if (= 0 b0)
+  [b]
+  (loop [cnt 0 b b]
+    (if (= 0 b)
       cnt
-      (let [b1 (bit-shift-right b0 1)
-            incr (if (bit-test b0 0) 1 0)]
+      (let [b1 (bit-shift-right b 1)
+            incr (if (bit-test b 0) 1 0)]
         (recur (+ cnt incr) b1)))))
 
 (defn sign
@@ -76,7 +67,9 @@
   [a b]
   (if (= 0 (bit-and a b)) (product a b) (make->blade 0 0)))
 
-(defn involute [x]
+(defn involute
+  "Derive the involute blade given a bitwise representation of the coordinate."
+  [x]
   (make->blade x (if (odd? (grade x)) -1 1)))
 
 (defn reversed [x]
@@ -133,16 +126,24 @@
   [k1 k2] (= k1 k2))
 
 (defn order
-  "Return the order of the supplied ?"
+  "Return the order of the supplied multi-vector."
   [c]
   (let [tblades (map [] #(Integer/parseInt %) c)
         ordered-tblades (sort < tblades)]
     {:blades ordered-tblades, :inst c}))
 
 (defn compress
-  "Collect like terms"
-  [x]
-  )
+  "Collect like terms for a set of blades.
+  Given a seq of blades, if two terms have
+  the same bit encoding sum their weights. "
+  [xs]
+  (->> xs
+       (group-by :bitmap)
+       (map (fn [[k v]]
+              (make->blade k
+                           (reduce #(+ %1 (:weight %2)) 0.0 v))))
+       (into [])))
+
 
 
 (defmacro versor->create
@@ -158,30 +159,6 @@
         {:e1 ~(symbol 'x) :e2 ~(symbol 'y) :e3 ~(symbol 'z) :e4 ~(symbol 'no) :e5 ~(symbol 'ni)})
      ))
 
-
-
-;	var tally = {};
-;
-;	// collect like terms
-;	for(var i=0; i < x.length; ++i) {
-;		var iv = x[i];
-;		if(tally[iv.id]) {
-;			tally[iv.id].w += iv.w;
-;		}
-;		else {
-;			tally[iv.id] = blade(iv.id, iv.w);
-;		}
-;	}
-;
-;	var res = [];
-;	for(var id in tally) {
-;		var iv = tally[id];
-;		if(iv.w != 0) {
-;			res.push(iv);
-;		}
-;	}
-;	return res;
-;}
 
 ;var printLines = function(text, from, to) {
 ;	var lines = text.match(/^.*((\r\n|\n|\r)|$)/gm);

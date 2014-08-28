@@ -36,48 +36,14 @@
     (facts "about the parsed cad-assembly file with csys"
            (fact "about the constraints"
                  constraints =>
-                 [{:type :coincident,
+                 '{:type :csys
                    :m1
-                   [["{cd51d123-aab8-4d6e-b27f-fd94701e0007}|1" "TOP"]
-                    {:e [1.0 0.0 0.0]}],
+                   [["{c1fb29d9-0a81-423c-bc8f-459735cb4db3}" "ARM_CSYS"]
+                    {:e [-8625.71 4720.65 600.0], :pi 1.3, :q [0.0 0.0 1.0]}]
                    :m2
-                   [["{51f63ec8-cde2-4ac0-886f-7f9389faad04}" "TOP"]
-                    {:e [1.0 0.0 0.0]}]}
-                  {:type :coincident,
-                   :m1
-                   [["{cd51d123-aab8-4d6e-b27f-fd94701e0007}|1" "RIGHT"]
-                    {:e [0.0 1.0 0.0]}],
-                   :m2
-                   [["{51f63ec8-cde2-4ac0-886f-7f9389faad04}" "RIGHT"]
-                    {:e [0.0 1.0 0.0]}]}
-                  {:type :coincident,
-                   :m1
-                   [["{cd51d123-aab8-4d6e-b27f-fd94701e0007}|1" "FRONT"]
-                    {:e [0.0 0.0 1.0]}],
-                   :m2
-                   [["{51f63ec8-cde2-4ac0-886f-7f9389faad04}" "FRONT"]
-                    {:e [0.0 0.0 1.0]}]}
-                  {:type :coincident,
-                   :m1
-                   [["{c1fb29d9-0a81-423c-bc8f-459735cb4db3}" "ARM_CSYS-origin"]
-                    {:e [-8625.71 4720.65 600.0]}],
-                   :m2
-                   [["{51f63ec8-cde2-4ac0-886f-7f9389faad04}" "BOOM_CSYS-origin"]
-                    {:e [3455.57 5.0 302.5]}]}
-                  {:type :coincident,
-                   :m1
-                   [["{c1fb29d9-0a81-423c-bc8f-459735cb4db3}" "ARM_CSYS-3x"]
-                    {:e [-8802.045575687742 4477.944901687515 600.0]}],
-                   :m2
-                   [["{51f63ec8-cde2-4ac0-886f-7f9389faad04}" "BOOM_CSYS-3x"]
-                    {:e [3755.57 5.0 302.5]}]}
-                  {:type :coincident,
-                   :m1
-                   [["{c1fb29d9-0a81-423c-bc8f-459735cb4db3}" "ARM_CSYS-4y"]
-                    {:e [-8302.10320225002 4485.53589908301 600.0]}],
-                   :m2
-                   [["{51f63ec8-cde2-4ac0-886f-7f9389faad04}" "BOOM_CSYS-4y"]
-                    {:e [3455.57 -395.0 302.5]}]}])
+                   [["{51f63ec8-cde2-4ac0-886f-7f9389faad04}" "BOOM_CSYS"]
+                    {:e [3455.57 5.0 302.5], :pi 1.0, :q [1.0 0.0 0.0]}] }
+                    )
 
 
            (fact "about the initial link settings"
@@ -118,7 +84,7 @@
                        ["{cd51d123-aab8-4d6e-b27f-fd94701e0007}|1"]}]}
 
           link-pattern
-          {"{c1fb29d9-0a81-423c-bc8f-459735cb4db3}"
+          '{"{c1fb29d9-0a81-423c-bc8f-459735cb4db3}"
            [:ref
             {:versor
              {:xlate [2204.590945944376 -9748.074429784388 902.4999999999989],
@@ -185,11 +151,12 @@
              [["{51f63ec8-cde2-4ac0-886f-7f9389faad04}" "BOOM_CSYS-4y"]
               {:e [3455.57 -395.0 302.5]}]}]
 
-          failure-pattern []
+          failure-pattern '[]
           ]
-      (let [[success? result-kb result-success result-failure] (position-analysis kb constraints)
-            {result-mark :mark result-link :link} (ref->str result-kb) ]
+      #_(let [[success? result-kb result-success result-failure] (position-analysis kb constraints)
+            {result-mark :mark result-link :link} result-kb ]
 
+        (pp/pprint "leto")
         ;; (pp/pprint result-success)
         ;; (pp/pprint result-link)
         (facts "about results of linkage-assembly"
@@ -202,7 +169,7 @@
                (fact "about the link result"
                      result-link => link-pattern ))
 
-        (with-open [fis (-> "excavator/cad_assembly_boom_dipper_csys.xml"
+        #_(with-open [fis (-> "excavator/cad_assembly_boom_dipper_csys.xml"
                             jio/resource jio/input-stream)
                     fos (-> "/tmp/cad_assembly_boom_dipper_csys_aug.xml"
                             jio/output-stream)]
