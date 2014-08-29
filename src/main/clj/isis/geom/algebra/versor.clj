@@ -1,6 +1,6 @@
 (ns isis.geom.algebra.versor
-   "The functions for developing and working with versors.
- see https://github.com/weshoke/versor.js/blob/master/versor.js
+  "The functions for developing and working with versors.
+  see https://github.com/weshoke/versor.js/blob/master/versor.js
   "
   (:import [java.lang.Character]))
 
@@ -12,8 +12,8 @@
 (defn make->blade
   "Data structure representing a blade (coordinate + scale factor)
 
-	bc - bitwise representation of coordinate
-	wt - scale factor"
+  bc - bitwise representation of coordinate
+  wt - scale factor"
   [bc wt] (->Blade bc wt))
 
 (defrecord Type [key bases name generated? dual?])
@@ -38,9 +38,9 @@
         (recur (+ cnt incr) b1)))))
 
 (defn sign
-"Calculate the sign of the product of two coordinates
-	a - bitwise representation of coordinate
-	b - bitwise representation of coordinate"
+  "Calculate the sign of the product of two coordinates
+  a - bitwise representation of coordinate
+  b - bitwise representation of coordinate"
   [a b]
   (loop [n (bit-shift-right a 1)
          sum 0]
@@ -52,18 +52,18 @@
 
 (defn product
   "Calculate the product between two coordinates
-	a - bitwise representation of coordinate
-	b - bitwise representation of coordinate
-	returns a blade."
+  a - bitwise representation of coordinate
+  b - bitwise representation of coordinate
+  returns a blade."
   [a  b]
   (make->blade (bit-xor a b) (sign a b)))
 
 
 (defn outer
   "Calculate the outer product between two coordinates
-	a - bitwise representation of coordinate
-	b - bitwise representation of coordinate
-	returns a blade."
+  a - bitwise representation of coordinate
+  b - bitwise representation of coordinate
+  returns a blade."
   [a b]
   (if (= 0 (bit-and a b)) (product a b) (make->blade 0 0)))
 
@@ -109,11 +109,11 @@
        (if (Character/isDigit c)
          (bit-set w (dec (Character/digit c 10)))
          w))
-       0 basis-name)))
+     0 basis-name)))
 
 (defn basis-bits
   "Given a seq of basis names build a seq of bitwise coordinates."
-   [bases]
+  [bases]
   (map #(basis-bit %) bases))
 
 
@@ -144,19 +144,29 @@
                            (reduce #(+ %1 (:weight %2)) 0.0 v))))
        (into [])))
 
+(def print-lines
+  "Write out the specified number of lines from the input."
+  (let [eol #".*(?:(?:\r\n|\n|\r)|$)"
+        writer (ref str)]
+    (fn [text from to]
+      (->>
+       (re-seq eol text)
+       (drop from)
+       (take (- to from))
+       (map-indexed #(@writer (inc %1) "\t" %2))))))
 
 
 (defmacro versor->create
   [name-space props]
   `(do
-      (defn ~(symbol "i*") [~(symbol 'a) ~(symbol 'b)] )
-      (defn ~(symbol "o*") [~(symbol 'a) ~(symbol 'b)] )
-      (defn ~(symbol "t*") [~(symbol 'a) ~(symbol 'b)] )
-      (defn ~(symbol "dual") [~(symbol 'a)] )
-      (defn ~(symbol "pnt")
-        [~(symbol 'x) ~(symbol 'y) ~(symbol 'z)
+     (defn ~(symbol "i*") [~(symbol 'a) ~(symbol 'b)] )
+     (defn ~(symbol "o*") [~(symbol 'a) ~(symbol 'b)] )
+     (defn ~(symbol "t*") [~(symbol 'a) ~(symbol 'b)] )
+     (defn ~(symbol "dual") [~(symbol 'a)] )
+     (defn ~(symbol "pnt")
+       [~(symbol 'x) ~(symbol 'y) ~(symbol 'z)
         ~(symbol 'no) ~(symbol 'ni) ]
-        {:e1 ~(symbol 'x) :e2 ~(symbol 'y) :e3 ~(symbol 'z) :e4 ~(symbol 'no) :e5 ~(symbol 'ni)})
+       {:e1 ~(symbol 'x) :e2 ~(symbol 'y) :e3 ~(symbol 'z) :e4 ~(symbol 'no) :e5 ~(symbol 'ni)})
      ))
 
 
