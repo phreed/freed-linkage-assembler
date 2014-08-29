@@ -25,13 +25,16 @@
   "takes an arbitrary tree and replaces all futures
   with agnostic strings."
   [form]
+ ;; (pp/pprint "========")
+ ;; (pp/pprint form)
+ ;; (pp/pprint "^^^^^^^^")
   (try
     (clojure.walk/postwalk
      #(if (misc/reference? %) [:ref @%] %) form)
     (catch Exception ex
       (str "ref->str exception: " ))))
 
-(with-open [fis (-> "excavator/cad_assembly_boom_dipper.xml"
+(with-open [fis (-> "excavator/cad_assembly_boom_dipper_csys.xml"
                     jio/resource jio/input-stream)]
   (let [kb (cyphy/extract-knowledge-from-cad-assembly fis)
         constraints (:constraint kb)]
@@ -173,9 +176,9 @@
                (fact "about the link result"
                      result-link => link-pattern ))
 
-        #_(with-open [fis (-> "excavator/cad_assembly_boom_dipper.xml"
+        #_(with-open [fis (-> "excavator/cad_assembly_boom_dipper_csys.xml"
                               jio/resource jio/input-stream)
-                      fos (-> "/tmp/cad_assembly_boom_dipper_aug.xml"
+                      fos (-> "/tmp/cad_assembly_boom_dipper_csys_aug.xml"
                               jio/output-stream)]
 
             (cyphy/update-cad-assembly-using-knowledge fis fos kb) ) ) )))

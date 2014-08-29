@@ -17,7 +17,17 @@
   #'constraint-attempt-dispatch
   :default constraint-attempt?<-default)
 
+(defn- constraint-attempt-csys
+  "Decompose the :csys constraint into three :coincident constraints."
+  [kb constraint]
+  )
+
 (defmethod constraint-attempt?
+  :csys
+  [kb constraint]
+  constraint-attempt-csys)
+
+#_(defmethod constraint-attempt?
   :planar
   [kb constraint]
   nil)

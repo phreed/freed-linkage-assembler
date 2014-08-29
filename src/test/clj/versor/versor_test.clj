@@ -57,12 +57,12 @@
 
 (facts "utility functions"
        (fact "check debugging and logging aids"
-             (versor/print-lines
+             (println-str (versor/print-lines
               "This is a line.
               So is this.
               And this."
-              1 2)
-             => '("1\t So is this.\n")))
+              1 2) )
+             => #"1\t\s+So is this.\n"))
 
 
 (facts "generate basis functions"

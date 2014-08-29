@@ -74,7 +74,8 @@
   We update a link map and a marker map with invariants.
   The link map of invariants indicates just how well placed the link is.
   The marker map does a similar thing.
-  - We will repeatedly evaluate all constraints, making marker properties
+
+  We repeatedly evaluate all constraints, making marker properties
   invariant and producing link versors, until no more constraints can be satisfied.
   The link versors are then returned along with the constraint plan.
 
@@ -90,6 +91,8 @@
   (loop [progress? false
          [x & xs] constraints
          plan [] ys[]]
+    (pp/pprint "------------------")
+    (pp/pprint x)
     (if x
       ;; working through the active constraint list.
       (if (constraint-attempt? kb x)

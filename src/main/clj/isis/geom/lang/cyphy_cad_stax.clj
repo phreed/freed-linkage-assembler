@@ -81,16 +81,6 @@
   (conj kb-constraint
         (assoc-in wip-constraint [:type] :coincident)))
 
-(defn- expand-planar-constraint
-  [kb-constraint wip-constraint]
-  (println "expand-planar-constraint not implemented")
-  nil)
-
-(defn- expand-unknown-constraint
-  [kb-constraint wip-constraint]
-  (println "expand-unknown-constraint")
-  nil)
-
 
 (defn- expand-csys-constraint
   "When a component is placed with a csys it
@@ -114,6 +104,7 @@
         m2-4y (ga/vec-sum m2-e (ga/quat-sandwich m2-quat [0.0 400.0 0.0]))
         ]
 
+    (pp/pprint ["expand-csys:" kb-constraint])
     (conj kb-constraint
           { :type :coincident
             :m1 [[m1-link-name (str m1-proper-name "-origin")] {:e m1-e}]
@@ -126,21 +117,25 @@
             :m2 [[m2-link-name (str m2-proper-name "-4y")] {:e m2-4y}]}
           )))
 
+(def expand-planar-constraint nil)
+
+(def expand-unknown-constraint nil)
+
 (defn- update-kb-jointed
   "Mutate the constraints as needed."
   [kb wip]
   (let [constraint (:constraint wip)
-        mutation (fn [x]
-                   (case (:type constraint)
-                     :point expand-point-constraint
-                     :csys expand-csys-constraint
-                     :planar expand-planar-constraint
-                     expand-unknown-constraint)
-                   x constraint) ]
-
-    (if (nil? mutation)
+        mutation-fn  (case (:type constraint)
+                       :point expand-point-constraint
+                       :csys expand-csys-constraint
+                       :planar expand-planar-constraint
+                       expand-unknown-constraint)]
+    (if (nil? mutation-fn)
       kb
-      (update-in kb [:constraint] mutation))))
+      (let [mutant
+            (update-in kb [:constraint] mutation-fn constraint)]
+        (pp/pprint ["mutant" mutant])
+        mutant))))
 
 
 (defn- extract-knowledge-from-cad-assembly-aux
@@ -196,13 +191,21 @@
           (if (:grounded wip)
             [kb new-zip wip]
             (let [c-type (parse-string-attribute event "FeatureGeometryType")]
-              [kb new-zip
-               (assoc wip
-                 :active-marker :m1
+              (pp/pprint c-type)
+              (cond (contains? constraint-type-map c-type)
+                    [kb new-zip
+                     (assoc wip
+                       :active-marker :m1
 
-                 :constraint
-                 {:type (get constraint-type-map c-type "UNKNOWN")
-                  :m1 nil, :m2 nil} )]))
+                       :constraint
+                       {:type (get constraint-type-map c-type)
+                        :m1 nil, :m2 nil} )]
+
+                    :else
+                    (do
+                      (println "you have an unknown constraint type: " c-type)
+                      [kb new-zip wip])  )
+              ))
 
           ;; If either of the constraint features for the pair
           ;; make reference to the ground then the component is
@@ -254,13 +257,14 @@
             new-zip (conj (pop new-zip)
                           (update-in (peek new-zip) [1] inc))]
 
-        ;; (println "end element " (.toString (.getName event)))
+        (pp/pprint ["end element " (.toString (.getName event))])
 
         (case elem-type
           ;; The end of a pair indicates that a (set of)
           ;; constraint can be added to the knowledge base.
           :Pair
           (let [new-wip (dissoc wip :active-marker :constraint)]
+            (pp/pprint ["jointed " wip])
             (if (:grounded wip)
               [kb new-zip new-wip]
               [(update-kb-jointed kb wip) new-zip new-wip ]))
