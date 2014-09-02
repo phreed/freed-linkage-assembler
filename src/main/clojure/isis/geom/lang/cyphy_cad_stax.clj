@@ -77,9 +77,16 @@
        :m2 [[fixed-link-id "FRONT"] {:e [0.0 0.0 1.0]}]} )))
 
 
+(defn- update-kb-jointed
+  "Mutate the constraints as needed."
+  [kb wip]
+  (update-in kb [:constraint] conj (:constraint wip)))
 
 
 (defn- extract-knowledge-from-cad-assembly-aux
+  "Receive a new event with which the knowledge-base (kb) will be updated.
+  zip is the ancestry of the current elemnt.
+  wip holds information about the current element. "
   [event kb zip wip]
   (let [event-type (.getEventType event)]
     (condp = event-type
@@ -145,8 +152,8 @@
                     :else
                     (do
                       (println "you have an unknown constraint type: " c-type)
-                      [kb new-zip wip])  )
-              ))
+                      [kb new-zip wip])) ))
+
 
           ;; If either of the constraint features for the pair
           ;; make reference to the ground then the component is
@@ -208,9 +215,7 @@
             (pp/pprint ["jointed " wip])
             (if (:grounded wip)
               [kb new-zip new-wip]
-              (do
-              (pp/pprint ["kb" kb "wip" wip "new-wip" new-wip])
-              [kb new-zip new-wip ])))
+              [(update-kb-jointed kb wip) new-zip new-wip]))
 
           ;; the end of the constraint signifies the wrapping
           ;; up for the component's constraints.

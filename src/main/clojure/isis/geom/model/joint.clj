@@ -77,9 +77,9 @@
 
 
 (defn- expand-point-constraint
-  [kb-constraint wip-constraint]
-  (conj kb-constraint
-        (assoc-in wip-constraint [:type] :coincident)))
+  "expand the :point constraint into an array[1] of :coincident constraints."
+  [constraint]
+  [(assoc-in constraint [:type] :coincident)])
 
 
 (defn- expand-csys-constraint
@@ -88,8 +88,8 @@
   standardized coincident constraints.
   These constraints are: origin, point on rotated
   x-axis and rotated z-axis."
-  [kb-constraint wip-constraint]
-  (let [{c-type :type, m1 :m1, m2 :m2} wip-constraint
+  [constraint]
+  (let [{c-type :type, m1 :m1, m2 :m2} constraint
         [[m1-link-name m1-proper-name] m1-values] m1
         [[m2-link-name m2-proper-name] m2-values] m2
         {m1-e :e, m1-q :q, m1-pi :pi} m1-values
@@ -104,9 +104,7 @@
         m2-4y (ga/vec-sum m2-e (ga/quat-sandwich m2-quat [0.0 400.0 0.0]))
         ]
 
-    (pp/pprint ["expand-csys:" kb-constraint])
-    (conj kb-constraint
-          { :type :coincident
+    [ { :type :coincident
             :m1 [[m1-link-name (str m1-proper-name "-origin")] {:e m1-e}]
             :m2 [[m2-link-name (str m2-proper-name "-origin")] {:e m2-e}]}
           { :type :coincident
@@ -115,25 +113,27 @@
           { :type :coincident
             :m1 [[m1-link-name (str m1-proper-name "-4y")] {:e m1-4y}]
             :m2 [[m2-link-name (str m2-proper-name "-4y")] {:e m2-4y}]}
-          )))
-
-(def expand-planar-constraint nil)
-
-(def expand-unknown-constraint nil)
+      ]))
 
 
-(defn- update-kb-jointed
-  "Mutate the constraints as needed."
-  [kb wip]
-  (let [constraint (:constraint wip)
-        mutation-fn  (case (:type constraint)
-                       :point expand-point-constraint
-                       :csys expand-csys-constraint
-                       :planar expand-planar-constraint
-                       expand-unknown-constraint)]
-    (if (nil? mutation-fn)
-      kb
-      (let [mutant
-            (update-in kb [:constraint] mutation-fn constraint)]
-        (pp/pprint ["mutant" mutant])
-        mutant))))
+(defn- expand-planar-constraint [constraint] nil)
+
+
+(defn- expand-higher-constraint
+  "Mutate and expand a constraint as needed."
+  [constraint]
+  (case (:type constraint)
+    :point (expand-point-constraint constraint)
+    :csys (expand-csys-constraint constraint)
+    :planar (expand-planar-constraint constraint)
+    constraint))
+
+
+(defn expand-higher-constraints
+  "Mutate and expand the constraints."
+  [constraints]
+  (pp/pprint "expand-constraints" constraints)
+  (loop [constraints constraints, result []]
+    (pp/pprint ["expand:" result])
+    (if (empty? constraints) result
+      (recur (rest constraints) (into result (expand-higher-constraint (first constraints))) ))))
