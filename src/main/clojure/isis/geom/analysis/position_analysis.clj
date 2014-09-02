@@ -91,8 +91,8 @@
   (loop [progress? false
          [x & xs] constraints
          plan [] ys[]]
-    (pp/pprint "------------------")
-    (pp/pprint x)
+    ;; (pp/pprint "------------------")
+    ;; (pp/pprint x)
     (if x
       ;; working through the active constraint list.
       (if (constraint-attempt? kb x)
