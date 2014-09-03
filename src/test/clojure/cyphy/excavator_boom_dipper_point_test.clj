@@ -1,4 +1,4 @@
-(ns cyphy.excavator-point-test
+(ns cyphy.excavator-boom-dipper-point-test
   (:require [midje.sweet :refer [defchecker chatty-checker checker facts fact]]
             [isis.geom.cyphy.cad-stax :as cyphy]
 

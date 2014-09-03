@@ -1,4 +1,4 @@
-(ns cyphy.excavator-init-test
+(ns cyphy.excavator-boom-dipper-init-test
   "Sample assembly consisting of a boom and a dipper."
   (:require [midje.sweet :refer [facts fact]]
 

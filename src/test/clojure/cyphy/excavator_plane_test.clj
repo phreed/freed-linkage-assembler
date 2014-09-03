@@ -1,5 +1,5 @@
 
-(ns cyphy.excavator-csys-test
+(ns cyphy.excavator-plane-test
   (:require [midje.sweet :refer [defchecker chatty-checker checker facts fact]]
             [isis.geom.cyphy.cad-stax :as cyphy]
 
@@ -37,7 +37,7 @@
                  (clojure.pprint/pprint ["Expected result:" expected])
                  )))))
 
-(with-open [fis (-> "excavator/excavator_boom_dipper_csys.xml"
+(with-open [fis (-> "excavator/excavator_total_plane.xml"
                     jio/resource jio/input-stream)]
   (let [kb (cyphy/extract-knowledge-from-cad-assembly fis)
         constraints (:constraint kb)
@@ -265,9 +265,9 @@
              (fact "about the success result" result-success => success-checker)
              (fact "about the failure result" result-failure => failure-checker) )
 
-      #_(with-open [fis (-> "excavator/excavator_boom_dipper_csys.xml"
+      #_(with-open [fis (-> "excavator/excavator_total_plane.xml"
                             jio/resource jio/input-stream)
-                    fos (-> "/tmp/excavator_boom_dipper_csys_aug.xml"
+                    fos (-> "/tmp/excavator_total_plane_aug.xml"
                             jio/output-stream)]
 
           (cyphy/update-cad-assembly-using-knowledge fis fos kb) ) ) ))
