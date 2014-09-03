@@ -39,7 +39,7 @@
 
 
 (let [excavator-graph
-      (with-open [is (-> "excavator/cad_assembly_boom_dipper.xml"
+      (with-open [is (-> "excavator/excavator_boom_dipper_point.xml"
                          jio/resource jio/input-stream)]
         (cyphy/graph-from-cyphy-input-stream is))]
 
@@ -69,7 +69,7 @@
 
 
 (let [graph
-      (with-open [is (-> "excavator/cad_assembly_boom_dipper.xml"
+      (with-open [is (-> "excavator/excavator_boom_dipper_point.xml"
                          jio/resource jio/input-stream)]
         (cyphy/graph-from-cyphy-input-stream is))
 

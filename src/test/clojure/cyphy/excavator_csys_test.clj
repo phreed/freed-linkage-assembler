@@ -37,7 +37,7 @@
                  (clojure.pprint/pprint ["Expected result:" expected])
                  )))))
 
-(with-open [fis (-> "excavator/cad_assembly_boom_dipper_csys.xml"
+(with-open [fis (-> "excavator/excavator_boom_dipper_csys.xml"
                     jio/resource jio/input-stream)]
   (let [kb (cyphy/extract-knowledge-from-cad-assembly fis)
         constraints (:constraint kb)
@@ -265,20 +265,11 @@
              (fact "about the success result" result-success => success-checker)
              (fact "about the failure result" result-failure => failure-checker) )
 
-      #_(with-open [fis (-> "excavator/cad_assembly_boom_dipper_csys.xml"
+      #_(with-open [fis (-> "excavator/excavator_boom_dipper_csys.xml"
                             jio/resource jio/input-stream)
-                    fos (-> "/tmp/cad_assembly_boom_dipper_csys_aug.xml"
+                    fos (-> "/tmp/excavator_boom_dipper_csys_aug.xml"
                             jio/output-stream)]
 
           (cyphy/update-cad-assembly-using-knowledge fis fos kb) ) ) ))
 
 
-;;    (pp/pprint (ref->str result-link))
-
-;; trying to use staxmate rather than straight stax
-#_(with-open [fos (-> "junk.xml"
-                      jio/output-stream)]
-    (cyphy/write-cad-assembly-using-knowledge fos nil)
-    (with-open [fis (-> "junk.xml"
-                        jio/input-stream)]
-      (cyphy/read-cad-assembly-using-knowledge fis nil)))

@@ -1,0 +1,725 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Assemblies xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" VersionInfo="" xsi:noNamespaceSchemaLocation="AssemblyInterface.xsd">
+  <Assembly ConfigurationID="{3451cc65-9ad0-4f78-8a0c-290d1595fe74}|1" _id="id17">
+    <CADComponent ComponentID="{3451cc65-9ad0-4f78-8a0c-290d1595fe74}|1" Name="Arm_Test_1" DisplayName="Arm_Test_1" Type="ASSEMBLY" SpecialInstruction="" MaterialID="" Representation="" _id="id18">
+      <CADComponent ComponentID="{a680ffc1-1232-4847-9027-2502b6cb9716}" Name="ARM_ASSEMBLY_2" DisplayName="arm2" Type="ASSEMBLY" SpecialInstruction="" MaterialID="" Representation="" Classification="arm" _id="id283">
+        <Constraint _id="id75">
+          <Joint Type="REVOLUTE" ID="id8" _id="id88">
+            <Limit Role="RotationDefault" Value="90" />
+            <Limit Role="RotationMax" Value="15" />
+            <Limit Role="RotationMin" Value="-90" />
+            <LimitReference ComponentID="{a680ffc1-1232-4847-9027-2502b6cb9716}" FeatureName="BOOM_GUIDE" FeatureGeometryType="SURFACE" Role="RotationDefault" />
+            <LimitReference ComponentID="{66a1ddac-a80e-435b-91b7-2c4fc7cc298b}" FeatureName="ARM_GUIDE" FeatureGeometryType="SURFACE" Role="RotationDefault" />
+          </Joint>
+          <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="SURFACE" FeatureAlignmentType="ALIGN" Guide="True" _id="id76">
+            <ConstraintFeature ComponentID="{a680ffc1-1232-4847-9027-2502b6cb9716}" FeatureName="BOOM_GUIDE" FeatureOrientationType="SIDE_A" _id="id77">
+              <GeometryMarker x="1150.48" y="864.911" z="-250" i="-334.565" j="-371.573" k="0" pi="0" _id="id78" />
+            </ConstraintFeature>
+            <ConstraintFeature ComponentID="{66a1ddac-a80e-435b-91b7-2c4fc7cc298b}" FeatureName="ARM_GUIDE" FeatureOrientationType="SIDE_A" _id="id79" />
+          </Pair>
+          <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="SURFACE" FeatureAlignmentType="ALIGN" _id="id80">
+            <ConstraintFeature ComponentID="{a680ffc1-1232-4847-9027-2502b6cb9716}" FeatureName="BOOM_CENTER_PLANE" FeatureOrientationType="SIDE_A" _id="id81">
+              <GeometryMarker x="0" y="0" z="-250" i="0" j="0" k="1" pi="0" _id="id82" />
+            </ConstraintFeature>
+            <ConstraintFeature ComponentID="{66a1ddac-a80e-435b-91b7-2c4fc7cc298b}" FeatureName="CENTER_PLANE" FeatureOrientationType="SIDE_A" _id="id83" />
+          </Pair>
+          <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="AXIS" FeatureAlignmentType="ALIGN" _id="id84">
+            <ConstraintFeature ComponentID="{a680ffc1-1232-4847-9027-2502b6cb9716}" FeatureName="BOOM_AXIS" FeatureOrientationType="NONE" _id="id85">
+              <GeometryMarker x="2000" y="100" z="0" i="0" j="0" k="-1" pi="0" _id="id86" />
+            </ConstraintFeature>
+            <ConstraintFeature ComponentID="{66a1ddac-a80e-435b-91b7-2c4fc7cc298b}" FeatureName="ARM_AXIS" FeatureOrientationType="NONE" _id="id87" />
+          </Pair>
+        </Constraint>
+        <ParametricParameters _id="id284">
+          <CADParameter Name="SHEET_3_THICKNESS" Type="Float" Value="25.4" _id="id285">
+            <Units Value="mm" _id="id286" />
+          </CADParameter>
+          <CADParameter Name="SHEET_2_THICKNESS" Type="Float" Value="25.4" _id="id287">
+            <Units Value="mm" _id="id288" />
+          </CADParameter>
+          <CADParameter Name="CENTER_LENGTH" Type="Float" Value="1500" _id="id289">
+            <Units Value="mm" _id="id290" />
+          </CADParameter>
+          <CADParameter Name="MODELED_BY" Type="String" Value="0" _id="id291">
+            <Units Value="" _id="id292" />
+          </CADParameter>
+          <CADParameter Name="DESCRIPTION" Type="String" Value="0" _id="id293">
+            <Units Value="" _id="id294" />
+          </CADParameter>
+          <CADParameter Name="BUCKET_EYE_POSITION" Type="Float" Value="490" _id="id295">
+            <Units Value="mm" _id="id296" />
+          </CADParameter>
+          <CADParameter Name="SHEET_1_THICKNESS" Type="Float" Value="12.7" _id="id297">
+            <Units Value="mm" _id="id298" />
+          </CADParameter>
+          <CADParameter Name="ARM_ANGLE" Type="Float" Value="13" _id="id299">
+            <Units Value="" _id="id300" />
+          </CADParameter>
+        </ParametricParameters>
+      </CADComponent>
+      <CADComponent ComponentID="{790c8bb6-306b-4230-8a03-44172e54b873}" Name="HYDRAULICJACK" DisplayName="armCylinder" Type="ASSEMBLY" SpecialInstruction="HAS_KINEMATIC_JOINT" MaterialID="" Representation="" Classification="lower_cylinder_Right" _id="id301">
+        <Constraint _id="id191">
+          <Joint Type="REVOLUTE" ID="id16" _id="id200" />
+          <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="SURFACE" FeatureAlignmentType="ALIGN" _id="id192">
+            <ConstraintFeature ComponentID="{66a1ddac-a80e-435b-91b7-2c4fc7cc298b}" FeatureName="CENTER_PLANE" FeatureOrientationType="SIDE_B" _id="id193" />
+            <ConstraintFeature ComponentID="{790c8bb6-306b-4230-8a03-44172e54b873}" FeatureName="CYLINDER_PLANE" FeatureOrientationType="SIDE_A" _id="id194">
+              <GeometryMarker x="-266.844" y="7143.04" z="-427.1" i="-44.021" j="88.35" k="104.392" pi="0" _id="id195" />
+            </ConstraintFeature>
+          </Pair>
+          <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="AXIS" FeatureAlignmentType="ALIGN" _id="id196">
+            <ConstraintFeature ComponentID="{66a1ddac-a80e-435b-91b7-2c4fc7cc298b}" FeatureName="UPPER_CYLINDER_AXIS" FeatureOrientationType="NONE" _id="id197" />
+            <ConstraintFeature ComponentID="{790c8bb6-306b-4230-8a03-44172e54b873}" FeatureName="CYLINDER_AXIS" FeatureOrientationType="NONE" _id="id198">
+              <GeometryMarker x="-1703.15" y="6384.66" z="-192.041" i="-27.5" j="55.2" k="10.023" pi="0" _id="id199" />
+            </ConstraintFeature>
+          </Pair>
+        </Constraint>
+        <Constraint _id="id261">
+          <Joint Type="REVOLUTE" ID="id9" _id="id272" />
+          <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="SURFACE" FeatureAlignmentType="ALIGN" _id="id262">
+            <ConstraintFeature ComponentID="{a680ffc1-1232-4847-9027-2502b6cb9716}" FeatureName="CYLINDER_CENTER_PLANE" FeatureOrientationType="SIDE_B" _id="id263">
+              <GeometryMarker x="0" y="0" z="-250" i="0" j="0" k="1" pi="0" _id="id264" />
+            </ConstraintFeature>
+            <ConstraintFeature ComponentID="{790c8bb6-306b-4230-8a03-44172e54b873}" FeatureName="JACK_PLANE" FeatureOrientationType="SIDE_A" _id="id265">
+              <GeometryMarker x="-266.844" y="7143.04" z="-427.1" i="44.021" j="-88.34" k="-16.042" pi="0" _id="id266" />
+            </ConstraintFeature>
+          </Pair>
+          <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="AXIS" FeatureAlignmentType="ALIGN" _id="id267">
+            <ConstraintFeature ComponentID="{a680ffc1-1232-4847-9027-2502b6cb9716}" FeatureName="CYLINDER_AXIS" FeatureOrientationType="NONE" _id="id268">
+              <GeometryMarker x="2916.39" y="464.857" z="0" i="0" j="0" k="-1" pi="0" _id="id269" />
+            </ConstraintFeature>
+            <ConstraintFeature ComponentID="{790c8bb6-306b-4230-8a03-44172e54b873}" FeatureName="JACK_AXIS" FeatureOrientationType="NONE" _id="id270">
+              <GeometryMarker x="1243.25" y="7949.95" z="-726.974" i="-27.12" j="54.43" k="9.884" pi="0" _id="id271" />
+            </ConstraintFeature>
+          </Pair>
+        </Constraint>
+        <ParametricParameters _id="id302">
+          <CADParameter Name="MODELED_BY" Type="String" Value="0" _id="id303">
+            <Units Value="" _id="id304" />
+          </CADParameter>
+          <CADParameter Name="DESCRIPTION" Type="String" Value="0" _id="id305">
+            <Units Value="" _id="id306" />
+          </CADParameter>
+          <CADParameter Name="LENGTH" Type="Float" Value="600" _id="id307">
+            <Units Value="" _id="id308" />
+          </CADParameter>
+        </ParametricParameters>
+      </CADComponent>
+      <CADComponent ComponentID="{66a1ddac-a80e-435b-91b7-2c4fc7cc298b}" Name="boom_asm" DisplayName="boom2" Type="ASSEMBLY" SpecialInstruction="" MaterialID="" Representation="" Classification="BOOM" _id="id309">
+        <Constraint _id="id64">
+          <Joint Type="REVOLUTE" ID="id3" _id="id74">
+            <Limit Role="RotationDefault" Value="0" />
+            <Limit Role="RotationMax" Value="70" />
+            <Limit Role="RotationMin" Value="-70" />
+            <LimitReference ComponentID="{368aebf5-b973-46ba-b774-6db71eada05b}" FeatureName="BOOM_GUIDE" FeatureGeometryType="SURFACE" Role="RotationDefault" />
+            <LimitReference ComponentID="{66a1ddac-a80e-435b-91b7-2c4fc7cc298b}" FeatureName="GUIDE_PLANE" FeatureGeometryType="SURFACE" Role="RotationDefault" />
+          </Joint>
+          <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="SURFACE" FeatureAlignmentType="ALIGN" _id="id65">
+            <ConstraintFeature ComponentID="{368aebf5-b973-46ba-b774-6db71eada05b}" FeatureName="CENTER_PLANE" FeatureOrientationType="SIDE_A" _id="id66" />
+            <ConstraintFeature ComponentID="{66a1ddac-a80e-435b-91b7-2c4fc7cc298b}" FeatureName="CENTER_PLANE" FeatureOrientationType="SIDE_A" _id="id67" />
+          </Pair>
+          <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="SURFACE" FeatureAlignmentType="ALIGN" Guide="True" _id="id68">
+            <ConstraintFeature ComponentID="{368aebf5-b973-46ba-b774-6db71eada05b}" FeatureName="BOOM_GUIDE" FeatureOrientationType="SIDE_A" _id="id69" />
+            <ConstraintFeature ComponentID="{66a1ddac-a80e-435b-91b7-2c4fc7cc298b}" FeatureName="GUIDE_PLANE" FeatureOrientationType="SIDE_A" _id="id70" />
+          </Pair>
+          <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="AXIS" FeatureAlignmentType="ALIGN" _id="id71">
+            <ConstraintFeature ComponentID="{368aebf5-b973-46ba-b774-6db71eada05b}" FeatureName="UPPER_AXIS" FeatureOrientationType="NONE" _id="id72" />
+            <ConstraintFeature ComponentID="{66a1ddac-a80e-435b-91b7-2c4fc7cc298b}" FeatureName="BODY_AXIS" FeatureOrientationType="NONE" _id="id73" />
+          </Pair>
+        </Constraint>
+        <ParametricParameters _id="id310">
+          <CADParameter Name="MC_INTF" Type="String" Value="06/26/2014 177" _id="id311">
+            <Units Value="" _id="id312" />
+          </CADParameter>
+          <CADParameter Name="DESCRIPTION" Type="String" Value="0" _id="id313">
+            <Units Value="" _id="id314" />
+          </CADParameter>
+          <CADParameter Name="MODELED_BY" Type="String" Value="0" _id="id315">
+            <Units Value="" _id="id316" />
+          </CADParameter>
+        </ParametricParameters>
+      </CADComponent>
+      <CADComponent ComponentID="{8c7b63a0-f1fc-41b3-8712-e1ab51feb8f6}" Name="HYDRAULICJACK" DisplayName="boomCylL" Type="ASSEMBLY" SpecialInstruction="HAS_KINEMATIC_JOINT" MaterialID="" Representation="" Classification="lower_cylinder_Right" _id="id317">
+        <Constraint _id="id201">
+          <Joint Type="REVOLUTE" ID="id1" _id="id210" />
+          <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="SURFACE" FeatureAlignmentType="ALIGN" _id="id202">
+            <ConstraintFeature ComponentID="{368aebf5-b973-46ba-b774-6db71eada05b}" FeatureName="LEFT_PLANE" FeatureOrientationType="SIDE_B" _id="id203" />
+            <ConstraintFeature ComponentID="{8c7b63a0-f1fc-41b3-8712-e1ab51feb8f6}" FeatureName="CYLINDER_PLANE" FeatureOrientationType="SIDE_A" _id="id204">
+              <GeometryMarker x="-266.844" y="7143.04" z="-427.1" i="-44.021" j="88.35" k="104.392" pi="0" _id="id205" />
+            </ConstraintFeature>
+          </Pair>
+          <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="AXIS" FeatureAlignmentType="ALIGN" _id="id206">
+            <ConstraintFeature ComponentID="{368aebf5-b973-46ba-b774-6db71eada05b}" FeatureName="LOWER_AXIS" FeatureOrientationType="NONE" _id="id207" />
+            <ConstraintFeature ComponentID="{8c7b63a0-f1fc-41b3-8712-e1ab51feb8f6}" FeatureName="CYLINDER_AXIS" FeatureOrientationType="NONE" _id="id208">
+              <GeometryMarker x="-1703.15" y="6384.66" z="-192.041" i="-27.5" j="55.2" k="10.023" pi="0" _id="id209" />
+            </ConstraintFeature>
+          </Pair>
+        </Constraint>
+        <Constraint _id="id241">
+          <Joint Type="REVOLUTE" ID="id4" _id="id250" />
+          <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="SURFACE" FeatureAlignmentType="ALIGN" _id="id242">
+            <ConstraintFeature ComponentID="{8c7b63a0-f1fc-41b3-8712-e1ab51feb8f6}" FeatureName="JACK_PLANE" FeatureOrientationType="SIDE_A" _id="id243">
+              <GeometryMarker x="-266.844" y="7143.04" z="-427.1" i="44.021" j="-88.34" k="-16.042" pi="0" _id="id244" />
+            </ConstraintFeature>
+            <ConstraintFeature ComponentID="{66a1ddac-a80e-435b-91b7-2c4fc7cc298b}" FeatureName="LEFT_PLANE" FeatureOrientationType="SIDE_A" _id="id245" />
+          </Pair>
+          <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="AXIS" FeatureAlignmentType="ALIGN" _id="id246">
+            <ConstraintFeature ComponentID="{8c7b63a0-f1fc-41b3-8712-e1ab51feb8f6}" FeatureName="JACK_AXIS" FeatureOrientationType="NONE" _id="id247">
+              <GeometryMarker x="1243.25" y="7949.95" z="-726.974" i="-27.12" j="54.43" k="9.884" pi="0" _id="id248" />
+            </ConstraintFeature>
+            <ConstraintFeature ComponentID="{66a1ddac-a80e-435b-91b7-2c4fc7cc298b}" FeatureName="BODY_CYLINDER_AXIS" FeatureOrientationType="NONE" _id="id249" />
+          </Pair>
+        </Constraint>
+        <ParametricParameters _id="id318">
+          <CADParameter Name="DESCRIPTION" Type="String" Value="0" _id="id319">
+            <Units Value="" _id="id320" />
+          </CADParameter>
+          <CADParameter Name="MODELED_BY" Type="String" Value="0" _id="id321">
+            <Units Value="" _id="id322" />
+          </CADParameter>
+          <CADParameter Name="LENGTH" Type="Float" Value="600" _id="id323">
+            <Units Value="" _id="id324" />
+          </CADParameter>
+        </ParametricParameters>
+      </CADComponent>
+      <CADComponent ComponentID="{5235d360-2c9c-46fb-83e1-a48ebb4b1c56}" Name="HYDRAULICJACK" DisplayName="boomCylR" Type="ASSEMBLY" SpecialInstruction="HAS_KINEMATIC_JOINT" MaterialID="" Representation="" Classification="lower_cylinder_Right" _id="id325">
+        <Constraint _id="id211">
+          <Joint Type="REVOLUTE" ID="id2" _id="id220" />
+          <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="SURFACE" FeatureAlignmentType="ALIGN" _id="id212">
+            <ConstraintFeature ComponentID="{368aebf5-b973-46ba-b774-6db71eada05b}" FeatureName="RIGHT_PLANE" FeatureOrientationType="SIDE_B" _id="id213" />
+            <ConstraintFeature ComponentID="{5235d360-2c9c-46fb-83e1-a48ebb4b1c56}" FeatureName="CYLINDER_PLANE" FeatureOrientationType="SIDE_A" _id="id214">
+              <GeometryMarker x="-266.844" y="7143.04" z="-427.1" i="-44.021" j="88.35" k="104.392" pi="0" _id="id215" />
+            </ConstraintFeature>
+          </Pair>
+          <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="AXIS" FeatureAlignmentType="ALIGN" _id="id216">
+            <ConstraintFeature ComponentID="{368aebf5-b973-46ba-b774-6db71eada05b}" FeatureName="LOWER_AXIS" FeatureOrientationType="NONE" _id="id217" />
+            <ConstraintFeature ComponentID="{5235d360-2c9c-46fb-83e1-a48ebb4b1c56}" FeatureName="CYLINDER_AXIS" FeatureOrientationType="NONE" _id="id218">
+              <GeometryMarker x="-1703.15" y="6384.66" z="-192.041" i="-27.5" j="55.2" k="10.023" pi="0" _id="id219" />
+            </ConstraintFeature>
+          </Pair>
+        </Constraint>
+        <Constraint _id="id251">
+          <Joint Type="REVOLUTE" ID="id15" _id="id260" />
+          <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="SURFACE" FeatureAlignmentType="ALIGN" _id="id252">
+            <ConstraintFeature ComponentID="{5235d360-2c9c-46fb-83e1-a48ebb4b1c56}" FeatureName="JACK_PLANE" FeatureOrientationType="SIDE_A" _id="id253">
+              <GeometryMarker x="-266.844" y="7143.04" z="-427.1" i="44.021" j="-88.34" k="-16.042" pi="0" _id="id254" />
+            </ConstraintFeature>
+            <ConstraintFeature ComponentID="{66a1ddac-a80e-435b-91b7-2c4fc7cc298b}" FeatureName="RIGHT_PLANE" FeatureOrientationType="SIDE_A" _id="id255" />
+          </Pair>
+          <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="AXIS" FeatureAlignmentType="ALIGN" _id="id256">
+            <ConstraintFeature ComponentID="{5235d360-2c9c-46fb-83e1-a48ebb4b1c56}" FeatureName="JACK_AXIS" FeatureOrientationType="NONE" _id="id257">
+              <GeometryMarker x="1243.25" y="7949.95" z="-726.974" i="-27.12" j="54.43" k="9.884" pi="0" _id="id258" />
+            </ConstraintFeature>
+            <ConstraintFeature ComponentID="{66a1ddac-a80e-435b-91b7-2c4fc7cc298b}" FeatureName="BODY_CYLINDER_AXIS" FeatureOrientationType="NONE" _id="id259" />
+          </Pair>
+        </Constraint>
+        <ParametricParameters _id="id326">
+          <CADParameter Name="LENGTH" Type="Float" Value="600" _id="id327">
+            <Units Value="" _id="id328" />
+          </CADParameter>
+          <CADParameter Name="MODELED_BY" Type="String" Value="0" _id="id329">
+            <Units Value="" _id="id330" />
+          </CADParameter>
+          <CADParameter Name="DESCRIPTION" Type="String" Value="0" _id="id331">
+            <Units Value="" _id="id332" />
+          </CADParameter>
+        </ParametricParameters>
+      </CADComponent>
+      <CADComponent ComponentID="{8f8b9fb3-3294-404a-b676-4283397b5790}" Name="BUCKETLINK" DisplayName="bucket_link" Type="PART" SpecialInstruction="" MaterialID="" Representation="" _id="id333">
+        <Constraint _id="id89">
+          <Joint Type="REVOLUTE" ID="id14" _id="id100" />
+          <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="SURFACE" FeatureAlignmentType="ALIGN" _id="id90">
+            <ConstraintFeature ComponentID="{8f8b9fb3-3294-404a-b676-4283397b5790}" FeatureName="CENTER_PLANE" FeatureOrientationType="SIDE_A" _id="id91">
+              <GeometryMarker x="460" y="0" z="0" i="-1" j="0" k="0" pi="0" _id="id92" />
+            </ConstraintFeature>
+            <ConstraintFeature ComponentID="{4dccbca6-6ee3-49d2-887b-bdfc3b9317f4}" FeatureName="CENTER_PLANE" FeatureOrientationType="SIDE_A" _id="id93">
+              <GeometryMarker x="0" y="0" z="877.3" i="0" j="0" k="1" pi="0" _id="id94" />
+            </ConstraintFeature>
+          </Pair>
+          <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="AXIS" FeatureAlignmentType="ALIGN" _id="id95">
+            <ConstraintFeature ComponentID="{8f8b9fb3-3294-404a-b676-4283397b5790}" FeatureName="AXIS2" FeatureOrientationType="NONE" _id="id96">
+              <GeometryMarker x="0" y="900" z="0" i="1" j="0" k="0" pi="0" _id="id97" />
+            </ConstraintFeature>
+            <ConstraintFeature ComponentID="{4dccbca6-6ee3-49d2-887b-bdfc3b9317f4}" FeatureName="LOWER_HOLE" FeatureOrientationType="NONE" _id="id98">
+              <GeometryMarker x="-1553.44" y="861.71" z="530" i="0" j="0" k="1" pi="0" _id="id99" />
+            </ConstraintFeature>
+          </Pair>
+        </Constraint>
+        <Constraint _id="id181">
+          <Joint Type="REVOLUTE" ID="id13" _id="id190" />
+          <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="SURFACE" FeatureAlignmentType="ALIGN" _id="id182">
+            <ConstraintFeature ComponentID="{8f8b9fb3-3294-404a-b676-4283397b5790}" FeatureName="CENTER_PLANE" FeatureOrientationType="SIDE_A" _id="id183">
+              <GeometryMarker x="460" y="0" z="0" i="-1" j="0" k="0" pi="0" _id="id184" />
+            </ConstraintFeature>
+            <ConstraintFeature ComponentID="{c764e6cc-9783-48db-8785-e2f8bb180112}" FeatureName="ROD_PLANE" FeatureOrientationType="SIDE_A" _id="id185" />
+          </Pair>
+          <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="AXIS" FeatureAlignmentType="ALIGN" _id="id186">
+            <ConstraintFeature ComponentID="{8f8b9fb3-3294-404a-b676-4283397b5790}" FeatureName="AXIS1" FeatureOrientationType="NONE" _id="id187">
+              <GeometryMarker x="0" y="0" z="0" i="1" j="0" k="0" pi="0" _id="id188" />
+            </ConstraintFeature>
+            <ConstraintFeature ComponentID="{c764e6cc-9783-48db-8785-e2f8bb180112}" FeatureName="ROD_AXIS" FeatureOrientationType="NONE" _id="id189" />
+          </Pair>
+        </Constraint>
+        <Constraint _id="id231">
+          <Joint Type="REVOLUTE" ID="id11" _id="id240" />
+          <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="SURFACE" FeatureAlignmentType="ALIGN" _id="id232">
+            <ConstraintFeature ComponentID="{8f8b9fb3-3294-404a-b676-4283397b5790}" FeatureName="LEFT_PLANE" FeatureOrientationType="SIDE_A" _id="id233">
+              <GeometryMarker x="870" y="0" z="0" i="1" j="0" k="0" pi="0" _id="id234" />
+            </ConstraintFeature>
+            <ConstraintFeature ComponentID="{54b93381-b78e-48f6-8990-8dea95c4a6af}" FeatureName="CENTER_PLANE" FeatureOrientationType="SIDE_A" _id="id235" />
+          </Pair>
+          <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="AXIS" FeatureAlignmentType="ALIGN" _id="id236">
+            <ConstraintFeature ComponentID="{8f8b9fb3-3294-404a-b676-4283397b5790}" FeatureName="AXIS1" FeatureOrientationType="NONE" _id="id237">
+              <GeometryMarker x="0" y="0" z="0" i="1" j="0" k="0" pi="0" _id="id238" />
+            </ConstraintFeature>
+            <ConstraintFeature ComponentID="{54b93381-b78e-48f6-8990-8dea95c4a6af}" FeatureName="CYLINDER_AXIS" FeatureOrientationType="NONE" _id="id239" />
+          </Pair>
+        </Constraint>
+        <Constraint _id="id273">
+          <Joint Type="REVOLUTE" ID="id12" _id="id282" />
+          <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="SURFACE" FeatureAlignmentType="ALIGN" _id="id274">
+            <ConstraintFeature ComponentID="{8f8b9fb3-3294-404a-b676-4283397b5790}" FeatureName="RIGHT_PLANE" FeatureOrientationType="SIDE_A" _id="id275">
+              <GeometryMarker x="50" y="0" z="0" i="-1" j="0" k="0" pi="0" _id="id276" />
+            </ConstraintFeature>
+            <ConstraintFeature ComponentID="{1dd319cf-5f64-428f-b4ed-a242909b4373}" FeatureName="CENTER_PLANE" FeatureOrientationType="SIDE_A" _id="id277" />
+          </Pair>
+          <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="AXIS" FeatureAlignmentType="ALIGN" _id="id278">
+            <ConstraintFeature ComponentID="{8f8b9fb3-3294-404a-b676-4283397b5790}" FeatureName="AXIS1" FeatureOrientationType="NONE" _id="id279">
+              <GeometryMarker x="0" y="0" z="0" i="1" j="0" k="0" pi="0" _id="id280" />
+            </ConstraintFeature>
+            <ConstraintFeature ComponentID="{1dd319cf-5f64-428f-b4ed-a242909b4373}" FeatureName="CYLINDER_AXIS" FeatureOrientationType="NONE" _id="id281" />
+          </Pair>
+        </Constraint>
+        <ParametricParameters _id="id334">
+          <CADParameter Name="DESCRIPTION" Type="String" Value="0" _id="id335">
+            <Units Value="" _id="id336" />
+          </CADParameter>
+          <CADParameter Name="PTC_MATERIAL_NAME" Type="String" Value="STEEL_LOW_ALLOY_A500_B" _id="id337">
+            <Units Value="" _id="id338" />
+          </CADParameter>
+          <CADParameter Name="MODELED_BY" Type="String" Value="0" _id="id339">
+            <Units Value="" _id="id340" />
+          </CADParameter>
+        </ParametricParameters>
+      </CADComponent>
+      <CADComponent ComponentID="{1dd319cf-5f64-428f-b4ed-a242909b4373}" Name="BUCKETLINKCONNECTOR" DisplayName="BucketLinkConnector_Left" Type="PART" SpecialInstruction="" MaterialID="" Representation="" Classification="Unknown" _id="id341">
+        <Constraint _id="id33">
+          <Joint Type="REVOLUTE" ID="id6" _id="id46">
+            <Limit Role="RotationDefault" Value="180" />
+            <Limit Role="RotationMax" Value="90" />
+            <Limit Role="RotationMin" Value="-90" />
+            <LimitReference ComponentID="{a680ffc1-1232-4847-9027-2502b6cb9716}" FeatureName="LINK_GUIDE" FeatureGeometryType="SURFACE" Role="RotationDefault" />
+            <LimitReference ComponentID="{1dd319cf-5f64-428f-b4ed-a242909b4373}" FeatureName="GUIDE" FeatureGeometryType="SURFACE" Role="RotationDefault" />
+          </Joint>
+          <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="SURFACE" FeatureAlignmentType="ALIGN" Guide="True" _id="id34">
+            <ConstraintFeature ComponentID="{a680ffc1-1232-4847-9027-2502b6cb9716}" FeatureName="LINK_GUIDE" FeatureOrientationType="SIDE_A" _id="id35">
+              <GeometryMarker x="-1123.39" y="1481.57" z="-146.69" i="-497.26" j="-52.26" k="0" pi="0" _id="id36" />
+            </ConstraintFeature>
+            <ConstraintFeature ComponentID="{1dd319cf-5f64-428f-b4ed-a242909b4373}" FeatureName="GUIDE" FeatureOrientationType="SIDE_A" _id="id37" />
+          </Pair>
+          <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="SURFACE" FeatureAlignmentType="ALIGN" _id="id38">
+            <ConstraintFeature ComponentID="{a680ffc1-1232-4847-9027-2502b6cb9716}" FeatureName="RIGHT_PLANE" FeatureOrientationType="SIDE_B" _id="id39">
+              <GeometryMarker x="0" y="0" z="160" i="0" j="0" k="1" pi="0" _id="id40" />
+            </ConstraintFeature>
+            <ConstraintFeature ComponentID="{1dd319cf-5f64-428f-b4ed-a242909b4373}" FeatureName="CENTER_PLANE" FeatureOrientationType="SIDE_A" _id="id41" />
+          </Pair>
+          <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="AXIS" FeatureAlignmentType="ALIGN" _id="id42">
+            <ConstraintFeature ComponentID="{a680ffc1-1232-4847-9027-2502b6cb9716}" FeatureName="BUCKETLINK_AXIS" FeatureOrientationType="NONE" _id="id43">
+              <GeometryMarker x="-984.131" y="156.602" z="0" i="0" j="0" k="-1" pi="0" _id="id44" />
+            </ConstraintFeature>
+            <ConstraintFeature ComponentID="{1dd319cf-5f64-428f-b4ed-a242909b4373}" FeatureName="ARM_AXIS" FeatureOrientationType="NONE" _id="id45" />
+          </Pair>
+        </Constraint>
+        <ParametricParameters _id="id342">
+          <CADParameter Name="PTC_MATERIAL_NAME" Type="String" Value="STEEL_LOW_CARBON_1018_COLD_DRAW" _id="id343">
+            <Units Value="" _id="id344" />
+          </CADParameter>
+          <CADParameter Name="DESCRIPTION" Type="String" Value="0" _id="id345">
+            <Units Value="" _id="id346" />
+          </CADParameter>
+          <CADParameter Name="MODELED_BY" Type="String" Value="0" _id="id347">
+            <Units Value="" _id="id348" />
+          </CADParameter>
+        </ParametricParameters>
+      </CADComponent>
+      <CADComponent ComponentID="{54b93381-b78e-48f6-8990-8dea95c4a6af}" Name="BUCKETLINKCONNECTOR" DisplayName="BucketLinkConnector_Right" Type="PART" SpecialInstruction="" MaterialID="" Representation="" Classification="Unknown" _id="id349">
+        <Constraint _id="id19">
+          <Joint Type="REVOLUTE" ID="id5" _id="id32">
+            <Limit Role="RotationDefault" Value="0" />
+            <Limit Role="RotationMax" Value="90" />
+            <Limit Role="RotationMin" Value="-90" />
+            <LimitReference ComponentID="{a680ffc1-1232-4847-9027-2502b6cb9716}" FeatureName="LINK_GUIDE" FeatureGeometryType="SURFACE" Role="RotationDefault" />
+            <LimitReference ComponentID="{54b93381-b78e-48f6-8990-8dea95c4a6af}" FeatureName="GUIDE" FeatureGeometryType="SURFACE" Role="RotationDefault" />
+          </Joint>
+          <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="SURFACE" FeatureAlignmentType="ALIGN" Guide="True" _id="id20">
+            <ConstraintFeature ComponentID="{a680ffc1-1232-4847-9027-2502b6cb9716}" FeatureName="LINK_GUIDE" FeatureOrientationType="SIDE_A" _id="id21">
+              <GeometryMarker x="-1123.39" y="1481.57" z="-146.69" i="-497.26" j="-52.26" k="0" pi="0" _id="id22" />
+            </ConstraintFeature>
+            <ConstraintFeature ComponentID="{54b93381-b78e-48f6-8990-8dea95c4a6af}" FeatureName="GUIDE" FeatureOrientationType="SIDE_A" _id="id23" />
+          </Pair>
+          <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="SURFACE" FeatureAlignmentType="ALIGN" _id="id24">
+            <ConstraintFeature ComponentID="{a680ffc1-1232-4847-9027-2502b6cb9716}" FeatureName="LEFT_PLANE" FeatureOrientationType="SIDE_B" _id="id25">
+              <GeometryMarker x="0" y="0" z="-660" i="0" j="0" k="1" pi="0" _id="id26" />
+            </ConstraintFeature>
+            <ConstraintFeature ComponentID="{54b93381-b78e-48f6-8990-8dea95c4a6af}" FeatureName="CENTER_PLANE" FeatureOrientationType="SIDE_A" _id="id27" />
+          </Pair>
+          <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="AXIS" FeatureAlignmentType="ALIGN" _id="id28">
+            <ConstraintFeature ComponentID="{a680ffc1-1232-4847-9027-2502b6cb9716}" FeatureName="BUCKETLINK_AXIS" FeatureOrientationType="NONE" _id="id29">
+              <GeometryMarker x="-984.131" y="156.602" z="0" i="0" j="0" k="-1" pi="0" _id="id30" />
+            </ConstraintFeature>
+            <ConstraintFeature ComponentID="{54b93381-b78e-48f6-8990-8dea95c4a6af}" FeatureName="ARM_AXIS" FeatureOrientationType="NONE" _id="id31" />
+          </Pair>
+        </Constraint>
+        <ParametricParameters _id="id350">
+          <CADParameter Name="PTC_MATERIAL_NAME" Type="String" Value="STEEL_LOW_CARBON_1018_COLD_DRAW" _id="id351">
+            <Units Value="" _id="id352" />
+          </CADParameter>
+          <CADParameter Name="MODELED_BY" Type="String" Value="0" _id="id353">
+            <Units Value="" _id="id354" />
+          </CADParameter>
+          <CADParameter Name="DESCRIPTION" Type="String" Value="0" _id="id355">
+            <Units Value="" _id="id356" />
+          </CADParameter>
+        </ParametricParameters>
+      </CADComponent>
+      <CADComponent ComponentID="{368aebf5-b973-46ba-b774-6db71eada05b}" Name="UPPER_BODY" DisplayName="carriage2" Type="PART" SpecialInstruction="" MaterialID="" Representation="" _id="id357">
+        <Constraint _id="id365">
+          <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="SURFACE" FeatureAlignmentType="ALIGN" _id="id366">
+            <ConstraintFeature ComponentID="{368aebf5-b973-46ba-b774-6db71eada05b}" FeatureName="FRONT" FeatureOrientationType="SIDE_A" _id="id367" />
+            <ConstraintFeature ComponentID="{3451cc65-9ad0-4f78-8a0c-290d1595fe74}|1" FeatureName="ASM_FRONT" FeatureOrientationType="SIDE_A" _id="id368" />
+          </Pair>
+          <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="SURFACE" FeatureAlignmentType="ALIGN" _id="id369">
+            <ConstraintFeature ComponentID="{368aebf5-b973-46ba-b774-6db71eada05b}" FeatureName="TOP" FeatureOrientationType="SIDE_A" _id="id370" />
+            <ConstraintFeature ComponentID="{3451cc65-9ad0-4f78-8a0c-290d1595fe74}|1" FeatureName="ASM_TOP" FeatureOrientationType="SIDE_A" _id="id371" />
+          </Pair>
+          <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="SURFACE" FeatureAlignmentType="ALIGN" _id="id372">
+            <ConstraintFeature ComponentID="{368aebf5-b973-46ba-b774-6db71eada05b}" FeatureName="RIGHT" FeatureOrientationType="SIDE_A" _id="id373" />
+            <ConstraintFeature ComponentID="{3451cc65-9ad0-4f78-8a0c-290d1595fe74}|1" FeatureName="ASM_RIGHT" FeatureOrientationType="SIDE_A" _id="id374" />
+          </Pair>
+        </Constraint>
+        <ParametricParameters _id="id358">
+          <CADParameter Name="PTC_MATERIAL_NAME" Type="String" Value="STEEL_LOW_ALLOY_A500_B" _id="id359">
+            <Units Value="" _id="id360" />
+          </CADParameter>
+          <CADParameter Name="MODELED_BY" Type="String" Value="0" _id="id361">
+            <Units Value="" _id="id362" />
+          </CADParameter>
+          <CADParameter Name="DESCRIPTION" Type="String" Value="0" _id="id363">
+            <Units Value="" _id="id364" />
+          </CADParameter>
+        </ParametricParameters>
+      </CADComponent>
+      <CADComponent ComponentID="{bcca45fc-7db9-47a4-8dec-f673005b622a}" Name="PIN3" DisplayName="Pin110" Type="PART" SpecialInstruction="" MaterialID="" Representation="" Classification="Unknown" _id="id375">
+        <Constraint _id="id137">
+          <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="SURFACE" FeatureAlignmentType="ALIGN" _id="id138">
+            <ConstraintFeature ComponentID="{a680ffc1-1232-4847-9027-2502b6cb9716}" FeatureName="BUCKET_CENTER_PLANE" FeatureOrientationType="SIDE_A" _id="id139">
+              <GeometryMarker x="0" y="0" z="-250" i="0" j="0" k="1" pi="0" _id="id140" />
+            </ConstraintFeature>
+            <ConstraintFeature ComponentID="{bcca45fc-7db9-47a4-8dec-f673005b622a}" FeatureName="CENTER_PLANE" FeatureOrientationType="SIDE_A" _id="id141">
+              <GeometryMarker x="0" y="0" z="0" i="1" j="0" k="0" pi="0" _id="id142" />
+            </ConstraintFeature>
+          </Pair>
+          <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="AXIS" FeatureAlignmentType="ALIGN" _id="id143">
+            <ConstraintFeature ComponentID="{a680ffc1-1232-4847-9027-2502b6cb9716}" FeatureName="BUCKETLINK_AXIS" FeatureOrientationType="NONE" _id="id144">
+              <GeometryMarker x="-984.131" y="156.602" z="0" i="0" j="0" k="-1" pi="0" _id="id145" />
+            </ConstraintFeature>
+            <ConstraintFeature ComponentID="{bcca45fc-7db9-47a4-8dec-f673005b622a}" FeatureName="CENTER_AXIS" FeatureOrientationType="NONE" _id="id146">
+              <GeometryMarker x="0" y="0" z="0" i="1" j="0" k="0" pi="0" _id="id147" />
+            </ConstraintFeature>
+          </Pair>
+        </Constraint>
+        <ParametricParameters _id="id376">
+          <CADParameter Name="PTC_MATERIAL_NAME" Type="String" Value="STEEL_LOW_ALLOY_A500_B" _id="id377">
+            <Units Value="" _id="id378" />
+          </CADParameter>
+          <CADParameter Name="MODELED_BY" Type="String" Value="0" _id="id379">
+            <Units Value="" _id="id380" />
+          </CADParameter>
+          <CADParameter Name="DESCRIPTION" Type="String" Value="0" _id="id381">
+            <Units Value="" _id="id382" />
+          </CADParameter>
+        </ParametricParameters>
+      </CADComponent>
+      <CADComponent ComponentID="{9cb09a16-08b1-4ba5-b2d7-771ac0930ce1}" Name="PIN3" DisplayName="Pin111" Type="PART" SpecialInstruction="" MaterialID="" Representation="" Classification="Unknown" _id="id383">
+        <Constraint _id="id148">
+          <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="SURFACE" FeatureAlignmentType="ALIGN" _id="id149">
+            <ConstraintFeature ComponentID="{a680ffc1-1232-4847-9027-2502b6cb9716}" FeatureName="BUCKET_CYLINDER_CENTER_PLANE" FeatureOrientationType="SIDE_A" _id="id150">
+              <GeometryMarker x="0" y="0" z="-250" i="0" j="0" k="1" pi="0" _id="id151" />
+            </ConstraintFeature>
+            <ConstraintFeature ComponentID="{9cb09a16-08b1-4ba5-b2d7-771ac0930ce1}" FeatureName="CENTER_PLANE" FeatureOrientationType="SIDE_A" _id="id152">
+              <GeometryMarker x="0" y="0" z="0" i="1" j="0" k="0" pi="0" _id="id153" />
+            </ConstraintFeature>
+          </Pair>
+          <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="AXIS" FeatureAlignmentType="ALIGN" _id="id154">
+            <ConstraintFeature ComponentID="{a680ffc1-1232-4847-9027-2502b6cb9716}" FeatureName="BUCKET_CYLINDER_AXIS" FeatureOrientationType="NONE" _id="id155">
+              <GeometryMarker x="1510" y="1175.78" z="0" i="0" j="0" k="-1" pi="0" _id="id156" />
+            </ConstraintFeature>
+            <ConstraintFeature ComponentID="{9cb09a16-08b1-4ba5-b2d7-771ac0930ce1}" FeatureName="CENTER_AXIS" FeatureOrientationType="NONE" _id="id157">
+              <GeometryMarker x="0" y="0" z="0" i="1" j="0" k="0" pi="0" _id="id158" />
+            </ConstraintFeature>
+          </Pair>
+        </Constraint>
+        <ParametricParameters _id="id384">
+          <CADParameter Name="PTC_MATERIAL_NAME" Type="String" Value="STEEL_LOW_ALLOY_A500_B" _id="id385">
+            <Units Value="" _id="id386" />
+          </CADParameter>
+          <CADParameter Name="MODELED_BY" Type="String" Value="0" _id="id387">
+            <Units Value="" _id="id388" />
+          </CADParameter>
+          <CADParameter Name="DESCRIPTION" Type="String" Value="0" _id="id389">
+            <Units Value="" _id="id390" />
+          </CADParameter>
+        </ParametricParameters>
+      </CADComponent>
+      <CADComponent ComponentID="{b3689a4d-4f53-44dc-8644-25828dc188df}" Name="PIN" DisplayName="Pin141" Type="PART" SpecialInstruction="" MaterialID="" Representation="" Classification="Unknown" _id="id391">
+        <Constraint _id="id110">
+          <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="SURFACE" FeatureAlignmentType="ALIGN" _id="id111">
+            <ConstraintFeature ComponentID="{66a1ddac-a80e-435b-91b7-2c4fc7cc298b}" FeatureName="CENTER_PLANE" FeatureOrientationType="SIDE_A" _id="id112" />
+            <ConstraintFeature ComponentID="{b3689a4d-4f53-44dc-8644-25828dc188df}" FeatureName="CENTER_PLANE" FeatureOrientationType="SIDE_A" _id="id113">
+              <GeometryMarker x="0" y="0" z="684" i="0" j="0" k="-1" pi="0" _id="id114" />
+            </ConstraintFeature>
+          </Pair>
+          <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="AXIS" FeatureAlignmentType="ALIGN" _id="id115">
+            <ConstraintFeature ComponentID="{66a1ddac-a80e-435b-91b7-2c4fc7cc298b}" FeatureName="ARM_AXIS" FeatureOrientationType="NONE" _id="id116" />
+            <ConstraintFeature ComponentID="{b3689a4d-4f53-44dc-8644-25828dc188df}" FeatureName="CENTER_AXIS" FeatureOrientationType="NONE" _id="id117">
+              <GeometryMarker x="0" y="0" z="0" i="0" j="0" k="1" pi="0" _id="id118" />
+            </ConstraintFeature>
+          </Pair>
+        </Constraint>
+        <ParametricParameters _id="id392">
+          <CADParameter Name="PTC_MATERIAL_NAME" Type="String" Value="STEEL_LOW_ALLOY_A500_B" _id="id393">
+            <Units Value="" _id="id394" />
+          </CADParameter>
+          <CADParameter Name="MODELED_BY" Type="String" Value="0" _id="id395">
+            <Units Value="" _id="id396" />
+          </CADParameter>
+          <CADParameter Name="DESCRIPTION" Type="String" Value="0" _id="id397">
+            <Units Value="" _id="id398" />
+          </CADParameter>
+        </ParametricParameters>
+      </CADComponent>
+      <CADComponent ComponentID="{06a04e6a-1884-4735-b48f-c6350b68821f}" Name="PIN" DisplayName="Pin142" Type="PART" SpecialInstruction="" MaterialID="" Representation="" Classification="Unknown" _id="id399">
+        <Constraint _id="id128">
+          <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="SURFACE" FeatureAlignmentType="ALIGN" _id="id129">
+            <ConstraintFeature ComponentID="{368aebf5-b973-46ba-b774-6db71eada05b}" FeatureName="CENTER_PLANE" FeatureOrientationType="SIDE_A" _id="id130" />
+            <ConstraintFeature ComponentID="{06a04e6a-1884-4735-b48f-c6350b68821f}" FeatureName="CENTER_PLANE" FeatureOrientationType="SIDE_A" _id="id131">
+              <GeometryMarker x="0" y="0" z="684" i="0" j="0" k="-1" pi="0" _id="id132" />
+            </ConstraintFeature>
+          </Pair>
+          <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="AXIS" FeatureAlignmentType="ALIGN" _id="id133">
+            <ConstraintFeature ComponentID="{368aebf5-b973-46ba-b774-6db71eada05b}" FeatureName="LOWER_AXIS" FeatureOrientationType="NONE" _id="id134" />
+            <ConstraintFeature ComponentID="{06a04e6a-1884-4735-b48f-c6350b68821f}" FeatureName="CENTER_AXIS" FeatureOrientationType="NONE" _id="id135">
+              <GeometryMarker x="0" y="0" z="0" i="0" j="0" k="1" pi="0" _id="id136" />
+            </ConstraintFeature>
+          </Pair>
+        </Constraint>
+        <ParametricParameters _id="id400">
+          <CADParameter Name="PTC_MATERIAL_NAME" Type="String" Value="STEEL_LOW_ALLOY_A500_B" _id="id401">
+            <Units Value="" _id="id402" />
+          </CADParameter>
+          <CADParameter Name="MODELED_BY" Type="String" Value="0" _id="id403">
+            <Units Value="" _id="id404" />
+          </CADParameter>
+          <CADParameter Name="DESCRIPTION" Type="String" Value="0" _id="id405">
+            <Units Value="" _id="id406" />
+          </CADParameter>
+        </ParametricParameters>
+      </CADComponent>
+      <CADComponent ComponentID="{36043592-47a3-41a7-8e52-08104c972fc5}" Name="PIN" DisplayName="Pin143" Type="PART" SpecialInstruction="" MaterialID="" Representation="" Classification="Unknown" _id="id407">
+        <Constraint _id="id119">
+          <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="SURFACE" FeatureAlignmentType="ALIGN" _id="id120">
+            <ConstraintFeature ComponentID="{368aebf5-b973-46ba-b774-6db71eada05b}" FeatureName="CENTER_PLANE" FeatureOrientationType="SIDE_A" _id="id121" />
+            <ConstraintFeature ComponentID="{36043592-47a3-41a7-8e52-08104c972fc5}" FeatureName="CENTER_PLANE" FeatureOrientationType="SIDE_A" _id="id122">
+              <GeometryMarker x="0" y="0" z="684" i="0" j="0" k="-1" pi="0" _id="id123" />
+            </ConstraintFeature>
+          </Pair>
+          <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="AXIS" FeatureAlignmentType="ALIGN" _id="id124">
+            <ConstraintFeature ComponentID="{368aebf5-b973-46ba-b774-6db71eada05b}" FeatureName="UPPER_AXIS" FeatureOrientationType="NONE" _id="id125" />
+            <ConstraintFeature ComponentID="{36043592-47a3-41a7-8e52-08104c972fc5}" FeatureName="CENTER_AXIS" FeatureOrientationType="NONE" _id="id126">
+              <GeometryMarker x="0" y="0" z="0" i="0" j="0" k="1" pi="0" _id="id127" />
+            </ConstraintFeature>
+          </Pair>
+        </Constraint>
+        <ParametricParameters _id="id408">
+          <CADParameter Name="DESCRIPTION" Type="String" Value="0" _id="id409">
+            <Units Value="" _id="id410" />
+          </CADParameter>
+          <CADParameter Name="MODELED_BY" Type="String" Value="0" _id="id411">
+            <Units Value="" _id="id412" />
+          </CADParameter>
+          <CADParameter Name="PTC_MATERIAL_NAME" Type="String" Value="STEEL_LOW_ALLOY_A500_B" _id="id413">
+            <Units Value="" _id="id414" />
+          </CADParameter>
+        </ParametricParameters>
+      </CADComponent>
+      <CADComponent ComponentID="{2177c6c0-ac50-4f79-9733-ced7759d2e43}" Name="PIN" DisplayName="Pin144" Type="PART" SpecialInstruction="" MaterialID="" Representation="" Classification="Unknown" _id="id415">
+        <Constraint _id="id159">
+          <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="SURFACE" FeatureAlignmentType="ALIGN" _id="id160">
+            <ConstraintFeature ComponentID="{a680ffc1-1232-4847-9027-2502b6cb9716}" FeatureName="BUCKET_CENTER_PLANE" FeatureOrientationType="SIDE_A" _id="id161">
+              <GeometryMarker x="0" y="0" z="-250" i="0" j="0" k="1" pi="0" _id="id162" />
+            </ConstraintFeature>
+            <ConstraintFeature ComponentID="{2177c6c0-ac50-4f79-9733-ced7759d2e43}" FeatureName="CENTER_PLANE" FeatureOrientationType="SIDE_A" _id="id163">
+              <GeometryMarker x="0" y="0" z="684" i="0" j="0" k="-1" pi="0" _id="id164" />
+            </ConstraintFeature>
+          </Pair>
+          <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="AXIS" FeatureAlignmentType="ALIGN" _id="id165">
+            <ConstraintFeature ComponentID="{a680ffc1-1232-4847-9027-2502b6cb9716}" FeatureName="BUCKET_AXIS" FeatureOrientationType="NONE" _id="id166">
+              <GeometryMarker x="-1480.92" y="100" z="0" i="0" j="0" k="-1" pi="0" _id="id167" />
+            </ConstraintFeature>
+            <ConstraintFeature ComponentID="{2177c6c0-ac50-4f79-9733-ced7759d2e43}" FeatureName="CENTER_AXIS" FeatureOrientationType="NONE" _id="id168">
+              <GeometryMarker x="0" y="0" z="0" i="0" j="0" k="1" pi="0" _id="id169" />
+            </ConstraintFeature>
+          </Pair>
+        </Constraint>
+        <ParametricParameters _id="id416">
+          <CADParameter Name="PTC_MATERIAL_NAME" Type="String" Value="STEEL_LOW_ALLOY_A500_B" _id="id417">
+            <Units Value="" _id="id418" />
+          </CADParameter>
+          <CADParameter Name="MODELED_BY" Type="String" Value="0" _id="id419">
+            <Units Value="" _id="id420" />
+          </CADParameter>
+          <CADParameter Name="DESCRIPTION" Type="String" Value="0" _id="id421">
+            <Units Value="" _id="id422" />
+          </CADParameter>
+        </ParametricParameters>
+      </CADComponent>
+      <CADComponent ComponentID="{1f41210f-abaa-4023-8228-b1750e7f4fac}" Name="PIN150" DisplayName="Pin145" Type="PART" SpecialInstruction="" MaterialID="" Representation="" Classification="Unknown" _id="id423">
+        <Constraint _id="id170">
+          <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="SURFACE" FeatureAlignmentType="ALIGN" _id="id171">
+            <ConstraintFeature ComponentID="{a680ffc1-1232-4847-9027-2502b6cb9716}" FeatureName="CYLINDER_CENTER_PLANE" FeatureOrientationType="SIDE_A" _id="id172">
+              <GeometryMarker x="0" y="0" z="-250" i="0" j="0" k="1" pi="0" _id="id173" />
+            </ConstraintFeature>
+            <ConstraintFeature ComponentID="{1f41210f-abaa-4023-8228-b1750e7f4fac}" FeatureName="CENTER_PLANE" FeatureOrientationType="SIDE_A" _id="id174">
+              <GeometryMarker x="0" y="0" z="684" i="0" j="0" k="-1" pi="0" _id="id175" />
+            </ConstraintFeature>
+          </Pair>
+          <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="AXIS" FeatureAlignmentType="ALIGN" _id="id176">
+            <ConstraintFeature ComponentID="{a680ffc1-1232-4847-9027-2502b6cb9716}" FeatureName="CYLINDER_AXIS" FeatureOrientationType="NONE" _id="id177">
+              <GeometryMarker x="2916.39" y="464.857" z="0" i="0" j="0" k="-1" pi="0" _id="id178" />
+            </ConstraintFeature>
+            <ConstraintFeature ComponentID="{1f41210f-abaa-4023-8228-b1750e7f4fac}" FeatureName="CENTER_AXIS" FeatureOrientationType="NONE" _id="id179">
+              <GeometryMarker x="0" y="0" z="0" i="0" j="0" k="1" pi="0" _id="id180" />
+            </ConstraintFeature>
+          </Pair>
+        </Constraint>
+        <ParametricParameters _id="id424">
+          <CADParameter Name="PTC_MATERIAL_NAME" Type="String" Value="STEEL_LOW_ALLOY_A500_B" _id="id425">
+            <Units Value="" _id="id426" />
+          </CADParameter>
+          <CADParameter Name="MODELED_BY" Type="String" Value="0" _id="id427">
+            <Units Value="" _id="id428" />
+          </CADParameter>
+          <CADParameter Name="DESCRIPTION" Type="String" Value="0" _id="id429">
+            <Units Value="" _id="id430" />
+          </CADParameter>
+        </ParametricParameters>
+      </CADComponent>
+      <CADComponent ComponentID="{a8d06e4c-f6cc-4e77-868b-672a95028155}" Name="PIN" DisplayName="Pin146" Type="PART" SpecialInstruction="" MaterialID="" Representation="" Classification="Unknown" _id="id431">
+        <Constraint _id="id101">
+          <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="SURFACE" FeatureAlignmentType="ALIGN" _id="id102">
+            <ConstraintFeature ComponentID="{66a1ddac-a80e-435b-91b7-2c4fc7cc298b}" FeatureName="CENTER_PLANE" FeatureOrientationType="SIDE_A" _id="id103" />
+            <ConstraintFeature ComponentID="{a8d06e4c-f6cc-4e77-868b-672a95028155}" FeatureName="CENTER_PLANE" FeatureOrientationType="SIDE_A" _id="id104">
+              <GeometryMarker x="0" y="0" z="684" i="0" j="0" k="-1" pi="0" _id="id105" />
+            </ConstraintFeature>
+          </Pair>
+          <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="AXIS" FeatureAlignmentType="ALIGN" _id="id106">
+            <ConstraintFeature ComponentID="{66a1ddac-a80e-435b-91b7-2c4fc7cc298b}" FeatureName="UPPER_CYLINDER_AXIS" FeatureOrientationType="NONE" _id="id107" />
+            <ConstraintFeature ComponentID="{a8d06e4c-f6cc-4e77-868b-672a95028155}" FeatureName="CENTER_AXIS" FeatureOrientationType="NONE" _id="id108">
+              <GeometryMarker x="0" y="0" z="0" i="0" j="0" k="1" pi="0" _id="id109" />
+            </ConstraintFeature>
+          </Pair>
+        </Constraint>
+        <ParametricParameters _id="id432">
+          <CADParameter Name="DESCRIPTION" Type="String" Value="0" _id="id433">
+            <Units Value="" _id="id434" />
+          </CADParameter>
+          <CADParameter Name="MODELED_BY" Type="String" Value="0" _id="id435">
+            <Units Value="" _id="id436" />
+          </CADParameter>
+          <CADParameter Name="PTC_MATERIAL_NAME" Type="String" Value="STEEL_LOW_ALLOY_A500_B" _id="id437">
+            <Units Value="" _id="id438" />
+          </CADParameter>
+        </ParametricParameters>
+      </CADComponent>
+      <CADComponent ComponentID="{c764e6cc-9783-48db-8785-e2f8bb180112}" Name="UPPER_CYLINDER" DisplayName="upper_cyl" Type="ASSEMBLY" SpecialInstruction="HAS_KINEMATIC_JOINT" MaterialID="" Representation="" Classification="upper_cyl" _id="id439">
+        <Constraint _id="id221">
+          <Joint Type="REVOLUTE" ID="id10" _id="id230" />
+          <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="SURFACE" FeatureAlignmentType="ALIGN" _id="id222">
+            <ConstraintFeature ComponentID="{a680ffc1-1232-4847-9027-2502b6cb9716}" FeatureName="BUCKET_CYLINDER_CENTER_PLANE" FeatureOrientationType="SIDE_A" _id="id223">
+              <GeometryMarker x="0" y="0" z="-250" i="0" j="0" k="1" pi="0" _id="id224" />
+            </ConstraintFeature>
+            <ConstraintFeature ComponentID="{c764e6cc-9783-48db-8785-e2f8bb180112}" FeatureName="CYLINDER_PLANE" FeatureOrientationType="SIDE_A" _id="id225" />
+          </Pair>
+          <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="AXIS" FeatureAlignmentType="ALIGN" _id="id226">
+            <ConstraintFeature ComponentID="{a680ffc1-1232-4847-9027-2502b6cb9716}" FeatureName="BUCKET_CYLINDER_AXIS" FeatureOrientationType="NONE" _id="id227">
+              <GeometryMarker x="1510" y="1175.78" z="0" i="0" j="0" k="-1" pi="0" _id="id228" />
+            </ConstraintFeature>
+            <ConstraintFeature ComponentID="{c764e6cc-9783-48db-8785-e2f8bb180112}" FeatureName="CYLINDER_AXIS" FeatureOrientationType="NONE" _id="id229" />
+          </Pair>
+        </Constraint>
+        <ParametricParameters _id="id440">
+          <CADParameter Name="LENGTH" Type="Float" Value="900" _id="id441">
+            <Units Value="" _id="id442" />
+          </CADParameter>
+          <CADParameter Name="DESCRIPTION" Type="String" Value="0" _id="id443">
+            <Units Value="" _id="id444" />
+          </CADParameter>
+          <CADParameter Name="MODELED_BY" Type="String" Value="0" _id="id445">
+            <Units Value="" _id="id446" />
+          </CADParameter>
+        </ParametricParameters>
+      </CADComponent>
+      <CADComponent ComponentID="{4dccbca6-6ee3-49d2-887b-bdfc3b9317f4}" Name="BUCKET_ASSEMBLY" DisplayName="zBucket_Assembly_2" Type="ASSEMBLY" SpecialInstruction="" MaterialID="" Representation="" Classification="Excavator_Bucket" _id="id447">
+        <Constraint _id="id47">
+          <Joint Type="REVOLUTE" ID="id7" _id="id63">
+            <Limit Role="RotationDefault" Value="0" />
+            <Limit Role="RotationMax" Value="90" />
+            <Limit Role="RotationMin" Value="-60" />
+            <LimitReference ComponentID="{a680ffc1-1232-4847-9027-2502b6cb9716}" FeatureName="BUCKET_ATTACHMENT_PLANE" FeatureGeometryType="SURFACE" Role="RotationDefault" />
+            <LimitReference ComponentID="{4dccbca6-6ee3-49d2-887b-bdfc3b9317f4}" FeatureName="ARM_GUIDE" FeatureGeometryType="SURFACE" Role="RotationDefault" />
+          </Joint>
+          <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="SURFACE" FeatureAlignmentType="ALIGN" _id="id48">
+            <ConstraintFeature ComponentID="{a680ffc1-1232-4847-9027-2502b6cb9716}" FeatureName="BUCKET_CENTER_PLANE" FeatureOrientationType="SIDE_A" _id="id49">
+              <GeometryMarker x="0" y="0" z="-250" i="0" j="0" k="1" pi="0" _id="id50" />
+            </ConstraintFeature>
+            <ConstraintFeature ComponentID="{4dccbca6-6ee3-49d2-887b-bdfc3b9317f4}" FeatureName="CENTER_PLANE" FeatureOrientationType="SIDE_A" _id="id51">
+              <GeometryMarker x="0" y="0" z="877.3" i="0" j="0" k="1" pi="0" _id="id52" />
+            </ConstraintFeature>
+          </Pair>
+          <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="SURFACE" FeatureAlignmentType="ALIGN" Guide="True" _id="id53">
+            <ConstraintFeature ComponentID="{a680ffc1-1232-4847-9027-2502b6cb9716}" FeatureName="BUCKET_ATTACHMENT_PLANE" FeatureOrientationType="SIDE_A" _id="id54">
+              <GeometryMarker x="-1480.92" y="0" z="0" i="-1" j="0" k="0" pi="0" _id="id55" />
+            </ConstraintFeature>
+            <ConstraintFeature ComponentID="{4dccbca6-6ee3-49d2-887b-bdfc3b9317f4}" FeatureName="ARM_GUIDE" FeatureOrientationType="SIDE_A" _id="id56">
+              <GeometryMarker x="-1401.29" y="959.059" z="880" i="269.47" j="-421.174" k="0" pi="0" _id="id57" />
+            </ConstraintFeature>
+          </Pair>
+          <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="AXIS" FeatureAlignmentType="ALIGN" _id="id58">
+            <ConstraintFeature ComponentID="{a680ffc1-1232-4847-9027-2502b6cb9716}" FeatureName="BUCKET_AXIS" FeatureOrientationType="NONE" _id="id59">
+              <GeometryMarker x="-1480.92" y="100" z="0" i="0" j="0" k="-1" pi="0" _id="id60" />
+            </ConstraintFeature>
+            <ConstraintFeature ComponentID="{4dccbca6-6ee3-49d2-887b-bdfc3b9317f4}" FeatureName="UPPER_HOLE" FeatureOrientationType="NONE" _id="id61">
+              <GeometryMarker x="-2090.41" y="518.158" z="530" i="0" j="0" k="1" pi="0" _id="id62" />
+            </ConstraintFeature>
+          </Pair>
+        </Constraint>
+        <ManufacturingParameter Name="procurement__make_or_buy" Value="Make" />
+        <ManufacturingParameter Name="procurement__cots_or_parametric" Value="COTS" />
+        <ParametricParameters _id="id448">
+          <CADParameter Name="MODELED_BY" Type="String" Value="0" _id="id449">
+            <Units Value="" _id="id450" />
+          </CADParameter>
+          <CADParameter Name="DESCRIPTION" Type="String" Value="0" _id="id451">
+            <Units Value="" _id="id452" />
+          </CADParameter>
+        </ParametricParameters>
+      </CADComponent>
+    </CADComponent>
+    <Properties _id="id453">
+      <Units Value="value1" _id="id454" />
+    </Properties>
+  </Assembly>
+  <DataExchange _id="id455">
+    <STEPFormat Name="AP203_E2_Single_File" _id="id456" />
+    <STEPFormat Name="AP203_E2_Separate_Part_Files" _id="id457" />
+  </DataExchange>
+</Assemblies>

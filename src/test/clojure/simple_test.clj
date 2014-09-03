@@ -28,7 +28,7 @@
     (zip/edit #(str/upper-case %)) zip/root)
 
 (def excavator (->
-                "excavator/cad_assembly_boom_dipper.xml"
+                "excavator/excavator_boom_dipper_point.xml"
                 jio/resource jio/input-stream xml/parse))
 
 (def ex-zip (zip/xml-zip excavator))

@@ -1,7 +1,7 @@
 ;;
 ;; This program is typically run as follows:
 ;;
-;;  lein run -- -i  ./src/test/resources/excavator/cad_assembly_boom_dipper.xml -o ./src/test/resources/excavator/cad_assembly_boom_dipper_aug.xml
+;;  lein run -- -i  ./src/test/resources/excavator/excavator_boom_dipper_point.xml -o ./src/test/resources/excavator/cad_assembly_boom_dipper_aug.xml
 ;;
 (ns isis.geom.linkage-assembler
   (:gen-class :main true)
