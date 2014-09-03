@@ -220,13 +220,10 @@
           ;; the end of the constraint signifies the wrapping
           ;; up for the component's constraints.
           :Constraint
-          (let [new-wip (dissoc wip :grounded)
-            foo (if (:grounded wip)
+          (let [new-wip (dissoc wip :grounded)]
+            (if (:grounded wip)
               [(update-kb-grounded kb wip) new-zip new-wip]
-              [kb new-zip new-wip] )]
-    (pp/pprint ["end-constraint" (nth foo 0)])
-               foo
-            )
+              [kb new-zip new-wip] ) )
 
           ;; the default
           [kb new-zip wip]))
@@ -302,6 +299,7 @@
       (if-not (.hasNext reader)
         (do
           (println "you have reached the end of the input file")
+          ;; (pp/pprint ["kb:" kb])
           kb)
         (let [event (.nextEvent reader)
               [new-kb new-wip new-zip]
