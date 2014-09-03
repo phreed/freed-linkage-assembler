@@ -1,6 +1,6 @@
-(ns xml.cyphy-cad-test
+(ns cyphy.excavator-point-test
   (:require [midje.sweet :refer [defchecker chatty-checker checker facts fact]]
-            [isis.geom.lang.cyphy-cad-stax :as cyphy]
+            [isis.geom.cyphy.cad-stax :as cyphy]
 
             [clojure.java.io :as jio]
             [clojure.data]
@@ -32,10 +32,8 @@
                                #(if (misc/reference? %) [:ref @%] %) actual)]
              (if (= actual-deref expected) true
                (do
-                 (println "Actual result:\n")
-                 (clojure.pprint/pprint actual-deref)
-                 (println "Expected result:\n")
-                 (clojure.pprint/pprint expected)
+                 (clojure.pprint/pprint ["Actual result:" actual-deref])
+                 (clojure.pprint/pprint ["Expected result:" expected])
                  )))))
 
 (with-open [fis (-> "excavator/cad_assembly_boom_dipper.xml"
@@ -44,7 +42,7 @@
         constraints (:constraint kb)
         exp-constraints (meta-joint/expand-higher-constraints constraints)
 
-        _ (pp/pprint ["exp-con:" exp-constraints])
+        ;; _ (pp/pprint ["exp-con:" exp-constraints])
 
         constraint-checker
         (ref->checker

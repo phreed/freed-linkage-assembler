@@ -5,7 +5,7 @@
 ;;
 (ns isis.geom.linkage-assembler
   (:gen-class :main true)
-  (:require [isis.geom.lang.cyphy-cad-stax :as cyphy]
+  (:require [isis.geom.cyphy.cad-stax :as cyphy]
 
             [clojure.tools.cli :refer [parse-opts]]
             [clojure.string :as string]

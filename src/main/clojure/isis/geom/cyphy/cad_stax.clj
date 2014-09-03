@@ -1,4 +1,4 @@
-(ns isis.geom.lang.cyphy-cad-stax
+(ns isis.geom.cyphy.cad-stax
   "Manipulating the CyPhy2CAD produced CADAssembly.xml file using stax."
   (:require
    [isis.geom.machine.geobj :as ga]
@@ -205,14 +205,14 @@
             new-zip (conj (pop new-zip)
                           (update-in (peek new-zip) [1] inc))]
 
-        (pp/pprint ["end element " (.toString (.getName event))])
+        ;; (pp/pprint ["end element " (.toString (.getName event))])
 
         (case elem-type
           ;; The end of a pair indicates that a (set of)
           ;; constraint can be added to the knowledge base.
           :Pair
           (let [new-wip (dissoc wip :active-marker :constraint)]
-            (pp/pprint ["jointed " wip])
+            ;; (pp/pprint ["jointed " wip])
             (if (:grounded wip)
               [kb new-zip new-wip]
               [(update-kb-jointed kb wip) new-zip new-wip]))
