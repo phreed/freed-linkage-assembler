@@ -105,14 +105,14 @@
         ]
 
     [ { :type :coincident
-            :m1 [[m1-link-name (str m1-proper-name "-origin")] {:e m1-e}]
-            :m2 [[m2-link-name (str m2-proper-name "-origin")] {:e m2-e}]}
-          { :type :coincident
-            :m1 [[m1-link-name (str m1-proper-name "-3x")] {:e m1-3x}]
-            :m2 [[m2-link-name (str m2-proper-name "-3x")] {:e m2-3x}]}
-          { :type :coincident
-            :m1 [[m1-link-name (str m1-proper-name "-4y")] {:e m1-4y}]
-            :m2 [[m2-link-name (str m2-proper-name "-4y")] {:e m2-4y}]}
+        :m1 [[m1-link-name (str m1-proper-name "-origin")] {:e m1-e}]
+        :m2 [[m2-link-name (str m2-proper-name "-origin")] {:e m2-e}]}
+      { :type :coincident
+        :m1 [[m1-link-name (str m1-proper-name "-3x")] {:e m1-3x}]
+        :m2 [[m2-link-name (str m2-proper-name "-3x")] {:e m2-3x}]}
+      { :type :coincident
+        :m1 [[m1-link-name (str m1-proper-name "-4y")] {:e m1-4y}]
+        :m2 [[m2-link-name (str m2-proper-name "-4y")] {:e m2-4y}]}
       ]))
 
 
@@ -132,8 +132,6 @@
 (defn expand-higher-constraints
   "Mutate and expand the constraints."
   [constraints]
-  (pp/pprint "expand-constraints" constraints)
   (loop [constraints constraints, result []]
-    (pp/pprint ["expand:" result])
     (if (empty? constraints) result
       (recur (rest constraints) (into result (expand-higher-constraint (first constraints))) ))))
