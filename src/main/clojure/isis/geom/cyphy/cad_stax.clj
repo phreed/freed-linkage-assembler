@@ -50,9 +50,11 @@
 
 (def constraint-type-map
   "A mapping between the types specified in the xml and the type required."
-  '{"SURFACE" :planar,
-    "POINT" :point,
-    "PLANE" :planar,
+  '{"POINT" :point
+    "SURFACE" :planar
+    "PLANE" :planar
+    "AXIS"  :linear
+    "LINE"  :linear
     "CSYS" :csys})
 
 

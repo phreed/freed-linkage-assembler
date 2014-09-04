@@ -31,7 +31,8 @@
   (checker [actual]
            (let [actual-deref (clojure.walk/postwalk
                                #(if (misc/reference? %) [:ref @%] %) actual)]
-             (if (= actual-deref expected) true
+             (= actual-deref expected)
+             #_(if (= actual-deref expected) true
                (do
                  (clojure.pprint/pprint ["Actual result:" actual-deref])
                  (clojure.pprint/pprint ["Expected result:" expected])
