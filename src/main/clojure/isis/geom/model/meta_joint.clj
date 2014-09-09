@@ -64,8 +64,8 @@
   "Mutate and expand the constraints."
   [constraints]
   (loop [constraints constraints, result []]
-    (if (empty? constraints)
-      result
+    (if (seq constraints)
       (let [reformed (expand-higher-constraint (first constraints)) ]
         ;; (clojure.pprint/pprint ["reformed" reformed])
-        (recur (rest constraints) (into result reformed)) ))))
+        (recur (rest constraints) (into result reformed)) )
+      result )))

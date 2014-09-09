@@ -117,8 +117,7 @@
   "Perform one locus analysis reformulation and terminate."
   []
   (loop [[locus-case & remaining-cases]  locus-analysis-cases]
-    (if (empty? remaining-cases)
-      false
+    (when (seq remaining-cases)
       (let [[c-type intersect-fn m1-c-type m2-c-type invariant-type] locus-case]
         ;; locus intersection is applicable when the
         ;; constraint type is present an the loci are intersectable.

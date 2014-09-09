@@ -60,7 +60,7 @@
             (if (< 2 (count graph))
               true
               (let [all-loops (identify-loops conn (number-of-geoms graph))]
-                (if (empty? all-loops) false
+                (when (seq all-loops)
                   (let [classified-loops (classify-all-loops all-loops)
                         [aloop new-redundant] (pick-loop classified-loops redundant)
                         [new-graph new-conn new-constrained new-non-rigid new-plan]  (solve-loop graph conn constrained non-rigid aloop)]
@@ -105,13 +105,13 @@
           (recur true xs (conj plan x) ys) )
         (recur progress? xs plan (conj ys x)))
       ;; active constraint list is exhausted.
-      (if (empty? ys)
-        ;; all the constraints have been satisfied
-        [true kb plan []]
+      (if (seq ys)
         ;; not all constraints have been satisfied
         (if progress?
           ;; still making progress, go again.
           (recur false ys plan [])
           ;; no progress is possible.
-          [false kb plan ys])))))
+          [false kb plan ys])
+        ;; all the constraints have been satisfied
+        [true kb plan []] ))))
 

@@ -9,7 +9,7 @@
   :dependencies [[org.clojure/clojure "1.6.0"]
                  [org.clojure/tools.cli "0.3.1"]
                  ;; [org.clojure/data ]
-                 [org.clojure/data.xml "0.0.7"]
+                 [org.clojure/data.xml "0.0.8"]
                  [org.clojure/data.zip "0.1.1"]
                  [org.codehaus.woodstox/stax2-api "3.1.4"]
                  [com.fasterxml/aalto-xml "0.9.9"]
