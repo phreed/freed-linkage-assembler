@@ -32,67 +32,73 @@
 
         ;;  _ (pp/pprint ["exp-con:" exp-constraints])
 
-        constraint-checker-arm2
+        ;; The arm2 {a93..51f} is connected to
+        ;; the boom {99c..264} via a revolute joint.
+        con-chk-arm2boom
         '[{:m1
-  [["{99ce8e6a-8722-4ed7-aa1a-ed46facf3264}" "CENTER_PLANE"]
-   {:e [-5302.02 3731.18 600.0], :pi 0.0, :q [0.0 0.0 -1.0]}],
-  :m2
-  [["{a93ca8b7-6de8-42e3-bc35-7224ec4ed51f}" "BOOM_CENTER_PLANE"]
-   {:e [0.0 0.0 -250.0], :pi 0.0, :q [0.0 0.0 1.0]}],
-  :type :planar}
- {:m1
-  [["{99ce8e6a-8722-4ed7-aa1a-ed46facf3264}" "ARM_GUIDE"]
-   {:e [-3741.05 1103.98 1369.99], :pi 0.0, :q [-531.29 -717.57 0.0]}],
-  :m2
-  [["{a93ca8b7-6de8-42e3-bc35-7224ec4ed51f}" "BOOM_GUIDE"]
-   {:e [1150.48 864.911 -250.0], :pi 0.0, :q [-334.565 -371.573 0.0]}],
-  :type :planar}
- {:m1
-  [["{99ce8e6a-8722-4ed7-aa1a-ed46facf3264}" "ARM_AXIS"]
-   {:e [-8625.71 4720.65 905.0], :pi 0.0, :q [0.0 0.0 1.0]}],
-  :m2
-  [["{a93ca8b7-6de8-42e3-bc35-7224ec4ed51f}" "BOOM_AXIS"]
-   {:e [2000.0 100.0 0.0], :pi 0.0, :q [0.0 0.0 -1.0]}],
-  :type :linear}]
+           [["{99ce8e6a-8722-4ed7-aa1a-ed46facf3264}" "CENTER_PLANE"]
+            {:e [-5302.02 3731.18 600.0], :pi 0.0, :q [0.0 0.0 -1.0]}],
+           :m2
+           [["{a93ca8b7-6de8-42e3-bc35-7224ec4ed51f}" "BOOM_CENTER_PLANE"]
+            {:e [0.0 0.0 -250.0], :pi 0.0, :q [0.0 0.0 1.0]}],
+           :type :planar}
+          {:m1
+           [["{99ce8e6a-8722-4ed7-aa1a-ed46facf3264}" "ARM_GUIDE"]
+            {:e [-3741.05 1103.98 1369.99], :pi 0.0, :q [-531.29 -717.57 0.0]}],
+           :m2
+           [["{a93ca8b7-6de8-42e3-bc35-7224ec4ed51f}" "BOOM_GUIDE"]
+            {:e [1150.48 864.911 -250.0], :pi 0.0, :q [-334.565 -371.573 0.0]}],
+           :type :planar}
+          {:m1
+           [["{99ce8e6a-8722-4ed7-aa1a-ed46facf3264}" "ARM_AXIS"]
+            {:e [-8625.71 4720.65 905.0], :pi 0.0, :q [0.0 0.0 1.0]}],
+           :m2
+           [["{a93ca8b7-6de8-42e3-bc35-7224ec4ed51f}" "BOOM_AXIS"]
+            {:e [2000.0 100.0 0.0], :pi 0.0, :q [0.0 0.0 -1.0]}],
+           :type :linear}]
 
 
-        constraint-checker-arm-cyl-a-j1
+        ;; The boom {99c..264} is connected to
+        ;; a hydraulic-jack {7d2..491} via a revolute joint.
+        con-chk-boom2jack
         '[{:m1
-  [["{99ce8e6a-8722-4ed7-aa1a-ed46facf3264}" "CENTER_PLANE"]
-   {:e [-5302.02 3731.18 600.0], :pi 0.0, :q [0.0 0.0 -1.0]}],
-  :m2
-  [["{7d252256-d674-4ab2-a8d0-add7baff5491}" "CYLINDER_PLANE"]
-   {:e [-266.844 7143.04 -427.1],
-    :pi 0.0,
-    :q [-44.021 88.35 104.392]}],
-  :type :planar}
- {:m1
-  [["{99ce8e6a-8722-4ed7-aa1a-ed46facf3264}" "UPPER_CYLINDER_AXIS"]
-   {:e [-5190.52 2830.18 675.0], :pi 0.0, :q [0.0 0.0 1.0]}],
-  :m2
-  [["{7d252256-d674-4ab2-a8d0-add7baff5491}" "CYLINDER_AXIS"]
-   {:e [-1703.15 6384.66 -192.041], :pi 0.0, :q [-27.5 55.2 10.023]}],
-  :type :linear}
-]
+           [["{99ce8e6a-8722-4ed7-aa1a-ed46facf3264}" "CENTER_PLANE"]
+            {:e [-5302.02 3731.18 600.0], :pi 0.0, :q [0.0 0.0 -1.0]}],
+           :m2
+           [["{7d252256-d674-4ab2-a8d0-add7baff5491}" "CYLINDER_PLANE"]
+            {:e [-266.844 7143.04 -427.1],
+             :pi 0.0,
+             :q [-44.021 88.35 104.392]}],
+           :type :planar}
+          {:m1
+           [["{99ce8e6a-8722-4ed7-aa1a-ed46facf3264}" "UPPER_CYLINDER_AXIS"]
+            {:e [-5190.52 2830.18 675.0], :pi 0.0, :q [0.0 0.0 1.0]}],
+           :m2
+           [["{7d252256-d674-4ab2-a8d0-add7baff5491}" "CYLINDER_AXIS"]
+            {:e [-1703.15 6384.66 -192.041], :pi 0.0, :q [-27.5 55.2 10.023]}],
+           :type :linear}
+          ]
 
-        constraint-checker-arm-cyl-a-j2
+        ;; The hydaulic-jack {7d2..491} is connected to
+        ;; the arm {a93..51f} via a revolute joint.
+        con-chk-jack2arm
         '[{:m1
-  [["{7d252256-d674-4ab2-a8d0-add7baff5491}" "JACK_PLANE"]
-   {:e [-266.844 7143.04 -427.1],
-    :pi 0.0,
-    :q [44.021 -88.34 -16.042]}],
-  :m2
-  [["{a93ca8b7-6de8-42e3-bc35-7224ec4ed51f}" "CYLINDER_CENTER_PLANE"]
-   {:e [0.0 0.0 -250.0], :pi 0.0, :q [0.0 0.0 1.0]}],
-  :type :planar}
- {:m1
-  [["{7d252256-d674-4ab2-a8d0-add7baff5491}" "JACK_AXIS"]
-   {:e [1243.25 7949.95 -726.974], :pi 0.0, :q [-27.12 54.43 9.884]}],
-  :m2
-  [["{a93ca8b7-6de8-42e3-bc35-7224ec4ed51f}" "CYLINDER_AXIS"]
-   {:e [2916.39 464.857 0.0], :pi 0.0, :q [0.0 0.0 -1.0]}],
-  :type :linear}
-]
+           [["{7d252256-d674-4ab2-a8d0-add7baff5491}" "JACK_PLANE"]
+            {:e [-266.844 7143.04 -427.1],
+             :pi 0.0,
+             :q [44.021 -88.34 -16.042]}],
+           :m2
+           [["{a93ca8b7-6de8-42e3-bc35-7224ec4ed51f}" "CYLINDER_CENTER_PLANE"]
+            {:e [0.0 0.0 -250.0], :pi 0.0, :q [0.0 0.0 1.0]}],
+           :type :planar}
+          {:m1
+           [["{7d252256-d674-4ab2-a8d0-add7baff5491}" "JACK_AXIS"]
+            {:e [1243.25 7949.95 -726.974], :pi 0.0, :q [-27.12 54.43 9.884]}],
+           :m2
+           [["{a93ca8b7-6de8-42e3-bc35-7224ec4ed51f}" "CYLINDER_AXIS"]
+            {:e [2916.39 464.857 0.0], :pi 0.0, :q [0.0 0.0 -1.0]}],
+           :type :linear}
+          ]
 
         expanded-constraint-checker
         (chk/contains
@@ -122,15 +128,15 @@
 
 
     (chk/facts "about the parsed cad-assembly file with :planar"
-           (chk/fact "arm2" constraints => (chk/contains constraint-checker-arm2))
-           (chk/fact "arm cyl a first" constraints => (chk/contains constraint-checker-arm-cyl-a-j1))
-           (chk/fact "arm cyl a second" constraints => (chk/contains constraint-checker-arm-cyl-a-j2))
-           #_(chk/fact "about the initial link settings" (:link kb) => link-checker)
-           #_(chk/fact "about the base link id" (:base kb) => "{cd51d123-aab8-4d6e-b27f-fd94701e0007}|1")
-           #_(chk/fact "about the initial marker invariants" (:mark kb) => mark-checker)
+               (chk/fact "arm2" constraints => (chk/contains con-chk-arm2boom))
+               (chk/fact "arm cyl a first" constraints => (chk/contains con-chk-boom2jack))
+               (chk/fact "arm cyl a second" constraints => (chk/contains con-chk-jack2arm))
+               #_(chk/fact "about the initial link settings" (:link kb) => link-checker)
+               #_(chk/fact "about the base link id" (:base kb) => "{cd51d123-aab8-4d6e-b27f-fd94701e0007}|1")
+               #_(chk/fact "about the initial marker invariants" (:mark kb) => mark-checker)
 
 
-           #_(chk/fact "about the expanded constraints" exp-constraints => expanded-constraint-checker))
+               #_(chk/fact "about the expanded constraints" exp-constraints => expanded-constraint-checker))
 
 
     #_(let [result (position-analysis kb exp-constraints)
@@ -140,10 +146,10 @@
         ;; (pp/pprint result-success)
         ;; (pp/pprint result-link)
         (chk/facts "about results of linkage-assembly"
-               (chk/fact "about the mark result" result-mark => mark-checker-2)
-               (chk/fact "about the link result" result-link => link-checker-2)
-               (chk/fact "about the success result" result-success => success-checker)
-               (chk/fact "about the failure result" result-failure => failure-checker) )
+                   (chk/fact "about the mark result" result-mark => mark-checker-2)
+                   (chk/fact "about the link result" result-link => link-checker-2)
+                   (chk/fact "about the success result" result-success => success-checker)
+                   (chk/fact "about the failure result" result-failure => failure-checker) )
 
         #_(with-open [fis (-> "excavator/excavator_total_plane.xml"
                               jio/resource jio/input-stream)
