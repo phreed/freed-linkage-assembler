@@ -141,7 +141,7 @@
           (if (:grounded wip)
             [kb new-zip wip]
             (let [c-type (parse-string-attribute event "FeatureGeometryType")]
-              (pp/pprint c-type)
+              ;; (pp/pprint c-type)
               (cond (contains? constraint-type-map c-type)
                     [kb new-zip
                      (assoc wip

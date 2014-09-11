@@ -24,6 +24,12 @@
              [offset-z-slice]
              [parallel-z-slice]]))
 
+(defn unref
+  "takes an arbitrary tree and replaces all futures
+  with agnostic strings."
+  [form]
+  (clojure.walk/postwalk #(if (misc/reference? %) @% %) form))
+
 (with-open [fis (-> "excavator/excavator_total_plane.xml"
                     jio/resource jio/input-stream)]
   (let [kb (cyphy/extract-knowledge-from-cad-assembly fis)
@@ -100,25 +106,62 @@
            :type :linear}
           ]
 
+        con-chk-grd
+        '[{:m1
+           [["{7d252256-d674-4ab2-a8d0-add7baff5491}" "JACK_PLANE"]
+            {:e [-266.844 7143.04 -427.1],
+             :pi 0.0,
+             :q [44.021 -88.34 -16.042]}],
+           :m2
+           [["{a93ca8b7-6de8-42e3-bc35-7224ec4ed51f}" "CYLINDER_CENTER_PLANE"]
+            {:e [0.0 0.0 -250.0], :pi 0.0, :q [0.0 0.0 1.0]}],
+           :type :planar}
+          {:m1
+           [["{7d252256-d674-4ab2-a8d0-add7baff5491}" "JACK_AXIS"]
+            {:e [1243.25 7949.95 -726.974], :pi 0.0, :q [-27.12 54.43 9.884]}],
+           :m2
+           [["{a93ca8b7-6de8-42e3-bc35-7224ec4ed51f}" "CYLINDER_AXIS"]
+            {:e [2916.39 464.857 0.0], :pi 0.0, :q [0.0 0.0 -1.0]}],
+           :type :linear}
+          ]
+
         expanded-constraint-checker
         (chk/contains
          '[])
 
         link-checker
-        (chk/contains
-         '[])
+        '{
+          "{7d252256-d674-4ab2-a8d0-add7baff5491}"
+          {:versor {:xlate [0.0 0.0 0.0] :rotate [1.0 0.0 0.0 0.0]}
+           :tdof {:# 3} :rdof {:# 3}}
+          "{99ce8e6a-8722-4ed7-aa1a-ed46facf3264}"
+          {:versor {:xlate [0.0 0.0 0.0] :rotate [1.0 0.0 0.0 0.0]}
+           :tdof {:# 3} :rdof {:# 3}}
+          "{a93ca8b7-6de8-42e3-bc35-7224ec4ed51f}"
+          {:versor {:xlate [0.0 0.0 0.0] :rotate [1.0 0.0 0.0 0.0]}
+           :tdof {:# 3} :rdof {:# 3}}
+           }
+
+
+        link-checker-final
+        '{
+          "{7d252256-d674-4ab2-a8d0-add7baff5491}"
+          {:versor {:xlate [0.0 0.0 0.0] :rotate [1.0 0.0 0.0 0.0]}
+           :tdof {:# 3} :rdof {:# 3}}
+          "{99ce8e6a-8722-4ed7-aa1a-ed46facf3264}"
+          {:versor {:xlate [0.0 0.0 0.0] :rotate [1.0 0.0 0.0 0.0]}
+           :tdof {:# 3} :rdof {:# 3}}
+          "{a93ca8b7-6de8-42e3-bc35-7224ec4ed51f}"
+          {:versor {:xlate [0.0 0.0 0.0] :rotate [1.0 0.0 0.0 0.0]}
+           :tdof {:# 3} :rdof {:# 3}}
+           }
 
         mark-checker
-        (chk/contains
-         '[])
+        {:loc #{["{3451cc65-9ad0-4f78-8a0c-290d1595fe74}|1"]}
+          :x #{["{3451cc65-9ad0-4f78-8a0c-290d1595fe74}|1"]}
+          :z #{["{3451cc65-9ad0-4f78-8a0c-290d1595fe74}|1"]}}
 
-
-        mark-checker-2
-        (chk/contains
-         '[])
-
-
-        success-checker
+        mark-checker-final
         (chk/contains
          '[])
 
@@ -131,9 +174,9 @@
                (chk/fact "arm2" constraints => (chk/contains con-chk-arm2boom))
                (chk/fact "arm cyl a first" constraints => (chk/contains con-chk-boom2jack))
                (chk/fact "arm cyl a second" constraints => (chk/contains con-chk-jack2arm))
-               #_(chk/fact "about the initial link settings" (:link kb) => link-checker)
-               #_(chk/fact "about the base link id" (:base kb) => "{cd51d123-aab8-4d6e-b27f-fd94701e0007}|1")
-               #_(chk/fact "about the initial marker invariants" (:mark kb) => mark-checker)
+               (chk/fact "about the initial link settings" (unref (:link kb)) => (chk/contains link-checker))
+               (chk/fact "about the base link id" (:base kb) => "{3451cc65-9ad0-4f78-8a0c-290d1595fe74}|1")
+               (chk/fact "about the initial marker invariants" (unref (:mark kb)) => mark-checker)
 
 
                #_(chk/fact "about the expanded constraints" exp-constraints => expanded-constraint-checker))
