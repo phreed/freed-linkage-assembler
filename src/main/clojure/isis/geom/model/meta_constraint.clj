@@ -1,17 +1,17 @@
-(ns isis.geom.model.meta-joint
+(ns isis.geom.model.meta-constraint
   "These joints are introduced as part of the AVM/META project."
   (:require
    [isis.geom.machine.geobj :as ga]
    [isis.geom.machine.tolerance :as tol]
    [clojure.pprint :as pp] ))
 
-(defn- expand-point-constraint
+(defn- expand-point
   "expand the :point constraint into an array[1] of :coincident constraints."
   [constraint]
   [(assoc-in constraint [:type] :coincident)])
 
 
-(defn- expand-csys-constraint
+(defn- expand-csys
   "When a component is placed with a csys it
   can be implemented with three
   standardized coincident constraints.
@@ -45,27 +45,28 @@
       ]))
 
 
-(defn- expand-planar-constraint [constraint] [constraint])
+(defn- expand-planar [constraint] [constraint])
 
-(defn- expand-unidentified-constraint [constraint] [constraint])
+(defn- expand-unidentified [constraint] [constraint])
 
 
-(defn- expand-higher-constraint
+(defn- expand
   "Mutate and expand a constraint as needed."
   [constraint]
   (case (:type constraint)
-    :point (expand-point-constraint constraint)
-    :csys (expand-csys-constraint constraint)
-    :planar (expand-planar-constraint constraint)
-    (expand-unidentified-constraint constraint)))
+    :point (expand-point constraint)
+    :csys (expand-csys constraint)
+    :planar (expand-planar constraint)
+    (expand-unidentified constraint)))
 
 
-(defn expand-higher-constraints
+(defn expand-collection
   "Mutate and expand the constraints."
-  [constraints]
-  (loop [constraints constraints, result []]
-    (if (seq constraints)
-      (let [reformed (expand-higher-constraint (first constraints)) ]
+  [collection]
+  (loop [constraints collection, result []]
+    (if (empty? constraints)
+      result
+
+      (let [reformed (expand (first constraints)) ]
         ;; (clojure.pprint/pprint ["reformed" reformed])
-        (recur (rest constraints) (into result reformed)) )
-      result )))
+        (recur (rest constraints) (into result reformed)) ) )))

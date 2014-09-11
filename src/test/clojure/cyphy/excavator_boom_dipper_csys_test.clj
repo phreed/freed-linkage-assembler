@@ -6,7 +6,7 @@
             [clojure.java.io :as jio]
             [clojure.data]
             [clojure.pprint :as pp]
-            [isis.geom.model.meta-joint :as meta-joint]
+            [isis.geom.model.meta-constraint :as meta-con]
             [isis.geom.machine.misc :as misc]
 
             [isis.geom.analysis
@@ -42,7 +42,7 @@
                     jio/resource jio/input-stream)]
   (let [kb (cyphy/extract-knowledge-from-cad-assembly fis)
         constraints (:constraint kb)
-        exp-constraints (meta-joint/expand-higher-constraints constraints)
+        exp-constraints (meta-con/expand-collection constraints)
 
         ;;  _ (pp/pprint ["exp-con:" exp-constraints])
 

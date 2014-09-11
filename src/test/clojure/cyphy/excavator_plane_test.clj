@@ -6,7 +6,8 @@
             [clojure.java.io :as jio]
             [clojure.data]
             [clojure.pprint :as pp]
-            [isis.geom.model.meta-joint :as meta-joint]
+            [isis.geom.model.meta-constraint :as meta-constraint]
+            [isis.geom.model.lower-joint :as lower-joint]
             [isis.geom.machine.misc :as misc]
 
             [isis.geom.analysis
@@ -33,8 +34,9 @@
 (with-open [fis (-> "excavator/excavator_total_plane.xml"
                     jio/resource jio/input-stream)]
   (let [kb (cyphy/extract-knowledge-from-cad-assembly fis)
-        constraints (:constraint kb)
-        exp-constraints nil #_(meta-joint/expand-higher-constraints constraints)
+        constraints-orig (:constraint kb)
+        constraints-meta (meta-constraint/expand-collection constraints-orig)
+        constraints-lower (lower-joint/expand-collection constraints-meta)
 
         ;;  _ (pp/pprint ["exp-con:" exp-constraints])
 
@@ -62,6 +64,45 @@
            [["{a93ca8b7-6de8-42e3-bc35-7224ec4ed51f}" "BOOM_AXIS"]
             {:e [2000.0 100.0 0.0], :pi 0.0, :q [0.0 0.0 -1.0]}],
            :type :linear}]
+
+        con-chk-arm2boom-meta
+        '[{:m1
+           [["{99ce8e6a-8722-4ed7-aa1a-ed46facf3264}" "CENTER_PLANE"]
+            {:e [-5302.02 3731.18 600.0], :pi 0.0, :q [0.0 0.0 -1.0]}],
+           :m2
+           [["{a93ca8b7-6de8-42e3-bc35-7224ec4ed51f}" "BOOM_CENTER_PLANE"]
+            {:e [0.0 0.0 -250.0], :pi 0.0, :q [0.0 0.0 1.0]}],
+           :type :planar}
+          {:m1
+           [["{99ce8e6a-8722-4ed7-aa1a-ed46facf3264}" "ARM_GUIDE"]
+            {:e [-3741.05 1103.98 1369.99], :pi 0.0, :q [-531.29 -717.57 0.0]}],
+           :m2
+           [["{a93ca8b7-6de8-42e3-bc35-7224ec4ed51f}" "BOOM_GUIDE"]
+            {:e [1150.48 864.911 -250.0], :pi 0.0, :q [-334.565 -371.573 0.0]}],
+           :type :planar}
+          {:m1
+           [["{99ce8e6a-8722-4ed7-aa1a-ed46facf3264}" "ARM_AXIS"]
+            {:e [-8625.71 4720.65 905.0], :pi 0.0, :q [0.0 0.0 1.0]}],
+           :m2
+           [["{a93ca8b7-6de8-42e3-bc35-7224ec4ed51f}" "BOOM_AXIS"]
+            {:e [2000.0 100.0 0.0], :pi 0.0, :q [0.0 0.0 -1.0]}],
+           :type :linear}]
+
+        con-chk-arm2boom-lower
+        '[{:m1
+           [["{99ce8e6a-8722-4ed7-aa1a-ed46facf3264}" "CENTER_PLANE"]
+            {:e [-5302.02 3731.18 600.0], :pi 0.0, :q [0.0 0.0 -1.0]}],
+           :m2
+           [["{a93ca8b7-6de8-42e3-bc35-7224ec4ed51f}" "BOOM_CENTER_PLANE"]
+            {:e [0.0 0.0 -250.0], :pi 0.0, :q [0.0 0.0 1.0]}],
+           :type :in-plane}
+          {:m1
+           [["{99ce8e6a-8722-4ed7-aa1a-ed46facf3264}" "CENTER_PLANE"]
+            {:e [-5302.02 3731.18 600.0], :pi 0.0, :q [0.0 0.0 -1.0]}],
+           :m2
+           [["{a93ca8b7-6de8-42e3-bc35-7224ec4ed51f}" "BOOM_CENTER_PLANE"]
+            {:e [0.0 0.0 -250.0], :pi 0.0, :q [0.0 0.0 1.0]}],
+           :type :parallel-z}]
 
 
         ;; The boom {99c..264} is connected to
@@ -170,17 +211,20 @@
         ]
 
 
-    (chk/facts "about the parsed cad-assembly file with :planar"
-               (chk/fact "arm2" constraints => (chk/contains con-chk-arm2boom))
-               (chk/fact "arm cyl a first" constraints => (chk/contains con-chk-boom2jack))
-               (chk/fact "arm cyl a second" constraints => (chk/contains con-chk-jack2arm))
+    (chk/facts
+     "about the parsed cad-assembly file with :planar"
+               (chk/fact "arm2" constraints-orig => (chk/contains con-chk-arm2boom))
+               (chk/fact "arm cyl a first" constraints-orig => (chk/contains con-chk-boom2jack))
+               (chk/fact "arm cyl a second" constraints-orig => (chk/contains con-chk-jack2arm))
                (chk/fact "about the initial link settings" (unref (:link kb)) => (chk/contains link-checker))
                (chk/fact "about the base link id" (:base kb) => "{3451cc65-9ad0-4f78-8a0c-290d1595fe74}|1")
                (chk/fact "about the initial marker invariants" (unref (:mark kb)) => mark-checker)
 
 
-               #_(chk/fact "about the expanded constraints" exp-constraints => expanded-constraint-checker))
+               (chk/fact "arm2 meta expanded" constraints-meta => (chk/contains con-chk-arm2boom-meta))
+               (chk/fact "arm2 lower expanded" constraints-lower => (chk/contains con-chk-arm2boom-lower))
 
+               )
 
     #_(let [result (position-analysis kb exp-constraints)
             [success? result-kb result-success result-failure] result

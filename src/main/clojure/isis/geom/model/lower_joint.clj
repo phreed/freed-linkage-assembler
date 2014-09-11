@@ -1,4 +1,4 @@
-(ns isis.geom.model.joint
+(ns isis.geom.model.lower-joint
   (:require
    [isis.geom.machine.geobj :as ga]
    [isis.geom.machine.tolerance :as tol]
@@ -7,9 +7,6 @@
 (comment
   "A joint's representation is [[:jprim-1 :jprim-2 ...] dof]
   where dof is the degrees of freedom for the joint." )
-
-(def turn 6.2831853071)
-(def quarter-turn (* 0.25 turn))
 
 
 (def legal-joints
@@ -31,37 +28,8 @@
    [[:offset-z] 1]
    [[:coincident] 3] ])
 
-(def asymetric-joint-primitives
-  "The two joint primitives that are asymetric."
-  #{:in-line :in-plane})
 
-(defn asymetric-joint-primitive?
-  "'true' if the specified constraint type is an
-  asymetric joint primitive."
-  [constraint-type]
-  (some asymetric-joint-primitives constraint-type))
-
-(def joint-primitive-binary
-  "the binary primitive joint types"
-  #{:coincident :in-line :in-plane :parallel-z} )
-
-(def joint-primitive-ternary
-  "the ternary primitive joint types"
-  #{:offset-z :offset-x :helical} )
-
-(def joint-primitive-compond
-  #{:co-oriented [:parallel-z [:offset-x 0.0]]
-    :screw [:in-line :parallel-z :helical]
-    :perpendicular-z [[:offset-z quarter-turn]] } )
-
-(def joint-primitive-driving
-  "the driving joint types"
-  {:angle
-   [:offset-x quarter-turn]
-   :displacement [] } )
-
-
-(def joint-primitive-map
+(def lower-joint-map
   "joints are conveniently specified at a higher level
   than primitive constraints.  In order to perform position-analysis
   these lower (and higher) joints must be decomposed into their
@@ -74,3 +42,25 @@
    :planar [:in-plane :parallel-z]
    :universal [:coincident :perpendicular-z]
    :fixed [:coincident :in-plane :offset-x] })
+
+
+(defn expand
+  "Expand a single lower joint into a vector of joint-primitives."
+  [constraint]
+  (let [j-type (:type constraint)
+        p-types (get lower-joint-map j-type)]
+    (into []
+          (for [p-type p-types]
+            (assoc-in constraint [:type] p-type)) )))
+
+
+(defn expand-collection
+  "Mutate and expand the lower joints."
+  [collection]
+  (loop [joints collection, result []]
+    (if (empty? joints)
+      result
+
+      (let [reformed (expand (first joints)) ]
+        (recur (rest joints) (into result reformed)) ))))
+

@@ -5,7 +5,7 @@
             [clojure.java.io :as jio]
             [clojure.data]
             [clojure.pprint :as pp]
-            [isis.geom.model.meta-joint :as meta-joint]
+            [isis.geom.model.meta-constraint :as meta-con]
             [isis.geom.machine.misc :as misc]
 
             [isis.geom.analysis
@@ -40,7 +40,7 @@
                     jio/resource jio/input-stream)]
   (let [kb (cyphy/extract-knowledge-from-cad-assembly fis)
         constraints (:constraint kb)
-        exp-constraints (meta-joint/expand-higher-constraints constraints)
+        constraints-exp (meta-con/expand-collection constraints)
 
         ;; _ (pp/pprint ["exp-con:" exp-constraints])
 
@@ -240,10 +240,10 @@
            (fact "about the initial marker invariants" (:mark kb) => mark-checker)
 
 
-           (fact "about the expanded constraints" exp-constraints => expanded-constraint-checker))
+           (fact "about the expanded constraints" constraints-exp => expanded-constraint-checker))
 
 
-    (let [result (position-analysis kb exp-constraints)
+    (let [result (position-analysis kb constraints-exp)
           [success? result-kb result-success result-failure] result
           {result-mark :mark result-link :link} result-kb ]
 
