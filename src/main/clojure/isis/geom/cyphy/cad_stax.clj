@@ -115,9 +115,9 @@
                        (ref {:tdof {:# 0} :rdof {:# 0}
                              :versor {:xlate [0.0 0.0 0.0]
                                       :rotate [1.0 0.0 0.0 0.0]}})}
-                :mark {:loc (ref #{[base-link-id]})
-                       :z (ref #{[base-link-id]})
-                       :x (ref #{[base-link-id]})}}
+                :invar {:loc (ref #{[base-link-id]})
+                       :dir (ref #{[base-link-id]})
+                       :twist (ref #{[base-link-id]})}}
                new-zip
                (assoc wip :base-link-id base-link-id)])
 

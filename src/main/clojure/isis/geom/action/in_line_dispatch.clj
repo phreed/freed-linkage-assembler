@@ -11,5 +11,5 @@
   [m1 m2 inv]
   (cond (invariant/marker? inv m1 :loc)  m2
         (and (invariant/marker? inv m2 :loc)
-             (invariant/marker? inv m2 :z))
+             (invariant/marker? inv m2 :dir))
         m1))

@@ -88,10 +88,10 @@
 
 
 (let [graph @brick-graph
-      mark-pattern
+      invar-checker
       '{:loc [:ref #{[cap] [ground] [brick] }]
-        :z [:ref #{[ground] [brick] [cap]}]
-        :x [:ref #{[ground] [brick] [cap]} ]}
+        :dir [:ref #{[ground] [brick] [cap]}]
+        :twist [:ref #{[ground] [brick] [cap]} ]}
 
       link-pattern
       '{ground [:ref {:versor {:xlate [0.0 0.0 0.0]
@@ -143,9 +143,9 @@
   (let [constraints (joints->constraints graph)
         kb (graph->init-invariants graph)
         [success? result-kb result-success result-failure] (position-analysis kb constraints)
-        {result-mark :mark result-link :link} (ref->str result-kb)]
+        {result-mark :invar result-link :link} (ref->str result-kb)]
     (facts "concerning position analysis for the brick"
-           (fact "about marker invariants" result-mark => mark-pattern)
+           (fact "about marker invariants" result-mark => invar-checker)
            (fact "about linkage placement" result-link => link-pattern)
            (fact "about constraint plan" result-success => success-pattern)
            (fact "about failures" result-failure => failure-pattern)) ))

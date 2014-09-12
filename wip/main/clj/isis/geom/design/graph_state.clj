@@ -76,9 +76,9 @@
 
     (clear-invariants!)
     (doseq [av  ['m12-1 'm12-2] ]
-      (add-invariant! av :position)
-      (add-invariant! av :z)
-      (add-invariant! av :x) )) )
+      (add-invariant! av :loc)
+      (add-invariant! av :dir)
+      (add-invariant! av :twist) )) )
 
 (defn geom-markers
   "Return the marker vector for a particular geom."

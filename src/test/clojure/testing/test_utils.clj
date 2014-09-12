@@ -52,9 +52,9 @@
        (fact "does the ref->str work"
              (ref->str
               {:loc (ref #{["{cd51d123-aab8-4d6e-b27f-fd94701e0007}|1"]}),
-               :z (ref #{["{cd51d123-aab8-4d6e-b27f-fd94701e0007}|1"]}),
-               :x (ref #{["{cd51d123-aab8-4d6e-b27f-fd94701e0007}|1"]})} )
+               :dir (ref #{["{cd51d123-aab8-4d6e-b27f-fd94701e0007}|1"]}),
+               :twist (ref #{["{cd51d123-aab8-4d6e-b27f-fd94701e0007}|1"]})} )
              =>
              '{:loc (:ref #{["{cd51d123-aab8-4d6e-b27f-fd94701e0007}|1"]}),
-              :z (:ref #{["{cd51d123-aab8-4d6e-b27f-fd94701e0007}|1"]}),
-              :x (:ref #{["{cd51d123-aab8-4d6e-b27f-fd94701e0007}|1"]})} ))
+              :dir (:ref #{["{cd51d123-aab8-4d6e-b27f-fd94701e0007}|1"]}),
+              :twist (:ref #{["{cd51d123-aab8-4d6e-b27f-fd94701e0007}|1"]})} ))

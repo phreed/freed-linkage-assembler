@@ -93,14 +93,14 @@
   The marker invariants for that link are also invariant."
   [graph]
   (dosync
-   (let [mis (invariant/init-marker-s)
+   (let [mis (invariant/init-marker)
          mis-l (:loc mis), mis-z (:z mis), mis-x (:x mis)
          base-link-name (:base graph)
          links (:links graph)
          free-links (remove #{base-link-name} (keys links))
          base-link (base-link-name links)
          markers (:markers base-link)
-         kb {:mark mis
+         kb {:invar mis
              :link (into
                     {}
                     (map #(hash-map

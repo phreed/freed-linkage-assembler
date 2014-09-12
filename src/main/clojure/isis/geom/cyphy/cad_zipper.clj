@@ -128,9 +128,9 @@
       :constraint constraint-list
       :link link-map
       :base base-link-id
-      :mark {:loc (ref #{[base-link-id]})
-             :z (ref #{[base-link-id]})
-             :x (ref #{[base-link-id]})} } ))
+      :invar {:loc (ref #{[base-link-id]})
+             :dir (ref #{[base-link-id]})
+             :twist (ref #{[base-link-id]})} } ))
 
 (defn graph-to-cyphy-zipper
   [graph]

@@ -81,9 +81,9 @@
         :m2 [[brick b1] {:e [-100.0 50.0 10.0]}]}
 
       pattern
-      '{:mark {:loc #{[ground] [brick b1]}
-               :z #{[ground]}
-               :x #{[ground]}}
+      '{:invar {:loc #{[ground] [brick b1]}
+               :dir #{[ground]}
+               :twist #{[ground]}}
         :link {ground {:tdof {:# 0} :rdof {:# 0}
                        :versor {:xlate [0.0 0.0 0.0] :rotate [1.0 0.0 0.0 0.0]}}
                brick {:tdof {:# 0 :point [0.0 0.0 0.0]}, :rdof {:# 3}
@@ -101,10 +101,10 @@
         :m1 [[ground g3] {:e [5.0 4.0 0.0]}]
         :m2 [[brick b3] {:e [0.0 0.0 4.0]}]}
 
-      mark-pattern
+      invar-checker
       '{:loc #{[ground] [brick b3]}
-        :z #{[ground]}
-        :x #{[ground]}}
+        :dir #{[ground]}
+        :twist #{[ground]}}
       link-pattern
       '{ground {:tdof {:# 0}, :rdof {:# 0}
                 :versor {:xlate [0.0 0.0 0.0] :rotate [1.0 0.0 0.0 0.0]}}
@@ -113,10 +113,10 @@
         cap {:tdof {:# 3}, :rdof {:# 3},
              :versor {:xlate [0.0 0.0 0.0] :rotate [1.0 0.0 0.0 0.0]}} }]
   (let [_ (constraint-attempt? kb input)
-        {result-mark :mark result-link :link} (unref kb)]
+        {result-mark :invar result-link :link} (unref kb)]
     (facts "simulate the brick being repositioned"
            (fact "about marker invariant by 0-3-coincident"
-                 result-mark => mark-pattern)
+                 result-mark => invar-checker)
            (fact "about link placement by 0-3-coincident"
                  result-link => link-pattern))))
 
@@ -130,10 +130,10 @@
         :m1 [[ground g1] {:e [2.0 0.0 0.0]}]
         :m2 [[brick b1] {:e [0.0 0.0 0.0]}]}
 
-      first-mark-pattern
+      first-invar-checker
       '{:loc #{[ground] [brick b1]}
-        :z #{[ground]}
-        :x #{[ground]}}
+        :dir #{[ground]}
+        :twist #{[ground]}}
       first-link-pattern
       '{ground {:tdof {:# 0}, :rdof {:# 0}
                 :versor {:xlate [0.0 0.0 0.0] :rotate [1.0 0.0 0.0 0.0]}}
@@ -148,10 +148,10 @@
         :m1 [[ground g2] {:e [5.0 0.0 0.0]}]
         :m2 [[brick b2] {:e [0.0 3.0 0.0]}]}
 
-      second-mark-pattern
+      second-invar-checker
       '{:loc #{[ground] [brick b1] [brick b2]}
-        :z #{[ground] [brick b2]}
-        :x #{[ground]}}
+        :dir #{[ground] [brick b2]}
+        :twist #{[ground]}}
 
       second-link-pattern
       (assoc-in first-link-pattern ['brick]
@@ -165,10 +165,10 @@
         :m1 [[ground g3] {:e [2.0 4.0 0.0]}]
         :m2 [[brick b3] {:e [0.0 0.0 4.0]}]}
 
-      third-mark-pattern
+      third-invar-checker
       '{:loc #{[ground] [brick]}
-        :z #{[ground] [brick]}
-        :x #{[ground] [brick]}}
+        :dir #{[ground] [brick]}
+        :twist #{[ground] [brick]}}
 
       third-link-pattern
       (assoc-in second-link-pattern ['brick]
@@ -180,24 +180,24 @@
       ]
 
   (let [_ (constraint-attempt? kb first-input)
-        {result-mark :mark result-link :link} (unref kb)]
+        {result-mark :invar result-link :link} (unref kb)]
     (facts "simulate the second point being repositioned, by 3-3-coincident"
            (fact "about marker invariant by 0-3-coincident"
-                 result-mark => first-mark-pattern)
+                 result-mark => first-invar-checker)
            (fact "about link placement by 0-3-coincident"
                  result-link => first-link-pattern)))
   (let [_ (constraint-attempt? kb second-input)
-        {result-mark :mark result-link :link} (unref kb)]
+        {result-mark :invar result-link :link} (unref kb)]
     (facts "simulate the second point being repositioned, by 0-3-coincident"
            (fact "about marker invariant by 0-3-coincident"
-                 result-mark => second-mark-pattern)
+                 result-mark => second-invar-checker)
            (fact "about link placement by 0-3-coincident"
                  result-link => second-link-pattern)))
   (let [_ (constraint-attempt? kb third-input)
-        {result-mark :mark result-link :link} (unref kb)]
+        {result-mark :invar result-link :link} (unref kb)]
     (facts "simulate the second point being repositioned, by 0-1-coincident"
            (fact "about marker invariant by 0-3-coincident"
-                 result-mark => third-mark-pattern)
+                 result-mark => third-invar-checker)
            (fact "about link placement by 0-3-coincident"
                  result-link => third-link-pattern))))
 

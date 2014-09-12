@@ -42,7 +42,7 @@
   []
   (doseq (geom '(l13 l23))
     (when (zero? (rdof (get-geom-status geom)))
-      (map (fn [?m] (add-invariant! ?m :z) (add-invariant ?m :x))
+      (map (fn [?m] (add-invariant! ?m :dir) (add-invariant ?m :twist))
               (geom-markers geom)))
     (when (equal? (get-geom-status geom) [0 0])
       (map (fn [?m] (add-invariant! ?m :position))

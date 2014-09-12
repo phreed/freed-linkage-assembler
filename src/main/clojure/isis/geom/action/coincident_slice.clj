@@ -5,15 +5,17 @@
                            vec-diff
                            gmp normalize]]]
             [isis.geom.action
-             [auxiliary :refer [dof-1r:p->p
-                                dof-3r:p->p]] ]
-             [isis.geom.model.invariant :as invariant] ))
+             [auxiliary :as dof]]
+            [isis.geom.model.invariant :as invariant] ))
 
 
-(defn transform!->0-1
+(defn transform!->t0-r1
   "PFT entry: (0,1,coincident)
 
 Initial status:
+  0-TDOF(?m1-link, ?m1-point)
+  0-RDOF(?m1-link, ?m1-axis)
+
   0-TDOF(?m2-link, ?m2-point)
   1-RDOF(?m2-link, ?m2-axis, ?m2-axis-1, ?m2-axis-2)
 
@@ -42,7 +44,7 @@ Explanation:
         m2-axis-2 (get-in @m2-link [:rdof :axis-2])]
     (dosync
      (alter m2-link merge
-            (dof-1r:p->p @m2-link m2-point
+            (dof/r1:p->p @m2-link m2-point
                          (gmp m2 kb) (gmp m1 kb)
                          m2-axis m2-axis-1 m2-axis-2))
      (invariant/set-link! kb m2-link-name)
@@ -50,7 +52,7 @@ Explanation:
             :rdof {:# 0} ) )))
 
 
-(defn transform!->0-3
+(defn transform!->t0-r3
   "PFT entry: (0,3,coincident)
 
 Initial status:
@@ -77,16 +79,16 @@ Explanation:
         m2-point (get-in @m2-link [:tdof :point])]
     (dosync
      (invariant/set-marker! kb m2-link-name m2-proper-name :loc)
-     (invariant/set-marker! kb m2-link-name m2-proper-name :z)
+     (invariant/set-marker! kb m2-link-name m2-proper-name :dir)
      (alter m2-link merge
-            (dof-3r:p->p @m2-link m2-point
+            (dof/r3:p->p @m2-link m2-point
                          (gmp m2 kb) (gmp m1 kb)))
      (alter m2-link assoc
             :rdof {:# 1
                    :axis (normalize (vec-diff (gmp m2 kb) m2-point))} ) )))
 
 
-(defn transform!->3-3
+(defn transform!->t3-r3
   "PFT entry: (3,3,coincident)
 
   Initial status:

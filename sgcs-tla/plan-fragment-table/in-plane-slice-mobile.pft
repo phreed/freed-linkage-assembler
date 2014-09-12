@@ -7,7 +7,7 @@ Constraint:
   in-plane(?M_1, ?M_2)
 
 ---
-PFT entry: (?M_1 moves)
+PFT entry: (?M_1 moves and ?M_2 is fixed)
 ---
 
 Assumptions:

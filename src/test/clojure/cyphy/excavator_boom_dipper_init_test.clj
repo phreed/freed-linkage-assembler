@@ -73,14 +73,14 @@
                          jio/resource jio/input-stream)]
         (cyphy/graph-from-cyphy-input-stream is))
 
-      mark-pattern
+      invar-checker
       '{:loc [:ref #{["{059166f0-b3c0-474f-9dcb-d5e865754d77}|1"]
                      ["{62243423-b7fd-4a10-8a98-86209a6620a4}"]
                      ["{bb160c79-5ba3-4379-a6c1-8603f29079f2}"]}]
-        :z [:ref #{["{059166f0-b3c0-474f-9dcb-d5e865754d77}|1"]
+        :dir [:ref #{["{059166f0-b3c0-474f-9dcb-d5e865754d77}|1"]
                    ["{62243423-b7fd-4a10-8a98-86209a6620a4}"]
                    ["{bb160c79-5ba3-4379-a6c1-8603f29079f2}"]}]
-        :x [:ref #{["{059166f0-b3c0-474f-9dcb-d5e865754d77}|1"]
+        :twist [:ref #{["{059166f0-b3c0-474f-9dcb-d5e865754d77}|1"]
                    ["{62243423-b7fd-4a10-8a98-86209a6620a4}"]
                    ["{bb160c79-5ba3-4379-a6c1-8603f29079f2}"]}]}
 
@@ -144,14 +144,14 @@
         kb graph
         ;; _ (enable-trace!)
         [success? result-kb result-success result-failure] (position-analysis kb constraints)
-        {result-mark :mark result-link :link} (ref->str result-kb)
+        {result-mark :invar result-link :link} (ref->str result-kb)
         augmented-zipper (zip/xml-zip (:augmented (cyphy/graph-to-cyphy-zipper graph)))
         augmented-sample (zip/node (zx/xml1-> augmented-zipper :Assembly :CADComponent :CADComponent
                                               (zx/attr= :Name "BOOM") :versor )) ]
     (tol/set-default-tolerance 0.01)
     (facts "excavator init test : position analysis"
            (fact "about marker invariants"
-                 result-mark => mark-pattern)
+                 result-mark => invar-checker)
            (fact "about marker invariants"
                  result-link => link-pattern)
            (fact "about marker invariants"

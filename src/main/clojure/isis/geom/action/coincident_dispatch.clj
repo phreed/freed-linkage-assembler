@@ -47,16 +47,16 @@
 (defmethod transform!
   {:tdof 0 :rdof 1}
   [kb m1 m2]
-  (xlice/transform!->0-1 kb m1 m2))
+  (xlice/transform!->t0-r1 kb m1 m2))
 
 
 (defmethod transform!
   {:tdof 0 :rdof 3}
   [kb m1 m2]
-  (xlice/transform!->0-3 kb m1 m2))
+  (xlice/transform!->t0-r3 kb m1 m2))
 
 
 (defmethod transform!
   {:tdof 3 :rdof 3}
   [kb m1 m2]
-  (xlice/transform!->3-3 kb m1 m2))
+  (xlice/transform!->t3-r3 kb m1 m2))

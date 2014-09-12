@@ -197,12 +197,12 @@
            :tdof {:# 3} :rdof {:# 3}}
            }
 
-        mark-checker
+        invar-checker
         {:loc #{["{3451cc65-9ad0-4f78-8a0c-290d1595fe74}|1"]}
-          :x #{["{3451cc65-9ad0-4f78-8a0c-290d1595fe74}|1"]}
-          :z #{["{3451cc65-9ad0-4f78-8a0c-290d1595fe74}|1"]}}
+          :dir #{["{3451cc65-9ad0-4f78-8a0c-290d1595fe74}|1"]}
+          :twist #{["{3451cc65-9ad0-4f78-8a0c-290d1595fe74}|1"]}}
 
-        mark-checker-final
+        invar-checker-final
         (chk/contains
          '[])
 
@@ -218,7 +218,7 @@
                (chk/fact "arm cyl a second" constraints-orig => (chk/contains con-chk-jack2arm))
                (chk/fact "about the initial link settings" (unref (:link kb)) => (chk/contains link-checker))
                (chk/fact "about the base link id" (:base kb) => "{3451cc65-9ad0-4f78-8a0c-290d1595fe74}|1")
-               (chk/fact "about the initial marker invariants" (unref (:mark kb)) => mark-checker)
+               (chk/fact "about the initial marker invariants" (unref (:invar kb)) => invar-checker)
 
 
                (chk/fact "arm2 meta expanded" constraints-meta => (chk/contains con-chk-arm2boom-meta))
@@ -226,12 +226,12 @@
 
     (let [result (position-analysis kb constraints-lower)
             [success? result-kb result-success result-failure] result
-            {result-mark :mark result-link :link} result-kb ]
+            {result-mark :invar result-link :link} result-kb ]
 
         ;; (pp/pprint result-success)
         ;; (pp/pprint result-link)
         (chk/facts "about results of linkage-assembly"
-                   #_(chk/fact "about the mark result" result-mark => mark-checker-2)
+                   #_(chk/fact "about the mark result" result-mark => invar-checker-2)
                    #_(chk/fact "about the link result" result-link => link-checker-2)
                    #_(chk/fact "about the success result" result-success => success-checker)
                    #_(chk/fact "about the failure result" result-failure => failure-checker) )

@@ -24,7 +24,7 @@
       angle (ga/vec-angle from-dir to-dir axis)
       new-link (ga/rotate link center axis angle)]
 
-  (facts "imitation of dof-1r:p->p"
+  (facts "imitation of dof/r1:p->p"
          (fact "link check"
                link)
          {:versor {:xlate [2.0 0.0 0.0]
@@ -100,7 +100,7 @@
       angle (ga/vec-angle from-dir to-dir axis)
       new-link (ga/rotate link pivot axis angle)]
 
-  (facts "mimic dof-1r:p->p"
+  (facts "mimic dof/r1:p->p"
          (fact "" a-line =>
                '{:type :line :e [5.0 0.0 0.0]
                  :d [-1.0 0.0 0.0]})
@@ -144,7 +144,7 @@
       angle (ga/vec-angle from-dir to-dir inv-axis)
       new-link (ga/rotate link pivot inv-axis angle)]
 
-  (facts "mimic dof-1r:p->p (180 degree rotation)"
+  (facts "mimic dof/r1:p->p (180 degree rotation)"
          (fact "" axis-line =>
                '{:type :line
                  :e [3467.85 43.0687 302.5]

@@ -80,9 +80,9 @@
 
        (fact "about initializing invariants"
              (ref->str (graph->init-invariants @brick-graph)) =>
-             '{:mark {:loc [:ref #{[ground]}],
-                      :z [:ref #{[ground]}],
-                      :x [:ref #{[ground]}]},
+             '{:invar {:loc [:ref #{[ground]}],
+                      :dir [:ref #{[ground]}],
+                      :twist [:ref #{[ground]}]},
                :link {brick [:ref {:tdof {:# 3}, :rdof {:# 3},
                                    :versor {:xlate [0.0 0.0 0.0] :rotate [1.0 0.0 0.0 0.0]}}]
                       ground [:ref {:tdof {:# 0}, :rdof {:# 0},

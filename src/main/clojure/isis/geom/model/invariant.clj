@@ -3,14 +3,10 @@
   (:require [isis.geom.machine.geobj :as ga]) )
 
 
-(defn init-marker-s
+(defn init-marker
   "Create a marker invariant with references"
   []
-  {:loc (ref #{}) :z (ref #{}) :x (ref #{})})
-
-(defn init-link-s
-  "Create a map of link invariants within references."
-  [] {})
+  {:loc (ref #{}) :dir (ref #{}) :twist (ref #{})})
 
 
 (defn set-marker!
@@ -19,7 +15,7 @@
   The current types of invariant are:
     position, z-axis, and x-axis vectors."
   [kb link-name proper-name invariant-type]
-  (alter (get-in kb [:mark invariant-type])
+  (alter (get-in kb [:invar invariant-type])
          conj [link-name proper-name]) )
 
 
@@ -27,7 +23,7 @@
   "Abstract the testing of invariance so programs
   do not have to reference a global variable."
   [kb marker invariant-type]
-  (let [marker-invs (get-in kb [:mark invariant-type]),
+  (let [marker-invs (get-in kb [:invar invariant-type]),
         [marker-name _] marker
         [marker-link-name _] marker-name ]
     (cond (contains? @marker-invs marker-name) true
@@ -44,9 +40,9 @@
   "When a link has no degrees of freedom all properties
   for all of its markers become invariant."
   [kb link-name]
-  (let [loc-inv (get-in kb [:mark :loc])
-        z-axis-inv (get-in kb [:mark :z])
-        x-axis-inv (get-in kb [:mark :x]) ]
+  (let [loc-inv (get-in kb [:invar :loc])
+        z-axis-inv (get-in kb [:invar :dir])
+        x-axis-inv (get-in kb [:invar :twist]) ]
     (alter loc-inv link-filter link-name)
     (alter z-axis-inv link-filter link-name)
     (alter x-axis-inv link-filter link-name)

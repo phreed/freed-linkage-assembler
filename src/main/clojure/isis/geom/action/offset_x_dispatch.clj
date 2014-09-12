@@ -9,9 +9,9 @@
   checks the preconditions and returns the marker which
   is underconstrained."
   [m1 m2 inv]
-  (when (and (invariant/marker? inv m1 :z)
-             (invariant/marker? inv m2 :z)
-             (invariant/marker? inv m1 :x))
+  (when (and (invariant/marker? inv m1 :dir)
+             (invariant/marker? inv m2 :dir)
+             (invariant/marker? inv m1 :twist))
     m2))
 
 

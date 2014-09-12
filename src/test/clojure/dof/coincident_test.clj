@@ -6,7 +6,7 @@
              [geobj :as ga]
              [tolerance :as tol]]
             [isis.geom.action
-             [auxiliary :as aux]]))
+             [auxiliary :as dof]]))
 
 (let [link {:versor {:xlate [0.0 0.0 0.0]
                      :rotate [1.0 0.0 0.0 0.0]}
@@ -18,7 +18,7 @@
       to-point-2 [0.0 1.0 0.0]
 
       link-2 (assoc
-               (aux/dof-3r:p->p link inv-pnt from-point-2 to-point-2)
+               (dof/r3:p->p link inv-pnt from-point-2 to-point-2)
                :rdof {:# 1
                       :axis (ga/normalize
                              (ga/vec-diff to-point-2 inv-pnt))})
@@ -27,10 +27,10 @@
       from-point-3 [0.0 0.0 1.0]
       to-point-3 [0.0 0.0 1.0]
 
-      link-3 (aux/dof-1r:p->p link-2 inv-pnt from-point-3 to-point-3
+      link-3 (dof/r1:p->p link-2 inv-pnt from-point-3 to-point-3
                               inv-axis nil nil) ]
 
-  (facts "mimic dof-1r:p->p (0 degree rotation)"
+  (facts "mimic dof/r1:p->p (0 degree rotation)"
          (fact "link 2"
                link-2 =>
                '{:versor {:xlate [0.0 0.0 0.0]

@@ -156,13 +156,13 @@
              :rdof {:# 0}}]} )
 
 
-        mark-checker
+        invar-checker
         (ref->checker
          '{:loc [:ref #{["{059166f0-b3c0-474f-9dcb-d5e865754d77}|1"]}],
-           :z [:ref #{["{059166f0-b3c0-474f-9dcb-d5e865754d77}|1"]}],
-           :x [:ref #{["{059166f0-b3c0-474f-9dcb-d5e865754d77}|1"]}]} )
+           :dir [:ref #{["{059166f0-b3c0-474f-9dcb-d5e865754d77}|1"]}],
+           :twist [:ref #{["{059166f0-b3c0-474f-9dcb-d5e865754d77}|1"]}]} )
 
-        mark-checker-2
+        invar-checker-2
         (ref->checker
          '
          {:loc
@@ -170,12 +170,12 @@
            #{["{059166f0-b3c0-474f-9dcb-d5e865754d77}|1"]
              ["{62243423-b7fd-4a10-8a98-86209a6620a4}"]
              ["{bb160c79-5ba3-4379-a6c1-8603f29079f2}"]}],
-          :z
+          :dir
           [:ref
            #{["{059166f0-b3c0-474f-9dcb-d5e865754d77}|1"]
              ["{62243423-b7fd-4a10-8a98-86209a6620a4}"]
              ["{bb160c79-5ba3-4379-a6c1-8603f29079f2}"]}],
-          :x
+          :twist
           [:ref
            #{["{059166f0-b3c0-474f-9dcb-d5e865754d77}|1"]
              ["{62243423-b7fd-4a10-8a98-86209a6620a4}"]
@@ -237,7 +237,7 @@
            (fact "about the constraints" constraints => constraint-checker)
            (fact "about the initial link settings" (:link kb) => link-checker)
            (fact "about the base link id" (:base kb) => "{059166f0-b3c0-474f-9dcb-d5e865754d77}|1")
-           (fact "about the initial marker invariants" (:mark kb) => mark-checker)
+           (fact "about the initial marker invariants" (:invar kb) => invar-checker)
 
 
            (fact "about the expanded constraints" constraints-exp => expanded-constraint-checker))
@@ -245,12 +245,12 @@
 
     (let [result (position-analysis kb constraints-exp)
           [success? result-kb result-success result-failure] result
-          {result-mark :mark result-link :link} result-kb ]
+          {result-mark :invar result-link :link} result-kb ]
 
       ;; (pp/pprint result-success)
       ;; (pp/pprint result-link)
       (facts "about results of linkage-assembly"
-             (fact "about the mark result" result-mark => mark-checker-2)
+             (fact "about the mark result" result-mark => invar-checker-2)
              (fact "about the link result" result-link => link-checker-2)
              (fact "about the success result" result-success => success-checker)
              (fact "about the failure result" result-failure => failure-checker) )
