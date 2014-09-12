@@ -15,13 +15,13 @@
             [isis.geom.position-dispatch
              :refer [constraint-attempt?]]
             [isis.geom.action
-             [coincident-slice]
-             [helical-slice]
-             [in-line-slice]
-             [in-plane-slice]
-             [offset-x-slice]
-             [offset-z-slice]
-             [parallel-z-slice]]))
+             [coincident-dispatch]
+             [helical-dispatch]
+             [in-line-dispatch]
+             [in-plane-dispatch]
+             [offset-x-dispatch]
+             [offset-z-dispatch]
+             [parallel-z-dispatch]]))
 
 
 (defchecker ref->checker

@@ -1,7 +1,7 @@
 (ns isis.geom.action.in-plane-dispatch
   "The table of rules."
   (:require [isis.geom.position-dispatch :as master]
-            [isis.geom.model.invariant :refer [marker->invariant?]]
+            [isis.geom.model.invariant :as invariant]
             [isis.geom.action
              [in-plane-slice-fixed :as fixed]
              [in-plane-slice-moves :as moves]]
@@ -13,8 +13,9 @@
   checks the preconditions and returns the marker which
   is underconstrained followed by the marker that is constrained."
   [kb m1 m2]
-  (cond (marker->invariant? kb m2 :loc) [m2 m1]
-        (marker->invariant? kb m1 :loc) [m1 m2]
+  (pp/pprint ["in-plane precondition" "m1" m1 "m2" m2 "mark" (:mark kb)])
+  (cond (invariant/marker? kb m2 :loc) [m2 m1]
+        (invariant/marker? kb m1 :loc) [m1 m2]
         :else false))
 
 
@@ -50,6 +51,6 @@
   {:tdof 0 :rdof 1 :motive :fixed}
   [kb m1 m2]
   (kb)
-  #_(fixed/transform!->0-1-in-plane kb m1 m2))
+  #_(fixed/transform!->0-1 kb m1 m2))
 
 

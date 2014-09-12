@@ -1,11 +1,7 @@
 (ns isis.geom.model.graph
  (:require [isis.geom.model
              [lower-joint :refer [lower-joint-map]]
-             [invariant :refer [init-marker-invariant-s
-                                init-link-invariant-s
-                                init-link-invariant
-                                set-link-invariant!
-                                make->invariant]]]))
+             [invariant :as invariant]]))
 
 
 ;; there are a set of named links.
@@ -97,7 +93,7 @@
   The marker invariants for that link are also invariant."
   [graph]
   (dosync
-   (let [mis (init-marker-invariant-s)
+   (let [mis (invariant/init-marker-s)
          mis-l (:loc mis), mis-z (:z mis), mis-x (:x mis)
          base-link-name (:base graph)
          links (:links graph)
@@ -110,10 +106,10 @@
                     (map #(hash-map
                            %
                            (if (= % base-link-name)
-                             (init-link-invariant :fixed)
-                             (init-link-invariant :free)
+                             (invariant/init-link :fixed)
+                             (invariant/init-link :free)
                              )) (keys links)))} ]
-     (set-link-invariant! kb base-link-name))))
+     (invariant/set-link! kb base-link-name))))
 
 
 (defn joints->constraints

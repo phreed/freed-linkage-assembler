@@ -7,10 +7,8 @@
             [isis.geom.action
              [auxiliary :refer [dof-1r:p->p
                                 dof-3r:p->p]] ]
-             [isis.geom.model.invariant
-             :refer [set-link-invariant!
-                     set-marker-invariant!]]))
+             [isis.geom.model.invariant :as invariant]))
 
 
 
-(defn xform->t0-r1 [kb m1 m2] )
+(defn transform!->t0-r1 [kb m1 m2] )

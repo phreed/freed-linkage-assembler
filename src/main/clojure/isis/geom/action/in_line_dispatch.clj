@@ -1,7 +1,7 @@
-(ns isis.geom.action.in-line-slice
+(ns isis.geom.action.in-line-dispatch
   "The table of rules."
   (:require [isis.geom.position-dispatch :as master]
-            [isis.geom.model.invariant :refer [marker->invariant?]] ))
+            [isis.geom.model.invariant :as invariant] ))
 
 
 (defn in-line->precondition?
@@ -9,7 +9,7 @@
   checks the preconditions and returns the marker which
   is underconstrained."
   [m1 m2 inv]
-  (cond (marker->invariant? inv m1 :loc)  m2
-        (and (marker->invariant? inv m2 :loc)
-             (marker->invariant? inv m2 :z))
+  (cond (invariant/marker? inv m1 :loc)  m2
+        (and (invariant/marker? inv m2 :loc)
+             (invariant/marker? inv m2 :z))
         m1))

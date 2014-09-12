@@ -1,8 +1,7 @@
 (ns isis.geom.action.coincident-dispatch
   "The table of rules."
   (:require [isis.geom.position-dispatch :as master]
-            [isis.geom.model.invariant
-             :refer [marker->invariant?]]
+            [isis.geom.model.invariant :as invariant]
             [isis.geom.action [coincident-slice :as xlice]]))
 
 
@@ -11,8 +10,8 @@
   checks the preconditions and returns the marker which
   is underconstrained followed by the marker that is constrained."
   [kb m1 m2]
-  (cond (marker->invariant? kb m2 :loc) [m2 m1]
-        (marker->invariant? kb m1 :loc) [m1 m2]
+  (cond (invariant/marker? kb m2 :loc) [m2 m1]
+        (invariant/marker? kb m1 :loc) [m1 m2]
         :else false))
 
 
@@ -48,16 +47,16 @@
 (defmethod transform!
   {:tdof 0 :rdof 1}
   [kb m1 m2]
-  (xlice/transform!->0-1-coincident kb m1 m2))
+  (xlice/transform!->0-1 kb m1 m2))
 
 
 (defmethod transform!
   {:tdof 0 :rdof 3}
   [kb m1 m2]
-  (xlice/transform!->0-3-coincident kb m1 m2))
+  (xlice/transform!->0-3 kb m1 m2))
 
 
 (defmethod transform!
   {:tdof 3 :rdof 3}
   [kb m1 m2]
-  (xlice/transform!->3-3-coincident kb m1 m2))
+  (xlice/transform!->3-3 kb m1 m2))

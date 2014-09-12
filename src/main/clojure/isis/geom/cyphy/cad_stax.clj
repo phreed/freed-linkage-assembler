@@ -252,12 +252,12 @@
 
       XMLStreamConstants/START_DOCUMENT
       (do
-        (println "start doc " (.toString event))
+        ;; (println "start doc " (.toString event))
         [kb zip wip])
 
       XMLStreamConstants/END_DOCUMENT
       (do
-        (println "end doc " (.toString event))
+        ;; (println "end doc " (.toString event))
         [kb zip wip])
 
       XMLStreamConstants/ENTITY_DECLARATION
@@ -300,7 +300,7 @@
            wip {} ]         ;; misc work-in-progress items
       (if-not (.hasNext reader)
         (do
-          (println "you have reached the end of the input file")
+          ;; (println "you have reached the end of the input file")
           ;; (pp/pprint ["kb:" kb])
           kb)
         (let [event (.nextEvent reader)
