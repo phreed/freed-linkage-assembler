@@ -4,12 +4,12 @@
             [isis.geom.model.invariant :as invariant] ))
 
 
-(defn in-line->precondition?
+(defn precondition?
   "Associated with each constraint type is a function which
   checks the preconditions and returns the marker which
   is underconstrained."
-  [m1 m2 inv]
-  (cond (invariant/marker? inv m1 :loc)  m2
-        (and (invariant/marker? inv m2 :loc)
-             (invariant/marker? inv m2 :dir))
-        m1))
+  [kb m1 m2]
+  (cond (invariant/marker-position? kb m1)  [m1 m2]
+        (and (invariant/marker-position? kb m2)
+             (invariant/marker-direction? kb m2)) [m1 m2]
+        :else nil))

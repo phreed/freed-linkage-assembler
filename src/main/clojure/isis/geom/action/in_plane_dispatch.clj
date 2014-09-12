@@ -14,12 +14,12 @@
 (defn- precondition?
   "Associated with each constraint type is a function which
   checks the preconditions and returns the marker which
-  is underconstrained followed by the marker that is constrained.
+  is under-constrained followed by the marker that is fully-constrained.
   The :motive refers to the first marker, the point."
   [kb point plane]
-  (pp/pprint ["in-plane precondition" "point" point "plane" plane "invariant" (:invar kb)])
-  (cond (invariant/marker? kb plane :loc) [point plane :mobile]
-        (invariant/marker? kb point :loc) [point plane :fixed]
+  (cond (invariant/marker-position? kb plane) [point plane :fixed]
+        (and (invariant/marker-position? kb point)
+             (invariant/marker-direction? kb point)) [point plane :mobile]
         :else false))
 
 
@@ -27,24 +27,25 @@
   "Transform the links and kb so that the constraint is met.
   Examine the underconstrained marker to determine the dispatch key.
   The key is the [#tdof #rdof] of the m2 link."
-  (fn [kb point m2 mo]
-    (let [[[link-name _] _] m2
+  (fn [kb point plane motive]
+    (let [[[link-name _] _] plane
           link @(get (:link kb) link-name)
           tdof (get-in link [:tdof :#])
           rdof (get-in link [:rdof :#]) ]
       (println tdof "-" rdof "- in-plane")
-      {:tdof tdof :rdof rdof :motive mo}))
+      {:tdof tdof :rdof rdof :motive motive}))
   :default nil)
 
 
 (defmethod master/constraint-attempt?
   :in-plane
   [kb constraint]
-  (let [{m1 :m1 m2 :m2} constraint
-        result (precondition? kb m1 m2) ]
+  (let [{point :m1 plane :m2} constraint
+        result (precondition? kb point plane) ]
     (when result
-      (let [[ma1 ma2 mo] result]
-        (transform! kb ma1 ma2 mo)
+  (pp/pprint ["in-plane precondition" "point" point "plane" plane "invariant" (:invar kb)])
+      (let [[point point motive] result]
+        (transform! kb point plane motive)
         true))))
 
 

@@ -5,12 +5,12 @@
 
 
 
-(defn offset-z->precondition?
+(defn precondition?
   "Associated with each constraint type is a function which
   checks the preconditions and returns the marker which
   is underconstrained."
-  [m1 m2 inv]
-  (when (invariant/marker? inv m1 :loc) m2))
+  [kb m1 m2]
+  (when (invariant/marker-position? kb m1) m2))
 
 
 

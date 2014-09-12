@@ -19,16 +19,35 @@
          conj [link-name proper-name]) )
 
 
-(defn marker?
+(defn- marker?
   "Abstract the testing of invariance so programs
   do not have to reference a global variable."
-  [kb marker invariant-type]
-  (let [marker-invs (get-in kb [:invar invariant-type]),
-        [marker-name _] marker
+  [marker marker-invs]
+  (let [[marker-name _] marker
         [marker-link-name _] marker-name ]
     (cond (contains? @marker-invs marker-name) true
           (contains? @marker-invs [marker-link-name]) true
           :else false )))
+
+(defn marker-position?
+  "Abstract the testing of invariance so programs
+  do not have to reference a global variable."
+  [kb marker]
+  (marker? marker (get-in kb [:invar :loc])))
+
+(defn marker-direction?
+  "Abstract the testing of invariance so programs
+  do not have to reference a global variable."
+  [kb marker]
+  (marker? marker (get-in kb [:invar :dir])))
+
+(defn marker-twist?
+  "Abstract the testing of invariance so programs
+  do not have to reference a global variable."
+  [kb marker]
+  (marker? marker (get-in kb [:invar :twist])))
+
+
 
 (defn- link-filter
   [inv-set link-name]

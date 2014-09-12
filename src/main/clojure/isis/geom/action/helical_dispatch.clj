@@ -5,14 +5,14 @@
 
 
 
-(defn helical->precondition?
+(defn precondition?
   "Associated with each constraint type is a function which
   checks the preconditions and returns the marker which
   is underconstrained."
-  [m1 m2 inv]
-  (when (and (invariant/marker? inv m1 :dir)
-             (invariant/marker? inv m2 :dir)
-             (invariant/marker? inv m1 :twist))
+  [kb m1 m2]
+  (when (and (invariant/marker-direction? kb m1)
+             (invariant/marker-direction? kb m2)
+             (invariant/marker-twist? kb m1))
     m2))
 
 

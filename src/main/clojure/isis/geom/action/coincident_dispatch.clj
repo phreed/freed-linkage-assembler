@@ -10,8 +10,8 @@
   checks the preconditions and returns the marker which
   is underconstrained followed by the marker that is constrained."
   [kb m1 m2]
-  (cond (invariant/marker? kb m2 :loc) [m2 m1]
-        (invariant/marker? kb m1 :loc) [m1 m2]
+  (cond (invariant/marker-position? kb m2) [m2 m1]
+        (invariant/marker-position? kb m1) [m1 m2]
         :else false))
 
 
