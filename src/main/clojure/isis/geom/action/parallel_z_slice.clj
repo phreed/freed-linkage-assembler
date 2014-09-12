@@ -1,16 +1,16 @@
 (ns isis.geom.action.parallel-z-slice
   "The table of rules."
-  (:require [isis.geom.position-dispatch :as master]
-            [isis.geom.model.invariant :refer [marker->invariant?]] ))
+  (:require [isis.geom.machine
+             [geobj :refer [translate
+                           vec-diff
+                           gmp normalize]]]
+            [isis.geom.action
+             [auxiliary :refer [dof-1r:p->p
+                                dof-3r:p->p]] ]
+             [isis.geom.model.invariant
+             :refer [set-link-invariant!
+                     set-marker-invariant!]]))
 
 
-(defn parallel-z->precondition?
-  "Associated with each constraint type is a function which
-  checks the preconditions and returns the marker which
-  is underconstrained."
-  [m1 m2 inv]
-  (when (marker->invariant? inv m1 :loc) m2))
 
-
-
-
+(defn xform->t0-r1 [kb m1 m2] )

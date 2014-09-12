@@ -1,6 +1,6 @@
 (ns isis.geom.model.graph
  (:require [isis.geom.model
-             [joint :refer [joint-primitive-map]]
+             [lower-joint :refer [lower-joint-map]]
              [invariant :refer [init-marker-invariant-s
                                 init-link-invariant-s
                                 init-link-invariant
@@ -45,7 +45,7 @@
         link (get links link-name)
         ports (:ports link)
         port (get ports port-name)
-        primitive-types ((:type port) joint-primitive-map)
+        primitive-types ((:type port) lower-joint-map)
         port-marker-name (:marker port)
         markers (:markers link)
         port-marker (get markers port-marker-name)]

@@ -29,11 +29,38 @@
    [[:coincident] 3] ])
 
 
-(def lower-joint-map
-  "joints are conveniently specified at a higher level
+(declare expand-trivial)
+
+(defmulti expand
+  "Joints are conveniently specified at a higher level
   than primitive constraints.  In order to perform position-analysis
   these lower (and higher) joints must be decomposed into their
-  constituent constraints.  This map provides that relationship."
+  constituent primitive-joint constraints."
+  (fn [constraint] (:type constraint)) )
+
+(defmethod expand :default [constraint] (expand-trivial constraint))
+
+(defmethod expand :revolute [constraint] (expand-trivial constraint))
+(defmethod expand :prismatic [constraint] (expand-trivial constraint))
+(defmethod expand :cylindrical [constraint] (expand-trivial constraint))
+(defmethod expand :spherical [constraint] (expand-trivial constraint))
+(defmethod expand :ball [constraint] (expand-trivial constraint))
+
+(defmethod expand :planar [constraint]
+  (let [{j-type :type, ma :m1, mb :m2} constraint]
+  [ {:type :in-plane, :m1 ma, :m2 mb}
+    {:type :in-plane, :m1 mb, :m2 ma} ]))
+
+(defmethod expand :linear [constraint] (expand-trivial constraint))
+(defmethod expand :universal [constraint] (expand-trivial constraint))
+(defmethod expand :fixed [constraint] (expand-trivial constraint))
+
+(def lower-joint-map
+  "Joints are conveniently specified at a higher level
+  than primitive constraints.  In order to perform position-analysis
+  these lower (and higher) joints must be decomposed into their
+  constituent primitive-joint constraints.
+  This map provides that relationship."
   {:revolute [:coincident :parallel-z]
    :prismatic [:in-line :parallel-z :offset-x]
    :cylindrical [:in-line :parallel-z]
@@ -43,8 +70,7 @@
    :universal [:coincident :perpendicular-z]
    :fixed [:coincident :in-plane :offset-x] })
 
-
-(defn expand
+(defn expand-trivial
   "Expand a single lower joint into a vector of joint-primitives."
   [constraint]
   (let [j-type (:type constraint)

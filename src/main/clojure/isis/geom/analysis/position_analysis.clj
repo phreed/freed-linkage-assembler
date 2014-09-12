@@ -69,6 +69,11 @@
 (def trace? (atom false))
 (defn enable-trace! [] (compare-and-set! trace? false true))
 
+(defn trace
+  "See where things are going wrong."
+  [msg]
+  (pp/pprint msg))
+
 (defn position-analysis
   "Algorithm for using the plan fragment table to perform position analysis.
   We update a link map and a marker map with invariants.
@@ -91,27 +96,17 @@
   (loop [progress? false
          [x & xs] constraints
          plan [] ys[]]
-    ;; (pp/pprint "------------------")
-    ;; (pp/pprint x)
+
     (if x
-      ;; working through the active constraint list.
       (if (constraint-attempt? kb x)
-        (do
-          (when @trace?
-              (println "constraint: ")
-              (pp/pprint x)
-              (println "versor: ")
-              (pp/pprint (:link kb)))
-          (recur true xs (conj plan x) ys) )
-        (recur progress? xs plan (conj ys x)))
-      ;; active constraint list is exhausted.
-      (if (seq ys)
-        ;; not all constraints have been satisfied
-        (if progress?
-          ;; still making progress, go again.
-          (recur false ys plan [])
-          ;; no progress is possible.
-          [false kb plan ys])
-        ;; all the constraints have been satisfied
-        [true kb plan []] ))))
+          (recur true xs (conj plan x) ys)
+          (recur progress? xs plan (conj ys x)))
+
+        (if (empty? ys)
+            ;; all the constraints have been satisfied
+            [true kb plan []]
+            ;; not all constraints have been satisfied
+            (if progress?
+              (recur false ys plan [])
+              [false kb plan ys]) ))))
 

@@ -96,13 +96,13 @@
            [["{a93ca8b7-6de8-42e3-bc35-7224ec4ed51f}" "BOOM_CENTER_PLANE"]
             {:e [0.0 0.0 -250.0], :pi 0.0, :q [0.0 0.0 1.0]}],
            :type :in-plane}
-          {:m1
+          {:m2
            [["{99ce8e6a-8722-4ed7-aa1a-ed46facf3264}" "CENTER_PLANE"]
             {:e [-5302.02 3731.18 600.0], :pi 0.0, :q [0.0 0.0 -1.0]}],
-           :m2
+           :m1
            [["{a93ca8b7-6de8-42e3-bc35-7224ec4ed51f}" "BOOM_CENTER_PLANE"]
             {:e [0.0 0.0 -250.0], :pi 0.0, :q [0.0 0.0 1.0]}],
-           :type :parallel-z}]
+           :type :in-plane}]
 
 
         ;; The boom {99c..264} is connected to
@@ -222,21 +222,19 @@
 
 
                (chk/fact "arm2 meta expanded" constraints-meta => (chk/contains con-chk-arm2boom-meta))
-               (chk/fact "arm2 lower expanded" constraints-lower => (chk/contains con-chk-arm2boom-lower))
+               (chk/fact "arm2 lower expanded" constraints-lower => (chk/contains con-chk-arm2boom-lower)) )
 
-               )
-
-    #_(let [result (position-analysis kb exp-constraints)
+    (let [result (position-analysis kb constraints-lower)
             [success? result-kb result-success result-failure] result
             {result-mark :mark result-link :link} result-kb ]
 
         ;; (pp/pprint result-success)
         ;; (pp/pprint result-link)
         (chk/facts "about results of linkage-assembly"
-                   (chk/fact "about the mark result" result-mark => mark-checker-2)
-                   (chk/fact "about the link result" result-link => link-checker-2)
-                   (chk/fact "about the success result" result-success => success-checker)
-                   (chk/fact "about the failure result" result-failure => failure-checker) )
+                   #_(chk/fact "about the mark result" result-mark => mark-checker-2)
+                   #_(chk/fact "about the link result" result-link => link-checker-2)
+                   #_(chk/fact "about the success result" result-success => success-checker)
+                   #_(chk/fact "about the failure result" result-failure => failure-checker) )
 
         #_(with-open [fis (-> "excavator/excavator_total_plane.xml"
                               jio/resource jio/input-stream)

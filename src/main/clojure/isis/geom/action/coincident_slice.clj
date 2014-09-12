@@ -1,62 +1,19 @@
 (ns isis.geom.action.coincident-slice
   "The table of rules."
-  (:require [isis.geom.position-dispatch :as master]
-            [isis.geom.model.invariant
-             :refer [marker->invariant?
-                     set-marker-invariant!
-                     set-link-invariant!]]
-            [isis.geom.machine
+  (:require [isis.geom.machine
              [geobj :refer [translate
                            vec-diff
                            gmp normalize]]]
             [isis.geom.action
              [auxiliary :refer [dof-1r:p->p
-                                dof-3r:p->p]] ]))
-
-
-(defn- coincident->precondition?
-  "Associated with each constraint type is a function which
-  checks the preconditions and returns the marker which
-  is underconstrained followed by the marker that is constrained."
-  [kb m1 m2]
-  (cond (marker->invariant? kb m2 :loc) [m2 m1]
-        (marker->invariant? kb m1 :loc) [m1 m2]
-        :else false))
+                                dof-3r:p->p]] ]
+             [isis.geom.model.invariant
+             :refer [set-link-invariant!
+                     set-marker-invariant!]]))
 
 
 
-(defn coincident->transform-dispatch
-  "Examine the underconstrained marker to determine the dispatch key.
-  The key is the [#tdof #rdof] of the m2 link."
-  [kb m1 m2]
-  (let [[[link-name _] _] m2
-        link @(get (:link kb) link-name)
-        tdof (get-in link [:tdof :#])
-        rdof (get-in link [:rdof :#]) ]
-    (println tdof "-" rdof "- coincident")
-    {:tdof tdof :rdof rdof}))
-
-(defmulti coincident->transform!
-  "Transform the links and kb so that the constraint is met."
-  #'coincident->transform-dispatch
-  :default nil)
-
-
-
-(defmethod master/constraint-attempt?
-  :coincident
-  [kb constraint]
-  (let [{m1 :m1 m2 :m2} constraint
-        result (coincident->precondition? kb m1 m2) ]
-    (if (false? result)
-      false
-      (let [[ma1 ma2] result]
-        (coincident->transform! kb ma1 ma2)
-        true))))
-
-;;;;==================================
-
-(defn- transform!->0-1-coincident
+(defn transform!->0-1-coincident
   "PFT entry: (0,1,coincident)
 
 Initial status:
@@ -95,14 +52,8 @@ Explanation:
      (alter m2-link assoc
             :rdof {:# 0} ) )))
 
-(defmethod coincident->transform!
-  {:tdof 0 :rdof 1}
-  [kb m1 m2]
-  (transform!->0-1-coincident kb m1 m2))
 
-
-
-(defn- transform!->0-3-coincident
+(defn transform!->0-3-coincident
   "PFT entry: (0,3,coincident)
 
 Initial status:
@@ -137,14 +88,8 @@ Explanation:
             :rdof {:# 1
                    :axis (normalize (vec-diff (gmp m2 kb) m2-point))} ) )))
 
-(defmethod coincident->transform!
-  {:tdof 0 :rdof 3}
-  [kb m1 m2]
-  (transform!->0-3-coincident kb m1 m2))
 
-
-
-(defn- transform!->3-3-coincident
+(defn transform!->3-3-coincident
   "PFT entry: (3,3,coincident)
 
   Initial status:
@@ -175,7 +120,3 @@ Explanation:
             :tdof {:# 0
                    :point (gmp m2 kb)} ) )))
 
-(defmethod coincident->transform!
-  {:tdof 3 :rdof 3}
-  [kb m1 m2]
-  (transform!->3-3-coincident kb m1 m2))
