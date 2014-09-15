@@ -85,10 +85,13 @@
   (update-in kb [:constraint] conj (:constraint wip)))
 
 
+
 (defn- extract-knowledge-from-cad-assembly-aux
   "Receive a new event with which the knowledge-base (kb) will be updated.
-  zip is the ancestry of the current elemnt.
-  wip holds information about the current element. "
+  zip is the ancestry of the current elemnt saved as a
+  wip holds information about the current element.
+
+  "
   [event kb zip wip]
   (let [event-type (.getEventType event)]
     (condp = event-type
@@ -140,13 +143,16 @@
           :Pair
           (if (:grounded wip)
             [kb new-zip wip]
+
             (let [c-type (parse-string-attribute event "FeatureGeometryType")]
               ;; (pp/pprint c-type)
               (cond (contains? constraint-type-map c-type)
                     [kb new-zip
                      (assoc wip
+                       ;; active-marker - marker currently under construction.
                        :active-marker :m1
 
+                       ;; the working constraint.
                        :constraint
                        {:type (get constraint-type-map c-type)
                         :m1 nil, :m2 nil} )]
@@ -210,6 +216,14 @@
         ;; (pp/pprint ["end element " (.toString (.getName event))])
 
         (case elem-type
+          ;; the end of the constraint signifies the wrapping
+          ;; up for the component's constraints.
+          :Constraint
+          (let [new-wip (dissoc wip :grounded)]
+            (if (:grounded wip)
+              [(update-kb-grounded kb wip) new-zip new-wip]
+              [kb new-zip new-wip] ) )
+
           ;; The end of a pair indicates that a (set of)
           ;; constraint can be added to the knowledge base.
           :Pair
@@ -219,13 +233,10 @@
               [kb new-zip new-wip]
               [(update-kb-jointed kb wip) new-zip new-wip]))
 
-          ;; the end of the constraint signifies the wrapping
-          ;; up for the component's constraints.
-          :Constraint
-          (let [new-wip (dissoc wip :grounded)]
-            (if (:grounded wip)
-              [(update-kb-grounded kb wip) new-zip new-wip]
-              [kb new-zip new-wip] ) )
+          ;; the end of the constraint-feature signifies
+          ;; the end of the marker.
+          :ConstraintFeature
+          [kb new-zip new-wip]
 
           ;; the default
           [kb new-zip wip]))
@@ -304,9 +315,9 @@
           ;; (pp/pprint ["kb:" kb])
           kb)
         (let [event (.nextEvent reader)
-              [new-kb new-wip new-zip]
+              [new-kb new-zip new-wip]
               (extract-knowledge-from-cad-assembly-aux event kb zip wip) ]
-          (recur reader new-kb new-wip new-zip))))))
+          (recur reader new-kb new-zip new-wip))))))
 
 
 

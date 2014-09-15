@@ -20,7 +20,7 @@
   (cond (invariant/marker-position? kb plane) [point plane :fixed]
         (and (invariant/marker-position? kb point)
              (invariant/marker-direction? kb point)) [point plane :mobile]
-        :else false))
+        :else nil))
 
 
 (defmulti transform!
@@ -28,11 +28,11 @@
   Examine the underconstrained marker to determine the dispatch key.
   The key is the [#tdof #rdof] of the m2 link."
   (fn [kb point plane motive]
+    (pp/pprint ["plane" plane "point" point "motive" motive ])
     (let [[[link-name _] _] plane
           link @(get (:link kb) link-name)
           tdof (get-in link [:tdof :#])
           rdof (get-in link [:rdof :#]) ]
-      (println tdof "-" rdof "- in-plane")
       {:tdof tdof :rdof rdof :motive motive}))
   :default nil)
 
@@ -42,11 +42,11 @@
   [kb constraint]
   (let [{point :m1 plane :m2} constraint
         result (precondition? kb point plane) ]
+    (pp/pprint ["in-plane constraint-attempt" result])
     (when result
-  (pp/pprint ["in-plane precondition" "point" point "plane" plane "invariant" (:invar kb)])
       (let [[point point motive] result]
-        (transform! kb point plane motive)
-        true))))
+        (transform! kb point plane motive))
+      true)))
 
 
 (defmethod transform!

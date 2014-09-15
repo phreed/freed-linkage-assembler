@@ -35,10 +35,11 @@
                     jio/resource jio/input-stream)]
   (let [kb (cyphy/extract-knowledge-from-cad-assembly fis)
         constraints-orig (:constraint kb)
-        constraints-meta (meta-constraint/expand-collection constraints-orig)
+        constraints-nil-patch (lower-joint/nil-patch-collection constraints-orig)
+        constraints-meta (meta-constraint/expand-collection constraints-nil-patch)
         constraints-lower (lower-joint/expand-collection constraints-meta)
 
-        ;;  _ (pp/pprint ["exp-con:" exp-constraints])
+        _ (pp/pprint ["constraints-orig:" constraints-orig])
 
         ;; The arm2 {a93..51f} is connected to
         ;; the boom {99c..264} via a revolute joint.
@@ -88,7 +89,7 @@
             {:e [2000.0 100.0 0.0], :pi 0.0, :q [0.0 0.0 -1.0]}],
            :type :linear}]
 
-        con-chk-arm2boom-lower
+        con-chk-arm2boom-lower-planar
         '[{:m1
            [["{99ce8e6a-8722-4ed7-aa1a-ed46facf3264}" "CENTER_PLANE"]
             {:e [-5302.02 3731.18 600.0], :pi 0.0, :q [0.0 0.0 -1.0]}],
@@ -96,13 +97,29 @@
            [["{a93ca8b7-6de8-42e3-bc35-7224ec4ed51f}" "BOOM_CENTER_PLANE"]
             {:e [0.0 0.0 -250.0], :pi 0.0, :q [0.0 0.0 1.0]}],
            :type :in-plane}
-          {:m2
-           [["{99ce8e6a-8722-4ed7-aa1a-ed46facf3264}" "CENTER_PLANE"]
-            {:e [-5302.02 3731.18 600.0], :pi 0.0, :q [0.0 0.0 -1.0]}],
-           :m1
+          {:m1
            [["{a93ca8b7-6de8-42e3-bc35-7224ec4ed51f}" "BOOM_CENTER_PLANE"]
-            {:e [0.0 0.0 -250.0], :pi 0.0, :q [0.0 0.0 1.0]}],
+            {:e [0.0 0.0 -250.0], :pi 0.0, :q [0.0 0.0 1.0]}]
+           :m2
+           [["{99ce8e6a-8722-4ed7-aa1a-ed46facf3264}" "CENTER_PLANE"]
+            {:e [-5302.02 3731.18 600.0], :pi 0.0, :q [0.0 0.0 -1.0]}]
            :type :in-plane}]
+
+        con-chk-arm2boom-lower-linear
+        '[{:m1
+           [["{99ce8e6a-8722-4ed7-aa1a-ed46facf3264}" "ARM_AXIS"]
+            {:e [-8625.71 4720.65 905.0], :pi 0.0, :q [0.0 0.0 1.0]}]
+           :m2
+           [["{a93ca8b7-6de8-42e3-bc35-7224ec4ed51f}" "BOOM_AXIS"]
+            {:e [2000.0 100.0 0.0], :pi 0.0, :q [0.0 0.0 -1.0]}]
+           :type :in-line}
+          {:m1
+           [["{a93ca8b7-6de8-42e3-bc35-7224ec4ed51f}" "BOOM_AXIS"]
+            {:e [2000.0 100.0 0.0], :pi 0.0, :q [0.0 0.0 -1.0]}]
+           :m2
+           [["{99ce8e6a-8722-4ed7-aa1a-ed46facf3264}" "ARM_AXIS"]
+            {:e [-8625.71 4720.65 905.0], :pi 0.0, :q [0.0 0.0 1.0]}],
+           :type :in-line}]
 
 
         ;; The boom {99c..264} is connected to
@@ -199,8 +216,8 @@
 
         invar-checker
         {:loc #{["{3451cc65-9ad0-4f78-8a0c-290d1595fe74}|1"]}
-          :dir #{["{3451cc65-9ad0-4f78-8a0c-290d1595fe74}|1"]}
-          :twist #{["{3451cc65-9ad0-4f78-8a0c-290d1595fe74}|1"]}}
+         :dir #{["{3451cc65-9ad0-4f78-8a0c-290d1595fe74}|1"]}
+         :twist #{["{3451cc65-9ad0-4f78-8a0c-290d1595fe74}|1"]}}
 
         invar-checker-final
         (chk/contains
@@ -209,7 +226,6 @@
 
         failure-checker (chk/contains '[])
         ]
-
 
     (chk/facts
      "about the parsed cad-assembly file with :planar"
@@ -222,7 +238,8 @@
 
 
                (chk/fact "arm2 meta expanded" constraints-meta => (chk/contains con-chk-arm2boom-meta))
-               (chk/fact "arm2 lower expanded" constraints-lower => (chk/contains con-chk-arm2boom-lower)) )
+               (chk/fact "arm2 lower expanded" constraints-lower => (chk/contains con-chk-arm2boom-lower-planar))
+               (chk/fact "arm2 lower expanded" constraints-lower => (chk/contains con-chk-arm2boom-lower-linear)) )
 
     (let [result (position-analysis kb constraints-lower)
             [success? result-kb result-success result-failure] result
@@ -231,7 +248,7 @@
         ;; (pp/pprint result-success)
         ;; (pp/pprint result-link)
         (chk/facts "about results of linkage-assembly"
-                   #_(chk/fact "about the mark result" result-mark => invar-checker-2)
+                   (chk/fact "about the mark result" result-mark => invar-checker-final)
                    #_(chk/fact "about the link result" result-link => link-checker-2)
                    #_(chk/fact "about the success result" result-success => success-checker)
                    #_(chk/fact "about the failure result" result-failure => failure-checker) )

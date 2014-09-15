@@ -64,6 +64,7 @@
   {:revolute [:coincident :parallel-z]
    :prismatic [:in-line :parallel-z :offset-x]
    :cylindrical [:in-line :parallel-z]
+   :linear [:in-line :parallel-z]
    :spherical [:coincident]
    :ball [:coincident]
    :planar [:in-plane :parallel-z]
@@ -88,5 +89,30 @@
       result
 
       (let [reformed (expand (first joints)) ]
+       ;; (pp/pprint ["joint-expand" (first joints) "reformed" reformed])
         (recur (rest joints) (into result reformed)) ))))
+
+
+(defmulti nil-patch
+  "Patch a single constraint."
+  (fn [ctype m1 m2] ctype ))
+
+(defmethod nil-patch :linear
+  [ctype m1 m2]
+  {:type :in-line
+   :m1 m1 :m2 m2} )
+
+(defmethod nil-patch :planar
+  [ctype m1 m2]
+  {:type :in-line
+   :m1 m1 :m2 m2} )
+
+(defn nil-patch-collection
+  "If a constraint is nil then it can be safely patched with
+  a trivial marker positioned at the origin."
+  [collection]
+  (map (fn [{ctype :type, m1 :m1, m2 :m2}]
+         (cond (or (nil? m1) (nil? m2)) (nil-patch ctype m1 m2)
+               :else {:type ctype, :m1 m1, :m2 m2}) )
+       collection))
 
