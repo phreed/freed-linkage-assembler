@@ -44,15 +44,141 @@
         result (precondition? kb point plane) ]
     (pp/pprint ["in-plane constraint-attempt" result])
     (when result
-      (let [[point point motive] result]
+      (let [[point plane motive] result]
         (transform! kb point plane motive))
       true)))
 
 
 (defmethod transform!
+  {:tdof 0 :rdof 0 :motive :fixed}
+  [kb point line] kb )
+
+(defmethod transform!
   {:tdof 0 :rdof 1 :motive :fixed}
-  [kb m1 m2]
-  (kb)
-  (fixed/transform!->t3-r3 kb m1 m2))
+  [kb point line] (fixed/transform!->t0-r1 kb point line))
+
+(defmethod transform!
+  {:tdof 0 :rdof 2 :motive :fixed}
+  [kb point line] (fixed/transform!->t0-r2 kb point line))
+
+(defmethod transform!
+  {:tdof 0 :rdof 3 :motive :fixed}
+  [kb point line] (fixed/transform!->t0-r3 kb point line))
 
 
+(defmethod transform!
+  {:tdof 1 :rdof 0 :motive :fixed}
+  [kb point line] (fixed/transform!->t1-r0 kb point line))
+
+(defmethod transform!
+  {:tdof 1 :rdof 1 :motive :fixed}
+  [kb point line] (fixed/transform!->t1-r1 kb point line))
+
+(defmethod transform!
+  {:tdof 1 :rdof 2 :motive :fixed}
+  [kb point line] (fixed/transform!->t1-r2 kb point line))
+
+(defmethod transform!
+  {:tdof 1 :rdof 3 :motive :fixed}
+  [kb point line] (fixed/transform!->t1-r3 kb point line))
+
+
+
+(defmethod transform!
+  {:tdof 2 :rdof 0 :motive :fixed}
+  [kb point line] (fixed/transform!->t2-r0 kb point line))
+
+(defmethod transform!
+  {:tdof 2 :rdof 1 :motive :fixed}
+  [kb point line] (fixed/transform!->t2-r1 kb point line))
+
+(defmethod transform!
+  {:tdof 2 :rdof 2 :motive :fixed}
+  [kb point line] (fixed/transform!->t2-r2 kb point line))
+
+(defmethod transform!
+  {:tdof 2 :rdof 3 :motive :fixed}
+  [kb point line] (fixed/transform!->t2-r3 kb point line))
+
+
+(defmethod transform!
+  {:tdof 3 :rdof 0 :motive :fixed}
+  [kb point line] (fixed/transform!->t3-r0 kb point line))
+
+(defmethod transform!
+  {:tdof 3 :rdof 1 :motive :fixed}
+  [kb point line] (fixed/transform!->t3-r1 kb point line))
+
+(defmethod transform!
+  {:tdof 3 :rdof 2 :motive :fixed}
+  [kb point line] (fixed/transform!->t3-r2 kb point line))
+
+(defmethod transform!
+  {:tdof 3 :rdof 3 :motive :fixed}
+  [kb point line] (fixed/transform!->t3-r3 kb point line))
+
+
+
+(defmethod transform!
+  {:tdof 0 :rdof 1 :motive :mobile}
+  [kb point line] (mobile/transform!->t0-r1 kb point line))
+
+(defmethod transform!
+  {:tdof 0 :rdof 2 :motive :mobile}
+  [kb point line] (mobile/transform!->t0-r2 kb point line))
+
+(defmethod transform!
+  {:tdof 0 :rdof 3 :motive :mobile}
+  [kb point line] (mobile/transform!->t0-r3 kb point line))
+
+
+(defmethod transform!
+  {:tdof 1 :rdof 0 :motive :mobile}
+  [kb point line] (mobile/transform!->t1-r0 kb point line))
+
+(defmethod transform!
+  {:tdof 1 :rdof 1 :motive :mobile}
+  [kb point line] (mobile/transform!->t1-r1 kb point line))
+
+(defmethod transform!
+  {:tdof 1 :rdof 2 :motive :mobile}
+  [kb point line] (mobile/transform!->t1-r2 kb point line))
+
+(defmethod transform!
+  {:tdof 1 :rdof 3 :motive :mobile}
+  [kb point line] (mobile/transform!->t1-r3 kb point line))
+
+
+
+(defmethod transform!
+  {:tdof 2 :rdof 0 :motive :mobile}
+  [kb point line] (mobile/transform!->t2-r0 kb point line))
+
+(defmethod transform!
+  {:tdof 2 :rdof 1 :motive :mobile}
+  [kb point line] (mobile/transform!->t2-r1 kb point line))
+
+(defmethod transform!
+  {:tdof 2 :rdof 2 :motive :mobile}
+  [kb point line] (mobile/transform!->t2-r2 kb point line))
+
+(defmethod transform!
+  {:tdof 2 :rdof 3 :motive :mobile}
+  [kb point line] (mobile/transform!->t2-r3 kb point line))
+
+
+(defmethod transform!
+  {:tdof 3 :rdof 0 :motive :mobile}
+  [kb point line] (mobile/transform!->t3-r0 kb point line))
+
+(defmethod transform!
+  {:tdof 3 :rdof 1 :motive :mobile}
+  [kb point line] (mobile/transform!->t3-r1 kb point line))
+
+(defmethod transform!
+  {:tdof 3 :rdof 2 :motive :mobile}
+  [kb point line] (mobile/transform!->t3-r2 kb point line))
+
+(defmethod transform!
+  {:tdof 3 :rdof 3 :motive :mobile}
+  [kb point line] (mobile/transform!->t3-r3 kb point line))

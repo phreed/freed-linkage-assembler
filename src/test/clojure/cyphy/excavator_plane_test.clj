@@ -45,7 +45,7 @@
 
         ;; The arm2 {a93..51f} is connected to
         ;; the boom {99c..264} via a revolute joint.
-        chk-arm2boom
+        chk-con-a2b
         '[{:m1
            [["{99ce8e6a-8722-4ed7-aa1a-ed46facf3264}" "CENTER_PLANE"]
             {:e [-5302.02 3731.18 600.0], :pi 0.0, :q [0.0 0.0 -1.0]}],
@@ -68,7 +68,7 @@
             {:e [2000.0 100.0 0.0], :pi 0.0, :q [0.0 0.0 -1.0]}],
            :type :linear}]
 
-        con-chk-arm2boom-meta
+        chk-con-a2b-meta
         '[{:m1
            [["{99ce8e6a-8722-4ed7-aa1a-ed46facf3264}" "CENTER_PLANE"]
             {:e [-5302.02 3731.18 600.0], :pi 0.0, :q [0.0 0.0 -1.0]}],
@@ -91,7 +91,7 @@
             {:e [2000.0 100.0 0.0], :pi 0.0, :q [0.0 0.0 -1.0]}],
            :type :linear}]
 
-        con-chk-arm2boom-lower-planar
+        chk-con-a2b-lower-planar
         '[{:m1
            [["{99ce8e6a-8722-4ed7-aa1a-ed46facf3264}" "CENTER_PLANE"]
             {:e [-5302.02 3731.18 600.0], :pi 0.0, :q [0.0 0.0 -1.0]}],
@@ -107,7 +107,7 @@
             {:e [-5302.02 3731.18 600.0], :pi 0.0, :q [0.0 0.0 -1.0]}]
            :type :in-plane}]
 
-        con-chk-arm2boom-lower-linear
+        chk-con-a2b-lower-linear
         '[{:m1
            [["{99ce8e6a-8722-4ed7-aa1a-ed46facf3264}" "ARM_AXIS"]
             {:e [-8625.71 4720.65 905.0], :pi 0.0, :q [0.0 0.0 1.0]}]
@@ -126,7 +126,7 @@
 
         ;; The boom {99c..264} is connected to
         ;; a hydraulic-jack {7d2..491} via a revolute joint.
-        con-chk-boom2jack
+        chk-con-b2j
         '[{:m1
            [["{99ce8e6a-8722-4ed7-aa1a-ed46facf3264}" "CENTER_PLANE"]
             {:e [-5302.02 3731.18 600.0], :pi 0.0, :q [0.0 0.0 -1.0]}],
@@ -147,7 +147,7 @@
 
         ;; The hydaulic-jack {7d2..491} is connected to
         ;; the arm {a93..51f} via a revolute joint.
-        con-chk-jack2arm
+        chk-con-jack2arm
         '[{:m1
            [["{7d252256-d674-4ab2-a8d0-add7baff5491}" "JACK_PLANE"]
             {:e [-266.844 7143.04 -427.1],
@@ -166,7 +166,7 @@
            :type :linear}
           ]
 
-        con-chk-grd
+        chk-con-grd
         '[{:m1
            [["{7d252256-d674-4ab2-a8d0-add7baff5491}" "JACK_PLANE"]
             {:e [-266.844 7143.04 -427.1],
@@ -189,7 +189,7 @@
         (chk/contains
          '[])
 
-        link-checker
+        chk-lnk
         '{
           "{7d252256-d674-4ab2-a8d0-add7baff5491}"
           {:versor {:xlate [0.0 0.0 0.0] :rotate [1.0 0.0 0.0 0.0]}
@@ -203,7 +203,7 @@
            }
 
 
-        link-checker-final
+        chk-lnk-final
         '{
           "{7d252256-d674-4ab2-a8d0-add7baff5491}"
           {:versor {:xlate [0.0 0.0 0.0] :rotate [1.0 0.0 0.0 0.0]}
@@ -230,17 +230,17 @@
         ]
 
     (chk/facts "about the parsed cad-assembly file with :planar"
-               (chk/fact "arm2" constraints-orig => (chk/contains chk-arm2boom))
-               (chk/fact "arm cyl a first" constraints-orig => (chk/contains con-chk-boom2jack))
-               (chk/fact "arm cyl a second" constraints-orig => (chk/contains con-chk-jack2arm))
-               (chk/fact "about the initial link settings" (unref (:link kb)) => (chk/contains link-checker))
+               (chk/fact "arm2" constraints-orig => (chk/contains chk-con-a2b))
+               (chk/fact "arm cyl a first" constraints-orig => (chk/contains chk-con-b2j))
+               (chk/fact "arm cyl a second" constraints-orig => (chk/contains chk-con-jack2arm))
+               (chk/fact "about the initial link settings" (unref (:link kb)) => (chk/contains chk-lnk))
                (chk/fact "about the base link id" (:base kb) => "{3451cc65-9ad0-4f78-8a0c-290d1595fe74}|1")
                (chk/fact "about the initial marker invariants" (unref (:invar kb)) => invar-checker)
 
 
-               (chk/fact "arm2 meta expanded" constraints-meta => (chk/contains con-chk-arm2boom-meta))
-               (chk/fact "arm2 lower expanded" constraints-lower => (chk/contains con-chk-arm2boom-lower-planar))
-               (chk/incipient-fact "arm2 lower expanded" constraints-lower => (chk/contains con-chk-arm2boom-lower-linear)) )
+               (chk/fact "arm2 meta expanded" constraints-meta => (chk/contains chk-con-a2b-meta))
+               (chk/fact "arm2 lower expanded" constraints-lower => (chk/contains chk-con-a2b-lower-planar))
+               (chk/incipient-fact "arm2 lower expanded" constraints-lower => (chk/contains chk-con-a2b-lower-linear)) )
 
     #_(let [result (position-analysis kb constraints-lower)
             [success? result-kb result-success result-failure] result
@@ -250,7 +250,7 @@
         ;; (pp/pprint result-link)
         (chk/facts "about results of linkage-assembly"
                    (chk/fact "about the mark result" result-mark => invar-checker-final)
-                   (chk/incipient-fact "about the link result" result-link => link-checker-2)
+                   (chk/incipient-fact "about the link result" result-link => chk-lnk-2)
                    (chk/incipient-fact "about the success result" result-success => success-checker)
                    (chk/incipient-fact "about the failure result" result-failure => failure-checker) )
 

@@ -8,6 +8,8 @@
              [auxiliary :as dof]]
             [isis.geom.model.invariant :as invariant] ))
 
+(def slicer *ns*)
+
 
 (defn transform!->t0-r1
   "PFT entry: (0,1,coincident)
@@ -51,6 +53,7 @@ Explanation:
      (alter m2-link assoc
             :rdof {:# 0} ) )))
 
+(defn transform!->t0-r2 [kb m1 m2] (println slicer) )
 
 (defn transform!->t0-r3
   "PFT entry: (0,3,coincident)
@@ -86,6 +89,20 @@ Explanation:
      (alter m2-link assoc
             :rdof {:# 1
                    :axis (normalize (vec-diff (gmp m2 kb) m2-point))} ) )))
+
+(defn transform!->t1-r0 [kb m1 m2] (println slicer) )
+(defn transform!->t1-r1 [kb m1 m2]  (println slicer) )
+(defn transform!->t1-r2 [kb m1 m2]  (println slicer) )
+(defn transform!->t1-r3 [kb m1 m2]  (println slicer) )
+
+(defn transform!->t2-r0 [kb m1 m2]  (println slicer) )
+(defn transform!->t2-r1 [kb m1 m2]  (println slicer) )
+(defn transform!->t2-r2 [kb m1 m2]  (println slicer) )
+(defn transform!->t2-r3 [kb m1 m2]  (println slicer) )
+
+(defn transform!->t3-r0 [kb m1 m2]  (println slicer) )
+(defn transform!->t3-r1 [kb m1 m2]  (println slicer) )
+(defn transform!->t3-r2 [kb m1 m2]  (println slicer) )
 
 
 (defn transform!->t3-r3

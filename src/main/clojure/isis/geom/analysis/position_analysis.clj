@@ -91,7 +91,6 @@
   xs : active constraints which are being tried.
   plan : constraints which have been successfully applied.
   ys : constraints which have been tried and failed. "
-
   [kb constraints]
   (loop [progress? false
          [x & xs] constraints
