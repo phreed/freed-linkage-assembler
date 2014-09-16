@@ -236,14 +236,14 @@
 
 
     (t/facts "about the parsed cad-assembly file with points"
-           (t/fact "the base constraints" constraints => (t/contains chk-constraint-base))
-           (t/fact "the joint constraints" constraints => (t/contains chk-constraint-joint))
+           (t/incipient-fact "the base constraints" constraints => (t/contains chk-constraint-base))
+           (t/incipient-fact "the joint constraints" constraints => (t/contains chk-constraint-joint))
            (t/fact "about the initial link settings" (:link kb) => link-checker)
            (t/fact "about the base link id" (:base kb) => "{059166f0-b3c0-474f-9dcb-d5e865754d77}|1")
-           (t/fact "about the initial marker invariants" (:invar kb) => invar-checker)
+           (t/incipient-fact "about the initial marker invariants" (:invar kb) => invar-checker)
 
 
-           (t/fact "about the expanded constraints" constraints-exp => expanded-constraint-checker))
+           (t/incipient-fact "about the expanded constraints" constraints-exp => expanded-constraint-checker))
 
 
     (let [result (position-analysis kb constraints-exp)
@@ -255,7 +255,7 @@
       (t/facts "about results of linkage-assembly"
              (t/fact "about the mark result" result-mark => invar-checker-2)
              (t/fact "about the link result" result-link => link-checker-2)
-             (t/fact "about the success result" result-success => success-checker)
+             (t/incipient-fact "about the success result" result-success => success-checker)
              (t/fact "about the failure result" result-failure => failure-checker) )
 
       #_(with-open [fis (-> "excavator/excavator_boom_dipper_point.xml"

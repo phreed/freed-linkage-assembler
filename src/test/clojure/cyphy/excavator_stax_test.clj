@@ -33,4 +33,4 @@
         ]
     #_(pp/pprint ["constraints" (:constraints kb)])
     (t/facts "constraints via zipper"
-           (t/fact "constraint" kb => (t/contains con-a2b)))))
+           (t/incipient-fact "constraint" kb => (t/contains con-a2b)))))
