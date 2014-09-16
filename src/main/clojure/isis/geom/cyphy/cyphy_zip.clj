@@ -20,7 +20,11 @@
   (let [orig (:attrs (first input))]
     {:e [(parse-numeric (:x orig))
          (parse-numeric (:y orig))
-         (parse-numeric (:z orig))] }))
+         (parse-numeric (:z orig))]
+     :pi (parse-numeric (:pi orig))
+     :q [(parse-numeric (:i orig))
+         (parse-numeric (:j orig))
+         (parse-numeric (:k orig))] }))
 
 (def ^{:private true} constraint-type-map
   "A mapping between the types specified in the xml and the type required."
@@ -32,7 +36,52 @@
    "CSYS" :csys })
 
 (defn- extract-constraints-for-single-link
-  ""
+  "Given something that looks like this...
+
+  <Assemblies>
+  <Assembly ConfigurationID='{059166f0-b3c0-474f-9dcb-d5e865754d77}|1' _id='id1'>
+  <CADComponent ComponentID='{059166f0-b3c0-474f-9dcb-d5e865754d77}|1'
+  Name='Boom_Arm_POINT_1' DisplayName='Boom_Arm_POINT_1'
+  Type='ASSEMBLY' SpecialInstruction=''
+  MaterialID='' Representation='' _id='id2'>
+  ...
+  <CADComponent ComponentID='{bb160c79-5ba3-4379-a6c1-8603f29079f2}'
+  Name='BOOM_EX_375' DisplayName='Arm'
+  Type='PART' SpecialInstruction=''
+  MaterialID='' Representation='' _id='id19'>
+  <Constraint _id='id23'>
+  <Pair FeatureInterfaceType='CAD_DATUM' FeatureGeometryType='POINT'
+  FeatureAlignmentType='ALIGN' _id='id24'>
+  <ConstraintFeature ComponentID='{bb160c79-5ba3-4379-a6c1-8603f29079f2}'
+  FeatureName='FRONT' FeatureOrientationType='SIDE_A'
+  _id='id25'>
+  <GeometryMarker x='1.0' y='0' z='0'
+  i='0' j='0' k='0' pi='0' _id='id8' />
+  </ConstraintFeature>
+  <ConstraintFeature ComponentID='{059166f0-b3c0-474f-9dcb-d5e865754d77}|1'
+  FeatureName='ASM_FRONT' FeatureOrientationType='SIDE_A'
+  _id='id26'>
+  <GeometryMarker x='1.0' y='0' z='0'
+  i='0' j='0' k='0' pi='0' _id='id8' />
+  </ConstraintFeature>
+  </Pair>
+  </Constraint>
+  ...
+  </CADComponent>
+  </CADComponent>
+  </Assembly>
+  </Assemblies>
+
+  ... make something that looks like this...
+
+  [... {:type :coincident,
+  :m1
+  [['{bb160c79-5ba3-4379-a6c1-8603f29079f2}' 'FRONT']
+  {:e [1.0 0.0 0.0]}],
+  :m2
+  [['{059166f0-b3c0-474f-9dcb-d5e865754d77}|1' 'ASM_FRONT']
+  {:e [1.0 0.0 0.0]}]} ...]
+  "
   [constraint]
   (let [pair-list (zx/xml-> constraint :Pair)]
     (for [pair pair-list]
@@ -86,14 +135,14 @@
 (defn cad-assembly->knowledge
   "Extract the constraints, links and others from a Cyph2Cad cad-assembly.xml input."
   [zip-root]
-   (let [asm-link (zx/xml1-> zip-root :Assembly :CADComponent)
+  (let [asm-link (zx/xml1-> zip-root :Assembly :CADComponent)
         base-link-id (zx/attr asm-link :ComponentID)
         link-map (extract-link-map base-link-id asm-link)
         constraint-list (extract-constraints-for-all-links asm-link)]
-     {:constraint constraint-list
-      :link link-map
-      :base base-link-id
-      :invar {:loc (ref #{[base-link-id]})
+    {:constraint constraint-list
+     :link link-map
+     :base base-link-id
+     :invar {:loc (ref #{[base-link-id]})
              :dir (ref #{[base-link-id]})
              :twist (ref #{[base-link-id]})} } ))
 
@@ -101,13 +150,11 @@
 (defn knowledge-via-input-stream
   "Given an input-stream to a cyphy-assembly file
   extract the knowledge about the assembly."
-  [is]
-    (cad-assembly->knowledge
-     (-> is xml/parse zip/xml-zip)))
+  [is] (cad-assembly->knowledge (-> is xml/parse zip/xml-zip)))
 
 (defn kb-from-cyphy-file
   "Given an input-file-path to a cyphy-assembly file
   extract the knowledge about the assembly."
   [file-path]
   (with-open [is (-> file-path jio/input-stream)]
-      (knowledge-via-input-stream is)))
+    (knowledge-via-input-stream is)))

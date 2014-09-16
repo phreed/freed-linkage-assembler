@@ -1,6 +1,5 @@
 (ns cyphy.excavator-boom-dipper-point-test
-  (:require [midje.sweet :refer
-             [defchecker chatty-checker checker facts fact]]
+  (:require [midje.sweet :as t]
 
             [isis.geom.cyphy
              [cyphy-zip :as cyphy]
@@ -28,10 +27,10 @@
              [parallel-z-dispatch]]))
 
 
-(defchecker ref->checker
+(t/defchecker ref->checker
   "A checker that allows the names of references to be ignored."
   [expected]
-  (checker [actual]
+  (t/checker [actual]
            (let [actual-deref (clojure.walk/postwalk
                                #(if (misc/reference? %) [:ref @%] %) actual)]
              (if (= actual-deref expected) true
@@ -48,8 +47,7 @@
 
         ;; _ (pp/pprint ["exp-con:" exp-constraints])
 
-        constraint-checker
-        (ref->checker
+        chk-constraint-base
          '[{:m1 [["{059166f0-b3c0-474f-9dcb-d5e865754d77}|1" "TOP"]
                  {:e [1.0 0.0 0.0]}]
             :m2 [["{bb160c79-5ba3-4379-a6c1-8603f29079f2}" "TOP"]
@@ -64,9 +62,10 @@
                  {:e [0.0 0.0 1.0]}]
             :m2 [["{bb160c79-5ba3-4379-a6c1-8603f29079f2}" "FRONT"]
                  {:e [0.0 0.0 1.0]}]
-            :type :coincident}
+            :type :coincident}]
 
-           {:type :point
+        chk-constraint-joint
+        '[ {:type :point
             :m1 [["{62243423-b7fd-4a10-8a98-86209a6620a4}" "APNT_2"]
                  {:e [-8649.51 4688.51 600.0], :q [0.0 0.0 0.0], :pi 0.0}],
             :m2 [["{bb160c79-5ba3-4379-a6c1-8603f29079f2}" "PNT2"]
@@ -80,11 +79,10 @@
             :m1 [["{62243423-b7fd-4a10-8a98-86209a6620a4}" "APNT_0"]
                  {:e [-8625.71 4720.65 600.0], :q [0.0 0.0 0.0], :pi 0.0}],
             :m2 [["{bb160c79-5ba3-4379-a6c1-8603f29079f2}" "PNT0"]
-                 {:e [3455.57 5.0 302.5], :q [0.0 0.0 0.0], :pi 0.0}]} ] )
+                 {:e [3455.57 5.0 302.5], :q [0.0 0.0 0.0], :pi 0.0}]} ]
 
 
         expanded-constraint-checker
-        (ref->checker
          '[{:type :coincident
             :m1 [["{059166f0-b3c0-474f-9dcb-d5e865754d77}|1" "TOP"]
                  {:e [1.0 0.0 0.0]}]
@@ -114,7 +112,7 @@
             :m1 [["{62243423-b7fd-4a10-8a98-86209a6620a4}" "APNT_0"]
                  {:e [-8625.71 4720.65 600.0], :q [0.0 0.0 0.0], :pi 0.0}],
             :m2 [["{bb160c79-5ba3-4379-a6c1-8603f29079f2}" "PNT0"]
-                 {:e [3455.57 5.0 302.5], :q [0.0 0.0 0.0], :pi 0.0}]}]  )
+                 {:e [3455.57 5.0 302.5], :q [0.0 0.0 0.0], :pi 0.0}]}]
 
 
         link-checker
@@ -237,14 +235,15 @@
         ]
 
 
-    (facts "about the parsed cad-assembly file with points"
-           (fact "about the constraints" constraints => constraint-checker)
-           (fact "about the initial link settings" (:link kb) => link-checker)
-           (fact "about the base link id" (:base kb) => "{059166f0-b3c0-474f-9dcb-d5e865754d77}|1")
-           (fact "about the initial marker invariants" (:invar kb) => invar-checker)
+    (t/facts "about the parsed cad-assembly file with points"
+           (t/fact "the base constraints" constraints => (t/contains chk-constraint-base))
+           (t/fact "the joint constraints" constraints => (t/contains chk-constraint-joint))
+           (t/fact "about the initial link settings" (:link kb) => link-checker)
+           (t/fact "about the base link id" (:base kb) => "{059166f0-b3c0-474f-9dcb-d5e865754d77}|1")
+           (t/fact "about the initial marker invariants" (:invar kb) => invar-checker)
 
 
-           (fact "about the expanded constraints" constraints-exp => expanded-constraint-checker))
+           (t/fact "about the expanded constraints" constraints-exp => expanded-constraint-checker))
 
 
     (let [result (position-analysis kb constraints-exp)
@@ -253,11 +252,11 @@
 
       ;; (pp/pprint result-success)
       ;; (pp/pprint result-link)
-      (facts "about results of linkage-assembly"
-             (fact "about the mark result" result-mark => invar-checker-2)
-             (fact "about the link result" result-link => link-checker-2)
-             (fact "about the success result" result-success => success-checker)
-             (fact "about the failure result" result-failure => failure-checker) )
+      (t/facts "about results of linkage-assembly"
+             (t/fact "about the mark result" result-mark => invar-checker-2)
+             (t/fact "about the link result" result-link => link-checker-2)
+             (t/fact "about the success result" result-success => success-checker)
+             (t/fact "about the failure result" result-failure => failure-checker) )
 
       #_(with-open [fis (-> "excavator/excavator_boom_dipper_point.xml"
                             jio/resource jio/input-stream)

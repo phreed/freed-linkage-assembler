@@ -45,7 +45,7 @@
 
         ;; The arm2 {a93..51f} is connected to
         ;; the boom {99c..264} via a revolute joint.
-        con-chk-arm2boom
+        chk-arm2boom
         '[{:m1
            [["{99ce8e6a-8722-4ed7-aa1a-ed46facf3264}" "CENTER_PLANE"]
             {:e [-5302.02 3731.18 600.0], :pi 0.0, :q [0.0 0.0 -1.0]}],
@@ -229,9 +229,8 @@
         failure-checker (chk/contains '[])
         ]
 
-    (chk/facts
-     "about the parsed cad-assembly file with :planar"
-               (chk/fact "arm2" constraints-orig => (chk/contains con-chk-arm2boom))
+    (chk/facts "about the parsed cad-assembly file with :planar"
+               (chk/fact "arm2" constraints-orig => (chk/contains chk-arm2boom))
                (chk/fact "arm cyl a first" constraints-orig => (chk/contains con-chk-boom2jack))
                (chk/fact "arm cyl a second" constraints-orig => (chk/contains con-chk-jack2arm))
                (chk/fact "about the initial link settings" (unref (:link kb)) => (chk/contains link-checker))
@@ -241,7 +240,7 @@
 
                (chk/fact "arm2 meta expanded" constraints-meta => (chk/contains con-chk-arm2boom-meta))
                (chk/fact "arm2 lower expanded" constraints-lower => (chk/contains con-chk-arm2boom-lower-planar))
-               (chk/fact "arm2 lower expanded" constraints-lower => (chk/contains con-chk-arm2boom-lower-linear)) )
+               (chk/incipient-fact "arm2 lower expanded" constraints-lower => (chk/contains con-chk-arm2boom-lower-linear)) )
 
     #_(let [result (position-analysis kb constraints-lower)
             [success? result-kb result-success result-failure] result
@@ -251,9 +250,9 @@
         ;; (pp/pprint result-link)
         (chk/facts "about results of linkage-assembly"
                    (chk/fact "about the mark result" result-mark => invar-checker-final)
-                   #_(chk/fact "about the link result" result-link => link-checker-2)
-                   #_(chk/fact "about the success result" result-success => success-checker)
-                   #_(chk/fact "about the failure result" result-failure => failure-checker) )
+                   (chk/incipient-fact "about the link result" result-link => link-checker-2)
+                   (chk/incipient-fact "about the success result" result-success => success-checker)
+                   (chk/incipient-fact "about the failure result" result-failure => failure-checker) )
 
         #_(with-open [fis (-> "excavator/excavator_total_plane.xml"
                               jio/resource jio/input-stream)
