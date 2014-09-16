@@ -1,7 +1,9 @@
 
 (ns cyphy.excavator-plane-test
   (:require [midje.sweet :as chk]
-            [isis.geom.cyphy.cad-stax :as cyphy]
+            [isis.geom.cyphy
+             [cyphy-zip :as cyphy]
+             [cad-stax :as stax]]
 
             [clojure.java.io :as jio]
             [clojure.data]
@@ -33,13 +35,13 @@
 
 (with-open [fis (-> "excavator/excavator_total_plane.xml"
                     jio/resource jio/input-stream)]
-  (let [kb (cyphy/extract-knowledge-from-cad-assembly fis)
+  (let [kb (cyphy/knowledge-via-input-stream fis)
         constraints-orig (:constraint kb)
         constraints-nil-patch (lower-joint/nil-patch-collection constraints-orig)
         constraints-meta (meta-constraint/expand-collection constraints-nil-patch)
         constraints-lower (lower-joint/expand-collection constraints-meta)
 
-        _ (pp/pprint ["constraints-orig:" constraints-orig])
+        ;; _ (pp/pprint ["constraints-orig:" constraints-orig])
 
         ;; The arm2 {a93..51f} is connected to
         ;; the boom {99c..264} via a revolute joint.
@@ -241,7 +243,7 @@
                (chk/fact "arm2 lower expanded" constraints-lower => (chk/contains con-chk-arm2boom-lower-planar))
                (chk/fact "arm2 lower expanded" constraints-lower => (chk/contains con-chk-arm2boom-lower-linear)) )
 
-    (let [result (position-analysis kb constraints-lower)
+    #_(let [result (position-analysis kb constraints-lower)
             [success? result-kb result-success result-failure] result
             {result-mark :invar result-link :link} result-kb ]
 

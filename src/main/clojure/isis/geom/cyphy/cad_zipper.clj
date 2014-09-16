@@ -8,6 +8,54 @@
             [clojure.data.zip.xml :as zx]  ))
 
 
+(defn- parse-numeric
+  "xml represents numeric values as strings.
+  This converts them into numbers."
+  [string]
+  (cond (nil? string) 0.0
+        :else (Double/parseDouble string)))
+
+(defn- reform-marker
+  "The xml file forms the marker hash a bit differently."
+  [input]
+  (let [orig (:attrs (first input))]
+    {:e [(parse-numeric (:x orig))
+         (parse-numeric (:y orig))
+         (parse-numeric (:z orig))] }))
+
+(def ^{:private true} constraint-type-map
+  "A mapping between the types specified in the xml and the type required."
+  {"SURFACE" :planar
+   "POINT" :coincident
+   "PLANE" :planar
+   "AXIS" :linear
+   "LINE" :linear
+   "CSYS" :csys })
+
+(defn- extract-constraints-for-single-link
+  ""
+  [constraint]
+  (let [pair-list (zx/xml-> constraint :Pair)]
+    (for [pair pair-list]
+      (let [
+            feature-pair (zx/xml-> pair :ConstraintFeature)
+            c-type (zx/attr pair :FeatureGeometryType)
+
+            a-feat (first feature-pair)
+            a-link-name (zx/attr a-feat :ComponentID)
+            a-proper-name (zx/attr a-feat :FeatureName)
+            a-marker (reform-marker (zx/xml1-> a-feat :GeometryMarker))
+
+            b-feat (second feature-pair)
+            b-link-name (zx/attr b-feat :ComponentID)
+            b-proper-name (zx/attr b-feat :FeatureName)
+            b-marker (reform-marker (zx/xml1-> b-feat :GeometryMarker))
+            ]
+        {:type (get constraint-type-map c-type "UNKNOWN")
+         :m1 [[a-link-name a-proper-name] a-marker]
+         :m2 [[b-link-name b-proper-name] b-marker]} ))))
+
+
 (defn- extract-constraints-for-all-links
   "Extract constraints for all children of the top link."
   [asm-link]

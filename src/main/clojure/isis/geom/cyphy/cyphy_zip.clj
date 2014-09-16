@@ -98,7 +98,7 @@
              :twist (ref #{[base-link-id]})} } ))
 
 
-(defn kb-from-cyphy-input-stream
+(defn knowledge-via-input-stream
   "Given an input-stream to a cyphy-assembly file
   extract the knowledge about the assembly."
   [is]
@@ -110,4 +110,4 @@
   extract the knowledge about the assembly."
   [file-path]
   (with-open [is (-> file-path jio/input-stream)]
-      (kb-from-cyphy-input-stream is)))
+      (knowledge-via-input-stream is)))

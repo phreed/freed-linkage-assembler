@@ -1,7 +1,9 @@
 
 (ns cyphy.excavator-boom-dipper-csys-test
-  (:require [midje.sweet :refer [defchecker chatty-checker checker facts fact]]
-            [isis.geom.cyphy.cad-stax :as cyphy]
+  (:require [midje.sweet :as t]]
+            [isis.geom.cyphy
+             [cyphy-zip :as cyphy]
+             [cad-stax :as stax]]
 
             [clojure.java.io :as jio]
             [clojure.data]
@@ -25,22 +27,22 @@
              [parallel-z-dispatch]]))
 
 
-(defchecker ref->checker
+(t/defchecker ref->checker
   "A checker that allows the names of references to be ignored."
   [expected]
-  (checker [actual]
-           (let [actual-deref (clojure.walk/postwalk
-                               #(if (misc/reference? %) [:ref @%] %) actual)]
-             (= actual-deref expected)
-             #_(if (= actual-deref expected) true
-               (do
-                 (clojure.pprint/pprint ["Actual result:" actual-deref])
-                 (clojure.pprint/pprint ["Expected result:" expected])
-                 )))))
+  (t/checker [actual]
+             (let [actual-deref (clojure.walk/postwalk
+                                 #(if (misc/reference? %) [:ref @%] %) actual)]
+               (= actual-deref expected)
+               #_(if (= actual-deref expected) true
+                   (do
+                     (clojure.pprint/pprint ["Actual result:" actual-deref])
+                     (clojure.pprint/pprint ["Expected result:" expected])
+                     )))))
 
 (with-open [fis (-> "excavator/excavator_boom_dipper_csys.xml"
                     jio/resource jio/input-stream)]
-  (let [kb (cyphy/extract-knowledge-from-cad-assembly fis)
+  (let [kb (cyphy/knowledge-via-input-stream fis)
         constraints (:constraint kb)
         exp-constraints (meta-con/expand-collection constraints)
 
@@ -244,14 +246,14 @@
         ]
 
 
-    (facts "about the parsed cad-assembly file with :csys"
-           (fact "about the constraints" constraints => constraint-checker)
-           (fact "about the initial link settings" (:link kb) => link-checker)
-           (fact "about the base link id" (:base kb) => "{cd51d123-aab8-4d6e-b27f-fd94701e0007}|1")
-           (fact "about the initial marker invariants" (:invar kb) => invar-checker)
+    (t/facts "about the parsed cad-assembly file with :csys"
+             (t/fact "about the constraints" constraints => constraint-checker)
+             (t/fact "about the initial link settings" (:link kb) => link-checker)
+             (t/fact "about the base link id" (:base kb) => "{cd51d123-aab8-4d6e-b27f-fd94701e0007}|1")
+             (t/fact "about the initial marker invariants" (:invar kb) => invar-checker)
 
 
-           (fact "about the expanded constraints" exp-constraints => expanded-constraint-checker))
+             (t/fact "about the expanded constraints" exp-constraints => expanded-constraint-checker))
 
 
     (let [result (position-analysis kb exp-constraints)
@@ -260,11 +262,11 @@
 
       ;; (pp/pprint result-success)
       ;; (pp/pprint result-link)
-      (facts "about results of linkage-assembly"
-             (fact "about the mark result" result-mark => invar-checker-2)
-             (fact "about the link result" result-link => link-checker-2)
-             (fact "about the success result" result-success => success-checker)
-             (fact "about the failure result" result-failure => failure-checker) )
+      (t/facts "about results of linkage-assembly"
+               (t/fact "about the mark result" result-mark => invar-checker-2)
+               (t/fact "about the link result" result-link => link-checker-2)
+               (t/fact "about the success result" result-success => success-checker)
+               (t/fact "about the failure result" result-failure => failure-checker) )
 
       #_(with-open [fis (-> "excavator/excavator_boom_dipper_csys.xml"
                             jio/resource jio/input-stream)

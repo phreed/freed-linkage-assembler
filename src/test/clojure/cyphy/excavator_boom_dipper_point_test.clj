@@ -1,6 +1,10 @@
 (ns cyphy.excavator-boom-dipper-point-test
-  (:require [midje.sweet :refer [defchecker chatty-checker checker facts fact]]
-            [isis.geom.cyphy.cad-stax :as cyphy]
+  (:require [midje.sweet :refer
+             [defchecker chatty-checker checker facts fact]]
+
+            [isis.geom.cyphy
+             [cyphy-zip :as cyphy]
+             [cad-stax :as stax]]
 
             [clojure.java.io :as jio]
             [clojure.data]
@@ -38,7 +42,7 @@
 
 (with-open [fis (-> "excavator/excavator_boom_dipper_point.xml"
                     jio/resource jio/input-stream)]
-  (let [kb (cyphy/extract-knowledge-from-cad-assembly fis)
+  (let [kb (cyphy/knowledge-via-input-stream fis)
         constraints (:constraint kb)
         constraints-exp (meta-con/expand-collection constraints)
 

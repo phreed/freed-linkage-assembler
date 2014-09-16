@@ -5,7 +5,9 @@
 ;;
 (ns isis.geom.linkage-assembler
   (:gen-class :main true)
-  (:require [isis.geom.cyphy.cad-stax :as cyphy]
+  (:require [isis.geom.cyphy
+             [cyphy-zip :as cyphy]
+             [cad-stax :as stax]]
 
             [clojure.tools.cli :refer [parse-opts]]
             [clojure.string :as string]
@@ -82,7 +84,7 @@
     (println " output file = "  (.toString (:output options)))
     (with-open [fis (-> (:input options) jio/input-stream)]
       ;; (let [kb (graph-from-cyphy-input-stream is)
-      (let [kb (cyphy/extract-knowledge-from-cad-assembly fis)
+      (let [kb (cyphy/knowledge-via-input-stream fis)
             constraints (:constraint kb)
             ;; here is the call to the position analysis
             [success? result-kb result-success result-failure]
@@ -90,6 +92,6 @@
         (with-open [fis (-> (:input options) jio/input-stream)
                     fos (-> (:output options) jio/output-stream)]
 
-          (cyphy/update-cad-assembly-using-knowledge fis fos kb) ) ) )))
+          (stax/update-cad-assembly-using-knowledge fis fos kb) ) ) )))
 
 

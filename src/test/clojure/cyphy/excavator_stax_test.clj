@@ -1,5 +1,5 @@
-(ns cyphy.cyphy-stax
-  (:require [midje.sweet :refer [defchecker chatty-checker checker facts fact]]
+(ns cyphy.excavator-stax-test
+  (:require [midje.sweet :as t]
             [isis.geom.cyphy.cyphy-zip :as cyphy]
 
             [clojure.java.io :as jio]
@@ -27,4 +27,10 @@
 
 (with-open [is (-> "excavator/excavator_total_plane.xml"
                     jio/resource jio/input-stream)]
-  (cyphy/kb-from-cyphy-input-stream is))
+  (let [kb (cyphy/knowledge-via-input-stream is)
+
+        con-a2b [:foo]
+        ]
+    #_(pp/pprint ["constraints" (:constraints kb)])
+    (t/facts "constraints via zipper"
+           (t/fact "constraint" kb => (t/contains con-a2b)))))
