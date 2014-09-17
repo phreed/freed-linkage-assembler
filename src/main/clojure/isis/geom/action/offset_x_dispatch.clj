@@ -17,3 +17,5 @@
 
 
 
+
+;; (master/def-transform-symetric-methods transform!)

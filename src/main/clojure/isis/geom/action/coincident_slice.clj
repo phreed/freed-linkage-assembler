@@ -10,6 +10,7 @@
 
 (def slicer *ns*)
 
+(defn transform!->t0-r0 [kb m1 m2] (println slicer) )
 
 (defn transform!->t0-r1
   "PFT entry: (0,1,coincident)

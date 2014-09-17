@@ -21,9 +21,9 @@
 
 (println-str
  (print-lines
- "this is a line
- and so is this.
- and this." 1 2))
+  "this is a line
+  and so is this.
+  and this." 1 2))
 
 (require '[isis.geom.machine.misc :as misc])
 
@@ -77,13 +77,13 @@
 (whoa)
 
 (defn lookup2 [board pos]
-(let [file-key (int \a)
-      rank-key (int \0)
-      [file rank] (map int pos)
-      file-component (->> file-key (- file))
-      rank-component (->> rank-key (- rank) (- 8) (* 8))
-      index (+ file-component rank-component)]
-  (nth board index)))
+  (let [file-key (int \a)
+        rank-key (int \0)
+        [file rank] (map int pos)
+        file-component (->> file-key (- file))
+        rank-component (->> rank-key (- rank) (- 8) (* 8))
+        index (+ file-component rank-component)]
+    (nth board index)))
 
 (let [board (initial-board)]
   (lookup2 board "c1"))
@@ -113,19 +113,30 @@
   [strings]
   )
 
-(defmacro def-transform-methods
-  "generate the defmethods"
-  []
-  (for [tdof [0 1 2 3]
-        rdof [0 1 2 3]
-        motive [:fixed :mobile]
-        :when (or (not= 0 tdof)
-                  (not= 0 rdof))]
-  `(do
-     (defmethod ~(symbol "transform!")
-       {:tdof tdof :rdof rdof :motive motive}
-       [kb point line]
-       ~(str (symbol motive)/transform!->t))
-                         )))
+(defmacro build-movie-set [& scenes]
+  (let [name-vals (partition 2 scenes)]
+    `(do
+       ~@(for [[name val] name-vals]
+           `(defmacro ~(symbol (str "with-" name "s"))
+              ([~'& body#]
+                 `(do
+                    ~@(interpose `(println ~~val)
+                                 body#))))))))
+(macroexpand-1 '(build-movie-set dog 3 cat 2 cow 7))
 
-(macroexpand-1 (def-transform-methods))
+(defmulti foo )
+
+(defmacro def-transform-asymetric-methods
+  "generate the defmethods"
+  [multifn]
+  `(do
+     ~@(for [tdof [0 1 2 3]
+             rdof [0 1 2 3]
+             motive [:fixed :mobile]]
+         `(defmethod ~multifn
+            {:tdof ~tdof :rdof ~rdof :motive ~motive}
+            [~'kb ~'m1 ~'m2 ~'motive]
+            (~(symbol (str (name motive) "/transform!->t" tdof "-r" rdof))
+            ~'kb ~'m1 ~'m2 )))))
+
+(pp/pprint (macroexpand-1 '(def-transform-asymetric-methods foo)))

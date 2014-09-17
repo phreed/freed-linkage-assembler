@@ -7,6 +7,7 @@
 
 (def slicer *ns*)
 
+(defn transform!->t0-r0 [kb m1 m2] (println slicer) )
 (defn transform!->t0-r1 [kb m1 m2] (println slicer) )
 (defn transform!->t0-r2 [kb m1 m2] (println slicer) )
 (defn transform!->t0-r3 [kb m1 m2] (println slicer)  )
