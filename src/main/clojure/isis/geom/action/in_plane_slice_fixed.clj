@@ -1,13 +1,15 @@
 (ns isis.geom.action.in-plane-slice-fixed
   "The table of rules for the in-plane constraint where
   the point marker, ?M_1, is FIXED and the plane marker, ?M_2, is mobile."
-  (:require [isis.geom.machine
+  (:require [isis.geom.position-dispatch :as ms]
+            [isis.geom.machine
              [geobj :as ga]
              [tolerance :as tol]]
             [isis.geom.action [auxiliary :as dof]]
-            [isis.geom.model [invariant :as invariant]]))
+            [isis.geom.model [invariant :as invariant]]
+            [clojure.pprint :as pp] ))
 
-(def slicer *ns*)
+
 
 (defn transform!->t0-r0
   "PFT entry: (0,0,in-plane)  (M_1 is fixed)
@@ -42,23 +44,23 @@
 
       (println "overconstrained in-plane" m1 m2)) ))
 
-(defn transform!->t0-r1 [kb m1 m2]  (println slicer :t0r1) )
-(defn transform!->t0-r2 [kb m1 m2]  (println slicer :t0r2) )
-(defn transform!->t0-r3 [kb m1 m2]  (println slicer :t0r3) )
+(defn transform!->t0-r1 [kb m1 m2]  (ms/unimplemented  :t0r1) )
+(defn transform!->t0-r2 [kb m1 m2]  (ms/unimplemented  :t0r2) )
+(defn transform!->t0-r3 [kb m1 m2]  (ms/unimplemented  :t0r3) )
 
-(defn transform!->t1-r0 [kb m1 m2]  (println slicer :t1r0) )
-(defn transform!->t1-r1 [kb m1 m2]  (println slicer :t1r1) )
-(defn transform!->t1-r2 [kb m1 m2]  (println slicer :t1r2) )
-(defn transform!->t1-r3 [kb m1 m2]  (println slicer :t1r3) )
+(defn transform!->t1-r0 [kb m1 m2]  (ms/unimplemented  :t1r0) )
+(defn transform!->t1-r1 [kb m1 m2]  (ms/unimplemented  :t1r1) )
+(defn transform!->t1-r2 [kb m1 m2]  (ms/unimplemented  :t1r2) )
+(defn transform!->t1-r3 [kb m1 m2]  (ms/unimplemented  :t1r3) )
 
-(defn transform!->t2-r0 [kb m1 m2]  (println slicer :t2r0) )
-(defn transform!->t2-r1 [kb m1 m2]  (println slicer :t2r1) )
-(defn transform!->t2-r2 [kb m1 m2]  (println slicer :t2r2) )
-(defn transform!->t2-r3 [kb m1 m2]  (println slicer :t2r3) )
+(defn transform!->t2-r0 [kb m1 m2]  (ms/unimplemented  :t2r0) )
+(defn transform!->t2-r1 [kb m1 m2]  (ms/unimplemented  :t2r1) )
+(defn transform!->t2-r2 [kb m1 m2]  (ms/unimplemented  :t2r2) )
+(defn transform!->t2-r3 [kb m1 m2]  (ms/unimplemented  :t2r3) )
 
-(defn transform!->t3-r0 [kb m1 m2]  (println slicer :t3r0) )
-(defn transform!->t3-r1 [kb m1 m2]  (println slicer :t3r1) )
-(defn transform!->t3-r2 [kb m1 m2]  (println slicer :t3r2) )
+(defn transform!->t3-r0 [kb m1 m2]  (ms/unimplemented  :t3r0) )
+(defn transform!->t3-r1 [kb m1 m2]  (ms/unimplemented  :t3r1) )
+(defn transform!->t3-r2 [kb m1 m2]  (ms/unimplemented  :t3r2) )
 
 (defn transform!->t3-r3
   "PFT entry: (3,3,in-plane)
@@ -91,18 +93,18 @@
   [kb m1 m2]
   (let [[[m2-link-name m2-proper-name] _] m2
         m2-link (get-in kb [:link m2-link-name])
-        m1-gmp (geo/gmp m1 kb)
-        m2-gmp (geo/gmp m2 kb)
-        m2-gmz (geo/gmz m2 kb)
-        m2-plane (geo/plane m2-gmp m2-gmz)
-        separation (geo/norm (geo/rejection m1-gmp m2-plane)) ]
+        m1-gmp (ga/gmp m1 kb)
+        m2-gmp (ga/gmp m2 kb)
+        m2-gmz (ga/gmz m2 kb)
+        m2-plane (ga/plane m2-gmp m2-gmz)
+        separation (ga/norm (ga/rejection m1-gmp m2-plane)) ]
     (dosync
      (invariant/set-marker! kb m2-link-name m2-proper-name :loc)
      (alter m2-link merge
-            (geo/translate @m2-link separation))
+            (ga/translate @m2-link separation))
      (alter m2-link assoc
             :tdof {:# 2
                    :point m1-gmp
-                   :plane (geo/gmp m2 kb)}
+                   :plane (ga/gmp m2 kb)}
             :rdof {:# 3 } ) )))
 

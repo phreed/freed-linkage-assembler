@@ -3,7 +3,7 @@
    In in-plane constraint means that there are two markers,
   one representing a point, M_1, and a second representing a
   plane, M_2.  The point is constrained to lie on the plane."
-  (:require [isis.geom.position-dispatch :as master]
+  (:require [isis.geom.position-dispatch :as ms]
             [isis.geom.model.invariant :as invariant]
             [isis.geom.action
              [in-plane-slice-fixed :as fixed]
@@ -28,7 +28,7 @@
   Examine the underconstrained marker to determine the dispatch key.
   The key is the [#tdof #rdof] of the m2 link."
   (fn [kb point plane motive]
-    (pp/pprint ["plane" plane "point" point "motive" motive ])
+    ;; (pp/pprint ["plane" plane "point" point "motive" motive ])
     (let [[[link-name _] _] plane
           link @(get (:link kb) link-name)
           tdof (get-in link [:tdof :#])
@@ -37,7 +37,7 @@
   :default nil)
 
 
-(defmethod master/constraint-attempt?
+(defmethod ms/constraint-attempt?
   :in-plane
   [kb constraint]
   (let [{point :m1 plane :m2} constraint
@@ -49,5 +49,5 @@
       true)))
 
 
-(master/defmethod-asymetric-transform transform!)
+(ms/defmethod-asymetric-transform transform!)
 

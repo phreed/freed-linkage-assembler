@@ -1,12 +1,12 @@
 (ns isis.geom.action.coincident-slice
   "The table of rules."
-  (:require [isis.geom.machine
+  (:require [isis.geom.position-dispatch :as ms]
+            [isis.geom.machine
              [geobj :as ga]
              [tolerance :as tol]]
             [isis.geom.action [auxiliary :as dof]]
             [isis.geom.model [invariant :as invariant]] ))
 
-(def slicer *ns*)
 
 (defn transform!->t0-r0
 "PFT entry: (0,0,coincident)
@@ -82,7 +82,7 @@ Explanation:
      (alter m2-link assoc
             :rdof {:# 0} ) )))
 
-(defn transform!->t0-r2 [kb m1 m2] (println slicer "t0r2") )
+(defn transform!->t0-r2 [kb m1 m2] (ms/unimplemented  "t0r2") )
 
 (defn transform!->t0-r3
   "PFT entry: (0,3,coincident)
@@ -119,19 +119,19 @@ Explanation:
             :rdof {:# 1
                    :axis (ga/normalize (ga/vec-diff (ga/gmp m2 kb) m2-point))} ) )))
 
-(defn transform!->t1-r0 [kb m1 m2]  (println slicer :t1r0) )
-(defn transform!->t1-r1 [kb m1 m2]  (println slicer :t1r1) )
-(defn transform!->t1-r2 [kb m1 m2]  (println slicer :t1r2) )
-(defn transform!->t1-r3 [kb m1 m2]  (println slicer :t1r3) )
+(defn transform!->t1-r0 [kb m1 m2]  (ms/unimplemented  :t1r0) )
+(defn transform!->t1-r1 [kb m1 m2]  (ms/unimplemented  :t1r1) )
+(defn transform!->t1-r2 [kb m1 m2]  (ms/unimplemented  :t1r2) )
+(defn transform!->t1-r3 [kb m1 m2]  (ms/unimplemented  :t1r3) )
 
-(defn transform!->t2-r0 [kb m1 m2]  (println slicer :t2r0) )
-(defn transform!->t2-r1 [kb m1 m2]  (println slicer :t2r1) )
-(defn transform!->t2-r2 [kb m1 m2]  (println slicer :t2r2) )
-(defn transform!->t2-r3 [kb m1 m2]  (println slicer :t2r3) )
+(defn transform!->t2-r0 [kb m1 m2]  (ms/unimplemented  :t2r0) )
+(defn transform!->t2-r1 [kb m1 m2]  (ms/unimplemented  :t2r1) )
+(defn transform!->t2-r2 [kb m1 m2]  (ms/unimplemented  :t2r2) )
+(defn transform!->t2-r3 [kb m1 m2]  (ms/unimplemented  :t2r3) )
 
-(defn transform!->t3-r0 [kb m1 m2]  (println slicer :t3r0) )
-(defn transform!->t3-r1 [kb m1 m2]  (println slicer :t3r1) )
-(defn transform!->t3-r2 [kb m1 m2]  (println slicer :t3r2) )
+(defn transform!->t3-r0 [kb m1 m2]  (ms/unimplemented  :t3r0) )
+(defn transform!->t3-r1 [kb m1 m2]  (ms/unimplemented  :t3r1) )
+(defn transform!->t3-r2 [kb m1 m2]  (ms/unimplemented  :t3r2) )
 
 
 (defn transform!->t3-r3

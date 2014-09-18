@@ -1,6 +1,6 @@
 (ns isis.geom.action.helical-dispatch
   "The table of rules."
-  (:require [isis.geom.position-dispatch :as master]
+  (:require [isis.geom.position-dispatch :as ms]
             [isis.geom.model.invariant :as invariant] ))
 
 

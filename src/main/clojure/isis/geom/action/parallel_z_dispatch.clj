@@ -1,6 +1,6 @@
 (ns isis.geom.action.parallel-z-dispatch
   "The table of rules."
-  (:require [isis.geom.position-dispatch :as master]
+  (:require [isis.geom.position-dispatch :as ms]
             [isis.geom.model.invariant :as invariant]
             [isis.geom.action.parallel-z-slice :as xlice]
             [clojure.pprint :as pp]))
@@ -28,7 +28,7 @@
   :default nil)
 
 
-(defmethod master/constraint-attempt?
+(defmethod ms/constraint-attempt?
   :parallel-z
   [kb constraint]
   (let [{m1 :m1 m2 :m2} constraint
@@ -39,4 +39,4 @@
         (transform! kb m1 m2))
       true)))
 
-(master/defmethod-symetric-transform transform!)
+(ms/defmethod-symetric-transform transform!)

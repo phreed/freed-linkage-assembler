@@ -1,6 +1,6 @@
 (ns isis.geom.action.in-line-dispatch
   "The table of rules."
-  (:require [isis.geom.position-dispatch :as master]
+  (:require [isis.geom.position-dispatch :as ms]
             [isis.geom.model.invariant :as invariant]
             [isis.geom.action
              [in-line-slice-fixed :as fixed]
@@ -33,7 +33,7 @@
   :default nil)
 
 
-(defmethod master/constraint-attempt?
+(defmethod ms/constraint-attempt?
   :in-line
   [kb constraint]
   (let [{point :m1 line :m2} constraint
@@ -45,5 +45,5 @@
       true)))
 
 
-(master/defmethod-asymetric-transform transform!)
+(ms/defmethod-asymetric-transform transform!)
 

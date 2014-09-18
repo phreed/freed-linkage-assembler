@@ -1,6 +1,6 @@
 (ns isis.geom.algebra.versor
   "The functions for developing and working with versors.
-  see https://github.com/weshoke/versor.js/blob/master/versor.js
+  see https://github.com/weshoke/versor.js/blob/mas ter/versor.js
   "
   (:import [java.lang.Character]))
 

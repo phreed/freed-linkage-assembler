@@ -1,6 +1,6 @@
 (ns isis.geom.action.offset-z-slice
   "The table of rules."
-  (:require [isis.geom.position-dispatch :as master]
+  (:require [isis.geom.position-dispatch :as ms]
             [isis.geom.model.invariant :as invariant]
             [isis.geom.action [offset-z-slice :as xlice]]))
 
@@ -29,7 +29,7 @@
 
 
 
-(defmethod master/constraint-attempt?
+(defmethod ms/constraint-attempt?
   :offset-z
   [kb constraint]
   (let [{m1 :m1 m2 :m2} constraint
@@ -39,7 +39,7 @@
         (transform! kb ma1 ma2)
         true))))
 
-(master/defmethod-symetric-transform transform!)
+(ms/defmethod-symetric-transform transform!)
 
 
 

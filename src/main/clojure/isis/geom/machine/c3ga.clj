@@ -1,4 +1,4 @@
-;; see C3.js https://github.com/weshoke/versor.js/blob/master/C4.js
+;; see C3.js https://github.com/weshoke/versor.js/blob/ms/C4.js
 (ns isis.geom.machine.c3ga)
 
 

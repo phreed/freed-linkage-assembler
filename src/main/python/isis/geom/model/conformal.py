@@ -3,7 +3,7 @@ from sympy import Symbol, cos, sin
 from sympy.galgebra.ga import *
 import math
 
-# Refer to: http://www.wolftype.com/versor/colapinto_masters_final_02.pdf
+# Refer to: http://www.wolftype.com/versor/colapinto_mas ters_final_02.pdf
 """ These functions take in euclidean data and transform
     them into the conformal space. """
 
@@ -42,18 +42,18 @@ def make_conformal_plane_versor(epnt, normal, basis):
     print 'wedfe: ', no^ni
     print 'DUAL_PLANE: ', dual_p
     print 'PLANE: ', dual_p*MV.I
-    
+
     return -dual(dual_p)
- 
+
 def make_conformal_axis(epnt1, epnt2, basis):
     """ A = Pa ^ Pb ^ ni """
     (no, e1, e2, e3, ni) = basis
-    
+
     pa = make_conformal_point(epnt1, basis)
     pb = make_conformal_point(epnt2, basis)
     return pa ^ pb ^ ni
 
- 
+
 def make_conformal_csys_versor(x, i, t, basis):
     """ (1-0.5*d*ni)*(exp(-0.5*theta*B) """
     (no, e1, e2, e3, ni) = basis
@@ -64,8 +64,8 @@ def make_conformal_csys_versor(x, i, t, basis):
     T = 1 - (d[0]*(e1^ni) + d[1]*(e2^ni) + d[2]*(e3^ni))
     return T*R
 
-    
-#########################  
+
+#########################
 ##  Testing functions  ##
 #########################
 
@@ -118,7 +118,7 @@ def test_csys(epnt, csys, basis):
     print 'MV diff: ', x2 - cpnt
     assert (x2-cpnt == 0)
     print 'PASSED'
-    
+
 if __name__ == "__main__":
     """ For testing use. Typically functions will be called separately. """
     b = init_conformal_basis()
@@ -142,4 +142,3 @@ if __name__ == "__main__":
     print ''
     print 'ALL TESTS PASSED'
 
-    
