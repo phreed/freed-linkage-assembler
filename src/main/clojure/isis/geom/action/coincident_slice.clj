@@ -10,7 +10,7 @@
 
 (def slicer *ns*)
 
-(defn transform!->t0-r0 [kb m1 m2] (println slicer) )
+(defn transform!->t0-r0 [kb m1 m2] (println slicer "t0r0") )
 
 (defn transform!->t0-r1
   "PFT entry: (0,1,coincident)
@@ -54,7 +54,7 @@ Explanation:
      (alter m2-link assoc
             :rdof {:# 0} ) )))
 
-(defn transform!->t0-r2 [kb m1 m2] (println slicer) )
+(defn transform!->t0-r2 [kb m1 m2] (println slicer "t0r2") )
 
 (defn transform!->t0-r3
   "PFT entry: (0,3,coincident)
@@ -91,19 +91,19 @@ Explanation:
             :rdof {:# 1
                    :axis (normalize (vec-diff (gmp m2 kb) m2-point))} ) )))
 
-(defn transform!->t1-r0 [kb m1 m2] (println slicer) )
-(defn transform!->t1-r1 [kb m1 m2]  (println slicer) )
-(defn transform!->t1-r2 [kb m1 m2]  (println slicer) )
-(defn transform!->t1-r3 [kb m1 m2]  (println slicer) )
+(defn transform!->t1-r0 [kb m1 m2]  (println slicer :t1r0) )
+(defn transform!->t1-r1 [kb m1 m2]  (println slicer :t1r1) )
+(defn transform!->t1-r2 [kb m1 m2]  (println slicer :t1r2) )
+(defn transform!->t1-r3 [kb m1 m2]  (println slicer :t1r3) )
 
-(defn transform!->t2-r0 [kb m1 m2]  (println slicer) )
-(defn transform!->t2-r1 [kb m1 m2]  (println slicer) )
-(defn transform!->t2-r2 [kb m1 m2]  (println slicer) )
-(defn transform!->t2-r3 [kb m1 m2]  (println slicer) )
+(defn transform!->t2-r0 [kb m1 m2]  (println slicer :t2r0) )
+(defn transform!->t2-r1 [kb m1 m2]  (println slicer :t2r1) )
+(defn transform!->t2-r2 [kb m1 m2]  (println slicer :t2r2) )
+(defn transform!->t2-r3 [kb m1 m2]  (println slicer :t2r3) )
 
-(defn transform!->t3-r0 [kb m1 m2]  (println slicer) )
-(defn transform!->t3-r1 [kb m1 m2]  (println slicer) )
-(defn transform!->t3-r2 [kb m1 m2]  (println slicer) )
+(defn transform!->t3-r0 [kb m1 m2]  (println slicer :t3r0) )
+(defn transform!->t3-r1 [kb m1 m2]  (println slicer :t3r1) )
+(defn transform!->t3-r2 [kb m1 m2]  (println slicer :t3r2) )
 
 
 (defn transform!->t3-r3

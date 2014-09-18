@@ -20,7 +20,7 @@
   :default constraint-attempt-default)
 
 (defmacro defmethod-asymetric-transform
-  "generate the defmethods for the multifn.
+  "Generate the asymetric defmethods for the multifn.
   e.g.
   (defmethod transform!
   {:tdof 0 :rdof 0 :motive :fixed}
@@ -37,7 +37,7 @@
             ~'kb ~'m1 ~'m2 )))))
 
 (defmacro defmethod-symetric-transform
-  "generate the defmethods for the multifn.
+  "Generate the symetric defmethods for the multifn.
   e.g.
   (defmethod transform!
   {:tdof 0 :rdof 0}
