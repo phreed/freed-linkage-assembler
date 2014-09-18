@@ -2,8 +2,7 @@
   "The table of rules."
   (:require [isis.geom.position-dispatch :as master]
             [isis.geom.model.invariant :as invariant]
-            [isis.geom.action
-             [parallel-z-slice :as xlice]]
+            [isis.geom.action.parallel-z-slice :as xlice]
             [clojure.pprint :as pp]))
 
 

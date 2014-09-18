@@ -45,5 +45,5 @@
       true)))
 
 
-(master/def-transform-asymetric-methods transform!)
+(master/defmethod-asymetric-transform transform!)
 

@@ -109,34 +109,5 @@
 
 (identity zp)
 (-> zp z/down z/down)
-(defmacro docstring
-  [strings]
-  )
 
-(defmacro build-movie-set [& scenes]
-  (let [name-vals (partition 2 scenes)]
-    `(do
-       ~@(for [[name val] name-vals]
-           `(defmacro ~(symbol (str "with-" name "s"))
-              ([~'& body#]
-                 `(do
-                    ~@(interpose `(println ~~val)
-                                 body#))))))))
-(macroexpand-1 '(build-movie-set dog 3 cat 2 cow 7))
 
-(defmulti foo )
-
-(defmacro def-transform-asymetric-methods
-  "generate the defmethods"
-  [multifn]
-  `(do
-     ~@(for [tdof [0 1 2 3]
-             rdof [0 1 2 3]
-             motive [:fixed :mobile]]
-         `(defmethod ~multifn
-            {:tdof ~tdof :rdof ~rdof :motive ~motive}
-            [~'kb ~'m1 ~'m2 ~'motive]
-            (~(symbol (str (name motive) "/transform!->t" tdof "-r" rdof))
-            ~'kb ~'m1 ~'m2 )))))
-
-(pp/pprint (macroexpand-1 '(def-transform-asymetric-methods foo)))

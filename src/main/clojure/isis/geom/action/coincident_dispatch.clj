@@ -16,19 +16,17 @@
 
 
 
-(defn transform-dispatch
-  "Examine the underconstrained marker to determine the dispatch key.
-  The key is the [#tdof #rdof] of the m2 link."
-  [kb m1 m2]
-  (let [[[link-name _] _] m2
-        link @(get (:link kb) link-name)
-        tdof (get-in link [:tdof :#])
-        rdof (get-in link [:rdof :#]) ]
-    {:tdof tdof :rdof rdof}))
 
 (defmulti transform!
-  "Transform the links and kb so that the constraint is met."
-  #'transform-dispatch
+  "Transform the links and kb so that the constraint is met.
+  Examine the underconstrained marker to determine the dispatch key.
+  The key is the [#tdof #rdof] of the m2 link."
+  (fn [kb m1 m2]
+    (let [[[link-name _] _] m2
+          link @(get (:link kb) link-name)
+          tdof (get-in link [:tdof :#])
+          rdof (get-in link [:rdof :#]) ]
+      {:tdof tdof :rdof rdof}))
   :default nil)
 
 
@@ -43,4 +41,4 @@
         (transform! kb ma1 ma2)
         true))))
 
-(master/def-transform-symetric-methods transform!)
+(master/defmethod-symetric-transform transform!)

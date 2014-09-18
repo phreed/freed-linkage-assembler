@@ -1,7 +1,8 @@
 (ns isis.geom.action.offset-z-slice
   "The table of rules."
   (:require [isis.geom.position-dispatch :as master]
-            [isis.geom.model.invariant :as invariant] ))
+            [isis.geom.model.invariant :as invariant]
+            [isis.geom.action [offset-z-slice :as xlice]]))
 
 
 

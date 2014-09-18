@@ -3,21 +3,23 @@
   (:require  [clojure.pprint :as pp]) )
 
 
-(defn- constraint-attempt-dispatch
-  "The function which specifies which implementation to use."
-  [kb constraint]
-  (:type constraint))
-
-(defn- constraint-attempt-default
-  [kb constraint]
-  (pp/pprint "constraint-attempt-default")
-  nil)
 
 (defmulti constraint-attempt?
-  "Make invariant one or more properties of the indicated marker.
-  Update the geometry invariant to indicate the new DoF predicates."
-  #'constraint-attempt-dispatch
-  :default constraint-attempt-default)
+  "Attempt to make invariant one or more properties
+  of the links referenced by the indicated markers.
+  Update the geometry invariant to indicate the
+  realized DoF predicates and  other invariants.
+
+  Return - nil or false indicating that the
+  attempt failed and the constraint could not be
+  satisfied.  Any other result indicates that the
+  constraint has been applied."
+  (fn [kb constraint] (:type constraint))
+
+  :default
+  (fn [kb constraint]
+    (pp/pprint "constraint-attempt-default")
+    nil))
 
 (defmacro defmethod-asymetric-transform
   "Generate the asymetric defmethods for the multifn.
@@ -34,7 +36,7 @@
             {:tdof ~tdof :rdof ~rdof :motive ~motive}
             [~'kb ~'m1 ~'m2 ~'motive]
             (~(symbol (str (name motive) "/transform!->t" tdof "-r" rdof))
-            ~'kb ~'m1 ~'m2 )))))
+              ~'kb ~'m1 ~'m2 )))))
 
 (defmacro defmethod-symetric-transform
   "Generate the symetric defmethods for the multifn.
@@ -50,4 +52,4 @@
             {:tdof ~tdof :rdof ~rdof}
             [~'kb ~'m1 ~'m2]
             (~(symbol (str "xlice/transform!->t" tdof "-r" rdof))
-            ~'kb ~'m1 ~'m2 )))))
+              ~'kb ~'m1 ~'m2 )))))

@@ -1,16 +1,44 @@
 (ns isis.geom.action.coincident-slice
   "The table of rules."
   (:require [isis.geom.machine
-             [geobj :refer [translate
-                           vec-diff
-                           gmp normalize]]]
-            [isis.geom.action
-             [auxiliary :as dof]]
-            [isis.geom.model.invariant :as invariant] ))
+             [geobj :as ga]
+             [tolerance :as tol]]
+            [isis.geom.action [auxiliary :as dof]]
+            [isis.geom.model [invariant :as invariant]] ))
 
 (def slicer *ns*)
 
-(defn transform!->t0-r0 [kb m1 m2] (println slicer "t0r0") )
+(defn transform!->t0-r0
+"PFT entry: (0,0,coincident)
+
+Initial status:
+  0-TDOF(?m1-link, ?m1-point)
+  0-RDOF(?m1-link)
+
+  0-TDOF(?m2-link, ?m2-point)
+  0-RDOF(?m2-link)
+
+Plan fragment:
+  begin
+  R[0] = vec-diff(gmp(?M_1), gmp(?M_2));
+  unless zero?(R[0])
+    error(R[0], estring[9]);
+  end;
+
+New status:
+  0-TDOF(?link, ?point)
+  0-RDOF(?link)
+
+Explanation:
+  Geom ?link is fixed, so the coincident constraint can only be checked for consistency.
+  "
+  [kb m1 m2]
+  (if (tol/near-zero? (ga/vec-diff (ga/gmp m2 kb) (ga/gmp m1 kb)) :tiny)
+    true
+
+    (println "overconstrained" m1 m2)) )
+
+
 
 (defn transform!->t0-r1
   "PFT entry: (0,1,coincident)
@@ -48,7 +76,7 @@ Explanation:
     (dosync
      (alter m2-link merge
             (dof/r1:p->p @m2-link m2-point
-                         (gmp m2 kb) (gmp m1 kb)
+                         (ga/gmp m2 kb) (ga/gmp m1 kb)
                          m2-axis m2-axis-1 m2-axis-2))
      (invariant/set-link! kb m2-link-name)
      (alter m2-link assoc
@@ -86,10 +114,10 @@ Explanation:
      (invariant/set-marker! kb m2-link-name m2-proper-name :dir)
      (alter m2-link merge
             (dof/r3:p->p @m2-link m2-point
-                         (gmp m2 kb) (gmp m1 kb)))
+                         (ga/gmp m2 kb) (ga/gmp m1 kb)))
      (alter m2-link assoc
             :rdof {:# 1
-                   :axis (normalize (vec-diff (gmp m2 kb) m2-point))} ) )))
+                   :axis (ga/normalize (ga/vec-diff (ga/gmp m2 kb) m2-point))} ) )))
 
 (defn transform!->t1-r0 [kb m1 m2]  (println slicer :t1r0) )
 (defn transform!->t1-r1 [kb m1 m2]  (println slicer :t1r1) )
@@ -131,9 +159,9 @@ Explanation:
     (dosync
      (invariant/set-marker! kb m2-link-name m2-proper-name :loc)
      (alter m2-link merge
-            (translate @m2-link
-                       (vec-diff (gmp m1 kb) (gmp m2 kb))))
+            (ga/translate @m2-link
+                       (ga/vec-diff (ga/gmp m1 kb) (ga/gmp m2 kb))))
      (alter m2-link assoc
             :tdof {:# 0
-                   :point (gmp m2 kb)} ) )))
+                   :point (ga/gmp m2 kb)} ) )))
 
