@@ -6,9 +6,9 @@
              [geobj :as ga]
              [tolerance :as tol]]))
 
+(def ^:private tau (* 2.0 Math/PI))
 
-(let [tau (* 2.0 (. Math PI))
-      tau-1:8 (/ tau 8.0)
+(let [tau-1:8 (/ tau 8.0)
       link {:versor {:xlate [2.0 0.0 0.0]
                      :rotate (ga/axis-angle->quaternion
                               [0 0 -1] [1 0])}}

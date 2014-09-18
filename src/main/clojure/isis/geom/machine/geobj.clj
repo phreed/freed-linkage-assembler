@@ -1,6 +1,9 @@
 (ns isis.geom.machine.geobj
   (:require [isis.geom.machine
-             [tolerance :as tol]]) )
+             [tolerance :as tol]]
+            [clojure.pprint :as pp]) )
+
+(def ^:private tau (* 2.0 Math/PI))
 
 (defn norm2
   "If quantity is a vector, returns the magnitude of quantity.
@@ -297,8 +300,14 @@
 (defn gmz
   "marker z-axis vector (in global coordinate frame)."
   [marker kb]
-  (println "gmz unimplemented")
-  )
+  (pp/pprint ["gmz" marker])
+  (let [[[link-name _] marker-place] marker
+        marker-quat (get marker-place :q [0.0 0.0 0.0])
+        marker-twist (* Math/PI (get marker-place :pi 0.0))
+        link @(get-in kb [:link link-name])]
+    (pp/pprint (list "versor-apply" marker-quat marker-twist))
+    (versor-apply (:versor link) marker-quat)))
+
 
 (defn helix
  "Returns a helix object with axial line defined by point

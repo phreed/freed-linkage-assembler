@@ -111,7 +111,7 @@
         [q0 q1 q2 q3] rotate]
   (xml/element :versor { :x x1 :y x2 :z x3
                          :i q1 :j q2 :k q3
-                         :pi (* 2.0 (/ (Math/acos q0) (. Math PI)))})))
+                         :pi (* 2.0 (/ (Math/acos q0) Math/PI))})))
 
 (defn- editor
   "Once you have a component update its versor."
