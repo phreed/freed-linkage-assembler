@@ -7,7 +7,33 @@
 
 (def slicer *ns*)
 
-(defn transform!->t0-r0 [kb m1 m2]  (println slicer :t0r0) )
+(defn transform!->t0-r0
+"PFT entry: (0,0,in-line)  (M_1 is fixed)
+
+Initial status:
+  0-TDOF(?m1-link, ?m1-point)
+  0-RDOF(?m1-link)
+
+  0-TDOF(?m2-link, ?m2-point)
+  0-RDOF(?m2-link)
+
+Plan fragment:
+  begin
+  R[0] = line(gmp(?M_1), gmp(?M_2));
+  R[1] = perp-dist(gmp(?M_1), R[0]);
+  unless zero?(R[1])
+    error(R[1], estring[9]);
+  end;
+
+New status: unchanged
+
+Explanation:
+  Geom ?m2-link is fixed, so the in-line constraint
+  can only be checked for consistency. "
+  [kb m1 m2]
+  true)
+
+
 (defn transform!->t0-r1 [kb m1 m2]  (println slicer :t0r1) )
 (defn transform!->t0-r2 [kb m1 m2]  (println slicer :t0r2) )
 (defn transform!->t0-r3 [kb m1 m2]  (println slicer :t0r3)  )

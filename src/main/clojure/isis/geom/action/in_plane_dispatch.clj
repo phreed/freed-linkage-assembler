@@ -42,7 +42,7 @@
   [kb constraint]
   (let [{point :m1 plane :m2} constraint
         result (precondition? kb point plane) ]
-    (pp/pprint ["in-plane constraint-attempt" result])
+    ;; (pp/pprint ["in-plane constraint-attempt" result])
     (when result
       (let [[point plane motive] result]
         (transform! kb point plane motive))

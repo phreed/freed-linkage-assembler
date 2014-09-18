@@ -38,7 +38,7 @@
   [kb constraint]
   (let [{point :m1 line :m2} constraint
         result (precondition? kb point line) ]
-    (pp/pprint ["in-line constraint-attempt" result])
+    ;; (pp/pprint ["in-line constraint-attempt" result])
     (when result
       (let [[point line motive] result]
         (transform! kb point line motive))

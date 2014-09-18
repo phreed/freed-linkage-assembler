@@ -33,7 +33,7 @@
   [kb constraint]
   (let [{m1 :m1 m2 :m2} constraint
         result (precondition? kb m1 m2) ]
-    (pp/pprint ["parallel-z constraint-attempt" result])
+    ;; (pp/pprint ["parallel-z constraint-attempt" result])
     (when result
       (let [[m1 m2] result]
         (transform! kb m1 m2))
