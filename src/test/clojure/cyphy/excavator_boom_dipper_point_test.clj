@@ -72,41 +72,41 @@
      "about initial ground-arm constraints"
      (:constraint kb) =>
      (t/contains
-     [{:m1 [[arm-name "FRONT"]
-            {:e [1.0 0.0 0.0] :pi 0.0 :q [0.0 0.0 0.0]}]
-       :m2 [[assy-name "ASM_FRONT"]
-            {:e [1.0 0.0 0.0] :pi 0.0 :q [0.0 0.0 0.0]}]
-       :type :coincident}
-      {:m1 [[arm-name "TOP"]
-            {:e [0.0 1.0 0.0] :pi 0.0 :q [0.0 0.0 0.0]}]
-       :m2 [[assy-name "ASM_TOP"]
-            {:e [0.0 1.0 0.0] :pi 0.0 :q [0.0 0.0 0.0]}]
-       :type :coincident}
-      {:m1 [[arm-name "RIGHT"]
-            {:e [0.0 0.0 1.0] :pi 0.0 :q [0.0 0.0 0.0]}]
-       :m2 [[assy-name "ASM_RIGHT"]
-            {:e [0.0 0.0 1.0] :pi 0.0 :q [0.0 0.0 0.0]}]
-       :type :coincident}]))
+      [{:m1 [[arm-name "FRONT"]
+             {:e [1.0 0.0 0.0] :pi 0.0 :q [0.0 0.0 0.0]}]
+        :m2 [[assy-name "ASM_FRONT"]
+             {:e [1.0 0.0 0.0] :pi 0.0 :q [0.0 0.0 0.0]}]
+        :type :coincident}
+       {:m1 [[arm-name "TOP"]
+             {:e [0.0 1.0 0.0] :pi 0.0 :q [0.0 0.0 0.0]}]
+        :m2 [[assy-name "ASM_TOP"]
+             {:e [0.0 1.0 0.0] :pi 0.0 :q [0.0 0.0 0.0]}]
+        :type :coincident}
+       {:m1 [[arm-name "RIGHT"]
+             {:e [0.0 0.0 1.0] :pi 0.0 :q [0.0 0.0 0.0]}]
+        :m2 [[assy-name "ASM_RIGHT"]
+             {:e [0.0 0.0 1.0] :pi 0.0 :q [0.0 0.0 0.0]}]
+        :type :coincident}]))
 
     (t/fact
      "about initial arm-boom constraints"
      (:constraint kb) =>
      (t/contains
-     [{:m1 [[boom-name "APNT_2"]
-            {:e [-8649.51 4688.51 600.0] :pi 0.0 :q [0.0 0.0 0.0]}]
-       :m2 [[arm-name "PNT2"]
-            {:e [3467.85 43.0687 302.5] :pi 0.0 :q [0.0 0.0 0.0]}]
-       :type :coincident}
-      {:m1 [[boom-name "APNT_1"]
-            {:e [-8625.71 4720.65 570.0] :pi 0.0 :q [0.0 0.0 0.0]}]
-       :m2 [[arm-name "PNT1"]
-            {:e [3455.57 5.0 332.5] :pi 0.0 :q [0.0 0.0 0.0]}]
-       :type :coincident}
-      {:m1 [[boom-name "APNT_0"]
-            {:e [-8625.71 4720.65 600.0] :pi 0.0 :q [0.0 0.0 0.0]}]
-       :m2 [[arm-name "PNT0"]
-            {:e [3455.57 5.0 302.5] :pi 0.0 :q [0.0 0.0 0.0]}]
-       :type :coincident}]))
+      [{:m1 [[boom-name "APNT_2"]
+             {:e [-8649.51 4688.51 600.0] :pi 0.0 :q [0.0 0.0 0.0]}]
+        :m2 [[arm-name "PNT2"]
+             {:e [3467.85 43.0687 302.5] :pi 0.0 :q [0.0 0.0 0.0]}]
+        :type :coincident}
+       {:m1 [[boom-name "APNT_1"]
+             {:e [-8625.71 4720.65 570.0] :pi 0.0 :q [0.0 0.0 0.0]}]
+        :m2 [[arm-name "PNT1"]
+             {:e [3455.57 5.0 332.5] :pi 0.0 :q [0.0 0.0 0.0]}]
+        :type :coincident}
+       {:m1 [[boom-name "APNT_0"]
+             {:e [-8625.71 4720.65 600.0] :pi 0.0 :q [0.0 0.0 0.0]}]
+        :m2 [[arm-name "PNT0"]
+             {:e [3455.57 5.0 302.5] :pi 0.0 :q [0.0 0.0 0.0]}]
+        :type :coincident}]))
 
     ;; _ (pp/pprint ["exp-con:" exp-constraints])
 
@@ -361,11 +361,11 @@
          facts-about-position-analysis-exec
          facts-about-position-analysis-knowledge)
 
-;;      #_(with-open [fis (-> "excavator/excavator_boom_dipper_point.xml"
-;;                            jio/resource jio/input-stream)
-;;                    fos (-> "/tmp/excavator_boom_dipper_aug.xml"
-;;                            jio/output-stream)]
-;;
-;;          (cyphy/update-cad-assembly-using-knowledge fis fos kb) )
+        ;;      #_(with-open [fis (-> "excavator/excavator_boom_dipper_point.xml"
+        ;;                            jio/resource jio/input-stream)
+        ;;                    fos (-> "/tmp/excavator_boom_dipper_aug.xml"
+        ;;                            jio/output-stream)]
+        ;;
+        ;;          (cyphy/update-cad-assembly-using-knowledge fis fos kb) )
         ) ))
 

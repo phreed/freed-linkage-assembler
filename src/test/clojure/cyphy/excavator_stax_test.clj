@@ -139,7 +139,52 @@
               {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 0.0]}] } ] ))
     ) )
 
-(defn facts-following-position-analysis
+(defn- facts-about-position-analysis-exec
+  "This function produces the new knowledge-base
+  and other objects. It also checks the
+  facts about the other objects."
+  [kb]
+  (let [result (analysis/position-analysis kb (:constraint kb))
+        [success? result-kb result-success result-failure] result]
+
+    (t/fact
+     "the position analysis produced the plan"
+     (:constraint kb) =>
+     (t/contains
+      [{:m1 [["{99ce8e6a-8722-4ed7-aa1a-ed46facf3264}" "CENTER_PLANE"]
+             {:e [-5302.02 3731.18 600.0] :pi 0.0 :q [0.0 0.0 -1.0]}]
+        :m2 [["{a93ca8b7-6de8-42e3-bc35-7224ec4ed51f}" "BOOM_CENTER_PLANE"]
+             {:e [0.0 0.0 -250.0] :pi 0.0 :q [0.0 0.0 1.0]}]
+        :type :in-plane}
+       {:m1 [["{a93ca8b7-6de8-42e3-bc35-7224ec4ed51f}" "BOOM_CENTER_PLANE"]
+             {:e [0.0 0.0 -250.0] :pi 0.0 :q [0.0 0.0 1.0]}]
+        :m2 [["{99ce8e6a-8722-4ed7-aa1a-ed46facf3264}" "CENTER_PLANE"]
+             {:e [-5302.02 3731.18 600.0] :pi 0.0 :q [0.0 0.0 -1.0]}]
+        :type :in-plane}
+       {:m1 [["{99ce8e6a-8722-4ed7-aa1a-ed46facf3264}" "ARM_GUIDE"]
+             {:e [-3741.05 1103.98 1369.99] :pi 0.0 :q [-531.29 -717.57 0.0]}]
+        :m2 [["{a93ca8b7-6de8-42e3-bc35-7224ec4ed51f}" "BOOM_GUIDE"]
+             {:e [1150.48 864.911 -250.0], :pi 0.0 :q [-334.565 -371.573 0.0]}]
+        :type :in-plane}
+       {:m1 [["{a93ca8b7-6de8-42e3-bc35-7224ec4ed51f}" "BOOM_GUIDE"]
+             {:e [1150.48 864.911 -250.0] :pi 0.0 :q [-334.565 -371.573 0.0]}]
+        :m2 [["{99ce8e6a-8722-4ed7-aa1a-ed46facf3264}" "ARM_GUIDE"]
+             {:e [-3741.05 1103.98 1369.99] :pi 0.0, :q [-531.29 -717.57 0.0]}]
+        :type :in-plane}
+       {:m1 [["{99ce8e6a-8722-4ed7-aa1a-ed46facf3264}" "ARM_AXIS"]
+             {:e [-8625.71 4720.65 905.0] :pi 0.0 :q [0.0 0.0 1.0]}]
+        :m2 [["{a93ca8b7-6de8-42e3-bc35-7224ec4ed51f}" "BOOM_AXIS"]
+             {:e [2000.0 100.0 0.0] :pi 0.0 :q [0.0 0.0 -1.0]}]
+        :type :in-line}
+       {:m1 [["{99ce8e6a-8722-4ed7-aa1a-ed46facf3264}" "ARM_AXIS"]
+             {:e [-8625.71 4720.65 905.0] :pi 0.0 :q [0.0 0.0 1.0]}]
+        :m2 [["{a93ca8b7-6de8-42e3-bc35-7224ec4ed51f}" "BOOM_AXIS"]
+             {:e [2000.0 100.0 0.0] :pi 0.0 :q [0.0 0.0 -1.0]}]
+        :type :parallel-z} ]))
+
+    result-kb ) )
+
+(defn facts-about-position-analysis-knowledge
   [kb]
   (let [assy-name "{3451cc65-9ad0-4f78-8a0c-290d1595fe74}|1"
         carriage-name "{dce1362d-1b44-4652-949b-995aa2ce5760}"]
@@ -202,50 +247,6 @@
     ) )
 
 
-(defn- position-analysis-exec-facts
-  "This function produces the new knowledge-base
-  and other objects. It also checks the
-  facts about the other objects."
-  [kb]
-  (let [result (analysis/position-analysis kb (:constraint kb))
-        [success? result-kb result-success result-failure] result]
-
-    (t/fact
-     "the position analysis produced the plan"
-     (:constraint kb) =>
-     (t/contains
-      [{:m1 [["{99ce8e6a-8722-4ed7-aa1a-ed46facf3264}" "CENTER_PLANE"]
-             {:e [-5302.02 3731.18 600.0] :pi 0.0 :q [0.0 0.0 -1.0]}]
-        :m2 [["{a93ca8b7-6de8-42e3-bc35-7224ec4ed51f}" "BOOM_CENTER_PLANE"]
-             {:e [0.0 0.0 -250.0] :pi 0.0 :q [0.0 0.0 1.0]}]
-        :type :in-plane}
-       {:m1 [["{a93ca8b7-6de8-42e3-bc35-7224ec4ed51f}" "BOOM_CENTER_PLANE"]
-             {:e [0.0 0.0 -250.0] :pi 0.0 :q [0.0 0.0 1.0]}]
-        :m2 [["{99ce8e6a-8722-4ed7-aa1a-ed46facf3264}" "CENTER_PLANE"]
-             {:e [-5302.02 3731.18 600.0] :pi 0.0 :q [0.0 0.0 -1.0]}]
-        :type :in-plane}
-       {:m1 [["{99ce8e6a-8722-4ed7-aa1a-ed46facf3264}" "ARM_GUIDE"]
-             {:e [-3741.05 1103.98 1369.99] :pi 0.0 :q [-531.29 -717.57 0.0]}]
-        :m2 [["{a93ca8b7-6de8-42e3-bc35-7224ec4ed51f}" "BOOM_GUIDE"]
-             {:e [1150.48 864.911 -250.0], :pi 0.0 :q [-334.565 -371.573 0.0]}]
-        :type :in-plane}
-       {:m1 [["{a93ca8b7-6de8-42e3-bc35-7224ec4ed51f}" "BOOM_GUIDE"]
-             {:e [1150.48 864.911 -250.0] :pi 0.0 :q [-334.565 -371.573 0.0]}]
-        :m2 [["{99ce8e6a-8722-4ed7-aa1a-ed46facf3264}" "ARM_GUIDE"]
-             {:e [-3741.05 1103.98 1369.99] :pi 0.0, :q [-531.29 -717.57 0.0]}]
-        :type :in-plane}
-       {:m1 [["{99ce8e6a-8722-4ed7-aa1a-ed46facf3264}" "ARM_AXIS"]
-             {:e [-8625.71 4720.65 905.0] :pi 0.0 :q [0.0 0.0 1.0]}]
-        :m2 [["{a93ca8b7-6de8-42e3-bc35-7224ec4ed51f}" "BOOM_AXIS"]
-             {:e [2000.0 100.0 0.0] :pi 0.0 :q [0.0 0.0 -1.0]}]
-        :type :in-line}
-       {:m1 [["{99ce8e6a-8722-4ed7-aa1a-ed46facf3264}" "ARM_AXIS"]
-             {:e [-8625.71 4720.65 905.0] :pi 0.0 :q [0.0 0.0 1.0]}]
-        :m2 [["{a93ca8b7-6de8-42e3-bc35-7224ec4ed51f}" "BOOM_AXIS"]
-             {:e [2000.0 100.0 0.0] :pi 0.0 :q [0.0 0.0 -1.0]}]
-        :type :parallel-z} ]))
-
-    result-kb ) )
 
 (comment
   "This performs a sequence of actions on the
@@ -288,6 +289,6 @@
 
         ;; run the position-analysis and check the resulting knowledge
         (thread-fact-fn
-         position-analysis-exec-facts
-         facts-following-position-analysis)
+         facts-about-position-analysis-exec
+         facts-about-position-analysis-knowledge)
         )) )
