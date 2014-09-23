@@ -1,6 +1,6 @@
 (ns versor.rotate-test
   "Sample assembly for rotate (and translate)."
-  (:require [midje.sweet :refer [facts fact]]
+  (:require [midje.sweet :as tt]
 
             [isis.geom.machine
              [geobj :as ga]
@@ -24,29 +24,23 @@
       angle (ga/vec-angle from-dir to-dir axis)
       new-link (ga/rotate link center axis angle)]
 
-  (facts "imitation of dof/r1:p->p"
-         (fact "link check"
+  (tt/facts "imitation of dof/r1:p->p"
+         (tt/fact "link check"
                link =>
                {:versor {:xlate [2.0 0.0 0.0]
                           :rotate [(Math/cos tau-1:8)
                                    0.0 0.0 (- (Math/sin tau-1:8))]}})
-         (fact "link check "
+         (tt/fact "line check "
                a-line => '{:e [2.0 0.0 0.0] :d [1.0 0.0 0.0]} )
-         (fact "pivot check"
-               pivot => '[2.0 0.0 0.0])
-         (fact "direction check"
-               to-dir => '[0.0 4.0 0.0])
-         (fact "from direction check"
-               from-dir => '[0.0 0.0 4.0])
-         (fact "angle check"
-               angle => '[-1.0 0.0])
-         (fact "link check"
+         (tt/fact "pivot check" pivot => '[2.0 0.0 0.0])
+         (tt/fact "direction check" to-dir => '[0.0 4.0 0.0])
+         (tt/fact "from direction check" from-dir => '[0.0 0.0 4.0])
+         (tt/fact "angle check" angle => '[-1.0 0.0])
+         (tt/fact "versor check"
                new-link =>
-               '{:versor {:xlate [2.0 0.0 0.0]
-                          :rotate [0.5000000000000001 ;; cos(120/2)
-                                   -0.5
-                                   -0.4999999999999999
-                                   -0.5]}} )))
+                  '{:versor {:rotate [0.5000000000000001 -0.5
+                                      -0.4999999999999999 -0.5]
+                             :xlate [2.0 0.0 0.0]}}  )))
 
 
 
@@ -64,18 +58,18 @@
       angle (ga/vec-angle from-dir to-dir axis)
       new-link (ga/rotate link center axis angle)]
 
-  (facts "various geomtry tests")
-  (fact "line test" a-line =>
-        '{:e [5.0 0.0 0.0]
-          :d [-0.7295372041400852
+  (tt/facts "various geomtry tests")
+  (tt/fact "line test" a-line =>
+         {:d [-0.7295372041400852
               -0.5471529031050638
-              -0.4103646773287979]} )
-  (fact "pivot test" pivot => '[5.0 0.0 0.0])
-  (fact "to direction test" to-dir => '[-3.0 4.0 0.0])
-  (fact "from direction test" from-dir => '[0.0 -3.0 4.0])
-  (fact "angle test" angle => '[0.8772684879784524 -0.48])
-  (fact "link position test" new-link =>
-        '{:versor
+              -0.4103646773287979]
+          :e [5.0 0.0 0.0]} )
+  (tt/fact "pivot test" pivot => '[5.0 0.0 0.0])
+  (tt/fact "to direction test" to-dir => '[-3.0 4.0 0.0])
+  (tt/fact "from direction test" from-dir => '[0.0 -3.0 4.0])
+  (tt/fact "angle test" angle =>  [0.8772684879784524 -0.48])
+  (tt/fact "link position test" new-link =>
+        {:versor
           {:xlate [2.1476923076923073
                    0.11076923076923095
                    0.9230769230769234]
@@ -86,8 +80,8 @@
 
 (let [link {:versor {:xlate [2.0 0.0 0.0]
                      :rotate
-                     [0.7071067811865475
-                      0.0 0.0 -0.7071067811865475]}}
+                     [0.70710678
+                      0.0 0.0 -0.70710678]}}
       center [5.0 0.0 0.0]
       from-point [2.0 0.0 4.0]
       to-point [2.0 4.0 0.0]
@@ -100,21 +94,20 @@
       angle (ga/vec-angle from-dir to-dir axis)
       new-link (ga/rotate link pivot axis angle)]
 
-  (facts "mimic dof/r1:p->p"
-         (fact "" a-line =>
+  (tt/facts "mimic dof/r1:p->p"
+         (tt/fact "" a-line =>
                '{:e [5.0 0.0 0.0]
                  :d [-1.0 0.0 0.0]})
-         (fact "" pivot => '[2.0 0.0 0.0])
-         (fact "" to-dir => '[0.0 4.0 0.0])
-         (fact "" from-dir => '[0.0 0.0 4.0])
-         (fact "" angle => '[1.0 0.0])
-         (fact "" new-link =>
-               '{:versor
-                 {:xlate [2.0 0.0 0.0]
-                  :rotate [0.5
-                           -0.4999999999999999
-                           -0.4999999999999999
-                           -0.5]}} )))
+         (tt/fact "" pivot => '[2.0 0.0 0.0])
+         (tt/fact "" to-dir => '[0.0 4.0 0.0])
+         (tt/fact "" from-dir => '[0.0 0.0 4.0])
+         (tt/fact "" angle => '[1.0 0.0])
+         (tt/fact "" new-link =>
+                  {:versor {:rotate [0.49999999916098425
+                                     -0.4999999991609842
+                                     -0.4999999991609842
+                                     -0.49999999916098425]
+                            :xlate [2.0 0.0 0.0]}}) ))
 
 (let [link {:versor
             {:xlate [-6096.966798571706
@@ -144,18 +137,18 @@
       angle (ga/vec-angle from-dir to-dir inv-axis)
       new-link (ga/rotate link pivot inv-axis angle)]
 
-  (facts "mimic dof/r1:p->p (180 degree rotation)"
-         (fact "" axis-line =>
+  (tt/facts "mimic dof/r1:p->p (180 degree rotation)"
+         (tt/fact "" axis-line =>
                '{:e [3467.85 43.0687 302.5]
                  :d [-0.24559880542553506
                      -0.7613702967510761
                      0.5999970816585097]})
 
-         (fact "" pivot =>  #(tol/near-same? :default '[3459.991 18.7046 321.700] %) )
-         (fact "" to-dir => #(tol/near-same? :default '[-4.420757 -13.7046 -19.200105] %))
-         (fact "" from-dir => #(tol/near-same? :default '[4.43826 13.70483 19.19386] %))
-         (fact "" angle => #(tol/near-same? :default '[-0.00077 -1.0] %))
-         (fact "" new-link =>
+         (tt/fact "" pivot =>  #(tol/near-same? :default '[3459.991 18.7046 321.700] %) )
+         (tt/fact "" to-dir => #(tol/near-same? :default '[-4.420757 -13.7046 -19.200105] %))
+         (tt/fact "" from-dir => #(tol/near-same? :default '[4.43826 13.70483 19.19386] %))
+         (tt/fact "" angle => #(tol/near-same? :default '[-0.00077 -1.0] %))
+         (tt/fact "" new-link =>
                '{:versor
                  {:xlate [12315.409884054448 -4259.980462766835 903.0008418663099]
                   :rotate [4.996795758810402E-5
