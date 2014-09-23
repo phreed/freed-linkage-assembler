@@ -26,12 +26,12 @@
 
   (facts "imitation of dof/r1:p->p"
          (fact "link check"
-               link)
-         {:versor {:xlate [2.0 0.0 0.0]
-                   :rotate [(Math/cos tau-1:8)
-                            0.0 0.0 (- (Math/sin tau-1:8))]}}
+               link =>
+               {:versor {:xlate [2.0 0.0 0.0]
+                          :rotate [(Math/cos tau-1:8)
+                                   0.0 0.0 (- (Math/sin tau-1:8))]}})
          (fact "link check "
-               a-line => '{:type :line :e [2.0 0.0 0.0] :d [1.0 0.0 0.0]} )
+               a-line => '{:e [2.0 0.0 0.0] :d [1.0 0.0 0.0]} )
          (fact "pivot check"
                pivot => '[2.0 0.0 0.0])
          (fact "direction check"
@@ -66,7 +66,7 @@
 
   (facts "various geomtry tests")
   (fact "line test" a-line =>
-        '{:type :line :e [5.0 0.0 0.0]
+        '{:e [5.0 0.0 0.0]
           :d [-0.7295372041400852
               -0.5471529031050638
               -0.4103646773287979]} )
@@ -102,7 +102,7 @@
 
   (facts "mimic dof/r1:p->p"
          (fact "" a-line =>
-               '{:type :line :e [5.0 0.0 0.0]
+               '{:e [5.0 0.0 0.0]
                  :d [-1.0 0.0 0.0]})
          (fact "" pivot => '[2.0 0.0 0.0])
          (fact "" to-dir => '[0.0 4.0 0.0])
@@ -146,8 +146,7 @@
 
   (facts "mimic dof/r1:p->p (180 degree rotation)"
          (fact "" axis-line =>
-               '{:type :line
-                 :e [3467.85 43.0687 302.5]
+               '{:e [3467.85 43.0687 302.5]
                  :d [-0.24559880542553506
                      -0.7613702967510761
                      0.5999970816585097]})

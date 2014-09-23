@@ -1,7 +1,6 @@
 (ns versor.projection-test
   "Test the projection of versors"
   (:require [midje.sweet :refer [facts fact]]
-
             [isis.geom.machine.geobj :as ga]))
 
 (let [
@@ -11,7 +10,7 @@
   (facts "construction of projection objects"
          (fact "check the formation of lines"
                a-line =>
-               '{:type :line, :e [5.0 0.0 0.0],
+                {:e [5.0 0.0 0.0],
                  :d [-0.7295372041400852 -0.5471529031050638 -0.4103646773287979]})
 
          (fact "about the projection of a point onto a line"

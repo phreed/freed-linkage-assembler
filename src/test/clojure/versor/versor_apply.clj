@@ -7,6 +7,6 @@
 (let [brick-versor {:xlate [2.0 0.0 0.0] :rotate [0.5 -0.5 -0.5 -0.5]}
       brick-local [0.0 3.0 0.0]]
   (facts "rotate and translate"
-         (fact ""
+         (fact "using ga/versor-apply"
                (ga/versor-apply brick-versor brick-local) => '[5.0 0.0 0.0])))
 

@@ -97,7 +97,7 @@
         m2-gmp (ga/gmp m2 kb)
         m2-gmz (ga/gmz m2 kb)
         m2-plane (ga/plane m2-gmp m2-gmz)
-        separation (ga/norm (ga/rejection m1-gmp m2-plane)) ]
+        separation (ga/separation m1-gmp m2-plane) ]
     (dosync
      (invariant/set-marker! kb m2-link-name m2-proper-name :loc)
      (alter m2-link merge

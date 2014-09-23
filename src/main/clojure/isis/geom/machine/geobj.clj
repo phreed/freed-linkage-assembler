@@ -5,6 +5,79 @@
 
 (def ^:private tau (* 2.0 Math/PI))
 
+(defprotocol SubSpace
+  "This protocol specified properties of objects that
+  retain there metrics over transformation. "
+  (dual [ss] "compute the dual subspace. ")
+  (norm2 [ss] "compute the squared magnitude of the subspace. ")
+  (norm [ss] "compute the magnitude of the subspace. "))
+
+(defmulti projection
+  "compute the subspace that is the projection of mv2 onto mv1.
+  Returns the point on the surface closest to the specified point.
+  The surface can be 0d 1d 2d."
+  (fn [ss1 ss2] (mapv class [ss1 ss2])))
+
+(defmulti rejection
+  "compute the subspace that is the rejection of mv2 from mv1.
+  Distance between surface-1 and serface-2.
+  The surfaces may be zero-, one-, or two-dimensional."
+  (fn [ss1 ss2] (mapv class [ss1 ss2])))
+
+(defn separation
+  "Distance between object-1 and object-2.
+  The objects may be zero-, one-, or two-dimensional.
+  The separation is their closest approach.
+  It is the magnitude (norm) of the rejection of
+  the two objects. "
+  [ss1 ss2]
+  (norm (rejection ss1 ss2)))
+
+(defmulti meet
+  "compute the subspace that is common to mv1 and mv2. "
+  (fn [ss1 ss2] (mapv class [ss1 ss2])))
+
+(defmulti join
+  "extract a subspace representing the join of ss1 and ss2."
+  (fn [ss1 ss2] (mapv class [ss1 ss2])))
+
+
+(defprotocol Conformal
+  "This protocol specified properties of objects that
+  retain there metrics over transformation. "
+  (locate [mv] "extract the location as a vector.")
+  (direct [mv] "extract a direction vector.")
+  (weight [mv] "extract a scalar representing the weight.")
+  )
+
+(defprotocol Round
+  "This protocol specified properties of objects that
+  do not have an :ni basis. "
+  )
+
+(defrecord Point [e]
+  Conformal
+  (locate [pt] (:e pt))
+  (direct [pt] [0.0 0.0 0.0])
+  (weight [pt] 0.0)
+  SubSpace
+  (norm2 [pt] (reduce #(+ %1 (* %2 %2)) 0.0 (:e pt)))
+  (norm [pt] (Math/sqrt (norm2 pt))))
+
+(defrecord FlatPoint [e])
+(defrecord PointPair [e1 e2])
+(defrecord Line [e d])
+(defrecord Direction [e])
+(defrecord Plane [e n])
+(defrecord Circle [e n r])
+(defrecord Sphere [e r])
+
+(defrecord Univector [])
+(defrecord Bivector [])
+(defrecord Trivector [])
+
+
+
 (defn norm2
   "If quantity is a vector, returns the magnitude of quantity.
   If quantity is a scalar, returns the absolute value of quantity."
@@ -27,7 +100,7 @@
   (let [weight (norm vect)]
     (if (tol/near-zero? :default weight)
       nil
-      (into [] (map #(/ % weight) vect)))))
+      (mapv #(/ % weight) vect))))
 
 (defn quat-normalize
   "Take a quaternion and normalize it to a unit quaternion."
@@ -149,27 +222,23 @@
 
 
 (defn point
-  "No special typing on a point.
-  It is simply a 3-tuple."
-  [triple] triple)
-
+  "A point is simply a typed 3-tuple."
+  [triple] (->Point triple))
 
 (defn point?
   "Returns 'true' if object is a 'point'."
-  [object]
-  (cond (not (vector? object)) false
-        (not (= 3 (count object))) false
-        :else true))
+  [object] (instance? Point object))
+
 
 (defn line
-  "Returns a line object with direction axis passing through point."
-  [point axis]
-  {:type :line :e point, :d (normalize axis)})
+  "Returns a line object with direction
+  axis passing through a location in space."
+  [loc axis]
+  (->Line loc (normalize axis)))
 
 (defn line?
   "Returns 'true' if object is a line."
-  [object]
-  (= :line (:type object)))
+  [object] (instance? Line object))
 
 
 
@@ -201,7 +270,7 @@
 (defn plane
   "Create a plane object with normal vector passing through point."
   [point normal]
-  {:type :plane :e point :n (normalize normal)})
+  (->Plane point (normalize normal)))
 
 
 (defn plane?
@@ -274,39 +343,134 @@
 )
 
 
+(defn sin
+  "If quantity-or-pair is a pair, returns the sine element of the pair.
+  If quantity-or-pair is a scalar, returns the sine of the quantity."
+  [quantity-or-pair]
+  [quantity-or-pair]
+  (cond (vector? quantity-or-pair) (nth quantity-or-pair 0)
+        :else (Math/sin quantity-or-pair)))
 
-(defn versor-apply
+(defn cos
+  "If quantity-or-pair is a pair, returns the cosine element of the pair.
+  If quantity-or-pair is a scalar (an angle measured in radians), returns the cosine."
+  [quantity-or-pair]
+  (cond (vector? quantity-or-pair) (nth quantity-or-pair 1)
+        :else (Math/cos quantity-or-pair)))
+
+(defn vec-diff
+  "Vector difference of vector-1 and vector-2.
+  Produces a vector from vector-subtrahend to vector-minuend."
+  [vector-minuend vector-subtrahend]
+  (mapv - vector-minuend vector-subtrahend))
+
+(defn vec-scale
+  "Returns a vector which is original vector times scalar."
+  [vector-0, scale]
+  (println "vect-scale unimplemented")
+  )
+
+(defn vec-sum
+  "Vector sum of vector-1 and vector-2."
+  [vector-1 vector-2]
+  (mapv (fn [a b]
+          (let [ab (+ a b)]
+            (if (tol/near-zero? :tiny ab) 0.0 ab))) vector-1 vector-2))
+
+(defn vec-angle
+  "The angle between vector-1 and vector-2,
+  viewed from the positive direction of axis,
+  measured counter-clockwise from vector-1 to vector-2.
+  The angle is represented as a (sine cosine) pair.
+
+  |a.b| = |a| |b| cos 0 & |a^b| = |a| |b| sin 0
+  or [sine cosine] = [|a^b| a.b]/(|a|*|b|).
+  The sign for sine is determined by comparing the
+  direction of the axis to a^b."
+  [vector-1 vector-2 axis]
+  (let [scale (inner-prod vector-2 axis)
+        center (into [] (map #(* % scale) axis))
+        diff-1 (normalize (vec-diff vector-1 center))
+        diff-2 (normalize (vec-diff vector-2 center))
+
+        cosine (inner-prod diff-1 diff-2)
+
+        sine-vec (outer-prod diff-1 diff-2)
+        sine (if (pos? (inner-prod sine-vec axis))
+              (norm sine-vec)
+              (- (norm sine-vec)))]
+    [sine cosine]))
+
+
+(defmulti versor-apply
   "Place the point into the global coordinate frame using the versor."
-  [versor point]
+  (fn [versor gobj] (class gobj) )
+  :default
+  (fn [versor gobj]
+    (println "no dispatch method for versor-apply" (class gobj))))
+
+(defmethod versor-apply clojure.lang.PersistentVector
+  [versor gobj]
   (let [versor-rotate (get versor :rotate [1.0 0.0 0.0 0.0])
         versor-translation (get versor :xlate [0.0 0.0 0.0])
-        rot-loc (quat-sandwich versor-rotate point)]
-    (into [] (map + versor-translation rot-loc))))
+        rot-loc (quat-sandwich versor-rotate gobj)]
+  (mapv + versor-translation rot-loc)))
+
+(defmethod versor-apply isis.geom.machine.geobj.Point
+  [versor gobj]
+  (let [versor-rotate (get versor :rotate [1.0 0.0 0.0 0.0])
+        versor-translation (get versor :xlate [0.0 0.0 0.0])
+        rot-loc (quat-sandwich versor-rotate (:e gobj))]
+  (mapv + versor-translation rot-loc)))
 
 (defn gmp
-  "marker position (in global coordinate frame)."
+  "marker position (in global coordinate frame).
+  The marker is of the form
+  [['<link-name>' '<marker-name>']
+  [marker kb] { :e [<position>] :pi <rotation-angle>
+  :q [<axis-of-rotatation>]}] "
   [marker kb]
   (let [[[link-name _] marker-place] marker
-        marker-loc (get marker-place :e [0.0 0.0 0.0])
+        marker-loc (point (get marker-place :e [0.0 0.0 0.0]))
         link @(get-in kb [:link link-name])]
     (versor-apply (:versor link) marker-loc)))
 
 (defn gmx
-  "marker x-axis vector (in global coordinate frame)."
+  "marker x-axis vector (in global coordinate frame).
+  The marker is of the form
+  [['<link-name>' '<marker-name>']
+  [marker kb] { :e [<position>] :pi <rotation-angle>
+  :q [<axis-of-rotatation>]}]
+  The x-axis is perpendicular to the z-axis."
   [marker kb]
-  (println "gmx unimplemented")
-  )
+  #_(pp/pprint ["gmx" marker])
+  (let [[[link-name _] marker-place] marker
+        marker-axis (get marker-place :q [0.0 0.0 0.0])
+        marker-twist (* Math/PI (get marker-place :pi 0.0))
+        link @(get-in kb [:link link-name])
+        marker-quat (axis-angle->quat marker-twist marker-axis)]
+    #_(pp/pprint ["versor-apply" marker-quat marker-axis marker-twist])
+    (versor-apply (:versor link) marker-quat)))
+
 
 (defn gmz
-  "marker z-axis vector (in global coordinate frame)."
+  "marker z-axis vector (in global coordinate frame).
+  The marker is of the form
+  [['<link-name>' '<marker-name>']
+  [marker kb] { :e [<position>] :pi <rotation-angle>
+  :q [<axis-of-rotatation>]}]
+  In most cases the :q value is the axis of rotation.
+  In the special case where :q is zero the z-axis is [0 0 1]."
   [marker kb]
   (pp/pprint ["gmz" marker])
   (let [[[link-name _] marker-place] marker
-        marker-quat (get marker-place :q [0.0 0.0 0.0])
-        marker-twist (* Math/PI (get marker-place :pi 0.0))
-        link @(get-in kb [:link link-name])]
-    (pp/pprint (list "versor-apply" marker-quat marker-twist))
-    (versor-apply (:versor link) marker-quat)))
+        marker-axis (get marker-place :q [0.0 0.0 1.0])
+        link @(get-in kb [:link link-name])
+        marker-axis (if (tol/near-zero? :tiny marker-axis)
+                      [0.0 0.0 1.0]
+                      (normalize marker-axis))]
+    (pp/pprint ["versor-apply" marker-axis])
+    (versor-apply (:versor link) marker-axis)))
 
 
 (defn helix
@@ -398,12 +562,17 @@
   (println "null? unimplemented")
   )
 
-(defn rejection
-  "Distance between surface-1 and serface-2.
-  The surfaces may be zero-, one-, or two-dimensional."
-  [surface-1 surface-2]
-  (println "rejection unimplemented")
-  )
+(defmethod rejection [Point Point]
+  [pnt1 pnt1] (println "rejection of a point onto a point is undefined. "))
+
+(defmethod rejection [clojure.lang.PersistentVector Line]
+  [pnt ln]
+  (let [hypoten (vec-diff pnt (:e ln))
+        inner (inner-prod hypoten (:d ln))
+        accord (mapv #(* inner %) (:d ln))
+        reject (mapv #(- %1 %2) hypoten accord)]
+    reject))
+
 
 (defn on-surface?
   "Returns 'true' if ?point lies on ?surface."
@@ -476,70 +645,19 @@
   (println "transform unimplemented")
   )
 
-(defn sin
-  "If quantity-or-pair is a pair, returns the sine element of the pair.
-  If quantity-or-pair is a scalar, returns the sine of the quantity."
-  [quantity-or-pair]
-  [quantity-or-pair]
-  (cond (vector? quantity-or-pair) (nth quantity-or-pair 0)
-        :else (Math/sin quantity-or-pair)))
-
-(defn cos
-  "If quantity-or-pair is a pair, returns the cosine element of the pair.
-  If quantity-or-pair is a scalar (an angle measured in radians), returns the cosine."
-  [quantity-or-pair]
-  (cond (vector? quantity-or-pair) (nth quantity-or-pair 1)
-        :else (Math/cos quantity-or-pair)))
-
-(defn vec-diff
-  "Vector difference of vector-1 and vector-2.
-  Produces a vector from vector-subtrahend to vector-minuend."
-  [vector-minuend vector-subtrahend]
-  (into [] (map - vector-minuend vector-subtrahend)))
-
-(defn vec-scale
-  "Returns a vector which is original vector times scalar."
-  [vector-0, scale]
-  (println "vect-scale unimplemented")
-  )
-
-(defn vec-sum
-  "Vector sum of vector-1 and vector-2."
-  [vector-1 vector-2]
-  (into [] (map (fn [a b] (let [ab (+ a b)] (if (tol/near-zero? :tiny ab) 0.0 ab))) vector-1 vector-2)))
-
-(defn vec-angle
-  "The angle between vector-1 and vector-2,
-  viewed from the positive direction of axis,
-  measured counter-clockwise from vector-1 to vector-2.
-  The angle is represented as a (sine cosine) pair.
-
-  |a.b| = |a| |b| cos 0 & |a^b| = |a| |b| sin 0
-  or [sine cosine] = [|a^b| a.b]/(|a|*|b|).
-  The sign for sine is determined by comparing the
-  direction of the axis to a^b."
-  [vector-1 vector-2 axis]
-  (let [scale (inner-prod vector-2 axis)
-        center (into [] (map #(* % scale) axis))
-        diff-1 (normalize (vec-diff vector-1 center))
-        diff-2 (normalize (vec-diff vector-2 center))
-
-        cosine (inner-prod diff-1 diff-2)
-
-        sine-vec (outer-prod diff-1 diff-2)
-        sine (if (pos? (inner-prod sine-vec axis))
-              (norm sine-vec)
-              (- (norm sine-vec)))]
-    [sine cosine]))
-
-(defmulti projection
-  "Returns the point on the surface closest to the specified point.
-  The surface can be 0d 1d 2d."
-  (fn [point surface] (:type surface)))
+(defmethod projection [Point Point]
+  [pnt1 pnt1] (println "projection of a point onto a point is undefined. "))
 
 ;; project the point onto the line
+(defmethod projection [Point Line]
+  [point line]
+  (let [{anchor :e, axis :d} line
+        point-diff (vec-diff point anchor)
+        scale (inner-prod point-diff axis)]
+    (vec-sum anchor (map #(* % scale) axis))))
+
 (defmethod projection
-  :line
+  [clojure.lang.PersistentVector isis.geom.machine.geobj.Line]
   [point line]
   (let [{anchor :e, axis :d} line
         point-diff (vec-diff point anchor)
@@ -547,8 +665,7 @@
     (vec-sum anchor (map #(* % scale) axis))))
 
 ;; project the point onto the plane
-(defmethod projection
-  :plane
+(defmethod projection [Point Plane]
   [point plane]
   (let [[p1 p2 p3] point
         {[s1 s2 s3] :e, [sn1 sn2 sn3] :n} plane
