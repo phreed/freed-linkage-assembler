@@ -39,12 +39,31 @@
                    (clojure.pprint/pprint ["Expected result:" expected])
                    )))))
 
+(def assy-name "{059166f0-b3c0-474f-9dcb-d5e865754d77}|1")
+(def arm-name "{bb160c79-5ba3-4379-a6c1-8603f29079f2}")
+(def boom-name "{62243423-b7fd-4a10-8a98-86209a6620a4}")
+
+(def grounded-constraints
+      [{:m1 [[arm-name "FRONT"]
+             {:e [1.0 0.0 0.0] :pi 0.0 :q [0.0 0.0 0.0]}]
+        :m2 [[assy-name "ASM_FRONT"]
+             {:e [1.0 0.0 0.0] :pi 0.0 :q [0.0 0.0 0.0]}]
+        :type :coincident}
+       {:m1 [[arm-name "TOP"]
+             {:e [0.0 1.0 0.0] :pi 0.0 :q [0.0 0.0 0.0]}]
+        :m2 [[assy-name "ASM_TOP"]
+             {:e [0.0 1.0 0.0] :pi 0.0 :q [0.0 0.0 0.0]}]
+        :type :coincident}
+       {:m1 [[arm-name "RIGHT"]
+             {:e [0.0 0.0 1.0] :pi 0.0 :q [0.0 0.0 0.0]}]
+        :m2 [[assy-name "ASM_RIGHT"]
+             {:e [0.0 0.0 1.0] :pi 0.0 :q [0.0 0.0 0.0]}]
+        :type :coincident}])
+
+
 (defn facts-about-initial-knowledge
   "check the data loaded from the data source"
   [kb]
-  (let [assy-name "{059166f0-b3c0-474f-9dcb-d5e865754d77}|1"
-        arm-name "{bb160c79-5ba3-4379-a6c1-8603f29079f2}"
-        boom-name "{62243423-b7fd-4a10-8a98-86209a6620a4}" ]
 
     (t/fact
      "the knowledge-base should have keys"
@@ -71,25 +90,10 @@
     (t/fact
      "about initial ground-arm constraints"
      (:constraint kb) =>
-     (t/contains
-      [{:m1 [[arm-name "FRONT"]
-             {:e [1.0 0.0 0.0] :pi 0.0 :q [0.0 0.0 0.0]}]
-        :m2 [[assy-name "ASM_FRONT"]
-             {:e [1.0 0.0 0.0] :pi 0.0 :q [0.0 0.0 0.0]}]
-        :type :coincident}
-       {:m1 [[arm-name "TOP"]
-             {:e [0.0 1.0 0.0] :pi 0.0 :q [0.0 0.0 0.0]}]
-        :m2 [[assy-name "ASM_TOP"]
-             {:e [0.0 1.0 0.0] :pi 0.0 :q [0.0 0.0 0.0]}]
-        :type :coincident}
-       {:m1 [[arm-name "RIGHT"]
-             {:e [0.0 0.0 1.0] :pi 0.0 :q [0.0 0.0 0.0]}]
-        :m2 [[assy-name "ASM_RIGHT"]
-             {:e [0.0 0.0 1.0] :pi 0.0 :q [0.0 0.0 0.0]}]
-        :type :coincident}]))
+     (t/contains grounded-constraints))
 
     (t/fact
-     "about initial arm-boom constraints"
+     "about initial arm-boom joint constraints"
      (:constraint kb) =>
      (t/contains
       [{:m1 [[boom-name "APNT_2"]
@@ -107,28 +111,6 @@
         :m2 [[arm-name "PNT0"]
              {:e [3455.57 5.0 302.5] :pi 0.0 :q [0.0 0.0 0.0]}]
         :type :coincident}]))
-
-    ;; _ (pp/pprint ["exp-con:" exp-constraints])
-
-    (t/incipient-fact
-     "the joint constraints"
-     (:constraint kb) =>
-     (t/contains
-      [ {:type :point
-         :m1 [[boom-name "APNT_2"]
-              {:e [-8649.51 4688.51 600.0], :q [0.0 0.0 0.0], :pi 0.0}],
-         :m2 [[arm-name "PNT2"]
-              {:e [3467.85 43.0687 302.5], :q [0.0 0.0 0.0], :pi 0.0}]}
-        {:type :point,
-         :m1 [[boom-name "APNT_1"]
-              {:e [-8625.71 4720.65 570.0], :q [0.0 0.0 0.0], :pi 0.0}],
-         :m2 [[arm-name "PNT1"]
-              {:e [3455.57 5.0 332.5], :q [0.0 0.0 0.0], :pi 0.0}]}
-        {:type :point,
-         :m1 [[boom-name "APNT_0"]
-              {:e [-8625.71 4720.65 600.0], :q [0.0 0.0 0.0], :pi 0.0}],
-         :m2 [[arm-name "PNT0"]
-              {:e [3455.57 5.0 302.5], :q [0.0 0.0 0.0], :pi 0.0}]} ]))
 
 
     (t/fact
@@ -152,45 +134,30 @@
          :rdof {:# 0}}]} ))
 
 
-    (t/incipient-fact
+    (t/fact
      "about the initial marker invariants"
      (:invar kb) =>
      (ref->checker
-      '{:loc [:ref #{[assy-name]}],
+      {:loc [:ref #{[assy-name]}],
         :dir [:ref #{[assy-name]}],
-        :twist [:ref #{[assy-name]}]} ))
-    ))
+        :twist [:ref #{[assy-name]}]} )) )
 
 
 (defn facts-about-primitive-knowledge
   "after expanding the constraints we have primitive knowledge."
   [kb]
-
-  (let [assy-name "{059166f0-b3c0-474f-9dcb-d5e865754d77}|1"
-        arm-name "{bb160c79-5ba3-4379-a6c1-8603f29079f2}"
-        boom-name "{62243423-b7fd-4a10-8a98-86209a6620a4}" ]
-
     ;; (pp/pprint result-success)
     ;; (pp/pprint result-link)
-    (t/incipient-fact
-     "about the expanded constraints"
+    (t/fact
+     "about the expanded ground-arm constraints"
      (:constraint kb) =>
-     [{:type :coincident
-       :m1 [[assy-name "TOP"]
-            {:e [1.0 0.0 0.0]}]
-       :m2 [[arm-name "TOP"]
-            {:e [1.0 0.0 0.0]}]}
-      {:type :coincident
-       :m1 [[assy-name "RIGHT"]
-            {:e [0.0 1.0 0.0]}]
-       :m2 [[arm-name "RIGHT"]
-            {:e [0.0 1.0 0.0]}]}
-      {:type :coincident
-       :m1 [[assy-name "FRONT"]
-            {:e [0.0 0.0 1.0]}]
-       :m2 [[arm-name "FRONT"]
-            {:e [0.0 0.0 1.0]}]}
-      {:type :coincident,
+     (t/contains grounded-constraints))
+
+    (t/fact
+     "about the expanded arm-boom joint constraints"
+     (:constraint kb) =>
+     (t/contains
+     [{:type :coincident,
        :m1 [[boom-name "APNT_2"]
             {:e [-8649.51 4688.51 600.0], :q [0.0 0.0 0.0], :pi 0.0}],
        :m2 [[arm-name "PNT2"]
@@ -204,8 +171,11 @@
        :m1 [[boom-name "APNT_0"]
             {:e [-8625.71 4720.65 600.0], :q [0.0 0.0 0.0], :pi 0.0}],
        :m2 [[arm-name "PNT0"]
-            {:e [3455.57 5.0 302.5], :q [0.0 0.0 0.0], :pi 0.0}]}])
-    ))
+            {:e [3455.57 5.0 302.5], :q [0.0 0.0 0.0], :pi 0.0}]}]))
+
+    (t/fact
+     "about the number of constraints"
+     (count (:constraint kb)) => 6)   )
 
 (defn- facts-about-position-analysis-exec
   "This function produces the new knowledge-base
@@ -213,60 +183,36 @@
   facts about the other objects."
   [kb]
   (let [result (analysis/position-analysis kb (:constraint kb))
-        [success? result-kb result-success result-failure] result
+        [success? result-kb result-success result-failure] result]
 
-        assy-name "{059166f0-b3c0-474f-9dcb-d5e865754d77}|1"
-        arm-name "{bb160c79-5ba3-4379-a6c1-8603f29079f2}"
-        boom-name "{62243423-b7fd-4a10-8a98-86209a6620a4}" ]
-
-
-    (t/incipient-fact
-     "about the success result"
+    (t/fact
+     "about the success result for ground-arm constraints"
      result-success =>
-     (ref->checker
-      [{:type :coincident,
-        :m1
-        [[assy-name "TOP"]
-         {:e [1.0 0.0 0.0]}],
-        :m2
-        [[arm-name "TOP"]
-         {:e [1.0 0.0 0.0]}]}
-       {:type :coincident,
-        :m1
-        [[assy-name "RIGHT"]
-         {:e [0.0 1.0 0.0]}],
-        :m2
-        [[arm-name "RIGHT"]
-         {:e [0.0 1.0 0.0]}]}
-       {:type :coincident,
-        :m1
-        [[assy-name "FRONT"]
-         {:e [0.0 0.0 1.0]}],
-        :m2
-        [[arm-name "FRONT"]
-         {:e [0.0 0.0 1.0]}]}
-       {:type :coincident,
-        :m1
-        [[boom-name "APNT_2"]
+     (t/contains grounded-constraints))
+
+    (t/fact
+     "about the success result for the arm-boom joint constraints"
+     result-success =>
+     (t/contains
+     [{:type :coincident,
+        :m1 [[boom-name "APNT_2"]
          {:e [-8649.51 4688.51 600.0], :q [0.0 0.0 0.0], :pi 0.0}],
-        :m2
-        [[arm-name "PNT2"]
+        :m2 [[arm-name "PNT2"]
          {:e [3467.85 43.0687 302.5], :q [0.0 0.0 0.0], :pi 0.0}]}
        {:type :coincident,
-        :m1
-        [[boom-name "APNT_1"]
+        :m1 [[boom-name "APNT_1"]
          {:e [-8625.71 4720.65 570.0], :q [0.0 0.0 0.0], :pi 0.0}],
-        :m2
-        [[arm-name "PNT1"]
+        :m2 [[arm-name "PNT1"]
          {:e [3455.57 5.0 332.5], :q [0.0 0.0 0.0], :pi 0.0}]}
        {:type :coincident,
-        :m1
-        [[boom-name "APNT_0"]
+        :m1 [[boom-name "APNT_0"]
          {:e [-8625.71 4720.65 600.0], :q [0.0 0.0 0.0], :pi 0.0}],
-        :m2
-        [[arm-name "PNT0"]
+        :m2 [[arm-name "PNT0"]
          {:e [3455.57 5.0 302.5], :q [0.0 0.0 0.0], :pi 0.0}]}] ))
 
+    (t/fact
+     "about the number of constraints"
+     (count result-success) => 6)
 
     (t/fact
      "about the failure result"
@@ -277,10 +223,6 @@
 
 (defn facts-about-position-analysis-knowledge
   [kb]
-  (let [assy-name "{059166f0-b3c0-474f-9dcb-d5e865754d77}|1"
-        arm-name "{bb160c79-5ba3-4379-a6c1-8603f29079f2}"
-        boom-name "{62243423-b7fd-4a10-8a98-86209a6620a4}" ]
-
     ;; (t/incipient-fact
     ;;  "about the expanded constraints"
     ;;  constraints-exp =>
@@ -330,7 +272,7 @@
        [:ref
         #{[assy-name]
           [boom-name]
-          [arm-name]}]} ))))
+          [arm-name]}]} )))
 
 
 
