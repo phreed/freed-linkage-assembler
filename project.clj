@@ -24,9 +24,9 @@
      :test-paths ["src/test/clojure"]
      :resource-paths ["src/test/resources"]
      :dependencies [[midje "1.6.3"]]
-  :plugins [[lein-autoexpect "1.2.2"]
-            [lein-ancient "0.5.5"]
-            [lein-midje "3.0.0"] ] }
+     :plugins [[lein-autoexpect "1.2.2"]
+               [lein-ancient "0.5.5"]
+               [lein-midje "3.1.1"] ] }
 
     :uberjar
     {:aot :all} }

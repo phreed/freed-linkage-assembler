@@ -91,13 +91,13 @@
      (:base kb) => assy-name )
 
     (t/fact
-     "the base assembly is grounded"
+     "the base assembly is *still* grounded"
      @(get-in kb [:link assy-name]) =>
      {:versor {:xlate [0.0 0.0 0.0] :rotate [1.0 0.0 0.0 0.0]}
       :tdof {:# 0} :rdof {:# 0}}  )
 
     (t/fact
-     "the carriage is *not* grounded"
+     "the carriage is *not* yet grounded"
      @(get-in kb [:link carriage-name]) =>
      {:versor {:xlate [0.0 0.0 0.0] :rotate [1.0 0.0 0.0 0.0]}
       :tdof {:# 3} :rdof {:# 3}}  )
@@ -152,8 +152,8 @@
      "the base should indicate the name of the assembly"
      (:base kb) => assy-name )
 
-    (t/fact
-     "the base assembly is grounded"
+    (t/incipient-fact
+     "the base assembly is *still* grounded"
      @(get-in kb [:link assy-name]) =>
      {:versor {:xlate [0.0 0.0 0.0] :rotate [1.0 0.0 0.0 0.0]}
       :tdof {:# 0} :rdof {:# 0}}  )
@@ -202,29 +202,10 @@
     ) )
 
 
-(defn- thread-fact-fn
-  "A aid to the threading macro.
-  The first argument is the thread argument and the
-  second is the thread function.
-  The final argument is the test which checks that
-  the facts are true for the object produced by the
-  thread function."
-  [thread-arg thread-fn facts-fn]
-  (let [new-item (thread-fn thread-arg)]
-    (facts-fn new-item)
-    new-item))
-
-(defn- update-constraint-fn
-  "The update constraint functions update only the
-  constraint object.  This function associates that
-  constraint object with the knowlege-base."
-  [update-fn]
-  (fn [kb] (update-in kb [:constraint] update-fn) ))
-
 (defn- position-analysis-exec-facts
   "This function produces the new knowledge-base
-  and produces other objects. This function also
-  checks the facts about the other objects."
+  and other objects. It also checks the
+  facts about the other objects."
   [kb]
   (let [result (analysis/position-analysis kb (:constraint kb))
         [success? result-kb result-success result-failure] result]
@@ -233,29 +214,80 @@
      "the position analysis produced the plan"
      (:constraint kb) =>
      (t/contains
-      [ {:type :in-plane } ] ))
+      [{:m1 [["{99ce8e6a-8722-4ed7-aa1a-ed46facf3264}" "CENTER_PLANE"]
+             {:e [-5302.02 3731.18 600.0] :pi 0.0 :q [0.0 0.0 -1.0]}]
+        :m2 [["{a93ca8b7-6de8-42e3-bc35-7224ec4ed51f}" "BOOM_CENTER_PLANE"]
+             {:e [0.0 0.0 -250.0] :pi 0.0 :q [0.0 0.0 1.0]}]
+        :type :in-plane}
+       {:m1 [["{a93ca8b7-6de8-42e3-bc35-7224ec4ed51f}" "BOOM_CENTER_PLANE"]
+             {:e [0.0 0.0 -250.0] :pi 0.0 :q [0.0 0.0 1.0]}]
+        :m2 [["{99ce8e6a-8722-4ed7-aa1a-ed46facf3264}" "CENTER_PLANE"]
+             {:e [-5302.02 3731.18 600.0] :pi 0.0 :q [0.0 0.0 -1.0]}]
+        :type :in-plane}
+       {:m1 [["{99ce8e6a-8722-4ed7-aa1a-ed46facf3264}" "ARM_GUIDE"]
+             {:e [-3741.05 1103.98 1369.99] :pi 0.0 :q [-531.29 -717.57 0.0]}]
+        :m2 [["{a93ca8b7-6de8-42e3-bc35-7224ec4ed51f}" "BOOM_GUIDE"]
+             {:e [1150.48 864.911 -250.0], :pi 0.0 :q [-334.565 -371.573 0.0]}]
+        :type :in-plane}
+       {:m1 [["{a93ca8b7-6de8-42e3-bc35-7224ec4ed51f}" "BOOM_GUIDE"]
+             {:e [1150.48 864.911 -250.0] :pi 0.0 :q [-334.565 -371.573 0.0]}]
+        :m2 [["{99ce8e6a-8722-4ed7-aa1a-ed46facf3264}" "ARM_GUIDE"]
+             {:e [-3741.05 1103.98 1369.99] :pi 0.0, :q [-531.29 -717.57 0.0]}]
+        :type :in-plane}
+       {:m1 [["{99ce8e6a-8722-4ed7-aa1a-ed46facf3264}" "ARM_AXIS"]
+             {:e [-8625.71 4720.65 905.0] :pi 0.0 :q [0.0 0.0 1.0]}]
+        :m2 [["{a93ca8b7-6de8-42e3-bc35-7224ec4ed51f}" "BOOM_AXIS"]
+             {:e [2000.0 100.0 0.0] :pi 0.0 :q [0.0 0.0 -1.0]}]
+        :type :in-line}
+       {:m1 [["{99ce8e6a-8722-4ed7-aa1a-ed46facf3264}" "ARM_AXIS"]
+             {:e [-8625.71 4720.65 905.0] :pi 0.0 :q [0.0 0.0 1.0]}]
+        :m2 [["{a93ca8b7-6de8-42e3-bc35-7224ec4ed51f}" "BOOM_AXIS"]
+             {:e [2000.0 100.0 0.0] :pi 0.0 :q [0.0 0.0 -1.0]}]
+        :type :parallel-z} ]))
 
     result-kb ) )
 
 (comment
   "This performs a sequence of actions on the
-  cyphy assembly design.")
+  cyphy assembly design.
 
-(with-open [is (-> "excavator/excavator_total_plane.xml"
-                   jio/resource jio/input-stream)]
-  (-> is
-      ;; load the initial knowledge and check it
-      (thread-fact-fn
-       cyphy/knowledge-via-input-stream
-       facts-about-initial-knowledge)
+  A aid to the threading macro.
+  The first argument is the thread argument and the
+  second is the thread function.
+  The final argument is the test which checks that
+  the facts are true for the object produced by the
+  thread function.
 
-      ;; update the initial knowledge to joint-primitives and check it
-      (thread-fact-fn
-       (update-constraint-fn lower-joint/expand-collection)
-       facts-about-primitive-knowledge)
+  The update constraint functions update only the
+  constraint object.  This function associates that
+  constraint object with the knowlege-base.")
 
-      ;; run the position-analysis and check the resulting knowledge
-      (thread-fact-fn
-       position-analysis-exec-facts
-       facts-following-position-analysis)
-      ))
+(letfn [
+        (thread-fact-fn [thread-arg thread-fn facts-fn]
+                        (let [new-item (thread-fn thread-arg)]
+                          (facts-fn new-item)
+                          new-item))
+
+        (update-constraint-fn [update-fn]
+                              (fn [kb] (update-in kb [:constraint] update-fn) ))
+        ]
+
+
+  (with-open [is (-> "excavator/excavator_total_plane.xml"
+                     jio/resource jio/input-stream)]
+    (-> is
+        ;; load the initial knowledge and check it
+        (thread-fact-fn
+         cyphy/knowledge-via-input-stream
+         facts-about-initial-knowledge)
+
+        ;; update the initial knowledge to joint-primitives and check it
+        (thread-fact-fn
+         (update-constraint-fn lower-joint/expand-collection)
+         facts-about-primitive-knowledge)
+
+        ;; run the position-analysis and check the resulting knowledge
+        (thread-fact-fn
+         position-analysis-exec-facts
+         facts-following-position-analysis)
+        )) )
