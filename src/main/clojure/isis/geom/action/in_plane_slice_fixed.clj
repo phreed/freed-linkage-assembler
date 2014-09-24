@@ -44,23 +44,23 @@
 
       (println "overconstrained in-plane" m1 m2)) ))
 
-(defn transform!->t0-r1 [kb m1 m2]  (ms/unimplemented  :t0r1) )
-(defn transform!->t0-r2 [kb m1 m2]  (ms/unimplemented  :t0r2) )
-(defn transform!->t0-r3 [kb m1 m2]  (ms/unimplemented  :t0r3) )
+(defn transform!->t0-r1 [kb m1 m2]  (ms/unimpl  :t0r1) )
+(defn transform!->t0-r2 [kb m1 m2]  (ms/unimpl  :t0r2) )
+(defn transform!->t0-r3 [kb m1 m2]  (ms/unimpl  :t0r3) )
 
-(defn transform!->t1-r0 [kb m1 m2]  (ms/unimplemented  :t1r0) )
-(defn transform!->t1-r1 [kb m1 m2]  (ms/unimplemented  :t1r1) )
-(defn transform!->t1-r2 [kb m1 m2]  (ms/unimplemented  :t1r2) )
-(defn transform!->t1-r3 [kb m1 m2]  (ms/unimplemented  :t1r3) )
+(defn transform!->t1-r0 [kb m1 m2]  (ms/unimpl  :t1r0) )
+(defn transform!->t1-r1 [kb m1 m2]  (ms/unimpl  :t1r1) )
+(defn transform!->t1-r2 [kb m1 m2]  (ms/unimpl  :t1r2) )
+(defn transform!->t1-r3 [kb m1 m2]  (ms/unimpl  :t1r3) )
 
-(defn transform!->t2-r0 [kb m1 m2]  (ms/unimplemented  :t2r0) )
-(defn transform!->t2-r1 [kb m1 m2]  (ms/unimplemented  :t2r1) )
-(defn transform!->t2-r2 [kb m1 m2]  (ms/unimplemented  :t2r2) )
-(defn transform!->t2-r3 [kb m1 m2]  (ms/unimplemented  :t2r3) )
+(defn transform!->t2-r0 [kb m1 m2]  (ms/unimpl  :t2r0) )
+(defn transform!->t2-r1 [kb m1 m2]  (ms/unimpl  :t2r1) )
+(defn transform!->t2-r2 [kb m1 m2]  (ms/unimpl  :t2r2) )
+(defn transform!->t2-r3 [kb m1 m2]  (ms/unimpl  :t2r3) )
 
-(defn transform!->t3-r0 [kb m1 m2]  (ms/unimplemented  :t3r0) )
-(defn transform!->t3-r1 [kb m1 m2]  (ms/unimplemented  :t3r1) )
-(defn transform!->t3-r2 [kb m1 m2]  (ms/unimplemented  :t3r2) )
+(defn transform!->t3-r0 [kb m1 m2]  (ms/unimpl  :t3r0) )
+(defn transform!->t3-r1 [kb m1 m2]  (ms/unimpl  :t3r1) )
+(defn transform!->t3-r2 [kb m1 m2]  (ms/unimpl  :t3r2) )
 
 (defn transform!->t3-r3
   "PFT entry: (3,3,in-plane)
@@ -91,17 +91,19 @@
   No checks are required.
   "
   [kb m1 m2]
+  (pp/pprint ["t3r3 - in-plane-slice-fixed" "m1" m1 "m2" m2])
   (let [[[m2-link-name m2-proper-name] _] m2
         m2-link (get-in kb [:link m2-link-name])
         m1-gmp (ga/gmp m1 kb)
         m2-gmp (ga/gmp m2 kb)
         m2-gmz (ga/gmz m2 kb)
         m2-plane (ga/plane m2-gmp m2-gmz)
-        separation (ga/separation m1-gmp m2-plane) ]
+        reject (ga/rejection m1-gmp m2-plane) ]
+    (pp/pprint ["rejection" reject])
     (dosync
      (invariant/set-marker! kb m2-link-name m2-proper-name :loc)
      (alter m2-link merge
-            (ga/translate @m2-link separation))
+            (ga/translate @m2-link reject))
      (alter m2-link assoc
             :tdof {:# 2
                    :point m1-gmp

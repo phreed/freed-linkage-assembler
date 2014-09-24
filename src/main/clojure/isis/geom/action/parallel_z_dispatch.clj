@@ -6,12 +6,17 @@
             [clojure.pprint :as pp]))
 
 
-(defn- precondition?
+(defn precondition?
   "Associated with each constraint type is a function which
-  checks the preconditions and returns the marker which
-  is underconstrained."
+  checks the preconditions.  If one of the markers has
+  a fixed direction then the constrained
+  marker is placed in the first position.
+  The focus is on the constrained marker so that
+  overconstrained conditions are still checked."
   [kb m1 m2]
-  (when (invariant/marker-position? kb m1) m2))
+  (cond (invariant/marker-direction? kb m1) [m1 m2]
+        (invariant/marker-direction? kb m2) [m2 m1]
+        :else nil))
 
 
 (defmulti transform!
@@ -24,6 +29,9 @@
           link @(get (:link kb) link-name)
           tdof (get-in link [:tdof :#])
           rdof (get-in link [:rdof :#]) ]
+      (pp/pprint [":parallel-z TRANSFORM!"
+                  (str tdof ":" rdof )
+                  "constrained-dir" m1 "unconstrained-dir" m2])
       {:tdof tdof :rdof rdof}))
   :default nil)
 
@@ -32,11 +40,13 @@
   :parallel-z
   [kb constraint]
   (let [{m1 :m1 m2 :m2} constraint
-        result (precondition? kb m1 m2) ]
-    ;; (pp/pprint ["parallel-z constraint-attempt" result])
-    (when result
-      (let [[m1 m2] result]
-        (transform! kb m1 m2))
+        precon (precondition? kb m1 m2) ]
+    (when precon
+      (pp/fresh-line)
+      (let [[ma mb] precon
+            new-link (transform! kb ma mb)]
+        (pp/pprint ["new-xform" new-link ])
+        new-link)
       true)))
 
 (ms/defmethod-symetric-transform transform!)

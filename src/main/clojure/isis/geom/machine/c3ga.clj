@@ -38,31 +38,31 @@
 ;;   MultiVector
 ;;   (ip [mv1 mv2 & mvs]
 ;;       ())
-;;   (op [mv1 mv2 & mvs] "unimplemented")
+;;   (op [mv1 mv2 & mvs] "unimpl")
 ;;   Subspace
-;;   (dual [space] "unimplemented")
+;;   (dual [space] "unimpl")
 ;;   rej)
 
 ;; (defrecord Vector [value]
 ;;   MultiVector
-;;   (ip [mv1 mv2 & mvs] "unimplemented")
-;;   (op [mv1 mv2 & mvs] "unimplemented")
+;;   (ip [mv1 mv2 & mvs] "unimpl")
+;;   (op [mv1 mv2 & mvs] "unimpl")
 ;;   Subspace
-;;   (dual [space] "unimplemented"))
+;;   (dual [space] "unimpl"))
 
 ;; (defrecord Bivector [value]
 ;;   MultiVector
-;;   (ip [mv1 mv2 & mvs] ["unimplemented"])
-;;   (op [mv1 mv2 & mvs] ["unimplemented"])
+;;   (ip [mv1 mv2 & mvs] ["unimpl"])
+;;   (op [mv1 mv2 & mvs] ["unimpl"])
 ;;   Subspace
-;;   (dual [space] "unimplemented"))
+;;   (dual [space] "unimpl"))
 
 ;; (defrecord Trivector [value]
 ;;   MultiVector
-;;   (ip [mv1 mv2 & mvs] ["unimplemented"])
-;;   (op [mv1 mv2 & mvs] ["unimplemented"])
+;;   (ip [mv1 mv2 & mvs] ["unimpl"])
+;;   (op [mv1 mv2 & mvs] ["unimpl"])
 ;;   Subspace
-;;   (dual [space] "unimplemented"))
+;;   (dual [space] "unimpl"))
 
 
 ;; (defprotocol Conformal

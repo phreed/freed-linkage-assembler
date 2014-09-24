@@ -13,9 +13,9 @@
   checks the preconditions and returns the marker which
   is underconstrained."
   [kb point line]
-  (cond (invariant/marker-position? kb point)  [point line]
-        (and (invariant/marker-position? kb line)
-             (invariant/marker-direction? kb line)) [point line]
+  (cond (invariant/marker-position? kb line)  [point line :mobile]
+        (and (invariant/marker-position? kb point)
+             (invariant/marker-direction? kb point)) [point line :fixed]
         :else nil))
 
 
@@ -24,11 +24,12 @@
   Examine the underconstrained marker to determine the dispatch key.
   The key is the [#tdof #rdof] of the m2 link."
   (fn [kb point line motive]
-    (pp/pprint ["line" line "point" point "motive" motive ])
-    (let [[[link-name _] _] line
+    (let [[[link-name _] _] (case motive :fixed line :mobile point)
           link @(get (:link kb) link-name)
           tdof (get-in link [:tdof :#])
           rdof (get-in link [:rdof :#]) ]
+      (pp/pprint ["in-line TRANSFORM!" (str tdof ":" rdof "-" motive)
+                  "point" point "line" line])
       {:tdof tdof :rdof rdof :motive motive}))
   :default nil)
 
@@ -37,11 +38,13 @@
   :in-line
   [kb constraint]
   (let [{point :m1 line :m2} constraint
-        result (precondition? kb point line) ]
-    ;; (pp/pprint ["in-line constraint-attempt" result])
-    (when result
-      (let [[point line motive] result]
-        (transform! kb point line motive))
+        precon (precondition? kb point line) ]
+    (when precon
+      (pp/fresh-line)
+      (let [[point line motive] precon
+            new-link (transform! kb point line motive)]
+        (pp/pprint ["new-xform" new-link ])
+        new-link)
       true)))
 
 

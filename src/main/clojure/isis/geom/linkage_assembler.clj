@@ -16,8 +16,6 @@
             [isis.geom.analysis.position-analysis
              :refer [position-analysis]]
 
-            [isis.geom.position-dispatch
-             :refer [constraint-attempt?]]
             [isis.geom.action
              [coincident-dispatch]
              [helical-dispatch]

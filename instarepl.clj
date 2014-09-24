@@ -1,6 +1,8 @@
 ;; Anything you type in here will be executed
 ;; immediately with the results shown on the
 ;; right.
+
+
 (require 'clojure.data)
 
 (map (fn [[a b]]

@@ -24,14 +24,13 @@
   The surfaces may be zero-, one-, or two-dimensional."
   (fn [ss1 ss2] (mapv class [ss1 ss2])))
 
-(defn separation
+(defmulti separation
   "Distance between object-1 and object-2.
   The objects may be zero-, one-, or two-dimensional.
   The separation is their closest approach.
   It is the magnitude (norm) of the rejection of
   the two objects. "
-  [ss1 ss2]
-  (norm (rejection ss1 ss2)))
+  (fn [ss1 ss2] (mapv class [ss1 ss2])))
 
 (defmulti meet
   "compute the subspace that is common to mv1 and mv2. "
@@ -315,7 +314,7 @@
   "Returns a copy of a geometric object, fixed in the
   global cooridinate frame."
    [object]
-  (println "copy unimplemented")
+  (println "copy unimpl")
   )
 
 
@@ -323,14 +322,14 @@
   "Return a cylinder object with axial line, whose circular
   profile is defined by axis and radius."
    [line axis radius]
-  (println "cylinder unimplemented")
+  (println "cylinder unimpl")
   )
 
 
 (defn ellipse?
   "Returns 'true' if object is an ellipse."
    [object]
-  (println "ellipse? unimplemented")
+  (println "ellipse? unimpl")
   )
 
 
@@ -339,7 +338,7 @@
   a length, to make an objec twith a single DOF (combined translational
   and rotational )."
   [ellipse axis length]
-  (println "ellipse+r unimplemented")
+  (println "ellipse+r unimpl")
 )
 
 
@@ -367,7 +366,7 @@
 (defn vec-scale
   "Returns a vector which is original vector times scalar."
   [vector-0, scale]
-  (println "vect-scale unimplemented")
+  (println "vect-scale unimpl")
   )
 
 (defn vec-sum
@@ -477,7 +476,7 @@
  "Returns a helix object with axial line defined by point
  and axis, and with specified radius and pitch."
  [point axis radius pitch]
-  (println "helix unimplemented")
+  (println "helix unimpl")
  )
 
 (defn intersect-3-planes
@@ -516,50 +515,50 @@
 (defn inverse
   "Returns the inverse of a transform."
   [transform]
-  (println "inverse unimplemented")
+  (println "inverse unimpl")
   )
 
 (defn lcf
   "Returns the transform matrix for the local coordinate frame of the marker"
   [marker]
-  (println "lcf unimplemented")
+  (println "lcf unimpl")
   )
 
 (defn lmp
   "marker position in link coordinate frame."
   [marker]
-  (println "lmp unimplemented")
+  (println "lmp unimpl")
   )
 
 (defn lmx
   "marker x-axis position in link coordinate frame."
   [marker]
-  (println "lmx unimplemented")
+  (println "lmx unimpl")
   )
 
 (defn lmz
   "marker z-axis position in link coordinate frame."
   [marker]
-  (println "lmz unimplemented")
+  (println "lmz unimpl")
   )
 
 
 (defn modulo
   "Returs quantity modulo modulus"
   [quantity modulus]
-  (println "modulo unimplemented")
+  (println "modulo unimpl")
   )
 
 (defn normal
   "Returns the normal of a plane."
   [plane]
-  (println "normal unimplemented")
+  (println "normal unimpl")
   )
 
 (defn null?
   "Returns 'true' if quantity has the nil value."
   [quantity]
-  (println "null? unimplemented")
+  (println "null? unimpl")
   )
 
 (defmethod rejection [Point Point]
@@ -573,6 +572,29 @@
         reject (mapv #(- %1 %2) hypoten accord)]
     reject))
 
+(defmethod rejection [clojure.lang.PersistentVector Plane]
+  [pnt pln]
+  (let [hypoten (vec-diff pnt (:e pln))
+        separate (inner-prod hypoten (:n pln))
+        reject (mapv #(* separate %) (:n pln))]
+    reject))
+
+(defmethod separation [Point Point]
+  [pnt1 pnt1] (norm (vec-diff pnt1 pnt1)))
+
+(defmethod separation [clojure.lang.PersistentVector Line]
+  [pnt ln]
+  (let [hypoten (vec-diff pnt (:e ln))
+        inner (inner-prod hypoten (:d ln))
+        accord (mapv #(* inner %) (:d ln))
+        reject (mapv #(- %1 %2) hypoten accord)]
+    (norm reject)))
+
+(defmethod separation [clojure.lang.PersistentVector Plane]
+  [pnt pln]
+  (let [hypoten (vec-diff pnt (:e pln))
+        separate (inner-prod hypoten (:n pln))]
+    separate))
 
 (defn on-surface?
   "Returns 'true' if ?point lies on ?surface."
@@ -602,14 +624,14 @@
   return a value that is consistent with curve parameters.
   If multiple choices are possible, disambiguate with branch."
   [curve translation rotation branch]
-  (println "pc-check unimplemented")
+  (println "pc-check unimpl")
   )
 
 (defn pc-error
   "Returns an error term for curve with inconsistent
   translation and rotation."
   [curve translation rotation]
-  (println "pc-error unimplemented")
+  (println "pc-error unimpl")
   )
 
 (defn pc-locus
@@ -617,7 +639,7 @@
   same rigid body as constrained-point consstrained to
   lie on curve."
   [curve constrained-point locus-point]
-  (println "pc-locus unimplemented")
+  (println "pc-locus unimpl")
   )
 
 
@@ -627,14 +649,14 @@
   defined by line, and with screw motion defined by
   point an pitch."
   [line point pitch]
-  (println "screw unimplemented")
+  (println "screw unimpl")
   )
 
 
 (defn sphere
   "Returns a sphere object centered at point with specified radius."
   [point radius]
-  (println "sphere unimplemented")
+  (println "sphere unimpl")
   )
 
 (defn transform
@@ -642,7 +664,7 @@
   If argument is a marker, returns the coordinate transform of the link
   to which the marker is attached."
   [argument]
-  (println "transform unimplemented")
+  (println "transform unimpl")
   )
 
 (defmethod projection [Point Point]
@@ -682,7 +704,7 @@
 (defn x-mul
   "Multiply transform times vector-or transform."
   [transform vector-or-transform]
-  (println "x-mul unimplemented")
+  (println "x-mul unimpl")
   )
 
 (defn rotate

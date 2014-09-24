@@ -1,8 +1,8 @@
 (ns isis.geom.action.in-plane-dispatch
   "The dispatcher of rules for the in-plane constraint.
-   In in-plane constraint means that there are two markers,
+  In in-plane constraint means that there are two markers,
   one representing a point, M_1, and a second representing a
-  plane, M_2.  The point is constrained to lie on the plane."
+  plane, M_2.  The point is constrained to lie in the plane."
   (:require [isis.geom.position-dispatch :as ms]
             [isis.geom.model.invariant :as invariant]
             [isis.geom.action
@@ -15,11 +15,20 @@
   "Associated with each constraint type is a function which
   checks the preconditions and returns the marker which
   is under-constrained followed by the marker that is fully-constrained.
-  The :motive refers to the first marker, the point."
+  The :motive refers to the first marker, the point, thus
+
+  :mobile indicates that the point *is-not* fully-constrained
+  but the plane *is* fully-constrained.
+
+  :fixed indicates that the plane *is-not* fully-constrained
+  but the point *is* fully-constrained.
+
+  nil indicates that there are insufficient constraints to
+  make any inference."
   [kb point plane]
-  (cond (invariant/marker-position? kb plane) [point plane :fixed]
+  (cond (invariant/marker-position? kb plane) [point plane :mobile]
         (and (invariant/marker-position? kb point)
-             (invariant/marker-direction? kb point)) [point plane :mobile]
+             (invariant/marker-direction? kb point)) [point plane :fixed]
         :else nil))
 
 
@@ -28,11 +37,12 @@
   Examine the underconstrained marker to determine the dispatch key.
   The key is the [#tdof #rdof] of the m2 link."
   (fn [kb point plane motive]
-    ;; (pp/pprint ["plane" plane "point" point "motive" motive ])
-    (let [[[link-name _] _] plane
+    (let [[[link-name _] _] (case motive :fixed plane :mobile point)
           link @(get (:link kb) link-name)
           tdof (get-in link [:tdof :#])
           rdof (get-in link [:rdof :#]) ]
+      (pp/pprint ["in-plane TRANSFORM!" (str tdof ":" rdof "-" motive)
+                  "point" point "plane" plane])
       {:tdof tdof :rdof rdof :motive motive}))
   :default nil)
 
@@ -41,11 +51,13 @@
   :in-plane
   [kb constraint]
   (let [{point :m1 plane :m2} constraint
-        result (precondition? kb point plane) ]
-    ;; (pp/pprint ["in-plane constraint-attempt" result])
-    (when result
-      (let [[point plane motive] result]
-        (transform! kb point plane motive))
+        precon (precondition? kb point plane) ]
+    (when precon
+      (pp/fresh-line)
+      (let [[point plane motive] precon
+            new-link (transform! kb point plane motive) ]
+        (pp/pprint ["new-xform" new-link ])
+        new-link)
       true)))
 
 

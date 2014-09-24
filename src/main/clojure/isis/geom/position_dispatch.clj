@@ -54,12 +54,12 @@
             (~(symbol (str "xlice/transform!->t" tdof "-r" rdof))
               ~'kb ~'m1 ~'m2 )))))
 
-(defn unimplemented
+(defn unimpl
   "Print a message indicating that the transform is not implemented"
   ( [xform]
-    (pp/pprint xform))
+    (pp/pprint (str "not-implemented " xform)))
   ( [xform nspace]
-    (pp/pprint (str nspace " " xform)) )
+    (pp/pprint (str "not-implemented " nspace " " xform)) )
   ( [xform nspace m1 m2]
-    (pp/pprint [(str nspace " " xform) "m1" m1 "m2" m2]) ) )
+    (pp/pprint [(str "not-implemented " nspace " " xform) "m1" m1 "m2" m2]) ) )
 

@@ -197,7 +197,7 @@
      "the base should indicate the name of the assembly"
      (:base kb) => assy-name )
 
-    (t/incipient-fact
+    (t/fact
      "the base assembly is *still* grounded"
      @(get-in kb [:link assy-name]) =>
      {:versor {:xlate [0.0 0.0 0.0] :rotate [1.0 0.0 0.0 0.0]}
@@ -207,7 +207,7 @@
      "the carriage is *not* grounded"
      @(get-in kb [:link carriage-name]) =>
      {:versor {:xlate [0.0 0.0 0.0] :rotate [1.0 0.0 0.0 0.0]}
-      :tdof {:# 3} :rdof {:# 3}}  )
+      :tdof {:# 1 :point [0.0 0.0 0.0]} :rdof {:# 3}}  )
 
     ;; (pp/pprint (:constraint kb))
     (t/fact

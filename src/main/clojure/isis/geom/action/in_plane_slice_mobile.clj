@@ -1,30 +1,64 @@
 (ns isis.geom.action.in-plane-slice-mobile
   "The table of rules for the in-plane constraint where
   the point marker is MOBILE and the plane is fixed."
-  (:require [isis.geom.position-dispatch :as ms]
+  (:require [clojure.pprint :as pp]
+            [isis.geom.position-dispatch :as ms]
             [isis.geom.machine [geobj :as ga]]
             [isis.geom.action [auxiliary :as dof]]
             [isis.geom.model [invariant :as invariant]]))
 
 
-(defn transform!->t0-r0 [kb m1 m2]  (ms/unimplemented  :t0r0 "in-plane-slice-mobile") )
-(defn transform!->t0-r1 [kb m1 m2]  (ms/unimplemented  :t0r1 "in-plane-slice-mobile") )
-(defn transform!->t0-r2 [kb m1 m2]  (ms/unimplemented  :t0r2 "in-plane-slice-mobile") )
-(defn transform!->t0-r3 [kb m1 m2]  (ms/unimplemented  :t0r3 "in-plane-slice-mobile") )
+(defn transform!->t0-r0
+  "PFT entry: (0,0,in-plane)  (M_1 moves)
 
-(defn transform!->t1-r0 [kb m1 m2]  (ms/unimplemented  :t1r0 "in-plane-slice-mobile") )
-(defn transform!->t1-r1 [kb m1 m2]  (ms/unimplemented  :t1r1 "in-plane-slice-mobile") )
-(defn transform!->t1-r2 [kb m1 m2]  (ms/unimplemented  :t1r2 "in-plane-slice-mobile") )
-(defn transform!->t1-r3 [kb m1 m2]  (ms/unimplemented  :t1r3 "in-plane-slice-mobile") )
+Initial status:
+  0-TDOF(?link, ?point)
+  0-RDOF(?link)
 
-(defn transform!->t2-r0 [kb m1 m2]  (ms/unimplemented  :t2r0 "in-plane-slice-mobile") )
-(defn transform!->t2-r1 [kb m1 m2]  (ms/unimplemented  :t2r1 "in-plane-slice-mobile") )
-(defn transform!->t2-r2 [kb m1 m2]  (ms/unimplemented  :t2r2 "in-plane-slice-mobile") )
-(defn transform!->t2-r3 [kb m1 m2]  (ms/unimplemented  :t2r3 "in-plane-slice-mobile") )
+Plan fragment:
+  begin
+  R[0] = vec-diff(gmp(?M_2), gmp(?M_1));
+  R[1] = inner-prod(R[0], gmz(?M_2));
+  unless zero?(R[1])
+    error(R[1], estring[9]);
+  end;
 
-(defn transform!->t3-r0 [kb m1 m2]  (ms/unimplemented  :t3r0 "in-plane-slice-mobile") )
-(defn transform!->t3-r1 [kb m1 m2]  (ms/unimplemented  :t3r1 "in-plane-slice-mobile") )
-(defn transform!->t3-r2 [kb m1 m2]  (ms/unimplemented  :t3r2 "in-plane-slice-mobile") )
+New status:
+  0-TDOF(?link, ?point)
+  0-RDOF(?link)
+
+Explanation:
+  Geom ?link is fixed, so the in-plane constraint
+  can only be checked for consistency.
+"[kb m1 m2]
+  (pp/pprint ["t0r0 - in-plane-slice-mobile" "m1" m1 "m2" m2])
+  (let [ gmp2 (ga/gmp m2 kb)
+         gmz2 (ga/gmz m2 kb)
+         line2 (ga/line gmp2 gmz2)
+
+         gmp1 (ga/gmz m1 kb)
+         separate (ga/separation gmp1 line2)
+         [[m1-link-name _] _] m1
+         m1-link @(get-in kb [:link m1-link-name])]
+    m1-link))
+
+(defn transform!->t0-r1 [kb m1 m2]  (ms/unimpl  :t0r1 "in-plane-slice-mobile") )
+(defn transform!->t0-r2 [kb m1 m2]  (ms/unimpl  :t0r2 "in-plane-slice-mobile") )
+(defn transform!->t0-r3 [kb m1 m2]  (ms/unimpl  :t0r3 "in-plane-slice-mobile") )
+
+(defn transform!->t1-r0 [kb m1 m2]  (ms/unimpl  :t1r0 "in-plane-slice-mobile") )
+(defn transform!->t1-r1 [kb m1 m2]  (ms/unimpl  :t1r1 "in-plane-slice-mobile") )
+(defn transform!->t1-r2 [kb m1 m2]  (ms/unimpl  :t1r2 "in-plane-slice-mobile") )
+(defn transform!->t1-r3 [kb m1 m2]  (ms/unimpl  :t1r3 "in-plane-slice-mobile") )
+
+(defn transform!->t2-r0 [kb m1 m2]  (ms/unimpl  :t2r0 "in-plane-slice-mobile") )
+(defn transform!->t2-r1 [kb m1 m2]  (ms/unimpl  :t2r1 "in-plane-slice-mobile") )
+(defn transform!->t2-r2 [kb m1 m2]  (ms/unimpl  :t2r2 "in-plane-slice-mobile") )
+(defn transform!->t2-r3 [kb m1 m2]  (ms/unimpl  :t2r3 "in-plane-slice-mobile") )
+
+(defn transform!->t3-r0 [kb m1 m2]  (ms/unimpl  :t3r0 "in-plane-slice-mobile") )
+(defn transform!->t3-r1 [kb m1 m2]  (ms/unimpl  :t3r1 "in-plane-slice-mobile") )
+(defn transform!->t3-r2 [kb m1 m2]  (ms/unimpl  :t3r2 "in-plane-slice-mobile") )
 
 (defn transform!->t3-r3
   "PFT entry: (3,3,in-line) (?M_1 moves)
@@ -54,6 +88,7 @@ Explanation:
   vector is measured and the ?m1-link is moved.
   No checks are required. "
   [kb m1 m2]
+  (pp/pprint ["t3r3 - in-plane-slice-mobile" "m1" m1 "m2" m2])
   (let [ gmp2 (ga/gmp m2 kb)
          gmz2 (ga/gmz m2 kb)
          line2 (ga/line gmp2 gmz2)
