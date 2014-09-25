@@ -41,7 +41,7 @@
           link @(get (:link kb) link-name)
           tdof (get-in link [:tdof :#])
           rdof (get-in link [:rdof :#]) ]
-      #_(pp/pprint ["in-plane assemble!" (str tdof ":" rdof "-" motive)
+      (pp/pprint ["in-plane assemble!" (str tdof ":" rdof "-" motive)
                   "point" point "plane" plane])
       {:tdof tdof :rdof rdof :motive motive}))
   :default nil)

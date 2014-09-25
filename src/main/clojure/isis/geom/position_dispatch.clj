@@ -78,11 +78,11 @@
 
             ~'assy-result (~(symbol (str nspace"/assemble!->" (name xform))) ~'kb ~'m1 ~'m2) ]
 
-        (tt/fact ~(str "parallel-z-slice " xform " m1")
+        (tt/fact ~(str nspace " " xform " m1")
                  @(get-in ~'kb [:link ~'m1-link-name]) ~'=>
                  {:versor :m1-goal})
 
-        (tt/fact ~(str "parallel-z-slice " xform " m2")
+        (tt/fact ~(str nspace " " xform " m2")
                  @(get-in ~'kb [:link ~'m2-link-name]) ~'=>
                  {:versor :m2-goal})))))
 

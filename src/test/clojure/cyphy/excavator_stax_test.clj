@@ -206,8 +206,12 @@
     (t/fact
      "the carriage is *not* grounded"
      @(get-in kb [:link carriage-name]) =>
-     {:versor {:xlate [0.0 0.0 0.0] :rotate [1.0 0.0 0.0 0.0]}
-      :tdof {:# 1 :point [0.0 0.0 0.0]} :rdof {:# 3}}  )
+     {:rdof {:# 3}
+      :tdof {:# 1
+             :plane {:e [0.0 0.0 0.0] :n [0.0 0.0 1.0]}
+             :point [0.0 0.0 0.0]}
+      :versor {:rotate [1.0 0.0 0.0 0.0]
+               :xlate [0.0 0.0 0.0]}} )
 
     ;; (pp/pprint (:constraint kb))
     (t/fact
