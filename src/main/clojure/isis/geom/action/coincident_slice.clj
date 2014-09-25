@@ -84,7 +84,7 @@ Explanation:
      (alter m2-link assoc
             :rdof {:# 0} ) )))
 
-(defn assemble!->t0-r2 [kb m1 m2] (ms/unimpl  "t0r2" slicer kb m1 m2))
+(defn assemble!->t0-r2 [kb m1 m2] (ms/unimpl :t0-r2 slicer kb m1 m2))
 
 (defn assemble!->t0-r3
   "PFT entry: (0,3,coincident)
@@ -112,8 +112,8 @@ Explanation:
         m2-link (get-in kb [:link m2-link-name])
         m2-point (get-in @m2-link [:tdof :point])]
     (dosync
-     (invariant/set-marker! kb m2-link-name m2-proper-name :loc)
-     (invariant/set-marker! kb m2-link-name m2-proper-name :dir)
+     (invariant/set-marker! kb [m2-link-name m2-proper-name] :loc)
+     (invariant/set-marker! kb [m2-link-name m2-proper-name] :dir)
      (alter m2-link merge
             (dof/r3:p->p @m2-link m2-point
                          (ga/gmp m2 kb) (ga/gmp m1 kb)))
@@ -121,19 +121,19 @@ Explanation:
             :rdof {:# 1
                    :axis (ga/normalize (ga/vec-diff (ga/gmp m2 kb) m2-point))} ) )))
 
-(defn assemble!->t1-r0 [kb m1 m2]  (ms/unimpl  :t1r0 slicer kb m1 m2))
-(defn assemble!->t1-r1 [kb m1 m2]  (ms/unimpl  :t1r1 slicer kb m1 m2))
-(defn assemble!->t1-r2 [kb m1 m2]  (ms/unimpl  :t1r2 slicer kb m1 m2))
-(defn assemble!->t1-r3 [kb m1 m2]  (ms/unimpl  :t1r3 slicer kb m1 m2))
+(defn assemble!->t1-r0 [kb m1 m2]  (ms/unimpl :t1-r0 slicer kb m1 m2))
+(defn assemble!->t1-r1 [kb m1 m2]  (ms/unimpl :t1-r1 slicer kb m1 m2))
+(defn assemble!->t1-r2 [kb m1 m2]  (ms/unimpl :t1-r2 slicer kb m1 m2))
+(defn assemble!->t1-r3 [kb m1 m2]  (ms/unimpl :t1-r3 slicer kb m1 m2))
 
-(defn assemble!->t2-r0 [kb m1 m2]  (ms/unimpl  :t2r0 slicer kb m1 m2))
-(defn assemble!->t2-r1 [kb m1 m2]  (ms/unimpl  :t2r1 slicer kb m1 m2))
-(defn assemble!->t2-r2 [kb m1 m2]  (ms/unimpl  :t2r2 slicer kb m1 m2))
-(defn assemble!->t2-r3 [kb m1 m2]  (ms/unimpl  :t2r3 slicer kb m1 m2))
+(defn assemble!->t2-r0 [kb m1 m2]  (ms/unimpl :t2-r0 slicer kb m1 m2))
+(defn assemble!->t2-r1 [kb m1 m2]  (ms/unimpl :t2-r1 slicer kb m1 m2))
+(defn assemble!->t2-r2 [kb m1 m2]  (ms/unimpl :t2-r2 slicer kb m1 m2))
+(defn assemble!->t2-r3 [kb m1 m2]  (ms/unimpl :t2-r3 slicer kb m1 m2))
 
-(defn assemble!->t3-r0 [kb m1 m2]  (ms/unimpl  :t3r0 slicer kb m1 m2))
-(defn assemble!->t3-r1 [kb m1 m2]  (ms/unimpl  :t3r1 slicer kb m1 m2))
-(defn assemble!->t3-r2 [kb m1 m2]  (ms/unimpl  :t3r2 slicer kb m1 m2))
+(defn assemble!->t3-r0 [kb m1 m2]  (ms/unimpl :t3-r0 slicer kb m1 m2))
+(defn assemble!->t3-r1 [kb m1 m2]  (ms/unimpl :t3-r1 slicer kb m1 m2))
+(defn assemble!->t3-r2 [kb m1 m2]  (ms/unimpl :t3-r2 slicer kb m1 m2))
 
 
 (defn assemble!->t3-r3
@@ -159,7 +159,7 @@ Explanation:
   (let [[[m2-link-name m2-proper-name] _] m2
         m2-link (get-in kb [:link m2-link-name])]
     (dosync
-     (invariant/set-marker! kb m2-link-name m2-proper-name :loc)
+     (invariant/set-marker! kb [m2-link-name m2-proper-name] :loc)
      (alter m2-link merge
             (ga/translate @m2-link
                        (ga/vec-diff (ga/gmp m1 kb) (ga/gmp m2 kb))))

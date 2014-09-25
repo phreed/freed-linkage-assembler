@@ -55,7 +55,7 @@
               ~'kb ~'m1 ~'m2 )))))
 
 
-(defn test-template
+(defn- test-template
   "Print a message that can be the basis for a test (cut & paste). "
   [xform nspace kb m1 m2]
   (let [[[m1-link-name m1-proper-name] m1-payload] m1
@@ -64,20 +64,38 @@
         m2-link @(get-in kb [:link m2-link-name])]
     (pp/pprint
      `(let [~'m1-link-name ~m1-link-name
-            ~'m2-link-name ~m1-link-name
+            ~'m2-link-name ~m2-link-name
             ~'kb
             {:link
              {~'m1-link-name (ref ~m1-link)
-              ~'m2-link-name (ref ~m2-link) }}
+              ~'m2-link-name (ref ~m2-link) }
+
+             :invar {:loc (ref #{})
+                     :dir (ref #{})
+                     :twist (ref #{})} }
             ~'m1 [[~'m1-link-name ~m1-proper-name] ~m1-payload]
             ~'m2 [[~'m1-link-name ~m1-proper-name] ~m1-payload]
 
-            ~'assy-result (~(symbol (str nspace"/assemble!->" xform)) ~'kb ~'m1 ~'m2) ]
+            ~'assy-result (~(symbol (str nspace"/assemble!->" (name xform))) ~'kb ~'m1 ~'m2) ]
 
-        (tt/fact "parallel-z-slice :t2r3"
+        (tt/fact ~(str "parallel-z-slice " xform " m1")
                  @(get-in ~'kb [:link ~'m1-link-name]) ~'=>
-                 {:versor :m1-goal})))))
+                 {:versor :m1-goal})
 
+        (tt/fact ~(str "parallel-z-slice " xform " m2")
+                 @(get-in ~'kb [:link ~'m2-link-name]) ~'=>
+                 {:versor :m2-goal})))))
+
+(defn dump
+  "Print a message building a test for this call. "
+  [ex dispatch nspace kb m1 m2]
+  (pp/pprint ex)
+  (pp/pprint (str "Dump TEST-TEMPLATE ================ "
+                  nspace " " dispatch))
+  (test-template (str "t" (:tdof dispatch) "-r" (:rdof dispatch))
+                 nspace kb m1 m2)
+
+  (println (.printStackTrace ex System/out) ) )
 
 (defn unimpl
   "Print a message indicating that the transform is not implemented"

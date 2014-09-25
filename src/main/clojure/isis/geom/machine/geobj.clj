@@ -110,12 +110,12 @@
 
 (defn double-angle
   "The angle specified in [sine cosine] form is doubled.
-    Make sure to handle the different quadrants.
-    Probably should handle tolerance around zero as well."
+  Make sure to handle the different quadrants.
+  Probably should handle tolerance around zero as well."
   [angle]
   (let [[sine cosine] angle
-      rad-cos (* 2.0 (Math/acos cosine))
-      rads ((if (pos? sine) + -) rad-cos)]
+        rad-cos (* 2.0 (Math/acos cosine))
+        rads ((if (pos? sine) + -) rad-cos)]
     [(Math/sin rads) (Math/cos rads)]))
 
 
@@ -129,11 +129,11 @@
     (if (zero? (reduce + angle))
       [1.0 (* 0.5 a1) (* 0.5 a2) (* 0.5 a3)]
       (let [[sine cosine] angle
-        rad-cos (/ (Math/acos cosine) 2.0)
-        rads ((if (pos? sine) + -) rad-cos)
-        half-sine  (Math/sin rads)
-        half-cosine (Math/cos rads)]
-    (into [] (cons half-cosine (map #(* % half-sine) uaxis) ))))))
+            rad-cos (/ (Math/acos cosine) 2.0)
+            rads ((if (pos? sine) + -) rad-cos)
+            half-sine  (Math/sin rads)
+            half-cosine (Math/cos rads)]
+        (into [] (cons half-cosine (map #(* % half-sine) uaxis) ))))))
 
 (defn axis-pi-angle->quaternion
   "Produce a quaternion from an axis and and angle.
@@ -201,7 +201,7 @@
   "Create a quaternion from an axis-angle.
   axis : a vector representing the rotation axis.
   angle : the rotation specified in radians,
-     as viewed looking out along the axis. "
+  as viewed looking out along the axis. "
   [axis angle]
   (let [[u1 u2 u3] (normalize axis)
         hangle (* 0.5 angle)
@@ -243,14 +243,14 @@
 
 (defn inner-prod
   "Returns the dot product of vect-1 and vect-2."
-   [vect-1 vect-2]
+  [vect-1 vect-2]
   (reduce + (map * vect-1 vect-2)))
 
 (defn outer-prod
   "Returns the outer product of vect-1 and vect-2.
   This can be considered either a bivector or
   the perpendicular dual vector."
-   [v1 v2]
+  [v1 v2]
   (let [[v1-1 v1-2 v1-3] v1
         [v2-1 v2-2 v2-3] v2 ]
     [(- (* v1-2 v2-3) (* v1-3 v2-2))
@@ -261,7 +261,7 @@
   "Returns the outer product of vect-1 and vect-2.
   This can be considered either a bivector or
   the perpendicular dual vector."
-   [v1 v2 v3]
+  [v1 v2 v3]
   (inner-prod (outer-prod v1 v2) v3))
 
 
@@ -302,18 +302,18 @@
 (defn circle
   "Returns a circle object with its center at point, and with
   specified axis vector and radius."
-   [point axis radius]
+  [point axis radius]
   {:type :circle :e point :a axis :r radius})
 
 (defn circle?
   "Returns 'true' if object is a circle."
-   [object]
+  [object]
   (= :circle (:type object)))
 
 (defn copy
   "Returns a copy of a geometric object, fixed in the
   global cooridinate frame."
-   [object]
+  [object]
   (println "copy unimpl")
   )
 
@@ -321,14 +321,14 @@
 (defn cylinder
   "Return a cylinder object with axial line, whose circular
   profile is defined by axis and radius."
-   [line axis radius]
+  [line axis radius]
   (println "cylinder unimpl")
   )
 
 
 (defn ellipse?
   "Returns 'true' if object is an ellipse."
-   [object]
+  [object]
   (println "ellipse? unimpl")
   )
 
@@ -339,7 +339,7 @@
   and rotational )."
   [ellipse axis length]
   (println "ellipse+r unimpl")
-)
+  )
 
 
 (defn sin
@@ -396,8 +396,8 @@
 
         sine-vec (outer-prod diff-1 diff-2)
         sine (if (pos? (inner-prod sine-vec axis))
-              (norm sine-vec)
-              (- (norm sine-vec)))]
+               (norm sine-vec)
+               (- (norm sine-vec)))]
     [sine cosine]))
 
 
@@ -413,14 +413,14 @@
   (let [versor-rotate (get versor :rotate [1.0 0.0 0.0 0.0])
         versor-translation (get versor :xlate [0.0 0.0 0.0])
         rot-loc (quat-sandwich versor-rotate gobj)]
-  (mapv + versor-translation rot-loc)))
+    (mapv + versor-translation rot-loc)))
 
 (defmethod versor-apply isis.geom.machine.geobj.Point
   [versor gobj]
   (let [versor-rotate (get versor :rotate [1.0 0.0 0.0 0.0])
         versor-translation (get versor :xlate [0.0 0.0 0.0])
         rot-loc (quat-sandwich versor-rotate (:e gobj))]
-  (mapv + versor-translation rot-loc)))
+    (mapv + versor-translation rot-loc)))
 
 (defn gmp
   "marker position (in global coordinate frame).
@@ -461,26 +461,25 @@
   In most cases the :q value is the axis of rotation.
   In the special case where :q is zero the z-axis is [0 0 1]."
   [marker kb]
-  (pp/pprint ["gmz" marker])
+  ;; (pp/pprint ["gmz" marker])
   (let [[[link-name _] marker-place] marker
         marker-axis (get marker-place :q [0.0 0.0 1.0])
         link @(get-in kb [:link link-name])
         marker-axis (if (tol/near-zero? :tiny marker-axis)
                       [0.0 0.0 1.0]
                       (normalize marker-axis))]
-    (pp/pprint ["versor-apply" marker-axis])
     (versor-apply (:versor link) marker-axis)))
 
 
 (defn helix
- "Returns a helix object with axial line defined by point
- and axis, and with specified radius and pitch."
- [point axis radius pitch]
+  "Returns a helix object with axial line defined by point
+  and axis, and with specified radius and pitch."
+  [point axis radius pitch]
   (println "helix unimpl")
- )
+  )
 
 (defn intersect-3-planes
- "Calculates the intersection of three planes."
+  "Calculates the intersection of three planes."
   [a b c]
   (let [{a- :e, an :n} a
         {b- :e, bn :n} b
@@ -494,15 +493,15 @@
 
 
 (defn intersect
- "Calculates the intersection of surface-1 and surface-2.
- Either surface may be zero-, one-, or two-dimensional.
- The branch argument determines which solution branch is used.
- Returns the null value (nil) if the surfaces do not intersect.
+  "Calculates the intersection of surface-1 and surface-2.
+  Either surface may be zero-, one-, or two-dimensional.
+  The branch argument determines which solution branch is used.
+  Returns the null value (nil) if the surfaces do not intersect.
 
- For a closed form solution to two planes intesecting.
- Compute the intersection between 3 planes.
- The third plane uses either point from surface-1 or vector-2
- as its locating point and the cross product as the normal."
+  For a closed form solution to two planes intesecting.
+  Compute the intersection between 3 planes.
+  The third plane uses either point from surface-1 or vector-2
+  as its locating point and the cross product as the normal."
   [s1 s2 branch]
   (cond (and (plane? s1) (plane? s2))
         (let [axis (normalize (outer-prod (:n s1) (:n s2)))
@@ -717,16 +716,20 @@
   is expressed in terms of the point.
   "
   [link point axis angle]
-  (let [q1 (get-in link [:versor :rotate])
-        q2 (axis-angle->quaternion axis angle)
-        q12 (quat-prod q2 q1)
+  (cond
+   (tol/near-zero? :tiny (first angle)) link
+   :else
+   (let [q1 (get-in link [:versor :rotate])
+         q2 (axis-angle->quaternion axis angle)
+         q12 (quat-prod q2
+                        q1)
 
-        x1 (get-in link [:versor :xlate])
-        x2 (vec-diff point x1)
-        x3 (quat-sandwich (quat-conj q1) x2)
-        x4 (quat-sandwich q12 x3)
-        x12 (vec-diff point x4)]
-    (merge link {:versor {:xlate x12 :rotate q12} })))
+         x1 (get-in link [:versor :xlate])
+         x2 (vec-diff point x1)
+         x3 (quat-sandwich (quat-conj q1) x2)
+         x4 (quat-sandwich q12 x3)
+         x12 (vec-diff point x4)]
+     (merge link {:versor {:xlate x12 :rotate q12} }))))
 
 
 (defn translate

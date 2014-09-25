@@ -33,7 +33,7 @@ Explanation:
   Geom ?link is fixed, so the in-plane constraint
   can only be checked for consistency.
 "[kb m1 m2]
-  (pp/pprint ["t0r0 - in-plane-slice-mobile" "m1" m1 "m2" m2])
+  ;; (pp/pprint ["t0r0 - in-plane-slice-mobile" "m1" m1 "m2" m2])
   (let [ gmp2 (ga/gmp m2 kb)
          gmz2 (ga/gmz m2 kb)
          line2 (ga/line gmp2 gmz2)
@@ -44,23 +44,23 @@ Explanation:
          m1-link @(get-in kb [:link m1-link-name])]
     m1-link))
 
-(defn assemble!->t0-r1 [kb m1 m2]  (ms/unimpl  :t0r1 slicer kb m1 m2))
-(defn assemble!->t0-r2 [kb m1 m2]  (ms/unimpl  :t0r2 slicer kb m1 m2))
-(defn assemble!->t0-r3 [kb m1 m2]  (ms/unimpl  :t0r3 slicer kb m1 m2))
+(defn assemble!->t0-r1 [kb m1 m2]  (ms/unimpl :t0-r1 slicer kb m1 m2))
+(defn assemble!->t0-r2 [kb m1 m2]  (ms/unimpl :t0-r2 slicer kb m1 m2))
+(defn assemble!->t0-r3 [kb m1 m2]  (ms/unimpl :t0-r3 slicer kb m1 m2))
 
-(defn assemble!->t1-r0 [kb m1 m2]  (ms/unimpl  :t1r0 slicer kb m1 m2))
-(defn assemble!->t1-r1 [kb m1 m2]  (ms/unimpl  :t1r1 slicer kb m1 m2))
-(defn assemble!->t1-r2 [kb m1 m2]  (ms/unimpl  :t1r2 slicer kb m1 m2))
-(defn assemble!->t1-r3 [kb m1 m2]  (ms/unimpl  :t1r3 slicer kb m1 m2))
+(defn assemble!->t1-r0 [kb m1 m2]  (ms/unimpl :t1-r0 slicer kb m1 m2))
+(defn assemble!->t1-r1 [kb m1 m2]  (ms/unimpl :t1-r1 slicer kb m1 m2))
+(defn assemble!->t1-r2 [kb m1 m2]  (ms/unimpl :t1-r2 slicer kb m1 m2))
+(defn assemble!->t1-r3 [kb m1 m2]  (ms/unimpl :t1-r3 slicer kb m1 m2))
 
-(defn assemble!->t2-r0 [kb m1 m2]  (ms/unimpl  :t2r0 slicer kb m1 m2))
-(defn assemble!->t2-r1 [kb m1 m2]  (ms/unimpl  :t2r1 slicer kb m1 m2))
-(defn assemble!->t2-r2 [kb m1 m2]  (ms/unimpl  :t2r2 slicer kb m1 m2))
-(defn assemble!->t2-r3 [kb m1 m2]  (ms/unimpl  :t2r3 slicer kb m1 m2))
+(defn assemble!->t2-r0 [kb m1 m2]  (ms/unimpl :t2-r0 slicer kb m1 m2))
+(defn assemble!->t2-r1 [kb m1 m2]  (ms/unimpl :t2-r1 slicer kb m1 m2))
+(defn assemble!->t2-r2 [kb m1 m2]  (ms/unimpl :t2-r2 slicer kb m1 m2))
+(defn assemble!->t2-r3 [kb m1 m2]  (ms/unimpl :t2-r3 slicer kb m1 m2))
 
-(defn assemble!->t3-r0 [kb m1 m2]  (ms/unimpl  :t3r0 slicer kb m1 m2))
-(defn assemble!->t3-r1 [kb m1 m2]  (ms/unimpl  :t3r1 slicer kb m1 m2))
-(defn assemble!->t3-r2 [kb m1 m2]  (ms/unimpl  :t3r2 slicer kb m1 m2))
+(defn assemble!->t3-r0 [kb m1 m2]  (ms/unimpl :t3-r0 slicer kb m1 m2))
+(defn assemble!->t3-r1 [kb m1 m2]  (ms/unimpl :t3-r1 slicer kb m1 m2))
+(defn assemble!->t3-r2 [kb m1 m2]  (ms/unimpl :t3-r2 slicer kb m1 m2))
 
 (defn assemble!->t3-r3
   "PFT entry: (3,3,in-line) (?M_1 moves)

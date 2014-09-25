@@ -14,7 +14,7 @@
   programs do not have to reference a global variable.
   The current types of invariant are:
     position, z-axis, and x-axis vectors."
-  [kb link-name proper-name invariant-type]
+  [kb [link-name proper-name] invariant-type]
   (alter (get-in kb [:invar invariant-type])
          conj [link-name proper-name]) )
 
