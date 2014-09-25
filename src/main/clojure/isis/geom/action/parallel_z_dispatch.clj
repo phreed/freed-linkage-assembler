@@ -19,7 +19,7 @@
         :else nil))
 
 
-(defmulti transform!
+(defmulti assemble!
   "Transform the links and kb so that the constraint is met.
   Examine the underconstrained marker to determine the dispatch key.
   The key is the [#tdof #rdof] of the m2 link."
@@ -28,7 +28,7 @@
           link @(get (:link kb) link-name)
           tdof (get-in link [:tdof :#])
           rdof (get-in link [:rdof :#]) ]
-      #_(pp/pprint [":parallel-z TRANSFORM!"
+      #_(pp/pprint [":parallel-z assemble!"
                   (str tdof ":" rdof )
                   "constrained-dir" m1 "unconstrained-dir" m2])
       {:tdof tdof :rdof rdof}))
@@ -43,9 +43,9 @@
     (when precon
       (pp/fresh-line)
       (let [[ma mb] precon
-            new-link (transform! kb ma mb)]
+            new-link (assemble! kb ma mb)]
         (pp/pprint ["new-xform" new-link ])
         new-link)
       true)))
 
-(ms/defmethod-symetric-transform transform!)
+(ms/defmethod-symetric-transform assemble!)

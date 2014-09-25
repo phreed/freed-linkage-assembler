@@ -24,9 +24,9 @@
 (defmacro defmethod-asymetric-transform
   "Generate the asymetric defmethods for the multifn.
   e.g.
-  (defmethod transform!
+  (defmethod assemble!
   {:tdof 0 :rdof 0 :motive :fixed}
-  [kb point line motive] (fixed/transform!->t0-r0 kb m1 m2))"
+  [kb point line motive] (fixed/assemble!->t0-r0 kb m1 m2))"
   [multifn]
   `(do
      ~@(for [tdof [0 1 2 3]
@@ -35,15 +35,15 @@
          `(defmethod ~multifn
             {:tdof ~tdof :rdof ~rdof :motive ~motive}
             [~'kb ~'m1 ~'m2 ~'motive]
-            (~(symbol (str (name motive) "/transform!->t" tdof "-r" rdof))
+            (~(symbol (str (name motive) "/assemble!->t" tdof "-r" rdof))
               ~'kb ~'m1 ~'m2 )))))
 
 (defmacro defmethod-symetric-transform
   "Generate the symetric defmethods for the multifn.
   e.g.
-  (defmethod transform!
+  (defmethod assemble!
   {:tdof 0 :rdof 0}
-  [kb point line motive] (xlice/transform!->t0-r0 kb m1 m2))"
+  [kb point line motive] (xlice/assemble!->t0-r0 kb m1 m2))"
   [multifn]
   `(do
      ~@(for [tdof [0 1 2 3]
@@ -51,17 +51,36 @@
          `(defmethod ~multifn
             {:tdof ~tdof :rdof ~rdof}
             [~'kb ~'m1 ~'m2]
-            (~(symbol (str "xlice/transform!->t" tdof "-r" rdof))
+            (~(symbol (str "xlice/assemble!->t" tdof "-r" rdof))
               ~'kb ~'m1 ~'m2 )))))
+
+
+(defn test-template
+  "Print a message that can be the basis for a test (cut & paste). "
+  [xform nspace kb m1 m2]
+  (let [[[m1-link-name m1-proper-name] m1-payload] m1
+        [[m2-link-name m2-proper-name] m2-payload] m2
+        m1-link @(get-in kb [:link m1-link-name])
+        m2-link @(get-in kb [:link m2-link-name])]
+    (pp/pprint
+     `(let [~'m1-link-name ~m1-link-name
+            ~'m2-link-name ~m1-link-name
+            ~'kb
+            {:link
+             {~'m1-link-name (ref ~m1-link)
+              ~'m2-link-name (ref ~m2-link) }}
+            ~'m1 [[~'m1-link-name ~m1-proper-name] ~m1-payload]
+            ~'m2 [[~'m1-link-name ~m1-proper-name] ~m1-payload]
+
+            ~'assy-result (~(symbol (str nspace"/assemble!->" xform)) ~'kb ~'m1 ~'m2) ]
+
+        (tt/fact "parallel-z-slice :t2r3"
+                 @(get-in ~'kb [:link ~'m1-link-name]) ~'=>
+                 {:versor :m1-goal})))))
+
 
 (defn unimpl
   "Print a message indicating that the transform is not implemented"
   [xform nspace kb m1 m2]
-  (let [[[m1-link-name _] _] m1
-        [[m2-link-name _] _] m2
-        m1-link @(get-in kb [:link m1-link-name])
-        m2-link @(get-in kb [:link m2-link-name])]
-    (pp/pprint [(str "not-implemented " nspace " " xform)
-                "m1" m1 m1-link
-                "m2" m2 m2-link]) ))
-
+  (pp/pprint (str "not-implemented " nspace " " xform))
+  (test-template xform nspace kb m1 m2))

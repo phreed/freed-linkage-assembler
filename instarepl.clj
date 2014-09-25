@@ -2,6 +2,9 @@
 ;; immediately with the results shown on the
 ;; right.
 
+(get-in [:foo :bar {:fred :flintstone :barney :rubble}
+         (ref {:wilma :rock :betty :stone})]
+        [2 :fred])
 
 (require 'clojure.data)
 

@@ -17,7 +17,7 @@
 
 
 
-(defmulti transform!
+(defmulti assemble!
   "Transform the links and kb so that the constraint is met.
   Examine the underconstrained marker to determine the dispatch key.
   The key is the [#tdof #rdof] of the m2 link."
@@ -38,7 +38,7 @@
         result (precondition? kb m1 m2) ]
     (when result
       (let [[ma1 ma2] result]
-        (transform! kb ma1 ma2)
+        (assemble! kb ma1 ma2)
         true))))
 
-(ms/defmethod-symetric-transform transform!)
+(ms/defmethod-symetric-transform assemble!)

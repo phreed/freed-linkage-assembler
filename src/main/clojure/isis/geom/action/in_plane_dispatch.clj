@@ -32,7 +32,7 @@
         :else nil))
 
 
-(defmulti transform!
+(defmulti assemble!
   "Transform the links and kb so that the constraint is met.
   Examine the underconstrained marker to determine the dispatch key.
   The key is the [#tdof #rdof] of the m2 link."
@@ -41,7 +41,7 @@
           link @(get (:link kb) link-name)
           tdof (get-in link [:tdof :#])
           rdof (get-in link [:rdof :#]) ]
-      #_(pp/pprint ["in-plane TRANSFORM!" (str tdof ":" rdof "-" motive)
+      #_(pp/pprint ["in-plane assemble!" (str tdof ":" rdof "-" motive)
                   "point" point "plane" plane])
       {:tdof tdof :rdof rdof :motive motive}))
   :default nil)
@@ -55,11 +55,11 @@
     (when precon
       (pp/fresh-line)
       (let [[point plane motive] precon
-            new-link (transform! kb point plane motive) ]
+            new-link (assemble! kb point plane motive) ]
         (pp/pprint ["new-xform" new-link ])
         new-link)
       true)))
 
 
-(ms/defmethod-asymetric-transform transform!)
+(ms/defmethod-asymetric-transform assemble!)
 
