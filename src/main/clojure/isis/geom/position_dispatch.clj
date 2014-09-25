@@ -56,10 +56,12 @@
 
 (defn unimpl
   "Print a message indicating that the transform is not implemented"
-  ( [xform]
-    (pp/pprint (str "not-implemented " xform)))
-  ( [xform nspace]
-    (pp/pprint (str "not-implemented " nspace " " xform)) )
-  ( [xform nspace m1 m2]
-    (pp/pprint [(str "not-implemented " nspace " " xform) "m1" m1 "m2" m2]) ) )
+  [xform nspace kb m1 m2]
+  (let [[[m1-link-name _] _] m1
+        [[m2-link-name _] _] m2
+        m1-link @(get-in kb [:link m1-link-name])
+        m2-link @(get-in kb [:link m2-link-name])]
+    (pp/pprint [(str "not-implemented " nspace " " xform)
+                "m1" m1 m1-link
+                "m2" m2 m2-link]) ))
 

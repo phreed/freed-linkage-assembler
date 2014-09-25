@@ -24,12 +24,11 @@
   Examine the underconstrained marker to determine the dispatch key.
   The key is the [#tdof #rdof] of the m2 link."
   (fn [kb m1 m2]
-    (pp/pprint ["line-1" m1 "line-2" m2])
     (let [[[link-name _] _] m2
           link @(get (:link kb) link-name)
           tdof (get-in link [:tdof :#])
           rdof (get-in link [:rdof :#]) ]
-      (pp/pprint [":parallel-z TRANSFORM!"
+      #_(pp/pprint [":parallel-z TRANSFORM!"
                   (str tdof ":" rdof )
                   "constrained-dir" m1 "unconstrained-dir" m2])
       {:tdof tdof :rdof rdof}))

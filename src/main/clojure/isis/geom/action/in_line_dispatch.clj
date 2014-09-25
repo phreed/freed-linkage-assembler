@@ -28,7 +28,7 @@
           link @(get (:link kb) link-name)
           tdof (get-in link [:tdof :#])
           rdof (get-in link [:rdof :#]) ]
-      (pp/pprint ["in-line TRANSFORM!" (str tdof ":" rdof "-" motive)
+      #_(pp/pprint ["in-line TRANSFORM!" (str tdof ":" rdof "-" motive)
                   "point" point "line" line])
       {:tdof tdof :rdof rdof :motive motive}))
   :default nil)
