@@ -63,27 +63,27 @@
         m1-link @(get-in kb [:link m1-link-name])
         m2-link @(get-in kb [:link m2-link-name])]
     (pp/pprint
-     `(let [~'m1-link-name ~m1-link-name
+     `(~'let [~'m1-link-name ~m1-link-name
             ~'m2-link-name ~m2-link-name
             ~'kb
             {:link
-             {~'m1-link-name (ref ~m1-link)
-              ~'m2-link-name (ref ~m2-link) }
+             {~'m1-link-name (~'ref ~m1-link)
+              ~'m2-link-name (~'ref ~m2-link) }
 
-             :invar {:loc (ref #{})
-                     :dir (ref #{})
-                     :twist (ref #{})} }
+             :invar {:loc (~'ref #{})
+                     :dir (~'ref #{})
+                     :twist (~'ref #{})} }
             ~'m1 [[~'m1-link-name ~m1-proper-name] ~m1-payload]
             ~'m2 [[~'m1-link-name ~m1-proper-name] ~m1-payload]
 
             ~'assy-result (~(symbol (str nspace"/assemble!->" (name xform))) ~'kb ~'m1 ~'m2) ]
 
         (tt/fact ~(str nspace " " xform " m1")
-                 @(get-in ~'kb [:link ~'m1-link-name]) ~'=>
+                 @(~'get-in ~'kb [:link ~'m1-link-name]) ~'=>
                  {:versor :m1-goal})
 
         (tt/fact ~(str nspace " " xform " m2")
-                 @(get-in ~'kb [:link ~'m2-link-name]) ~'=>
+                 @(~'get-in ~'kb [:link ~'m2-link-name]) ~'=>
                  {:versor :m2-goal})))))
 
 (defn dump
@@ -94,8 +94,8 @@
                   nspace " " dispatch))
   (test-template (str "t" (:tdof dispatch) "-r" (:rdof dispatch))
                  nspace kb m1 m2)
-
-  (println (.printStackTrace ex System/out) ) )
+  (if-not (nil? ex)
+    (println (.printStackTrace ex System/out) ) ) )
 
 (defn unimpl
   "Print a message indicating that the transform is not implemented"

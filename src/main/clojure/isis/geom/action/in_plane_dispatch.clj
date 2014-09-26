@@ -41,7 +41,7 @@
           link @(get (:link kb) link-name)
           tdof (get-in link [:tdof :#])
           rdof (get-in link [:rdof :#]) ]
-      (pp/pprint ["in-plane assemble!" (str tdof ":" rdof "-" motive)
+      #_(pp/pprint ["in-plane assemble!" (str tdof ":" rdof "-" motive)
                   "point" point "plane" plane])
       {:tdof tdof :rdof rdof :motive motive}))
   :default nil)
@@ -56,7 +56,7 @@
       (pp/fresh-line)
       (let [[point plane motive] precon
             new-link (assemble! kb point plane motive) ]
-        (pp/pprint ["new-xform" new-link ])
+        #_(pp/pprint ["new-xform" new-link ])
         new-link)
       true)))
 

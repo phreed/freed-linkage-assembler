@@ -203,15 +203,38 @@
      {:versor {:xlate [0.0 0.0 0.0] :rotate [1.0 0.0 0.0 0.0]}
       :tdof {:# 0} :rdof {:# 0}}  )
 
-    (t/fact
-     "the carriage is *not* grounded"
-     @(get-in kb [:link carriage-name]) =>
-     {:rdof {:# 3}
-      :tdof {:# 1
-             :plane {:e [0.0 0.0 0.0] :n [0.0 0.0 1.0]}
-             :point [0.0 0.0 0.0]}
-      :versor {:rotate [1.0 0.0 0.0 0.0]
-               :xlate [0.0 0.0 0.0]}} )
+    (let [car-map @(get-in kb [:link carriage-name])
+          car-keys (set (keys car-map))
+          car-rdof (:rdof car-map)
+          car-tdof (:tdof car-map)
+          car-versor (:versor car-map)
+          ]
+      (t/facts
+       "the carriage is *not* grounded"
+       (t/fact
+        "about the keys"
+        car-keys => #{:rdof :tdof :versor})
+
+       (t/fact
+        "about the rdof"
+        car-rdof => {:# 1, :dir [0.0 0.0 1637.3199999999997]})
+
+       (t/facts
+        "about the tdof"
+        (t/fact "about the keys"
+                (set (keys car-tdof)) => #{:# :plane :point})
+        (t/fact "about the count" (:# car-tdof) => 2)
+        (t/fact "about the plane"
+                (:plane car-tdof) =>
+                {:e [0.0 0.0 0.0],
+                 :n [0.0 0.0 1.0]})
+        (t/fact "about the point"
+                (:point car-tdof) => [0.0 0.0 0.0]))
+
+       (t/fact
+        "about the versor"
+        car-versor => {:rotate [1.0 0.0 0.0 0.0],
+                       :xlate [0.0 0.0 0.0]}) ))
 
     ;; (pp/pprint (:constraint kb))
     (t/fact
