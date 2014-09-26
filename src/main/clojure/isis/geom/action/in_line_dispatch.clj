@@ -19,18 +19,20 @@
         :else nil))
 
 
+(defn- assemble-dispatch [kb point line motive]
+  (let [[[link-name _] _] (case motive :fixed line :mobile point)
+        link @(get (:link kb) link-name)
+        tdof (get-in link [:tdof :#])
+        rdof (get-in link [:rdof :#]) ]
+    #_(pp/pprint ["in-line assemble!" (str tdof ":" rdof "-" motive)
+                  "point" point "line" line])
+    {:tdof tdof :rdof rdof :motive motive}))
+
 (defmulti assemble!
   "Transform the links and kb so that the constraint is met.
   Examine the underconstrained marker to determine the dispatch key.
   The key is the [#tdof #rdof] of the m2 link."
-  (fn [kb point line motive]
-    (let [[[link-name _] _] (case motive :fixed line :mobile point)
-          link @(get (:link kb) link-name)
-          tdof (get-in link [:tdof :#])
-          rdof (get-in link [:rdof :#]) ]
-      #_(pp/pprint ["in-line assemble!" (str tdof ":" rdof "-" motive)
-                  "point" point "line" line])
-      {:tdof tdof :rdof rdof :motive motive}))
+  assemble-dispatch
   :default nil)
 
 
@@ -41,11 +43,10 @@
         precon (precondition? kb point line) ]
     (when precon
       (pp/fresh-line)
-      (let [[point line motive] precon
-            new-link (assemble! kb point line motive)]
-        (pp/pprint ["new-xform" new-link ])
-        new-link)
-      true)))
+      (let [[point line motive] precon]
+        (pp/pprint (str "in-line" (assemble-dispatch kb point line motive)))
+        (assemble! kb point line motive)
+      true))))
 
 
 (ms/defmethod-asymetric-transform assemble!)

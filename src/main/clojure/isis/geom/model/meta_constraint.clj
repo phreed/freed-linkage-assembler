@@ -45,7 +45,9 @@
       ]))
 
 
-(defn- expand-planar [constraint] [constraint])
+(defn- expand-planar
+  "expansion of :planar constraints is a primitive expansion."
+  [constraint] [constraint])
 
 (defn- expand-unidentified [constraint] [constraint])
 

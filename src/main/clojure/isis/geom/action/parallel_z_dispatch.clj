@@ -45,14 +45,15 @@
     (when precon
       (pp/fresh-line)
       (try
-        (let [[ma mb] precon
-              new-link (assemble! kb ma mb)]
-          (pp/pprint ["new-xform" new-link ])
-          new-link)
-        true
+        (let [[ma mb] precon]
+          (pp/pprint (str "parallel-z"
+                          (assemble-dispatch kb ma mb)))
+          (assemble! kb ma mb)
+          true)
         (catch Exception ex
           (let [[ma mb] precon]
-            (ms/dump ex (assemble-dispatch kb ma mb) "parallel-z" kb ma mb)
-            ))))))
+            (ms/dump ex
+                     (assemble-dispatch kb ma mb)
+                     "parallel-z" kb ma mb) ))))))
 
 (ms/defmethod-symetric-transform assemble!)
