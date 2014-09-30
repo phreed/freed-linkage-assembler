@@ -242,7 +242,7 @@
                (chk/fact "arm2 lower expanded" constraints-lower => (chk/contains chk-con-a2b-lower-planar))
                (chk/incipient-fact "arm2 lower expanded" constraints-lower => (chk/contains chk-con-a2b-lower-linear)) )
 
-    #_(let [result (position-analysis kb constraints-lower)
+    (let [result (position-analysis kb constraints-lower)
             [success? result-kb result-success result-failure] result
             {result-mark :invar result-link :link} result-kb ]
 

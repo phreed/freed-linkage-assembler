@@ -2,8 +2,74 @@
   "Test the in-plane-mobile assembly"
   (:require [midje.sweet :as tt]
             [clojure.pprint :as pp]
+            [isis.geom.machine
+             [geobj :as ga]]
             [isis.geom.action
              [in-plane-slice-mobile :as in-plane-mobile]]))
+
+(defn kb-three-fixed-planes-w-mobile-point []
+  (let
+    [m1-link-name "mobile-point"
+     m2-link-name "static-planes"]
+     {:invar {:dir (ref #{[m2-link-name]}),
+              :twist (ref #{[m2-link-name]}),
+              :loc (ref #{[m2-link-name]})},
+      :link
+      {m1-link-name
+       (ref
+        {:versor {:xlate [0.0 0.0 0.0], :rotate [1.0 0.0 0.0 0.0]},
+         :tdof {:# 3},
+         :rdof {:# 3}}),
+       m2-link-name
+       (ref
+        {:versor {:xlate [0.0 0.0 0.0], :rotate [1.0 0.0 0.0 0.0]},
+         :tdof {:# 0},
+         :rdof {:# 0}})}}))
+
+
+(let [kb (kb-three-fixed-planes-w-mobile-point)]
+
+    (in-plane-mobile/assemble!->t3-r3
+     kb
+     [["mobile-point" "MARK-POINT"]
+      {:e [3.0 4.0 5.0], :pi 0.0, :q [0.0 0.0 0.0]}]
+     [["static-planes" "MP-1"]
+      {:e [2.0 2.0 2.0], :pi 0.0, :q [0.0 0.0 1.0]}])
+
+  (tt/facts
+   "in-plane-mobile : assemble t3-r3"
+   (tt/fact "knowledge properties" (set (keys kb)) => #{:invar :link})
+
+   (tt/fact "invar direction"
+            (-> kb :invar :dir deref)  => #{["static-planes"]}  )
+   (tt/fact "invar location"
+            (-> kb :invar :loc deref)  => #{["static-planes"]}  )
+   (tt/fact "invar twist"
+            (-> kb :invar :twist deref)  => #{["static-planes"]}  )
+
+   (tt/fact "link names" (-> kb :link keys set) =>
+            #{"mobile-point" "static-planes"})
+
+   (let [mobile-point (-> kb :link (get "mobile-point") deref)]
+     (tt/fact "link 'mobile-point'"
+              (-> mobile-point keys set) =>  #{:versor :tdof :rdof})
+
+     (tt/fact "link 'mobile-point' :versor"
+              (:versor mobile-point) =>
+              {:xlate [-3.0 -4.0 -2.0],
+               :rotate [1.0 0.0 0.0 0.0]})
+
+     (tt/fact "link 'mobile-point' :tdof"
+              (:tdof mobile-point) =>
+              {:# 2,
+               :point [0.0 0.0 3.0],
+               :plane (ga/plane [2.0 2.0 2.0] [0.0 0.0 3.0]),
+               :lf [0.0 0.0 3.0]})
+
+     (tt/fact "link 'mobile-point' :rdof"
+              (:rdof mobile-point) => {:# 3})  ) ) )
+
+
 
 (comment "in-plane :mobile :t3-r3")
 (let
@@ -24,7 +90,7 @@
        :rdof {:# 0}})}}
    m1 [[m1-link-name "FRONT"]
        {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 0.0]}]
-   m2 [[m1-link-name "FRONT"]
+   m2 [[m2-link-name "FRONT"]
        {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 0.0]}]
    assy-result (in-plane-mobile/assemble!->t3-r3 kb m1 m2)]
 
@@ -39,7 +105,8 @@
                                  (get-in link [:tdof :#]) =>  2)
 
                         (tt/fact "count"
-                                 (get-in link [:tdof :lf]) => [0.0 0.0 0.0])
+                                 (get-in link [:tdof :lf])
+                                 => [0.0 0.0 0.0])
 
                         (tt/fact "plane"
                                  (get-in link [:tdof :plane])

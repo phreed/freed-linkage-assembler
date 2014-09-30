@@ -74,7 +74,9 @@
   3-RDOF(?link)
 
   Explanation:
-  This entry has no application. "
+  This entry can arise when a point is constrainded to
+  three orthogonal planes, where the planes are fixed
+  in space.  This will apply on the second constraint. "
   [kb m1 m2] "this entry has no application - in-plane mobile t3-r0")
 
 
@@ -122,7 +124,6 @@
          m1-link (get-in kb [:link m1-link-name])]
     (dosync
      (alter m1-link merge (ga/translate @m1-link xlate))
-     (invariant/set-link! kb m1-link-name)
      (let [gmp1 (ga/gmp m1 kb)]
        (alter m1-link assoc
               :tdof {:# 2

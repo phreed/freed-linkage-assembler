@@ -44,7 +44,8 @@
     (when precon
       (pp/fresh-line)
       (let [[point line motive] precon]
-        (pp/pprint (str "in-line" (assemble-dispatch kb point line motive)))
+        (pp/pprint (str "in-line"
+                        (assemble-dispatch kb point line motive)))
         (assemble! kb point line motive)
       true))))
 

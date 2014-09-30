@@ -10,8 +10,7 @@
             [clojure.data.zip.xml :as zx]
 
             [isis.geom.analysis
-             [position-analysis
-              :refer [enable-trace! position-analysis]]]
+             [position-analysis :as pa]]
 
             [isis.geom.machine
              [misc :as misc]
@@ -143,7 +142,7 @@
   (let [constraints (:constraint graph)
         kb graph
         ;; _ (enable-trace!)
-        [success? result-kb result-success result-failure] (position-analysis kb constraints)
+        [success? result-kb result-success result-failure] (pa/position-analysis kb constraints)
         {result-mark :invar result-link :link} (ref->str result-kb)
         augmented-zipper (zip/xml-zip (:augmented (cyphy/graph-to-cyphy-zipper graph)))
         augmented-sample (zip/node (zx/xml1-> augmented-zipper :Assembly :CADComponent :CADComponent

@@ -42,7 +42,7 @@
     (when precon
       (pp/fresh-line)
       (let [[ma1 ma2] precon]
-        (pp/pprint (str "in-line" (assemble-dispatch kb ma1 ma2)))
+        (pp/pprint (str "coincident" (assemble-dispatch kb ma1 ma2)))
         (assemble! kb ma1 ma2)
         true))))
 

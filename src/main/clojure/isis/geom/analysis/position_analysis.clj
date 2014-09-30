@@ -2,7 +2,9 @@
   (:require   [isis.geom.position-dispatch
                :refer [constraint-attempt?]]
               [isis.geom.machine.misc :as misc]
-              [clojure.pprint :as pp]))
+              [clojure.inspector :as jap]
+              [spyscope.repl :as spy]))
+
 
 (defn- model->graph [model])
 (defn- model->connectivity [model])
@@ -66,13 +68,6 @@
                         [new-graph new-conn new-constrained new-non-rigid new-plan]  (solve-loop graph conn constrained non-rigid aloop)]
                     (recur new-graph new-conn new-constrained new-non-rigid new-plan new-redundant))) ))))))
 
-(def trace? (atom false))
-(defn enable-trace! [] (compare-and-set! trace? false true))
-
-(defn trace
-  "See where things are going wrong."
-  [msg]
-  (pp/pprint msg))
 
 (defn position-analysis
   "Algorithm for using the plan fragment table to perform position analysis.
@@ -93,19 +88,19 @@
   ys : constraints which have been tried and failed. "
   [kb constraints]
   (loop [progress? false
-         [x & xs] constraints
+         [c & cs] constraints
          plan [] ys[]]
 
-    (if x
-      (if (constraint-attempt? kb x)
-          (recur true xs (conj plan x) ys)
-          (recur progress? xs plan (conj ys x)))
+    (if c
+      (if (constraint-attempt? kb c)
+        (recur true cs (conj plan c) ys)
+        (recur progress? cs plan (conj ys c)))
 
-        (if (empty? ys)
-            ;; all the constraints have been satisfied
-            [true kb plan []]
-            ;; not all constraints have been satisfied
-            (if progress?
-              (recur false ys plan [])
-              [false kb plan ys]) ))))
+      (if (empty? ys)
+        ;; all the constraints have been satisfied
+        [true kb plan []]
+        ;; not all constraints have been satisfied
+        (if progress?
+          (recur false ys plan [])
+          [false kb plan ys]) ))))
 
