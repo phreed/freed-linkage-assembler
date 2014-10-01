@@ -12,6 +12,12 @@
   (norm2 [ss] "compute the squared magnitude of the subspace. ")
   (norm [ss] "compute the magnitude of the subspace. "))
 
+(defmulti outer-prod
+  "compute the subspace that is the projection of mv2 onto mv1.
+  Returns the point on the surface closest to the specified point.
+  The surface can be 0d 1d 2d."
+  (fn [ss1 ss2 & sss] (mapv class (into [ss1 ss2] sss))))
+
 (defmulti projection
   "compute the subspace that is the projection of mv2 onto mv1.
   Returns the point on the surface closest to the specified point.
@@ -24,6 +30,7 @@
   The surfaces may be zero-, one-, or two-dimensional."
   (fn [ss1 ss2] (mapv class [ss1 ss2])))
 
+
 (defmulti separation
   "Distance between object-1 and object-2.
   The objects may be zero-, one-, or two-dimensional.
@@ -32,13 +39,21 @@
   the two objects. "
   (fn [ss1 ss2] (mapv class [ss1 ss2])))
 
-(defmulti meet
-  "compute the subspace that is common to mv1 and mv2. "
+(defmulti join
+  "extract a subspace representing the join of ss1 and ss2.
+  The join is the geometric analog of union.
+  This is a grade increasing action and is the
+  smallest subspace containing both ss1 and ss2. "
   (fn [ss1 ss2] (mapv class [ss1 ss2])))
 
-(defmulti join
-  "extract a subspace representing the join of ss1 and ss2."
-  (fn [ss1 ss2] (mapv class [ss1 ss2])))
+(defmulti meet
+  "compute the subspace that is common to mv1 and mv2.
+  This is the geometric analog of intersection.
+  This is a grade diminishing action and is equivalent to
+  M = (dual (outer-prod (dual B) (dual A)))
+  Keep in mind that this dual is relative to the
+  The surfaces may be zero-, one-, or two-dimensional."
+  (fn [ss1 ss2 & sss] (mapv class (into [ss1 ss2] sss))))
 
 
 (defprotocol Conformal
@@ -76,21 +91,16 @@
 (defrecord Trivector [])
 
 
+(extend-protocol SubSpace
+  clojure.lang.PersistentVector
+  (norm2 [quantity]
+         (cond (empty? quantity) 0.0
+               :else (reduce #(+ %1 (* %2 %2)) 0.0 quantity)))
+  (norm [quantity] (Math/sqrt (norm2 quantity)))
 
-(defn norm2
-  "If quantity is a vector, returns the magnitude of quantity.
-  If quantity is a scalar, returns the absolute value of quantity."
-  [quantity]
-  (cond (number? quantity) (Math/abs quantity)
-        (empty? quantity) 0.0
-        (vector? quantity) (reduce #(+ %1 (* %2 %2)) 0.0 quantity)
-        :else 0.0))
-
-(defn norm
-  "If quantity is a vector, returns the magnitude of quantity.
-  If quantity is a scalar, returns the absolute value of quantity."
-  [quantity]
-  (Math/sqrt (norm2 quantity)))
+  Number
+  (norm2 [quantity] (Math/abs quantity))
+  (norm [quantity] (Math/sqrt (norm2 quantity))))
 
 
 (defn normalize
@@ -246,23 +256,15 @@
   [vect-1 vect-2]
   (reduce + (map * vect-1 vect-2)))
 
-(defn outer-prod
-  "Returns the outer product of vect-1 and vect-2.
-  This can be considered either a bivector or
-  the perpendicular dual vector."
-  [v1 v2]
+(defmethod outer-prod [clojure.lang.PersistentVector
+                       clojure.lang.PersistentVector]
+  [v1 v2 & xs]
   (let [[v1-1 v1-2 v1-3] v1
         [v2-1 v2-2 v2-3] v2 ]
     [(- (* v1-2 v2-3) (* v1-3 v2-2))
      (- (* v1-3 v2-1) (* v1-1 v2-3))
      (- (* v1-1 v2-2) (* v1-2 v2-1))]))
 
-(defn outer-prod-3
-  "Returns the outer product of vect-1 and vect-2.
-  This can be considered either a bivector or
-  the perpendicular dual vector."
-  [v1 v2 v3]
-  (inner-prod (outer-prod v1 v2) v3))
 
 
 
@@ -478,38 +480,13 @@
   (println "helix unimpl")
   )
 
-(defn intersect-3-planes
-  "Calculates the intersection of three planes."
-  [a b c]
-  (let [{a- :e, an :n} a
-        {b- :e, bn :n} b
-        {c- :e, cn :n} c
-        anbncn (norm (outer-prod-3 an bn cn))
-        a-bncn (norm (outer-prod-3 a- bn cn))
-        anb-cn (norm (outer-prod-3 an b- cn))
-        anbnc- (norm (outer-prod-3 an bn c-))]
-    (if (zero? anbncn) nil
-      [(/ a-bncn anbncn) (/ anb-cn anbncn) (/ anbnc- anbncn)])))
 
 
-(defn intersect
-  "Calculates the intersection of surface-1 and surface-2.
-  Either surface may be zero-, one-, or two-dimensional.
-  The branch argument determines which solution branch is used.
-  Returns the null value (nil) if the surfaces do not intersect.
-
-  For a closed form solution to two planes intesecting.
-  Compute the intersection between 3 planes.
-  The third plane uses either point from surface-1 or vector-2
-  as its locating point and the cross product as the normal."
-  [s1 s2 branch]
-  (cond (and (plane? s1) (plane? s2))
-        (let [axis (normalize (outer-prod (:n s1) (:n s2)))
-              p1 (:e s1) p2 (:e s2)
-              s3 (plane p1 axis)
-              point (intersect-3-planes s1 s2 s3)]
-          (line point axis))))
-
+(defn retraction
+  "Returns the retraction of a multivector.
+  Essentially reverses the sign. "
+  [mv]
+  (mapv - mv))
 
 (defn inverse
   "Returns the inverse of a transform."
@@ -559,6 +536,78 @@
   [quantity]
   (println "null? unimpl")
   )
+
+(defmethod outer-prod [Line Line]
+  [l1 l2 & xs]
+  (let [{[e11 e12 e13] :e, [d11 d12 d13] :d} l1
+        {[e21 e22 e23] :e, [d21 d22 d23] :d} l2
+        ln-axis (into []  (outer-prod )) ]
+    ))
+
+
+(comment "Calculates the intersection of three planes.")
+(defmethod meet [Plane Plane Plane]
+  [s1 s2 & xs]
+  (let [ a s1, b s2, c (first xs)
+         det-helper (fn [v1 v2 v3]
+                      (let [ [v11 v12 v13] v1
+                             [v21 v22 v23] v2
+                             [v31 v32 v33] v3]
+                        (- (+ (* v11 v22 v33)
+                              (* v12 v23 v31)
+                              (* v13 v21 v32) )
+                           (+ (* v11 v23 v32)
+                              (* v12 v21 v33)
+                              (* v13 v22 v31) ))))
+         {a- :e, an :n} a
+         {b- :e, bn :n} b
+         {c- :e, cn :n} c
+         anbncn (det-helper an bn cn)]
+
+    (if (zero? anbncn) nil
+      (let [ base-helper
+             (fn [pnt v1 v2 v3]
+               (let [ [p1  p2  p3] pnt
+                      [v11 v12 v13] v1
+                      [v21 v22 v23] v2
+                      [v31 v32 v33] v3
+
+                      dot (+ (* p1 v11) (* p2 v12) (* p3 v13) )
+
+                      cross [(- (* v22 v33) (* v32 v23))
+                             (- (* v23 v31) (* v21 v33))
+                             (- (* v21 v32) (* v22 v31))]]
+                 (mapv #(* dot %) cross)))
+             a-abc (base-helper a- an bn cn)
+             b-bca (base-helper b- bn cn an)
+             c-cab (base-helper c- cn an bn)]
+        (mapv #(/ (+ %1 %2 %3) anbncn) a-abc b-bca c-cab)))) )
+
+
+(comment "Calculates the intersection of two planes.")
+(defmethod meet [Plane Plane]
+  [s1 s2 & xs]
+  (let [{e1 :e, n1 :n} s1
+        {e2 :e, n2 :n} s2
+        ln-axis (normalize (outer-prod n1 n2))
+        s0 (plane e1 ln-axis)
+        ln-pnt (meet s0 s1 s2) ]
+    (line ln-pnt ln-axis)))
+
+(comment "Calculates the intersection of a line and a plane.
+  Find the distance from the line-pt to the plane
+  along the the line-axis. ")
+(defmethod meet [Line Plane]
+  [l1 s2 & xs]
+  (let [{e1 :e, d1 :d} l1
+        {e2 :e, n2 :n} s2
+
+        hypoten (vec-diff e1 e2)
+        separate (inner-prod hypoten n2)
+        ln-axis-disp (inner-prod separate d1)
+        meet-pnt (vec-sum e1 ln-axis-disp)]
+    meet-pnt))
+
 
 (defmethod rejection [Point Point]
   [pnt1 pnt1] (println "rejection of a point onto a point is undefined. "))

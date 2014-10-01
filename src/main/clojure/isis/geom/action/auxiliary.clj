@@ -16,9 +16,9 @@
         r1 (ga/line ?center ?axis-1)
         r2 (ga/projection ?from-point r0)
         r3 (ga/projection ?to-point r1)
-        r4 (ga/intersect (ga/plane r2 ?axis-2) (ga/plane r3 ?axis-1) 0)
+        r4 (ga/meet (ga/plane r2 ?axis-2) (ga/plane r3 ?axis-1) 0)
         r5 (ga/sphere ?center (ga/rejection ?to-point ?center))
-        r6 (ga/intersect r5 r4 ?branch)]
+        r6 (ga/meet r5 r4 ?branch)]
     (if-not (ga/point? r6)
       (emsg/mark-place-ic ga/rejection r5 r4)
       (let [r7 (ga/vec-diff ?from-point r3)

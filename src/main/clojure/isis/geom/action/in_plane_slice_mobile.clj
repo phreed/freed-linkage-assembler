@@ -77,7 +77,30 @@
   This entry can arise when a point is constrainded to
   three orthogonal planes, where the planes are fixed
   in space.  This will apply on the second constraint. "
-  [kb m1 m2] "this entry has no application - in-plane mobile t3-r0")
+  [kb m1 m2]
+
+  (let [ [[m1-link-name m1-proper-name] _] m1
+         m1-link (get-in kb [:link m1-link-name])
+         plane0 (-> m1-link deref :tdof :plane)
+
+         gmp2 (ga/gmp m2 kb)
+         gmz2 (ga/gmz m2 kb)
+         gmp1 (ga/gmp m1 kb)
+
+         plane2 (ga/plane gmp2 gmz2)
+         line-02 (ga/meet plane0 plane2)
+
+         reject (ga/rejection gmp1 line-02)]
+    (dosync
+     (alter m1-link merge
+            (ga/translate @m1-link (ga/retraction reject)))
+
+     (let [gmp1 (ga/gmp m1 kb)]
+       (alter m1-link assoc
+              :tdof {:# 1
+                     :point gmp1
+                     :line line-02
+                     :lf gmp1 } ) ))))
 
 
 (defn assemble!->t3-r0 [kb m1 m2]  (ms/unimpl :t3-r0 slicer kb m1 m2))
@@ -118,12 +141,13 @@
 
          plane2 (ga/plane gmp2 gmz2)
          reject (ga/rejection gmp1 plane2)
-         xlate (ga/vec-diff reject gmp1)
 
          [[m1-link-name m1-proper-name] _] m1
          m1-link (get-in kb [:link m1-link-name])]
     (dosync
-     (alter m1-link merge (ga/translate @m1-link xlate))
+     (alter m1-link merge
+            (ga/translate @m1-link (ga/retraction reject)))
+
      (let [gmp1 (ga/gmp m1 kb)]
        (alter m1-link assoc
               :tdof {:# 2
