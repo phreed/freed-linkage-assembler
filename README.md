@@ -43,11 +43,15 @@ References
   * https://github.com/Gozala/wisp
   * http://jeditoolkit.com/try-wisp/
   * http://nodejs.org/
-  * https://github.com/webgme/webgme
-  * http://www.isis.vanderbilt.edu/Projects/gme/
   * http://www.freecadweb.org/
   * http://brlcad.org/
   * http://en.wikipedia.org/wiki/Conformal_geometric_algebra
+  
+  * https://github.com/webgme/webgme
+  * http://www.isis.vanderbilt.edu/Projects/gme/
+  * https://github.com/webgme/webgme
+  * http://webgme.org/
+  * https://www.youtube.com/watch?v=0YCo4cpoB7k
 
 
 Inspiration
