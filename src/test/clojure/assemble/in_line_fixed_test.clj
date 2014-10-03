@@ -3,9 +3,9 @@
   (:require [midje.sweet :as tt]
             [clojure.pprint :as pp]
             [isis.geom.action
-             [in-plane-slice-mobile :as in-plane-mobile]]))
+             [in-plane-mobile-slice :as in-plane-mobile]]))
 
-"in-line-slice-fixed :t2-r3"
+"in-line-fixed-slice :t2-r3"
 (let
  [m1-link-name "{dce1362d-1b44-4652-949b-995aa2ce5760}"
   m2-link-name "{627ab157-62e1-485c-b797-8139c8f6c133}"
@@ -35,16 +35,16 @@
    {:e [825.0 5444.8 98.6836], :pi 0.0, :q [0.0 0.0 -1.0]}]
   m2 [[m1-link-name "LOWER_AXIS"]
    {:e [825.0 5444.8 98.6836], :pi 0.0, :q [0.0 0.0 -1.0]}]
-  assy-result (in-line-slice-fixed/assemble!->t2-r3 kb m1 m2)]
+  assy-result (in-line-fixed-slice/assemble!->t2-r3 kb m1 m2)]
 
  (tt/fact
-  "in-line-slice-fixed :t2-r3 m1"
+  "in-line-fixed-slice :t2-r3 m1"
   @(get-in kb [:link m1-link-name])
   =>
   {:versor :m1-goal})
 
  (tt/fact
-  "in-line-slice-fixed :t2-r3 m2"
+  "in-line-fixed-slice :t2-r3 m2"
   @(get-in kb [:link m2-link-name])
   =>
   {:versor :m2-goal}))

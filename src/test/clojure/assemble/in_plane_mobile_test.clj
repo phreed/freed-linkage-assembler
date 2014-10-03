@@ -5,7 +5,7 @@
             [isis.geom.machine
              [geobj :as ga]]
             [isis.geom.action
-             [in-plane-slice-mobile :as in-plane-mobile]]))
+             [in-plane-mobile-slice :as in-plane-mobile]]))
 
 (defn kb-three-fixed-planes-w-mobile-point []
   (let

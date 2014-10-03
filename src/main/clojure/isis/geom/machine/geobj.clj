@@ -5,6 +5,7 @@
 
 (def ^:private tau (* 2.0 Math/PI))
 
+
 (defprotocol SubSpace
   "This protocol specified properties of objects that
   retain there metrics over transformation. "
@@ -12,23 +13,44 @@
   (norm2 [ss] "compute the squared magnitude of the subspace. ")
   (norm [ss] "compute the magnitude of the subspace. "))
 
+
+
+(defn- subspace-dispatch-n
+  ""
+  [ss1 ss2 & sss] (mapv class (into [ss1 ss2] sss)))
+
+(defn- subspace-dispatch-2
+  ""
+  [ss1 ss2 & sss] (mapv class [ss1 ss2] ))
+
+
 (defmulti outer-prod
-  "compute the subspace that is the projection of mv2 onto mv1.
-  Returns the point on the surface closest to the specified point.
+  "compute the subspace that is the outer product
+  of the two subspaces. This is a grade increasing
+  operation.
   The surface can be 0d 1d 2d."
-  (fn [ss1 ss2 & sss] (mapv class (into [ss1 ss2] sss))))
+  subspace-dispatch-n)
+
+
+(defmulti inner-prod
+  "compute the subspace that is the inner product
+  of the two subspaces. This is a grade decreasing operation.
+  The surface can be 0d 1d 2d."
+  subspace-dispatch-n)
+
 
 (defmulti projection
   "compute the subspace that is the projection of mv2 onto mv1.
   Returns the point on the surface closest to the specified point.
   The surface can be 0d 1d 2d."
-  (fn [ss1 ss2] (mapv class [ss1 ss2])))
+  subspace-dispatch-2)
+
 
 (defmulti rejection
   "compute the subspace that is the rejection of mv2 from mv1.
   Distance between surface-1 and serface-2.
   The surfaces may be zero-, one-, or two-dimensional."
-  (fn [ss1 ss2] (mapv class [ss1 ss2])))
+  subspace-dispatch-2)
 
 
 (defmulti separation
@@ -37,14 +59,16 @@
   The separation is their closest approach.
   It is the magnitude (norm) of the rejection of
   the two objects. "
-  (fn [ss1 ss2] (mapv class [ss1 ss2])))
+  subspace-dispatch-2)
+
 
 (defmulti join
   "extract a subspace representing the join of ss1 and ss2.
   The join is the geometric analog of union.
   This is a grade increasing action and is the
   smallest subspace containing both ss1 and ss2. "
-  (fn [ss1 ss2] (mapv class [ss1 ss2])))
+  subspace-dispatch-2)
+
 
 (defmulti meet
   "compute the subspace that is common to mv1 and mv2.
@@ -53,7 +77,8 @@
   M = (dual (outer-prod (dual B) (dual A)))
   Keep in mind that this dual is relative to the
   The surfaces may be zero-, one-, or two-dimensional."
-  (fn [ss1 ss2 & sss] (mapv class (into [ss1 ss2] sss))))
+  subspace-dispatch-n)
+
 
 
 (defprotocol Conformal
@@ -242,19 +267,33 @@
 (defn line
   "Returns a line object with direction
   axis passing through a location in space."
-  [loc axis]
-  (->Line loc (normalize axis)))
+  [anchor axis]
+  (->Line anchor (normalize axis)))
 
 (defn line?
   "Returns 'true' if object is a line."
   [object] (instance? Line object))
 
 
+(defn scalar-prod
+  "The product of a scalar and a vector."
+  [ss1 ss2] (map #(* % ss1) ss2))
 
-(defn inner-prod
-  "Returns the dot product of vect-1 and vect-2."
-  [vect-1 vect-2]
-  (reduce + (map * vect-1 vect-2)))
+(defmethod inner-prod [Number
+                       clojure.lang.PersistentVector]
+  [ss1 ss2 & sss] (scalar-prod ss1 ss2))
+
+
+(defmethod inner-prod [clojure.lang.PersistentVector
+                       clojure.lang.PersistentVector]
+  [v1 v2 & xs]
+  (reduce + (map * v1 v2)))
+
+
+(defmethod outer-prod [Number
+                       clojure.lang.PersistentVector]
+  [ss1 ss2 & sss] (scalar-prod ss1 ss2))
+
 
 (defmethod outer-prod [clojure.lang.PersistentVector
                        clojure.lang.PersistentVector]
@@ -270,8 +309,8 @@
 
 (defn plane
   "Create a plane object with normal vector passing through point."
-  [point normal]
-  (->Plane point (normalize normal)))
+  [anchor normal]
+  (->Plane anchor (normalize normal)))
 
 
 (defn plane?
@@ -482,12 +521,6 @@
 
 
 
-(defn retraction
-  "Returns the retraction of a multivector.
-  Essentially reverses the sign. "
-  [mv]
-  (mapv - mv))
-
 (defn inverse
   "Returns the inverse of a transform."
   [transform]
@@ -536,6 +569,8 @@
   [quantity]
   (println "null? unimpl")
   )
+
+
 
 (defmethod outer-prod [Line Line]
   [l1 l2 & xs]
@@ -586,63 +621,58 @@
 
 (comment "Calculates the intersection of two planes.")
 (defmethod meet [Plane Plane]
-  [s1 s2 & xs]
-  (let [{e1 :e, n1 :n} s1
-        {e2 :e, n2 :n} s2
-        ln-axis (normalize (outer-prod n1 n2))
-        s0 (plane e1 ln-axis)
-        ln-pnt (meet s0 s1 s2) ]
-    (line ln-pnt ln-axis)))
+  [{e1 :e, n1 :n, :as s1}
+   {e2 :e, n2 :n, :as s2} & ss1]
+  (let [ln-axis (outer-prod n1 n2)]
+    (as-> ln-axis $       ; the axis of the line-of-intersection
+          (plane e1 $)    ; an arbitrary orthogonal plane
+          (meet $ s1 s2)  ; point on the line-of-intersection
+          (line $ ln-axis) )))  ; the line-of-intersection
+
 
 (comment "Calculates the intersection of a line and a plane.
   Find the distance from the line-pt to the plane
   along the the line-axis. ")
 (defmethod meet [Line Plane]
-  [l1 s2 & xs]
-  (let [{e1 :e, d1 :d} l1
-        {e2 :e, n2 :n} s2
-
-        hypoten (vec-diff e1 e2)
-        separate (inner-prod hypoten n2)
-        ln-axis-disp (inner-prod separate d1)
-        meet-pnt (vec-sum e1 ln-axis-disp)]
-    meet-pnt))
+  [{e1 :e, d1 :d, :as l1}
+   {e2 :e, n2 :n, :as s2} & sss]
+  (as-> (vec-diff e1 e2) $  ; vector from point-on-line to point-on-plane
+        (inner-prod $ n2)   ; dist from point-on-line to plane
+        (outer-prod $ n2)   ; vector from plane to point-on-line
+        (vec-diff e1 $)))   ; intersection point
 
 
 (defmethod rejection [Point Point]
   [pnt1 pnt1] (println "rejection of a point onto a point is undefined. "))
 
 (defmethod rejection [clojure.lang.PersistentVector Line]
-  [pnt ln]
-  (let [hypoten (vec-diff pnt (:e ln))
-        inner (inner-prod hypoten (:d ln))
-        accord (mapv #(* inner %) (:d ln))
-        reject (mapv #(- %1 %2) hypoten accord)]
-    reject))
+  [pnt {el :e, dl :d, :as ln}]
+  (let [hypo (vec-diff pnt el)]
+    (as-> hypo $               ; vector from point to point-on-line
+          (inner-prod $ dl)    ; coord of dl as basis
+          (scalar-prod $ dl)   ; projection of hypo onto line
+          (vec-diff hypo $)))) ; shortest vector from point to line
 
 (defmethod rejection [clojure.lang.PersistentVector Plane]
-  [pnt pln]
-  (let [hypoten (vec-diff pnt (:e pln))
-        separate (inner-prod hypoten (:n pln))
-        reject (mapv #(* separate %) (:n pln))]
-    reject))
+  [pnt {ep :e, np :n, :as pln}]
+  (as-> (vec-diff pnt ep) $  ; vector from point-on-plane to point
+        (inner-prod $ np)    ; distance from plane to point
+        (scalar-prod $ np))) ; shortest vector from plane to point
+
 
 (defmethod separation [Point Point]
   [pnt1 pnt1] (norm (vec-diff pnt1 pnt1)))
 
 (defmethod separation [clojure.lang.PersistentVector Line]
-  [pnt ln]
-  (let [hypoten (vec-diff pnt (:e ln))
-        inner (inner-prod hypoten (:d ln))
-        accord (mapv #(* inner %) (:d ln))
-        reject (mapv #(- %1 %2) hypoten accord)]
-    (norm reject)))
+  [pnt, ln]
+  (norm (rejection pnt ln)))  ; the magnitude of the rejection
+
 
 (defmethod separation [clojure.lang.PersistentVector Plane]
-  [pnt pln]
-  (let [hypoten (vec-diff pnt (:e pln))
-        separate (inner-prod hypoten (:n pln))]
-    separate))
+  [pnt {ep :e, np :n, :as pln}]
+  (as-> (vec-diff pnt ep) $  ; vector from point-on-plane to point
+        (inner-prod $ np)))  ; distance from plane to point
+
 
 (defn on-surface?
   "Returns 'true' if ?point lies on ?surface."
@@ -720,34 +750,31 @@
 
 ;; project the point onto the line
 (defmethod projection [Point Line]
-  [point line]
-  (let [{anchor :e, axis :d} line
-        point-diff (vec-diff point anchor)
-        scale (inner-prod point-diff axis)]
-    (vec-sum anchor (map #(* % scale) axis))))
+  [point {anchor :e, axis :d, :as ln}]
+  (as-> (vec-diff point anchor) $
+        (inner-prod $ axis)
+        (scalar-prod $ axis)
+        (vec-sum anchor $)))
 
-(defmethod projection
-  [clojure.lang.PersistentVector isis.geom.machine.geobj.Line]
-  [point line]
-  (let [{anchor :e, axis :d} line
-        point-diff (vec-diff point anchor)
-        scale (inner-prod point-diff axis)]
-    (vec-sum anchor (map #(* % scale) axis))))
 
-;; project the point onto the plane
+(comment "project point onto line")
+(defmethod projection [clojure.lang.PersistentVector
+                       isis.geom.machine.geobj.Line]
+  [point {anchor :e, axis :d, :as ln}]
+  (as-> (vec-diff point anchor) $ ; a vector from line to point
+        (inner-prod $ axis)   ; distance along line to point-projection
+        (scalar-prod $ axis)  ; vector along line to point-projection
+        (vec-sum anchor $)))  ; projected-point on line
+
+
+(comment "project point onto the plane")
 (defmethod projection [Point Plane]
-  [point plane]
-  (let [[p1 p2 p3] point
-        {[s1 s2 s3] :e, [sn1 sn2 sn3] :n} plane
-        q [(- p1 s1) (- p2 s2) (- p3 s3)]
-        s-m (norm [sn1 sn2 sn3])
-        s-u [(/ sn1 s-m) (/ sn2 s-m) (/ sn3 s-m)]
-        sq-in-prod (reduce + (map * s-u q))
-        sn (map #(* % sq-in-prod) s-u)
-        pu ()
-        ]
-    )
-  )
+  [point, {anchor :e, normal :n, :as plane}]
+  (as-> (vec-diff point anchor) $ ; a vector from plane to point
+        (inner-prod $ normal)  ; distance from plane to point
+        (scalar-prod $ normal) ; vector from plane to point
+        (vec-diff point $)))   ; point on the plane
+
 
 (defn x-mul
   "Multiply transform times vector-or transform."
@@ -784,6 +811,14 @@
 (defn translate
   "translate a link by the specified vector.
   This receives a full placement and returns a full placement.
-  The vector points in the direction of the translation."
-  [link vect]
-  (merge link {:versor (merge-with vec-sum (:versor link) {:xlate vect})}))
+  The vector points in the direction of the translation.
+  The translation is implemented by updating the
+  :xlate field of the :versor.
+  The most likely choices for action-fn are
+  vec-sum and vec-diff. "
+  [link action-fn vect]
+  (let [action-fn (or action-fn vec-sum)]
+    (merge link {:versor  ; replace with updated information
+                 (merge-with action-fn
+                             (:versor link)
+                             {:xlate vect})})))

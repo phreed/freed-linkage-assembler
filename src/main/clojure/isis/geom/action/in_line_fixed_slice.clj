@@ -1,4 +1,4 @@
-(ns isis.geom.action.in-line-slice-fixed
+(ns isis.geom.action.in-line-fixed-slice
   "The table of rules for the in-line constraint where
   the point marker is FIXED and the line is mobile."
   (:require [clojure.pprint :as pp]
@@ -34,7 +34,7 @@ Explanation:
   [kb m1 m2]
   true)
 
-(def slicer "in-line-slice-fixed")
+(def slicer "in-line-fixed-slice")
 
 (defn assemble!->t0-r1 [kb m1 m2]  (ms/unimpl :t0-r1 slicer kb m1 m2))
 (defn assemble!->t0-r2 [kb m1 m2]  (ms/unimpl :t0-r2 slicer kb m1 m2))

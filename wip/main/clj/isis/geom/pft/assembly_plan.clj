@@ -1,9 +1,9 @@
 (ns isis.geom.pft.assembly-plan
   (:require (isis.geom.pft coincident-slice
                            helical-slice
-                           in-line-slice-fixed
+                           in-line-fixed-slice
                            in-line-slice-moves
-                           in-plane-slice-fixed
+                           in-plane-fixed-slice
                            in-plane-slice-moves
                            offset-x-slice
                            offset-z-slice

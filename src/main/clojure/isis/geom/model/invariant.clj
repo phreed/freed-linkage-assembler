@@ -67,7 +67,6 @@
     (alter x-axis-inv link-filter link-name)
     kb ))
 
-
 (defn make
   "Create a invariant in the link as outlined in C.3
   :p : list of points having invariant position

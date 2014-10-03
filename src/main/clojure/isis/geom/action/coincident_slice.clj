@@ -161,7 +161,7 @@ Explanation:
     (dosync
      (invariant/set-marker! kb [m2-link-name m2-proper-name] :loc)
      (alter m2-link merge
-            (ga/translate @m2-link
+            (ga/translate @m2-link ga/vec-sum
                        (ga/vec-diff (ga/gmp m1 kb) (ga/gmp m2 kb))))
      (alter m2-link assoc
             :tdof {:# 0

@@ -1,4 +1,4 @@
-(ns isis.geom.action.in-line-slice-mobile
+(ns isis.geom.action.in-line-mobile-slice
   "The table of rules for the in-line constraint where
   the point marker is MOBILE and the line is fixed."
   (:require [isis.geom.position-dispatch :as ms]
@@ -6,7 +6,7 @@
             [isis.geom.action [auxiliary :as dof]]
             [isis.geom.model [invariant :as invariant]]))
 
-(def slicer "in-line-slice-mobile")
+(def slicer "in-line-mobile-slice")
 
 (defn assemble!->t0-r0 [kb m1 m2]  (ms/unimpl :t0-r0 slicer kb m1 m2))
 (defn assemble!->t0-r1 [kb m1 m2]  (ms/unimpl :t0-r1 slicer kb m1 m2))
@@ -56,7 +56,7 @@ Explanation:
   vector is measured and the ?m1-link is moved.
   No checks are required. "
   [kb m1 m2]
-  ;; (pp/pprint ["t3r3 - in-line-slice-mobile" "m1" m1 "m2" m2])
+  ;; (pp/pprint ["t3r3 - in-line-mobile-slice" "m1" m1 "m2" m2])
   (let [ gmp2 (ga/gmp m2 kb)
          gmz2 (ga/gmz m2 kb)
          line2 (ga/line gmp2 gmz2)
@@ -67,8 +67,7 @@ Explanation:
          m1-link (get-in kb [:link m1-link-name])]
     (dosync
      (alter m1-link merge
-            (ga/translate @m1-link reject))
-     (invariant/set-link! kb m1-link-name)
+            (ga/translate @m1-link ga/vec-sum reject))
      (alter m1-link assoc
             :tdof {:# 1
                    :point (ga/gmp m1 kb)

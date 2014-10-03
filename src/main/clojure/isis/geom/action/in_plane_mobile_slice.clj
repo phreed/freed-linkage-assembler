@@ -1,4 +1,4 @@
-(ns isis.geom.action.in-plane-slice-mobile
+(ns isis.geom.action.in-plane-mobile-slice
   "The table of rules for the in-plane constraint where
   the point marker is MOBILE and the plane is fixed."
   (:require [clojure.pprint :as pp]
@@ -33,7 +33,7 @@
   Geom ?link is fixed, so the in-plane constraint
   can only be checked for consistency.
   "[kb m1 m2]
-  ;; (pp/pprint ["t0r0 - in-plane-slice-mobile" "m1" m1 "m2" m2])
+  ;; (pp/pprint ["t0r0 - in-plane-mobile-slice" "m1" m1 "m2" m2])
   (let [ gmp2 (ga/gmp m2 kb)
          gmz2 (ga/gmz m2 kb)
          line2 (ga/line gmp2 gmz2)
@@ -55,13 +55,51 @@
   " PFT entry: (1,3,in-plane) (?M_1 moves)
 
   Initial status:
-  1-TDOF(?link, ?point, ?line, ?lf)
-  3-RDOF(?link)
+  1-TDOF(?m1-link, ?m1-point, ?m1-line, ?m1-lf)
+  3-RDOF(?m1-link)
+
+  Plan fragment:
+  begin
+  R[0] = plane(gmp(?M_2), gmz(?M_2))
+  R[1] = intersect(?m1-line, R[0])
+  translate(?m1-link, R[1]);
+  R[2] = gmp(?M_1);
+  end;
+
+  New status:
+  0-TDOF(?m1-link, R[2])
+  3-RDOF(?m1-link)
 
   Explanation:
-  This entry has no application. "
+  This entry can arise when a point is constrainded to
+  three orthogonal planes, where the planes are fixed
+  in space.  This will apply on the second constraint.
+  The approach is to use the m2-plane and tdof-plane
+  along with an abitrary orthogonal plane to identify
+  a point that lies on the line of intersection. "
+  [kb m1 m2]
 
-  [kb m1 m2] "this entry has no application - in-plane mobile t1-r3")
+  (let [ [[m1-link-name m1-proper-name] _] m1
+         m1-link (get-in kb [:link m1-link-name])
+         ln0 (-> m1-link deref :tdof :line)
+
+         gmp2 (ga/gmp m2 kb)
+         gmz2 (ga/gmz m2 kb)
+         gmp1 (ga/gmp m1 kb)
+
+         plane2 (ga/plane gmp2 gmz2)
+         pnt1 (ga/meet ln0 plane2)
+         get-gmp1 #(ga/gmp m1 kb)]
+    (dosync
+     (alter m1-link merge
+            (ga/translate @m1-link ga/vec-diff pnt1))
+
+     (invariant/set-marker! kb [m1-link-name m1-proper-name] :loc)
+
+     (alter m1-link assoc
+              :tdof {:# 0
+                     :point (get-gmp1)} ))))
+
 
 (defn assemble!->t2-r0 [kb m1 m2]  (ms/unimpl :t2-r0 slicer kb m1 m2))
 (defn assemble!->t2-r1 [kb m1 m2]  (ms/unimpl :t2-r1 slicer kb m1 m2))
@@ -70,13 +108,29 @@
   " PFT entry: (2,3,in-plane) (?M_1 moves)
 
   Initial status:
-  2-TDOF(?link, ?point, ?plane, ?lf)
-  3-RDOF(?link)
+  2-TDOF(?m1-link, ?m1-point, ?m1-plane, ?m1-lf)
+  3-RDOF(?m1-link)
+
+  Plan fragment:
+  begin
+  R[0] = plane(gmp(?M_2), gmz(?M_2))
+  R[1] = intersect(?m1-plane, R[0])
+  R[2] = rejection(gmp(?M_1), R[1])
+  translate(?m1-link, R[2]);
+  R[3] = gmp(?M_1);
+  end;
+
+  New status:
+  1-TDOF(?m1-link, R[3], R[1], R[3])
+  3-RDOF(?m1-link)
 
   Explanation:
   This entry can arise when a point is constrainded to
   three orthogonal planes, where the planes are fixed
-  in space.  This will apply on the second constraint. "
+  in space.  This will apply on the second constraint.
+  The approach is to use the m2-plane and tdof-plane
+  along with an abitrary orthogonal plane to identify
+  a point that lies on the line of intersection. "
   [kb m1 m2]
 
   (let [ [[m1-link-name m1-proper-name] _] m1
@@ -93,7 +147,7 @@
          reject (ga/rejection gmp1 line-02)]
     (dosync
      (alter m1-link merge
-            (ga/translate @m1-link (ga/retraction reject)))
+            (ga/translate @m1-link ga/vec-diff reject))
 
      (let [gmp1 (ga/gmp m1 kb)]
        (alter m1-link assoc
@@ -146,7 +200,7 @@
          m1-link (get-in kb [:link m1-link-name])]
     (dosync
      (alter m1-link merge
-            (ga/translate @m1-link (ga/retraction reject)))
+            (ga/translate @m1-link ga/vec-diff reject))
 
      (let [gmp1 (ga/gmp m1 kb)]
        (alter m1-link assoc
