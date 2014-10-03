@@ -1,9 +1,31 @@
 
-**O** : cannot occur?
-`<?>` : no progress made, only consistency checked
-*<?>* : not specified as possible progress
-`X` : no simple application
-`?` : numerical solution possible, resulting DOF may differ.
+ * **O** : cannot occur?
+ * `<?>` : no progress made, only consistency checked
+ * *<?>* : not specified as possible progress
+ * `X` : no simple application
+ * `?` : numerical solution possible, resulting DOF may differ.
+
+
+## coincident
+
+|     |   0   |   h   |   1   |   2   |   3   |
+|:---:|:-----:|:-----:|:-----:|:-----:|:-----:|
+|  0  | `0/0` |   =   |  0/0  |  0/0  |  0/0  |
+|  h  |   =   |  0/0  |   =   |   =   |   =   |
+|  1  |  0/0  |   =   |  0/0  |  0/0  |  0/1  |
+|  2  |  0/0  |   =   | **O** | **O** | **O** |
+|  3  |  0/1  |   =   |  0/1  |  0/2  |  3/1  |
+
+## parallel-z
+
+|     |   0   |   h   |   1   |   2   |   3   |
+|:---:|:-----:|:-----:|:-----:|:-----:|:-----:|
+|  0  | `0/0` |   =   | `1/0` | `2/0` | `3/0` |
+|  h  |   =   |  0/0  |   =   |   =   |   =   |
+|  1  |  0/0  |   =   |  1/0  |  2/0  |  3/0  |
+|  2  |  0/0  |   =   | **O** | **O** | **O** |
+|  3  |  0/1  |   =   |  1/1  |  2/0  |  3/1  |
+
 
 ## in-plane {fixed & mobile}
 
@@ -26,30 +48,7 @@
 |  3  |  0/1  |   =   |  `X`  |  `X`  |  1/3  |
 
 
-## parallel-z
 
-|     |   0   |   h   |   1   |   2   |   3   |
-|:---:|:-----:|:-----:|:-----:|:-----:|:-----:|
-|  0  | `0/0` |   =   | `1/0` | `2/0` | `3/0` |
-|  h  |   =   |  0/0  |   =   |   =   |   =   |
-|  1  |  0/0  |   =   |  1/0  |  2/0  |  3/0  |
-|  2  |  0/0  |   =   | **O** | **O** | **O** |
-|  3  |  0/1  |   =   |  1/1  |  2/0  |  3/1  |
-
-
-## coincident
-
-|     |   0   |   h   |   1   |   2   |   3   |
-|:---:|:-----:|:-----:|:-----:|:-----:|:-----:|
-|  0  | `0/0` |   =   |  0/0  |  0/0  |  0/0  |
-|  h  |   =   |  0/0  |   =   |   =   |   =   |
-|  1  |  0/0  |   =   |  0/0  |  0/0  |  0/1  |
-|  2  |  0/0  |   =   | **O** | **O** | **O** |
-|  3  |  0/1  |   =   |  0/1  |  0/2  |  3/1  |
-
-
-lf is introduced in a number of places.
-lf is used in coincident->t2-r3 to make a decision.
 
 
 ## offset-z
@@ -82,3 +81,8 @@ lf is used in coincident->t2-r3 to make a decision.
 |  1  |  0/0  |   =   |  h/h  | **O** | **O** |
 |  2  | **O** |   =   | **O** | **O** | **O** |
 |  3  | **O** |   =   | **O** | **O** | **O** |
+
+
+lf is introduced in a number of places.
+
+lf is used in coincident->t2-r3 to make a decision.
