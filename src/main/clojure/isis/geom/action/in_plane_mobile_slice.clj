@@ -42,21 +42,19 @@
          separate (ga/separation gmp1 line2)
          [[m1-link-name _] _] m1
          m1-link @(get-in kb [:link m1-link-name])]
-    m1-link))
+    m1-link)
+  :consistent )
 
 (defn assemble!->t0-r1 [kb m1 m2]  (ms/unimpl :t0-r1 slicer kb m1 m2))
 (defn assemble!->t0-r2 [kb m1 m2]  (ms/unimpl :t0-r2 slicer kb m1 m2))
 (defn assemble!->t0-r3 [kb m1 m2]  (ms/unimpl :t0-r3 slicer kb m1 m2))
 
-(defn assemble!->t1-r0 [kb m1 m2]  (ms/unimpl :t1-r0 slicer kb m1 m2))
-(defn assemble!->t1-r1 [kb m1 m2]  (ms/unimpl :t1-r1 slicer kb m1 m2))
-(defn assemble!->t1-r2 [kb m1 m2]  (ms/unimpl :t1-r2 slicer kb m1 m2))
-(defn assemble!->t1-r3
-  " PFT entry: (1,3,in-plane) (?M_1 moves)
+(defn assemble!->t1-r0
+  " PFT entry: (1,0,in-plane) (?M_1 moves)
 
   Initial status:
   1-TDOF(?m1-link, ?m1-point, ?m1-line, ?m1-lf)
-  3-RDOF(?m1-link)
+  0-RDOF(?m1-link)
 
   Plan fragment:
   begin
@@ -88,7 +86,7 @@
                 (ga/gmz m2 kb))
          final-loc (ga/meet ln0 plane)
 
-         gmp1 (ga/gmp m1 kb)
+         gmp1 (ga/gmp m1 kb)]
 
     (dosync
      (alter m1-link merge
@@ -97,18 +95,19 @@
      (invariant/set-marker! kb [m1-link-name m1-proper-name] :loc)
 
      (alter m1-link assoc
-              :tdof {:# 0 :point final-loc} ))))
+              :tdof {:# 0 :point final-loc} )))
+  :progress-made)
 
+(defn assemble!->t1-r1 [kb m1 m2]  (ms/unimpl :t1-r1 slicer kb m1 m2))
+(defn assemble!->t1-r2 [kb m1 m2]  (ms/unreal :t1-r2 slicer kb m1 m2))
+(defn assemble!->t1-r3 [kb m1 m2]  :not-applicable)
 
-(defn assemble!->t2-r0 [kb m1 m2]  (ms/unimpl :t2-r0 slicer kb m1 m2))
-(defn assemble!->t2-r1 [kb m1 m2]  (ms/unimpl :t2-r1 slicer kb m1 m2))
-(defn assemble!->t2-r2 [kb m1 m2]  (ms/unimpl :t2-r2 slicer kb m1 m2))
-(defn assemble!->t2-r3
-  " PFT entry: (2,3,in-plane) (?M_1 moves)
+(defn assemble!->t2-r0
+  " PFT entry: (2,0,in-plane) (?M_1 moves)
 
   Initial status:
   2-TDOF(?m1-link, ?m1-point, ?m1-plane, ?m1-lf)
-  3-RDOF(?m1-link)
+  0-RDOF(?m1-link)
 
   Plan fragment:
   begin
@@ -153,12 +152,16 @@
               :tdof {:# 1
                      :point gmp1
                      :line line-02
-                     :lf gmp1 } ) ))))
+                     :lf gmp1 } ) )))
+  :progress-made)
 
+(defn assemble!->t2-r1 [kb m1 m2]  (ms/unimpl :t2-r1 slicer kb m1 m2))
+(defn assemble!->t2-r2 [kb m1 m2]  (ms/unreal :t2-r2 slicer kb m1 m2))
+(defn assemble!->t2-r3 [kb m1 m2]  :not-applicable)
 
 (defn assemble!->t3-r0 [kb m1 m2]  (ms/unimpl :t3-r0 slicer kb m1 m2))
 (defn assemble!->t3-r1 [kb m1 m2]  (ms/unimpl :t3-r1 slicer kb m1 m2))
-(defn assemble!->t3-r2 [kb m1 m2]  (ms/unimpl :t3-r2 slicer kb m1 m2))
+(defn assemble!->t3-r2 [kb m1 m2]  :not-applicable)
 
 (defn assemble!->t3-r3
   " PFT entry: (3,3,in-plane) (?M_1 moves)
@@ -206,5 +209,6 @@
               :tdof {:# 2
                      :point gmp1
                      :plane plane2
-                     :lf gmp1 } ) ))) )
+                     :lf gmp1 } ) )))
+  :progress-made)
 
