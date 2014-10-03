@@ -126,10 +126,13 @@
    "in-plane-mobile : assemble t1-r3"
    (tt/fact "knowledge properties" (set (keys kb)) => #{:invar :link})
 
+   (tt/fact "invar location"
+            (-> kb :invar :loc deref)  =>
+            #{["static-planes"]} #{["mobile-point" "MARK-POINT"]}  )
+
    (tt/fact "invar direction"
             (-> kb :invar :dir deref)  => #{["static-planes"]}  )
-   (tt/fact "invar location"
-            (-> kb :invar :loc deref)  => #{["static-planes"]}  )
+
    (tt/fact "invar twist"
             (-> kb :invar :twist deref)  => #{["static-planes"]}  )
 
@@ -142,15 +145,13 @@
 
      (tt/fact "link 'mobile-point' :versor"
               (:versor mobile-point) =>
-              {:xlate [-3.0 -4.0 -2.0],
+              {:xlate [-2.0 6.0 -3.0],
                :rotate [1.0 0.0 0.0 0.0]})
 
      (tt/fact "link 'mobile-point' :tdof"
               (:tdof mobile-point) =>
               {:# 0,
-               :point [0.0 0.0 3.0],
-               :plane (ga/plane [2.0 2.0 2.0] [0.0 0.0 3.0]),
-               :lf [0.0 0.0 3.0]})
+               :point [1.0 0.0 3.0]})
 
      (tt/fact "link 'mobile-point' :rdof"
               (:rdof mobile-point) => {:# 3})  ) ) )

@@ -83,13 +83,13 @@
          m1-link (get-in kb [:link m1-link-name])
          ln0 (-> m1-link deref :tdof :line)
 
-         gmp2 (ga/gmp m2 kb)
-         gmz2 (ga/gmz m2 kb)
+         plane (ga/plane
+                (ga/gmp m2 kb)
+                (ga/gmz m2 kb))
+         final-loc (ga/meet ln0 plane)
+
          gmp1 (ga/gmp m1 kb)
 
-         plane2 (ga/plane gmp2 gmz2)
-         pnt1 (ga/meet ln0 plane2)
-         get-gmp1 #(ga/gmp m1 kb)]
     (dosync
      (alter m1-link merge
             (ga/translate @m1-link ga/vec-diff pnt1))
@@ -97,8 +97,7 @@
      (invariant/set-marker! kb [m1-link-name m1-proper-name] :loc)
 
      (alter m1-link assoc
-              :tdof {:# 0
-                     :point (get-gmp1)} ))))
+              :tdof {:# 0 :point final-loc} ))))
 
 
 (defn assemble!->t2-r0 [kb m1 m2]  (ms/unimpl :t2-r0 slicer kb m1 m2))
