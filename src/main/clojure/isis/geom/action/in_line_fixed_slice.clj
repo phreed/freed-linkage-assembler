@@ -32,7 +32,7 @@ Explanation:
   Geom ?m2-link is fixed, so the in-line constraint
   can only be checked for consistency. "
   [kb m1 m2]
-  true)
+  :consistent)
 
 (def slicer "in-line-fixed-slice")
 

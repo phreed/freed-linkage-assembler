@@ -42,18 +42,20 @@
   [kb constraint]
   (let [{m1 :m1 m2 :m2} constraint
         precon (precondition? kb m1 m2) ]
-    (when precon
-      (pp/fresh-line)
+    (if-not precon
+      :pre-condition-not-met
       (try
+        (pp/fresh-line)
         (let [[ma mb] precon]
           (pp/pprint (str "parallel-z"
                           (assemble-dispatch kb ma mb)))
-          (assemble! kb ma mb)
-          true)
+          (assemble! kb ma mb))
+
         (catch Exception ex
           (let [[ma mb] precon]
             (ms/dump ex
                      (assemble-dispatch kb ma mb)
-                     "parallel-z" kb ma mb) ))))))
+                     "parallel-z" kb ma mb) )
+          :exception-thrown)))))
 
 (ms/defmethod-symetric-transform assemble!)

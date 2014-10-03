@@ -53,13 +53,13 @@
   [kb constraint]
   (let [{point :m1 plane :m2} constraint
         precon (precondition? kb point plane) ]
-    (when precon
-      (pp/fresh-line)
+    (if-not precon
+      :pre-condition-not-met
       (let [[point plane motive] precon]
+        (pp/fresh-line)
         (pp/pprint (str "in-plane"
                         (assemble-dispatch kb point plane motive)))
-        (assemble! kb point plane motive)
-      true))))
+        (assemble! kb point plane motive) ))))
 
 
 (ms/defmethod-asymetric-transform assemble!)

@@ -27,18 +27,17 @@ Plan fragment:
     error(R[0], estring[9]);
   end;
 
-New status:
-  0-TDOF(?link, ?point)
-  0-RDOF(?link)
+New status: <unchanged>
 
 Explanation:
-  Geom ?link is fixed, so the coincident constraint can only be checked for consistency.
-  "
+  Geom links are fixed, so the coincident constraint
+  can only be checked for consistency. "
   [kb m1 m2]
   (if (tol/near-zero? (ga/vec-diff (ga/gmp m2 kb) (ga/gmp m1 kb)) :tiny)
-    true
-
-    (println "overconstrained" m1 m2)) )
+    :consistent
+    (do
+      (println "inconsistently overconstrained" m1 m2)
+      :inconsistent ) ))
 
 
 
@@ -82,7 +81,8 @@ Explanation:
                          m2-axis m2-axis-1 m2-axis-2))
      (invariant/set-link! kb m2-link-name)
      (alter m2-link assoc
-            :rdof {:# 0} ) )))
+            :rdof {:# 0} ) ))
+  :progress-made)
 
 (defn assemble!->t0-r2 [kb m1 m2] (ms/unimpl :t0-r2 slicer kb m1 m2))
 
@@ -119,21 +119,22 @@ Explanation:
                          (ga/gmp m2 kb) (ga/gmp m1 kb)))
      (alter m2-link assoc
             :rdof {:# 1
-                   :axis (ga/normalize (ga/vec-diff (ga/gmp m2 kb) m2-point))} ) )))
+                   :axis (ga/normalize (ga/vec-diff (ga/gmp m2 kb) m2-point))} ) ))
+  :progress-made)
 
 (defn assemble!->t1-r0 [kb m1 m2]  (ms/unimpl :t1-r0 slicer kb m1 m2))
 (defn assemble!->t1-r1 [kb m1 m2]  (ms/unimpl :t1-r1 slicer kb m1 m2))
-(defn assemble!->t1-r2 [kb m1 m2]  (ms/unimpl :t1-r2 slicer kb m1 m2))
+(defn assemble!->t1-r2 [kb m1 m2]  (ms/unreal :t1-r2 slicer kb m1 m2))
 (defn assemble!->t1-r3 [kb m1 m2]  (ms/unimpl :t1-r3 slicer kb m1 m2))
 
 (defn assemble!->t2-r0 [kb m1 m2]  (ms/unimpl :t2-r0 slicer kb m1 m2))
 (defn assemble!->t2-r1 [kb m1 m2]  (ms/unimpl :t2-r1 slicer kb m1 m2))
-(defn assemble!->t2-r2 [kb m1 m2]  (ms/unimpl :t2-r2 slicer kb m1 m2))
+(defn assemble!->t2-r2 [kb m1 m2]  (ms/unreal :t2-r2 slicer kb m1 m2))
 (defn assemble!->t2-r3 [kb m1 m2]  (ms/unimpl :t2-r3 slicer kb m1 m2))
 
 (defn assemble!->t3-r0 [kb m1 m2]  (ms/unimpl :t3-r0 slicer kb m1 m2))
-(defn assemble!->t3-r1 [kb m1 m2]  (ms/unimpl :t3-r1 slicer kb m1 m2))
-(defn assemble!->t3-r2 [kb m1 m2]  (ms/unimpl :t3-r2 slicer kb m1 m2))
+(defn assemble!->t3-r1 [kb m1 m2]  (ms/unimpl :t3-r2 slicer kb m1 m2))
+(defn assemble!->t3-r2 [kb m1 m2]  (ms/unreal :t3-r2 slicer kb m1 m2))
 
 
 (defn assemble!->t3-r3
@@ -159,11 +160,14 @@ Explanation:
   (let [[[m2-link-name m2-proper-name] _] m2
         m2-link (get-in kb [:link m2-link-name])]
     (dosync
-     (invariant/set-marker! kb [m2-link-name m2-proper-name] :loc)
      (alter m2-link merge
             (ga/translate @m2-link ga/vec-sum
                        (ga/vec-diff (ga/gmp m1 kb) (ga/gmp m2 kb))))
+
+     (invariant/set-marker! kb [m2-link-name m2-proper-name] :loc)
+
      (alter m2-link assoc
             :tdof {:# 0
-                   :point (ga/gmp m2 kb)} ) )))
+                   :point (ga/gmp m2 kb)} ) ))
+  :progress-made)
 

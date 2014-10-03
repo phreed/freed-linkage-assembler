@@ -39,11 +39,11 @@
   [kb constraint]
   (let [{m1 :m1 m2 :m2} constraint
         precon (precondition? kb m1 m2) ]
-    (when precon
-      (pp/fresh-line)
+    (if-not precon
+      :pre-condition-not-met
       (let [[ma1 ma2] precon]
+        (pp/fresh-line)
         (pp/pprint (str "coincident" (assemble-dispatch kb ma1 ma2)))
-        (assemble! kb ma1 ma2)
-        true))))
+        (assemble! kb ma1 ma2) ))))
 
 (ms/defmethod-symetric-transform assemble!)

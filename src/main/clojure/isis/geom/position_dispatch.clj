@@ -13,7 +13,10 @@
   Return - nil or false indicating that the
   attempt failed and the constraint could not be
   satisfied.  Any other result indicates that the
-  constraint has been applied."
+  constraint has been applied.
+
+  Must return on of the allowed return codes.
+  see position-analysis for a list. "
   (fn [kb constraint] (:type constraint))
 
   :default
@@ -101,4 +104,11 @@
   "Print a message indicating that the transform is not implemented"
   [xform nspace kb m1 m2]
   (pp/pprint (str "not-implemented " nspace " " xform))
-  (test-template xform nspace kb m1 m2))
+  (test-template xform nspace kb m1 m2)
+  :not-implemented )
+
+(defn unreal
+  "Print a message indicating that the transform should not be reachable."
+  [xform nspace kb m1 m2]
+  (pp/pprint (str "not-reachable " nspace " " xform))
+  :not-realizable )

@@ -85,16 +85,37 @@
   progress? : is the current round making progress?
   xs : active constraints which are being tried.
   plan : constraints which have been successfully applied.
-  ys : constraints which have been tried and failed. "
+  ys : constraints which have been tried and failed.
+
+  # from constraint-attempt?
+  :pre-condition-not-met - the preconditions were not met.
+  :exception-thrown
+
+  ## additionaly from the assemble! function
+  :progress - the constraint was successfully applied.
+  :not-applicable - the assembly function is not known.
+
+  ## from unimpl function
+  :not-implemented - may be possible but not implemented.
+
+  ## from unreal function
+  :not-realizable - not possible to reach this function.
+
+  ## from assemble! function that makes no progress
+  :consistent - the constraint was consistent and can be accepted.
+  :inconsistent - the constraint was inconsistent and should be flagged. "
   [kb constraints]
   (loop [progress? false
-         [c & cs] constraints
+         [constraint & cs] constraints
          plan [] ys[]]
 
-    (if c
-      (if (constraint-attempt? kb c)
-        (recur true cs (conj plan c) ys)
-        (recur progress? cs plan (conj ys c)))
+    (if constraint
+      (case (constraint-attempt? kb constraint)
+        (:pre-condition-not-met :exception-thrown
+         :not-applicable :not-realizable :not-implemented)
+        (recur progress? cs plan (conj ys constraint))
+        (:progress-made :consistent :inconsistent)
+        (recur true cs (conj plan constraint) ys))
 
       (if (empty? ys)
         ;; all the constraints have been satisfied

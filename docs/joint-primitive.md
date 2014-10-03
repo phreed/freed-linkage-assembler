@@ -2,7 +2,7 @@
  * **O** : cannot occur?
  * `<?>` : no progress made, only consistency checked
  * *<?>* : not specified as possible progress
- * `X` : no simple application
+ ***X**: no simple application
  * `?` : numerical solution possible, resulting DOF may differ.
 
 
@@ -33,9 +33,9 @@
 |:---:|:-----:|:-----:|:-----:|:-----:|:-----:|
 |  0  | `0/0` |   =   |  0/0  | *1/0* |  2/0  |
 |  h  |   =   |  0/0  |   =   |   =   |   =   |
-|  1  |  0/0  |   =   |  h/h  |  `X`  |  2/1  |
+|  1  |  0/0  |   =   |  h/h  | **X** |  2/1  |
 |  2  |  0/1  |   =   | **O** | **O** | **O** |
-|  3  |  0/2  |   =   |  `X`  |  `X`  |  2/3  |
+|  3  |  0/2  |   =   | **X** | **X** |  2/3  |
 
 ## in-line {fixed & mobile}
 
@@ -45,7 +45,7 @@
 |  h  |   =   |  0/0  |   =   |   =   |   =   |
 |  1  |  0/0  |   =   |  0/0  |  h/h  |  1/1  |
 |  2  |  0/0  |   =   | **O** | **O** | **O** |
-|  3  |  0/1  |   =   |  `X`  |  `X`  |  1/3  |
+|  3  |  0/1  |   =   | **X** | **X** |  1/3  |
 
 
 

@@ -10,19 +10,20 @@
 
 (def slicer "parallel-z-slice")
 
-(defn assemble!->t0-r0 [kb m1 m2]  (ms/unimpl :t0-r0 slicer kb m1 m2))
+(defn assemble!->t0-r0 [kb m1 m2] :consistent)
 (defn assemble!->t0-r1 [kb m1 m2]  (ms/unimpl :t0-r1 slicer kb m1 m2))
 (defn assemble!->t0-r2 [kb m1 m2]  (ms/unimpl :t0-r2 slicer kb m1 m2))
 (defn assemble!->t0-r3 [kb m1 m2]  (ms/unimpl :t0-r3 slicer kb m1 m2))
 
 (defn assemble!->t1-r0 [kb m1 m2]  (ms/unimpl :t1-r0 slicer kb m1 m2))
 (defn assemble!->t1-r1 [kb m1 m2]  (ms/unimpl :t1-r1 slicer kb m1 m2))
-(defn assemble!->t1-r2 [kb m1 m2]  (ms/unimpl :t1-r2 slicer kb m1 m2))
+(defn assemble!->t1-r2 [kb m1 m2]  (ms/unreal :t1-r1 slicer kb m1 m2))
 (defn assemble!->t1-r3 [kb m1 m2]  (ms/unimpl :t1-r3 slicer kb m1 m2))
 
 (defn assemble!->t2-r0 [kb m1 m2]  (ms/unimpl :t2-r0 slicer kb m1 m2))
 (defn assemble!->t2-r1 [kb m1 m2]  (ms/unimpl :t2-r1 slicer kb m1 m2))
-(defn assemble!->t2-r2 [kb m1 m2]  (ms/unimpl :t2-r2 slicer kb m1 m2))
+(defn assemble!->t2-r2 [kb m1 m2]  (ms/unreal :t2-r1 slicer kb m1 m2))
+
 (defn assemble!->t2-r3
   "PFT entry: (2,3,parallel-z)
 
@@ -73,10 +74,11 @@
                    :point m2-point
                    :plane m2-plane}
             :rdof {:# 1
-                   :dir (ga/gmz m1 kb)} ) )))
+                   :dir (ga/gmz m1 kb)} ) ))
+  :progress-made)
 
 (defn assemble!->t3-r0 [kb m1 m2]  (ms/unimpl :t3-r0 slicer kb m1 m2))
 (defn assemble!->t3-r1 [kb m1 m2]  (ms/unimpl :t3-r1 slicer kb m1 m2))
-(defn assemble!->t3-r2 [kb m1 m2]  (ms/unimpl :t3-r2 slicer kb m1 m2))
+(defn assemble!->t3-r2 [kb m1 m2]  (ms/unreal :t3-r2 slicer kb m1 m2))
 (defn assemble!->t3-r3 [kb m1 m2]  (ms/unimpl :t3-r3 slicer kb m1 m2))
 

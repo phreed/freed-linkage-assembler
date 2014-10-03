@@ -38,17 +38,19 @@
   [kb constraint]
   (let [{m1 :m1 m2 :m2} constraint
         precon (precondition? kb m1 m2) ]
-    (when precon
-      (pp/fresh-line)
+    (if-not precon
+      :pre-condition-not-met
       (try
+        (pp/fresh-line)
         (let [[ma1 ma2] precon]
           (pp/pprint (str "offset-x"
                           (assemble-dispatch kb ma1 ma2)))
-          (assemble! kb ma1 ma2)
-          true)
+          (assemble! kb ma1 ma2))
+
         (catch Exception ex
           (let [[ma1 ma2] precon]
             (ms/dump ex (assemble-dispatch kb ma1 ma2)
-                     "offset-x" kb ma1 ma2) ))))))
+                     "offset-x" kb ma1 ma2) )
+          :exception-thrown )))))
 
 (ms/defmethod-symetric-transform assemble!)
