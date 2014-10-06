@@ -1,6 +1,6 @@
 (ns brick.brick-position-analysis-test
   "Sample assembly for brick and ground."
-  (:require [midje.sweet :refer [facts fact]]
+  (:require [midje.sweet :as tt]
 
             [isis.geom.model
              [graph :refer [ graph->init-invariants
@@ -144,9 +144,9 @@
         kb (graph->init-invariants graph)
         [success? result-kb result-success result-failure] (position-analysis kb constraints)
         {result-mark :invar result-link :link} (ref->str result-kb)]
-    (facts "concerning position analysis for the brick"
-           (fact "about marker invariants" result-mark => invar-checker)
-           (fact "about linkage placement" result-link => link-pattern)
-           (fact "about constraint plan" result-success => success-pattern)
-           (fact "about failures" result-failure => failure-pattern)) ))
+    (tt/facts "concerning position analysis for the brick"
+           (tt/fact "about marker invariants" result-mark => invar-checker)
+           (tt/fact "about linkage placement" result-link => link-pattern)
+           (tt/fact "about constraint plan" result-success => success-pattern)
+           (tt/fact "about failures" result-failure => failure-pattern)) ))
 

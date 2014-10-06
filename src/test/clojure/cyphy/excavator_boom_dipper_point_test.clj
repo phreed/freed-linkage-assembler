@@ -1,5 +1,5 @@
 (ns cyphy.excavator-boom-dipper-point-test
-  (:require [midje.sweet :as t]
+  (:require [midje.sweet :as tt]
 
             [isis.geom.cyphy
              [cyphy-zip :as cyphy]
@@ -27,10 +27,10 @@
              [parallel-z-dispatch]]))
 
 
-(t/defchecker ref->checker
+(tt/defchecker ref->checker
   "A checker that allows the names of references to be ignored."
   [expected]
-  (t/checker [actual]
+  (tt/checker [actual]
              (let [actual-deref (clojure.walk/postwalk
                                  #(if (misc/reference? %) [:ref @%] %) actual)]
                (if (= actual-deref expected) true
@@ -65,37 +65,37 @@
   "check the data loaded from the data source"
   [kb]
 
-    (t/fact
+    (tt/fact
      "the knowledge-base should have keys"
      (set (keys kb)) =>
      #{:link :constraint :invar :base})
 
-    (t/fact
+    (tt/fact
      "the base should indicate the name of the assembly"
      (:base kb) => assy-name )
 
-    (t/fact
+    (tt/fact
      "the base (arm) assembly is grounded"
      @(get-in kb [:link assy-name]) =>
      {:versor {:xlate [0.0 0.0 0.0] :rotate [1.0 0.0 0.0 0.0]}
       :tdof {:# 0} :rdof {:# 0}}  )
 
-    (t/fact
+    (tt/fact
      "the follower (boom) is *not* grounded"
      @(get-in kb [:link arm-name]) =>
      {:versor {:xlate [0.0 0.0 0.0] :rotate [1.0 0.0 0.0 0.0]}
       :tdof {:# 3} :rdof {:# 3}}  )
 
 
-    (t/fact
+    (tt/fact
      "about initial ground-arm constraints"
      (:constraint kb) =>
-     (t/contains grounded-constraints))
+     (tt/contains grounded-constraints))
 
-    (t/fact
+    (tt/fact
      "about initial arm-boom joint constraints"
      (:constraint kb) =>
-     (t/contains
+     (tt/contains
       [{:m1 [[boom-name "APNT_2"]
              {:e [-8649.51 4688.51 600.0] :pi 0.0 :q [0.0 0.0 0.0]}]
         :m2 [[arm-name "PNT2"]
@@ -113,7 +113,7 @@
         :type :coincident}]))
 
 
-    (t/fact
+    (tt/fact
      "about the initial link settings"
      (:link kb) =>
      (ref->checker
@@ -134,7 +134,7 @@
          :rdof {:# 0}}]} ))
 
 
-    (t/fact
+    (tt/fact
      "about the initial marker invariants"
      (:invar kb) =>
      (ref->checker
@@ -148,15 +148,15 @@
   [kb]
     ;; (pp/pprint result-success)
     ;; (pp/pprint result-link)
-    (t/fact
+    (tt/fact
      "about the expanded ground-arm constraints"
      (:constraint kb) =>
-     (t/contains grounded-constraints))
+     (tt/contains grounded-constraints))
 
-    (t/fact
+    (tt/fact
      "about the expanded arm-boom joint constraints"
      (:constraint kb) =>
-     (t/contains
+     (tt/contains
      [{:type :coincident,
        :m1 [[boom-name "APNT_2"]
             {:e [-8649.51 4688.51 600.0], :q [0.0 0.0 0.0], :pi 0.0}],
@@ -173,7 +173,7 @@
        :m2 [[arm-name "PNT0"]
             {:e [3455.57 5.0 302.5], :q [0.0 0.0 0.0], :pi 0.0}]}]))
 
-    (t/fact
+    (tt/fact
      "about the number of constraints"
      (count (:constraint kb)) => 6)   )
 
@@ -185,15 +185,15 @@
   (let [result (analysis/position-analysis kb (:constraint kb))
         [success? result-kb result-success result-failure] result]
 
-    (t/fact
+    (tt/fact
      "about the success result for ground-arm constraints"
      result-success =>
-     (t/contains grounded-constraints))
+     (tt/contains grounded-constraints))
 
-    (t/fact
+    (tt/fact
      "about the success result for the arm-boom joint constraints"
      result-success =>
-     (t/contains
+     (tt/contains
      [{:type :coincident,
         :m1 [[boom-name "APNT_2"]
          {:e [-8649.51 4688.51 600.0], :q [0.0 0.0 0.0], :pi 0.0}],
@@ -210,11 +210,11 @@
         :m2 [[arm-name "PNT0"]
          {:e [3455.57 5.0 302.5], :q [0.0 0.0 0.0], :pi 0.0}]}] ))
 
-    (t/fact
+    (tt/fact
      "about the number of constraints"
      (count result-success) => 6)
 
-    (t/fact
+    (tt/fact
      "about the failure result"
      result-failure =>
      (ref->checker []))
@@ -227,7 +227,7 @@
     ;;  "about the expanded constraints"
     ;;  constraints-exp =>
 
-    (t/fact
+    (tt/fact
      "about the link result"
      (:link kb) =>
      (ref->checker
@@ -254,7 +254,7 @@
          :rdof {:# 0}}]} ))
 
 
-    (t/fact
+    (tt/fact
      "about the mark result"
      (:invar kb) =>
      (ref->checker

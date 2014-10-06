@@ -1,5 +1,5 @@
 (ns testing.test-utils
-  (:require [midje.sweet :refer [facts fact]]
+  (:require [midje.sweet :as tt]
             [clojure.pprint :as pp]
             [isis.geom.machine.misc :as misc]))
 
@@ -14,8 +14,8 @@
       (str "ref->str exception: " ))))
 
 
-(facts "misc"
-       (fact "does the ref->str work"
+(tt/facts "misc"
+       (tt/fact "does the ref->str work"
              (ref->str
               {"{c1fb29d9-0a81-423c-bc8f-459735cb4db3}"
                (ref
@@ -49,7 +49,7 @@
                  :tdof {:# 0},
                  :rdof {:# 0}})})
 
-       (fact "does the ref->str work"
+       (tt/fact "does the ref->str work"
              (ref->str
               {:loc (ref #{["{cd51d123-aab8-4d6e-b27f-fd94701e0007}|1"]}),
                :dir (ref #{["{cd51d123-aab8-4d6e-b27f-fd94701e0007}|1"]}),

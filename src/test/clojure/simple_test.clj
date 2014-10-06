@@ -1,5 +1,5 @@
 (ns simple-test
-  (:require [midje.sweet :refer [facts fact]]
+  (:require [midje.sweet :as tt]
             [clojure.java.io :as jio]
             [clojure.zip :as zip]
             [clojure.data.zip.xml :as zx]
@@ -8,7 +8,7 @@
 
 ;; see http://ravi.pckl.me/short/functional-xml-editing-using-zippers-in-clojure/
 
-(fact nil? nil)
+(tt/fact nil? nil)
 
 (def nested-vecs
   [:foo [:bar :baz [:bork]]])

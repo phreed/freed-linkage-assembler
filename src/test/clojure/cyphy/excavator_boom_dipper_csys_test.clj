@@ -246,14 +246,14 @@
         ]
 
 
-    (t/facts "about the parsed cad-assembly file with :csys"
-             (t/fact "about the constraints" constraints => constraint-checker)
-             (t/fact "about the initial link settings" (:link kb) => link-checker)
-             (t/fact "about the base link id" (:base kb) => "{cd51d123-aab8-4d6e-b27f-fd94701e0007}|1")
-             (t/fact "about the initial marker invariants" (:invar kb) => invar-checker)
+    (tt/facts "about the parsed cad-assembly file with :csys"
+             (tt/fact "about the constraints" constraints => constraint-checker)
+             (tt/fact "about the initial link settings" (:link kb) => link-checker)
+             (tt/fact "about the base link id" (:base kb) => "{cd51d123-aab8-4d6e-b27f-fd94701e0007}|1")
+             (tt/fact "about the initial marker invariants" (:invar kb) => invar-checker)
 
 
-             (t/fact "about the expanded constraints" exp-constraints => expanded-constraint-checker))
+             (tt/fact "about the expanded constraints" exp-constraints => expanded-constraint-checker))
 
 
     (let [result (position-analysis kb exp-constraints)
@@ -262,11 +262,11 @@
 
       ;; (pp/pprint result-success)
       ;; (pp/pprint result-link)
-      (t/facts "about results of linkage-assembly"
-               (t/fact "about the mark result" result-mark => invar-checker-2)
-               (t/fact "about the link result" result-link => link-checker-2)
-               (t/fact "about the success result" result-success => success-checker)
-               (t/fact "about the failure result" result-failure => failure-checker) )
+      (tt/facts "about results of linkage-assembly"
+               (tt/fact "about the mark result" result-mark => invar-checker-2)
+               (tt/fact "about the link result" result-link => link-checker-2)
+               (tt/fact "about the success result" result-success => success-checker)
+               (tt/fact "about the failure result" result-failure => failure-checker) )
 
       #_(with-open [fis (-> "excavator/excavator_boom_dipper_csys.xml"
                             jio/resource jio/input-stream)

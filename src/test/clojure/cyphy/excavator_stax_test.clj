@@ -1,5 +1,5 @@
 (ns cyphy.excavator-stax-test
-  (:require [midje.sweet :as t]
+  (:require [midje.sweet :as tt]
             [isis.geom.cyphy.cyphy-zip :as cyphy]
 
             [clojure.java.io :as jio]
@@ -31,32 +31,32 @@
   [kb]
   (let [assy-name "{3451cc65-9ad0-4f78-8a0c-290d1595fe74}|1"
         carriage-name "{dce1362d-1b44-4652-949b-995aa2ce5760}"]
-    (t/fact
+    (tt/fact
      "the knowledge-base should have keys"
      (set (keys kb)) =>
      #{:link :constraint :invar :base})
 
-    (t/fact
+    (tt/fact
      "the base should indicate the name of the assembly"
      (:base kb) => assy-name )
 
-    (t/fact
+    (tt/fact
      "the base assembly is grounded"
      @(get-in kb [:link assy-name]) =>
      {:versor {:xlate [0.0 0.0 0.0] :rotate [1.0 0.0 0.0 0.0]}
       :tdof {:# 0} :rdof {:# 0}}  )
 
-    (t/fact
+    (tt/fact
      "the carriage is *not* grounded"
      @(get-in kb [:link carriage-name]) =>
      {:versor {:xlate [0.0 0.0 0.0] :rotate [1.0 0.0 0.0 0.0]}
       :tdof {:# 3} :rdof {:# 3}}  )
 
     ;; (pp/pprint (:constraint kb))
-    (t/fact
+    (tt/fact
      "the carriage is connected to the base assembly via three planes"
      (:constraint kb) =>
-     (t/contains
+     (tt/contains
       [ {:type :planar,
          :m1 [[carriage-name "FRONT"]
               {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 0.0]}],
@@ -81,32 +81,32 @@
   [kb]
   (let [assy-name "{3451cc65-9ad0-4f78-8a0c-290d1595fe74}|1"
         carriage-name "{dce1362d-1b44-4652-949b-995aa2ce5760}"]
-    (t/fact
+    (tt/fact
      "the knowledge-base should have keys"
      (set (keys kb)) =>
      #{:link :constraint :invar :base})
 
-    (t/fact
+    (tt/fact
      "the base should indicate the name of the assembly"
      (:base kb) => assy-name )
 
-    (t/fact
+    (tt/fact
      "the base assembly is *still* grounded"
      @(get-in kb [:link assy-name]) =>
      {:versor {:xlate [0.0 0.0 0.0] :rotate [1.0 0.0 0.0 0.0]}
       :tdof {:# 0} :rdof {:# 0}}  )
 
-    (t/fact
+    (tt/fact
      "the carriage is *not* yet grounded"
      @(get-in kb [:link carriage-name]) =>
      {:versor {:xlate [0.0 0.0 0.0] :rotate [1.0 0.0 0.0 0.0]}
       :tdof {:# 3} :rdof {:# 3}}  )
 
     ;; (pp/pprint (:constraint kb))
-    (t/fact
+    (tt/fact
      "the carriage is connected to the base assembly via three planes"
      (:constraint kb) =>
-     (t/contains
+     (tt/contains
       [ {:type :in-plane
          :m1 [[carriage-name "FRONT"]
               {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 0.0]}]
@@ -147,10 +147,10 @@
   (let [result (analysis/position-analysis kb (:constraint kb))
         [success? result-kb result-success result-failure] result]
 
-    (t/fact
+    (tt/fact
      "the position analysis produced the plan"
      (:constraint kb) =>
-     (t/contains
+     (tt/contains
       [{:m1 [["{99ce8e6a-8722-4ed7-aa1a-ed46facf3264}" "CENTER_PLANE"]
              {:e [-5302.02 3731.18 600.0] :pi 0.0 :q [0.0 0.0 -1.0]}]
         :m2 [["{a93ca8b7-6de8-42e3-bc35-7224ec4ed51f}" "BOOM_CENTER_PLANE"]
@@ -188,16 +188,16 @@
   [kb]
   (let [assy-name "{3451cc65-9ad0-4f78-8a0c-290d1595fe74}|1"
         carriage-name "{dce1362d-1b44-4652-949b-995aa2ce5760}"]
-    (t/fact
+    (tt/fact
      "the knowledge-base should have keys"
      (set (keys kb)) =>
      #{:link :constraint :invar :base})
 
-    (t/fact
+    (tt/fact
      "the base should indicate the name of the assembly"
      (:base kb) => assy-name )
 
-    (t/fact
+    (tt/fact
      "the base assembly is *still* grounded"
      @(get-in kb [:link assy-name]) =>
      {:versor {:xlate [0.0 0.0 0.0] :rotate [1.0 0.0 0.0 0.0]}
@@ -209,38 +209,38 @@
           car-tdof (:tdof car-map)
           car-versor (:versor car-map)
           ]
-      (t/facts
+      (tt/facts
        "the carriage is *not* grounded"
-       (t/fact
+       (tt/fact
         "about the keys"
         car-keys => #{:rdof :tdof :versor})
 
-       (t/fact
+       (tt/fact
         "about the rdof"
         car-rdof => {:# 1, :dir [0.0 0.0 1637.3199999999997]})
 
-       (t/facts
+       (tt/facts
         "about the tdof"
-        (t/fact "about the keys"
+        (tt/fact "about the keys"
                 (set (keys car-tdof)) => #{:# :plane :point})
-        (t/fact "about the count" (:# car-tdof) => 2)
-        (t/fact "about the plane"
+        (tt/fact "about the count" (:# car-tdof) => 2)
+        (tt/fact "about the plane"
                 (:plane car-tdof) =>
                 {:e [0.0 0.0 0.0],
                  :n [0.0 0.0 1.0]})
-        (t/fact "about the point"
+        (tt/fact "about the point"
                 (:point car-tdof) => [0.0 0.0 0.0]))
 
-       (t/fact
+       (tt/fact
         "about the versor"
         car-versor => {:rotate [1.0 0.0 0.0 0.0],
                        :xlate [0.0 0.0 0.0]}) ))
 
     ;; (pp/pprint (:constraint kb))
-    (t/fact
+    (tt/fact
      "the carriage is connected to the base assembly via three planes"
      (:constraint kb) =>
-     (t/contains
+     (tt/contains
       [ {:type :in-plane
          :m1 [[carriage-name "FRONT"]
               {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 0.0]}]

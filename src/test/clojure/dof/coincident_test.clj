@@ -1,7 +1,6 @@
 (ns dof.coincident-test
   "Sample assembly for rotate (and translate)."
-  (:require [midje.sweet :refer [facts fact]]
-
+  (:require [midje.sweet :as tt]
             [isis.geom.machine
              [geobj :as ga]
              [tolerance :as tol]]
@@ -30,15 +29,15 @@
       link-3 (dof/r1:p->p link-2 inv-pnt from-point-3 to-point-3
                               inv-axis nil nil) ]
 
-  (facts "mimic dof/r1:p->p (0 degree rotation)"
-         (fact "link 2"
+  (tt/facts "mimic dof/r1:p->p (0 degree rotation)"
+         (tt/fact "link 2"
                link-2 =>
                '{:versor {:xlate [0.0 0.0 0.0]
                           :rotate [1.0 0.0 0.0 0.0]}
                  :tdof {:# 0 :point [1.0 0.0 0.0]}
                  :rdof {:# 1 :axis [-0.7071067811865475 0.7071067811865475 0.0]}} )
 
-         (fact "link 3"
+         (tt/fact "link 3"
                link-3 =>
                '{:versor {:xlate [0.0 0.0 0.0]
                           :rotate [1.0 0.0 0.0 0.0]}

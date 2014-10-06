@@ -1,6 +1,6 @@
 
 (ns cyphy.excavator-plane-test
-  (:require [midje.sweet :as chk]
+  (:require [midje.sweet :as tt]
             [isis.geom.cyphy
              [cyphy-zip :as cyphy]
              [cad-stax :as stax]]
@@ -186,7 +186,7 @@
           ]
 
         expanded-constraint-checker
-        (chk/contains
+        (tt/contains
          '[])
 
         chk-lnk
@@ -222,25 +222,25 @@
          :twist #{["{3451cc65-9ad0-4f78-8a0c-290d1595fe74}|1"]}}
 
         invar-checker-final
-        (chk/contains
+        (tt/contains
          '[])
 
 
-        failure-checker (chk/contains '[])
+        failure-checker (tt/contains '[])
         ]
 
-    (chk/facts "about the parsed cad-assembly file with :planar"
-               (chk/fact "arm2" constraints-orig => (chk/contains chk-con-a2b))
-               (chk/fact "arm cyl a first" constraints-orig => (chk/contains chk-con-b2j))
-               (chk/fact "arm cyl a second" constraints-orig => (chk/contains chk-con-jack2arm))
-               (chk/fact "about the initial link settings" (unref (:link kb)) => (chk/contains chk-lnk))
-               (chk/fact "about the base link id" (:base kb) => "{3451cc65-9ad0-4f78-8a0c-290d1595fe74}|1")
-               (chk/fact "about the initial marker invariants" (unref (:invar kb)) => invar-checker)
+    (tt/facts "about the parsed cad-assembly file with :planar"
+               (tt/fact "arm2" constraints-orig => (tt/contains chk-con-a2b))
+               (tt/fact "arm cyl a first" constraints-orig => (tt/contains chk-con-b2j))
+               (tt/fact "arm cyl a second" constraints-orig => (tt/contains chk-con-jack2arm))
+               (tt/fact "about the initial link settings" (unref (:link kb)) => (tt/contains chk-lnk))
+               (tt/fact "about the base link id" (:base kb) => "{3451cc65-9ad0-4f78-8a0c-290d1595fe74}|1")
+               (tt/fact "about the initial marker invariants" (unref (:invar kb)) => invar-checker)
 
 
-               (chk/fact "arm2 meta expanded" constraints-meta => (chk/contains chk-con-a2b-meta))
-               (chk/fact "arm2 lower expanded" constraints-lower => (chk/contains chk-con-a2b-lower-planar))
-               (chk/incipient-fact "arm2 lower expanded" constraints-lower => (chk/contains chk-con-a2b-lower-linear)) )
+               (tt/fact "arm2 meta expanded" constraints-meta => (tt/contains chk-con-a2b-meta))
+               (tt/fact "arm2 lower expanded" constraints-lower => (tt/contains chk-con-a2b-lower-planar))
+               (tt/incipient-fact "arm2 lower expanded" constraints-lower => (tt/contains chk-con-a2b-lower-linear)) )
 
     (let [result (position-analysis kb constraints-lower)
             [success? result-kb result-success result-failure] result
@@ -248,11 +248,11 @@
 
         ;; (pp/pprint result-success)
         ;; (pp/pprint result-link)
-        (chk/facts "about results of linkage-assembly"
-                   (chk/fact "about the mark result" result-mark => invar-checker-final)
-                   (chk/incipient-fact "about the link result" result-link => chk-lnk-2)
-                   (chk/incipient-fact "about the success result" result-success => success-checker)
-                   (chk/incipient-fact "about the failure result" result-failure => failure-checker) )
+        (tt/facts "about results of linkage-assembly"
+                   (tt/fact "about the mark result" result-mark => invar-checker-final)
+                   (tt/incipient-fact "about the link result" result-link => chk-lnk-2)
+                   (tt/incipient-fact "about the success result" result-success => success-checker)
+                   (tt/incipient-fact "about the failure result" result-failure => failure-checker) )
 
         #_(with-open [fis (-> "excavator/excavator_total_plane.xml"
                               jio/resource jio/input-stream)

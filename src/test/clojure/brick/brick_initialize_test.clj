@@ -1,6 +1,6 @@
 (ns brick.brick-initialize-test
   "Sample assembly for brick and ground."
-  (:require [midje.sweet :refer [facts fact]]
+  (:require [midje.sweet :as tt]
 
             [isis.geom.machine.misc :as misc]
             [isis.geom.model
@@ -63,12 +63,12 @@
         } }))
 
 
-(facts "about transforming the ground-brick-cap"
-       (fact "check the expanded ground"
+(tt/facts "about transforming the ground-brick-cap"
+       (tt/fact "check the expanded ground"
              (port->expand @brick-graph '[ground j1]) =>
              '[[ground g1 :coincident {:e1 2.0, :e2 0.0, :e3 0.0}]] )
 
-       (fact "about making constraints"
+       (tt/fact "about making constraints"
              (port-pair->make-constraint
               @brick-graph
               '[[ground g2 :coincident {:e1 1.0, :e2 0.0, :e3 0.0}]
@@ -78,7 +78,7 @@
                :m2 [[brick b2] {:e [101.0 0.0 0.0] :z [nil nil nil] :x [nil nil nil]}]})
 
 
-       (fact "about initializing invariants"
+       (tt/fact "about initializing invariants"
              (ref->str (graph->init-invariants @brick-graph)) =>
              '{:invar {:loc [:ref #{[ground]}],
                       :dir [:ref #{[ground]}],
@@ -90,14 +90,14 @@
                       cap [:ref {:tdof {:# 3}, :rdof {:# 3},
                                  :versor {:xlate [0.0 0.0 0.0], :rotate [1.0 0.0 0.0 0.0]}}]}})
 
-       (fact "about building a joint pair constraint"
+       (tt/fact "about building a joint pair constraint"
              (joint-pair->constraint @brick-graph '#{[ground j1] [brick jg1]}) =>
              '({:type :coincident
                 :m1 [[ground g1] {:e [2.0 0.0 0.0], :z [nil nil nil], :x [nil nil nil]}]
                 :m2 [[brick b1] {:e [0.0 0.0 0.0], :z [nil nil nil], :x [nil nil nil]}]}))
 
 
-       (fact "about the joint constraints"
+       (tt/fact "about the joint constraints"
              (joints->constraints @brick-graph) =>
              '(
                {:type :coincident

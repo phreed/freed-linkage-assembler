@@ -1,7 +1,6 @@
 (ns versor.quaternion-test
   "Sample assembly for messing with quaternions."
-  (:require [midje.sweet :refer [facts fact roughly]]
-
+  (:require [midje.sweet :as tt]
             [isis.geom.machine
              [geobj :as ga]
              [tolerance :as tol]]))
@@ -18,13 +17,13 @@
       v5 (ga/quat-sandwich quat v4)
 
       is-approximately #(partial tol/near-same? :default %)]
-  (facts "concerning quaternion sandwich"
-         (fact "simple rotate" v1 => (is-approximately '[2.0 -1.0 3.0]))
-         (fact "return to original" va => (is-approximately v0))
-         (fact "rotate 1/4 turn" v2 => (is-approximately '[-1.0 -2.0 3.0]))
-         (fact "rotate 1/2 turn" v3 => (is-approximately '[-2.0 1.0 3.0]))
-         (fact "rotate full turn" v4 => (is-approximately v0))
-         (fact "rotate 1-1/4 turn" v5 => (is-approximately v1)) ))
+  (tt/facts "concerning quaternion sandwich"
+         (tt/fact "simple rotate" v1 => (is-approximately '[2.0 -1.0 3.0]))
+         (tt/fact "return to original" va => (is-approximately v0))
+         (tt/fact "rotate 1/4 turn" v2 => (is-approximately '[-1.0 -2.0 3.0]))
+         (tt/fact "rotate 1/2 turn" v3 => (is-approximately '[-2.0 1.0 3.0]))
+         (tt/fact "rotate full turn" v4 => (is-approximately v0))
+         (tt/fact "rotate 1-1/4 turn" v5 => (is-approximately v1)) ))
 
 (let [ao [-8649.51 4688.51 600.0]
       q1 [1.0 0.0 0.0 0.0]
@@ -42,22 +41,22 @@
 
       is-approximately #(partial tol/near-same? :default %)
       ]
-  (facts "in imitation of the 0-3-coincident"
-         (fact "quat sandwich a0"
+  (tt/facts "in imitation of the 0-3-coincident"
+         (tt/fact "quat sandwich a0"
                (ga/quat-sandwich q1 ao) => (is-approximately ao))
 
-         (fact "quat sandwich xp1"
+         (tt/fact "quat sandwich xp1"
                (ga/vec-sum xp1 (ga/quat-sandwich q1 ao)) => (is-approximately af))
 
-         (fact "quat sandwich diff"
+         (tt/fact "quat sandwich diff"
                (ga/quat-sandwich (ga/quat-conj q1) (ga/vec-diff af xp1)) => (is-approximately ao))
-         (fact ""
+         (tt/fact ""
                (ga/vec-sum xp2 (ga/quat-sandwich q2 ao)) => (is-approximately af))
-         (fact ""
+         (tt/fact ""
                (ga/vec-sum xp2 (ga/quat-sandwich q2 bo)) => (is-approximately bf))
-         (fact ""
+         (tt/fact ""
                (ga/vec-diff bf af) => #(ga/parallel? axis % false))
-         (fact ""
+         (tt/fact ""
                (ga/quat-normalize q2) => (partial tol/near-same? :tiny q2)) ))
 
 (let [ao [-8625.71 4720.65 600.0]
@@ -76,19 +75,19 @@
 
       is-approximately #(partial tol/near-same? :default %)
       ]
-  (facts "in imitation of the 0-1-coincident"
-         (fact ""
+  (tt/facts "in imitation of the 0-1-coincident"
+         (tt/fact ""
                (ga/vec-sum ax (ga/quat-sandwich aq ao)) => (is-approximately af))
-         (fact ""
+         (tt/fact ""
                (ga/projection at (ga/line inv-pnt inv-axis)) => (is-approximately pivot))
-         (fact ""
+         (tt/fact ""
                (ga/projection at (ga/line pivot inv-axis)) => (is-approximately pivot))
-         (fact ""
+         (tt/fact ""
                (ga/projection af (ga/line pivot inv-axis)) => (is-approximately pivot))
-         (fact ""
+         (tt/fact ""
                (ga/outer-prod (ga/normalize at-dir) (ga/normalize af-dir)) =>
                #(tol/near-zero? :default %))
-         (fact ""
+         (tt/fact ""
                (ga/vec-angle af-dir at-dir inv-axis) =>
                #(tol/near-same? :default [0.0 -1.0] %))
          ))

@@ -86,7 +86,8 @@
                 (ga/gmz m2 kb))
          final-loc (ga/meet ln0 plane)
 
-         gmp1 (ga/gmp m1 kb)]
+         gmp1 (ga/gmp m1 kb)
+         pnt1 (ga/vec-diff final-loc gmp1)]
 
     (dosync
      (alter m1-link merge

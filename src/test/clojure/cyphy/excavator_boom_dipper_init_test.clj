@@ -1,6 +1,6 @@
 (ns cyphy.excavator-boom-dipper-init-test
   "Sample assembly consisting of a boom and a dipper."
-  (:require [midje.sweet :refer [facts fact]]
+  (:require [midje.sweet :as tt]
 
             [isis.geom.cyphy.cad-zipper :as cyphy]
 
@@ -42,8 +42,8 @@
                          jio/resource jio/input-stream)]
         (cyphy/graph-from-cyphy-input-stream is))]
 
-  (facts "excavator init test : constraints"
-         (fact "excavator graph"
+  (tt/facts "excavator init test : constraints"
+         (tt/fact "excavator graph"
                (:constraint excavator-graph) =>
                '[
                  {:type :coincident
@@ -148,16 +148,16 @@
         augmented-sample (zip/node (zx/xml1-> augmented-zipper :Assembly :CADComponent :CADComponent
                                               (zx/attr= :Name "BOOM") :versor )) ]
     (tol/set-default-tolerance 0.01)
-    (facts "excavator init test : position analysis"
-           (fact "about marker invariants"
+    (tt/facts "excavator init test : position analysis"
+           (tt/fact "about marker invariants"
                  result-mark => invar-checker)
-           (fact "about marker invariants"
+           (tt/fact "about marker invariants"
                  result-link => link-pattern)
-           (fact "about marker invariants"
+           (tt/fact "about marker invariants"
                  result-success => success-pattern)
-           (fact "about marker invariants"
+           (tt/fact "about marker invariants"
                  result-failure => failure-pattern)
-           (fact "about marker invariants"
+           (tt/fact "about marker invariants"
                  augmented-sample => augmented-pattern)) ))
 
 

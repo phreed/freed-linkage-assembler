@@ -1,5 +1,5 @@
 (ns versor.c3ga-experiment
-  (:require [midje.sweet :refer [facts fact]] ))
+  (:require [midje.sweet :as tt] ))
 
 (defn -*- "the outer product" [a b] (* a b))
 
@@ -333,15 +333,15 @@
 
 (let [a (->bb :e1 5)
       b (->bb :e2 11)]
-  (facts "about blades"
-         (fact "about blade products"
+  (tt/facts "about blades"
+         (tt/fact "about blade products"
                (gp-bb a b) =>
                '{:blade 6, :weight 55, :grade 2})))
 
-(facts "about multivectors"
-       (fact "check bit count on 2r0011"
+(tt/facts "about multivectors"
+       (tt/fact "check bit count on 2r0011"
              (bit-count 3) => 2)
-       (fact "check general product"
+       (tt/fact "check general product"
              (gp-mv (->mv (->bb :e1 5) (->bb :e2 11))
                     (->mv (->bb :e1 2) (->bb :e2 3))) =>
              '{ 6 {:blade 6 :weight -22 :grade 2}
