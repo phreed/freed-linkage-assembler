@@ -77,7 +77,7 @@
                      :dir (~'ref #{})
                      :twist (~'ref #{})} }
             ~'m1 [[~'m1-link-name ~m1-proper-name] ~m1-payload]
-            ~'m2 [[~'m1-link-name ~m1-proper-name] ~m1-payload]
+            ~'m2 [[~'m2-link-name ~m2-proper-name] ~m2-payload]
 
             ~'assy-result (~(symbol (str nspace"/assemble!->" (name xform))) ~'kb ~'m1 ~'m2) ]
 

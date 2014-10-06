@@ -98,17 +98,17 @@
      (tt/fact "link 'mobile-point'"
               (-> mobile-point keys set) =>  #{:versor :tdof :rdof})
 
-     (tt/fact "link 'mobile-point' :versor"
+     (tt/fact "link 'mobile-point' :versor (no change expected)"
               (:versor mobile-point) =>
-              {:xlate [0.0 6.0 -3.0],
+              {:xlate [0.0 0.0 -3.0],
                :rotate [1.0 0.0 0.0 0.0]})
 
-     (tt/fact "link 'mobile-point' :tdof"
+     (tt/fact "link 'mobile-point' :tdof (no change expected)"
               (:tdof mobile-point) =>
-              {:# 1,
-               :point [3.0 10.0 2.0],
-               :line (ga/line [2.0 10.0 2.0] [-1.0 0.0 0.0]),
-               :lf [3.0 10.0 2.0]})
+              {:# 2,
+               :point [3.0 4.0 2.0],
+               :plane (ga/plane [2.0 2.0 2.0] [0.0 0.0 1.0]),
+               :lf [3.0 4.0 2.0]})
 
      (tt/fact "link 'mobile-point' :rdof"
               (:rdof mobile-point) => {:# 3})  ) )
@@ -145,13 +145,15 @@
 
      (tt/fact "link 'mobile-point' :versor"
               (:versor mobile-point) =>
-              {:xlate [-2.0 6.0 -3.0],
+              {:xlate [0.0 0.0 -3.0],
                :rotate [1.0 0.0 0.0 0.0]})
 
      (tt/fact "link 'mobile-point' :tdof"
               (:tdof mobile-point) =>
-              {:# 0,
-               :point [1.0 0.0 3.0]})
+               {:# 2,
+                :lf [3.0 4.0 2.0],
+                :plane (ga/plane  [2.0 2.0 2.0] [0.0 0.0 1.0]),
+                :point [3.0 4.0 2.0]} )
 
      (tt/fact "link 'mobile-point' :rdof"
               (:rdof mobile-point) => {:# 3})  ) ) )

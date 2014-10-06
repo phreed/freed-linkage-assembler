@@ -5,7 +5,6 @@
              [tolerance :as tol]
              [geobj :as ga]]))
 
-
 (defn r2:p->p
   "Procedure to rotate body ?link, about axes ?axis-1 and ?axis-2,
   leaving the position of point ?center invariant, and
@@ -29,6 +28,25 @@
             r12 (ga/vec-angle r10 r11 (ga/outer-prod r10 r11)) ]
         (ga/rotate ?link ?center ?axis-1 r12)))) )
 
+(defn r2:a
+  "Procedure to rotate body ?link about axes ?axis_1 and ?axis-2,
+  keeping the position of point ?center invariant, so as to
+  move the ?link about axis by ?angle."
+  [?link ?center ?angle ?axis ?axis-1 ?axis-2]
+  (let [arbitrary-circle (ga/circle ?center ?axis 10)
+        pnt-on-circle (ga/a-point arbitrary-circle) ]
+    (dosync
+     (alter ?link merge
+            (ga/rotate ?link ?center ?axis ?angle))
+     ;; r2 (ga/copy pnt-on-circle)
+
+     (alter ?link merge
+            (ga/rotate ?link ?center ?axis (- ?angle)))
+
+     (r2:p->p ?link ?center pnt-on-circle pnt-on-circle
+              ?axis-1 ?axis-2) )))
+
+
 (defn r1:p->p
   "Procedure to rotate body ?link about ?axis.
   If restrictions are imposed by ?axis-1 and ?axis-2, they are honored.
@@ -47,7 +65,7 @@
           :else
           (let [possible-axis
                 (ga/outer-prod (ga/normalize to-dir)
-                            (ga/normalize from-dir))]
+                               (ga/normalize from-dir))]
             (cond
              (and (not (tol/near-zero? :default possible-axis))
                   (not (ga/parallel? possible-axis ?axis false)))
@@ -56,9 +74,9 @@
              :else
              (if (and (nil? ?axis-1) (nil? ?axis-2))
                (ga/rotate ?link pivot ?axis
-                       (ga/vec-angle from-dir to-dir ?axis))
+                          (ga/vec-angle from-dir to-dir ?axis))
                (r2:p->p ?link ?center
-                            ?from-point ?to-point ?axis-1 ?axis-2 1)))))))
+                        ?from-point ?to-point ?axis-1 ?axis-2 1)))))))
 
 (defn r3:p->p
   "Procedure to rotate body ?link about ?center,
@@ -75,5 +93,5 @@
 
           :else
           (r1:p->p ?link ?center ?from-point ?to-point
-                       (ga/outer-prod from-dir to-dir) nil nil))))
+                   (ga/outer-prod from-dir to-dir) nil nil))))
 
