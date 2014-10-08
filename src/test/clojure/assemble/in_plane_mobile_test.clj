@@ -2,8 +2,7 @@
   "Test the in-plane-mobile assembly"
   (:require [midje.sweet :as tt]
             [clojure.pprint :as pp]
-            [isis.geom.machine
-             [geobj :as ga]]
+            [isis.geom.algebra [geobj :as ga]]
             [isis.geom.action
              [in-plane-mobile-slice :as in-plane-mobile]]))
 

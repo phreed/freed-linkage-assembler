@@ -1,7 +1,7 @@
 (ns versor.projection-test
   "Test the projection of versors"
   (:require [midje.sweet :as tt]
-            [isis.geom.machine.geobj :as ga]))
+            [isis.geom.algebra [geobj :as ga]]))
 
 (let [
       the-center [5.0 0.0 0.0]

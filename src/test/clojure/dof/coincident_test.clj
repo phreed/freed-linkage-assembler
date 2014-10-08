@@ -1,11 +1,9 @@
 (ns dof.coincident-test
   "Sample assembly for rotate (and translate)."
   (:require [midje.sweet :as tt]
-            [isis.geom.machine
-             [geobj :as ga]
-             [tolerance :as tol]]
-            [isis.geom.action
-             [auxiliary :as dof]]))
+            [isis.geom.machine [tolerance :as tol]]
+            [isis.geom.algebra [geobj :as ga]
+            [isis.geom.action [auxiliary :as dof]]))
 
 (let [link {:versor {:xlate [0.0 0.0 0.0]
                      :rotate [1.0 0.0 0.0 0.0]}

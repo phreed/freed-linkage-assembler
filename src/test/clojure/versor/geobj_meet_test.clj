@@ -1,7 +1,7 @@
 (ns versor.geobj-meet-test
   "Sample intersection tests."
   (:require [midje.sweet :as tt]
-            [isis.geom.machine.geobj :as ga]))
+            [isis.geom.algebra [geobj :as ga]]))
 
 (let [s1 (ga/plane [2.0  2.0   2.0] [-1.0 0.0 0.0])
       s2 (ga/plane [2.0  2.0   2.0] [ 0.0 0.0 1.0])

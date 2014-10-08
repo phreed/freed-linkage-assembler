@@ -1,9 +1,8 @@
 (ns isis.geom.action.coincident-slice
   "The table of rules."
   (:require [isis.geom.position-dispatch :as ms]
-            [isis.geom.machine
-             [geobj :as ga]
-             [tolerance :as tol]]
+            [isis.geom.machine [tolerance :as tol]]
+            [isis.geom.algebra [geobj :as ga]]
             [isis.geom.action [auxiliary :as dof]]
             [isis.geom.model [invariant :as invariant]] ))
 

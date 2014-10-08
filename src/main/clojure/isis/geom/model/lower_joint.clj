@@ -1,6 +1,6 @@
 (ns isis.geom.model.lower-joint
   (:require
-   [isis.geom.machine.geobj :as ga]
+   [isis.geom.algebra [geobj :as ga]]
    [isis.geom.machine.tolerance :as tol]
    [clojure.pprint :as pp] ))
 

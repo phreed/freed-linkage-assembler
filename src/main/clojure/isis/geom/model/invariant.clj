@@ -1,6 +1,6 @@
 (ns isis.geom.model.invariant
   "Algorithms : Utilities E.3.1"
-  (:require [isis.geom.machine.geobj :as ga]) )
+  (:require [isis.geom.algebra [geobj :as ga]]) )
 
 
 (defn init-marker

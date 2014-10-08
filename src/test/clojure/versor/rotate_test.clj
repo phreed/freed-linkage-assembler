@@ -1,10 +1,8 @@
 (ns versor.rotate-test
   "Sample assembly for rotate (and translate)."
   (:require [midje.sweet :as tt]
-
-            [isis.geom.machine
-             [geobj :as ga]
-             [tolerance :as tol]]))
+            [isis.geom.algebra [geobj :as ga]]
+            [isis.geom.machine [tolerance :as tol]]))
 
 (def ^:private tau (* 2.0 Math/PI))
 

@@ -2,9 +2,8 @@
   "The table of rules for the in-plane constraint where
   the point marker, ?M_1, is FIXED and the plane marker, ?M_2, is mobile."
   (:require [isis.geom.position-dispatch :as ms]
-            [isis.geom.machine
-             [geobj :as ga]
-             [tolerance :as tol]]
+            [isis.geom.machine [tolerance :as tol]]
+            [isis.geom.algebra [geobj :as ga]]
             [isis.geom.action [auxiliary :as dof]]
             [isis.geom.model [invariant :as invariant]]
             [clojure.pprint :as pp] ))

@@ -1,7 +1,7 @@
 (ns isis.geom.model.meta-constraint
   "These joints are introduced as part of the AVM/META project."
   (:require
-   [isis.geom.machine.geobj :as ga]
+   [isis.geom.algebra [geobj :as ga]]
    [isis.geom.machine.tolerance :as tol]
    [clojure.pprint :as pp] ))
 

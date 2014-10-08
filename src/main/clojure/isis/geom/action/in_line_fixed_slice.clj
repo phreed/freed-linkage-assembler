@@ -3,7 +3,7 @@
   the point marker is FIXED and the line is mobile."
   (:require [clojure.pprint :as pp]
             [isis.geom.position-dispatch :as ms]
-            [isis.geom.machine [geobj :as ga]]
+            [isis.geom.algebra [geobj :as ga]]
             [isis.geom.action [auxiliary :as dof]]
             [isis.geom.model [invariant :as invariant]]))
 

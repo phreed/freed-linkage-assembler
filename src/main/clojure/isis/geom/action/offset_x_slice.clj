@@ -1,7 +1,7 @@
 (ns isis.geom.action.offset-x-slice
   "The table of rules."
   (:require [isis.geom.position-dispatch :as ms]
-            [isis.geom.machine [geobj :as ga]]
+            [isis.geom.algebra [geobj :as ga]]
             [isis.geom.action [auxiliary :as dof]]
             [isis.geom.model [invariant :as invariant]]))
 

@@ -2,7 +2,7 @@
   "Sample assembly for rotate (and translate)."
   (:require [midje.sweet :as tt]
             [isis.geom.algebra [versor :as versor]]
-            [isis.geom.machine.geobj :as ga]))
+            [isis.geom.algebra [geobj :as ga]]))
 
 
 (let [g1-bc 2r010

@@ -2,9 +2,8 @@
   "The table of rules."
   (:require [clojure.pprint :as pp]
             [isis.geom.position-dispatch :as ms]
-            [isis.geom.machine
-             [geobj :as ga]
-             [tolerance :as tol]]
+            [isis.geom.machine [tolerance :as tol]]
+            [isis.geom.algebra [geobj :as ga]]
             [isis.geom.action [auxiliary :as dof]]
             [isis.geom.model [invariant :as invariant]]))
 
@@ -81,6 +80,7 @@
   :progress-made)
 
 (defn assemble!->t3-r0 [kb m1 m2] :consistent)
+
 (defn assemble!->t3-r1
   "
   PFT entry: (3,1,parallel-z)
@@ -150,17 +150,17 @@
          from-dir (ga/vec-diff from-pnt from-base)
          to-dir (ga/vec-diff to-pnt to-base)
 
-         angle (ga/vec-angle to-dir from-dir axis) ]
+         angle (ga/vec-angle to-dir from-dir (:d axis)) ]
 
     (dosync
      (if (every? nil? [m2-axis-1 m2-axis-2])
        (alter m2-link merge
-              (ga/rotate @m2-link gmp1 axis angle))
-       (dof/r2:a m2-link gmp2 angle m2-axis m2-axis-1 m2-axis-2)))
+              (ga/rotate @m2-link gmp1 (:d axis) angle))
+       (dof/r2:a m2-link gmp2 angle m2-axis m2-axis-1 m2-axis-2))
 
-    (alter m2-link assoc
-           :tdof {:# 3}
-           :rdof {:# 0} ) )
+     (alter m2-link assoc
+            :tdof {:# 3}
+            :rdof {:# 0} ) ))
   :progress-made)
 
 

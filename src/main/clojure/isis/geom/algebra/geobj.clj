@@ -1,4 +1,4 @@
-(ns isis.geom.machine.geobj
+(ns isis.geom.algebra.geobj
   (:require [isis.geom.machine
              [tolerance :as tol]]
             [clojure.pprint :as pp]) )
@@ -105,7 +105,16 @@
 
 (defrecord FlatPoint [e])
 (defrecord PointPair [e1 e2])
-(defrecord Line [e d])
+
+(defrecord Line [e d]
+  Conformal
+  (locate [ln] (:e ln))
+  (direct [ln] (:d ln))
+  (weight [ln] 0.0)
+  SubSpace
+  (norm2 [ln] (reduce #(+ %1 (* %2 %2)) 0.0 (:e ln)))
+  (norm [ln] (Math/sqrt (norm2 ln))))
+
 (defrecord Direction [e])
 (defrecord Plane [e n])
 (defrecord Circle [e n r])
@@ -428,6 +437,9 @@
   The sign for sine is determined by comparing the
   direction of the axis to a^b."
   [vector-1 vector-2 axis]
+  {:pre [ (instance? clojure.lang.PersistentVector vector-1)
+          (instance? clojure.lang.PersistentVector vector-2)
+          (instance? clojure.lang.PersistentVector axis) ]}
   (let [scale (inner-prod vector-2 axis)
         center (into [] (map #(* % scale) axis))
         diff-1 (normalize (vec-diff vector-1 center))
@@ -456,7 +468,7 @@
         rot-loc (quat-sandwich versor-rotate gobj)]
     (mapv + versor-translation rot-loc)))
 
-(defmethod versor-apply isis.geom.machine.geobj.Point
+(defmethod versor-apply Point
   [versor gobj]
   (let [versor-rotate (get versor :rotate [1.0 0.0 0.0 0.0])
         versor-translation (get versor :xlate [0.0 0.0 0.0])
@@ -569,6 +581,14 @@
   [quantity]
   (println "null? unimpl")
   )
+
+
+
+(defmethod inner-prod [clojure.lang.PersistentVector
+                       Line]
+  [l1 l2 & xs]
+  (let [ {e2 :e, d2 :d} l2]
+    (reduce + (map * l1 d2))))
 
 
 
@@ -759,7 +779,7 @@
 
 (comment "project point onto line")
 (defmethod projection [clojure.lang.PersistentVector
-                       isis.geom.machine.geobj.Line]
+                       Line]
   [point {anchor :e, axis :d, :as ln}]
   (as-> (vec-diff point anchor) $ ; a vector from line to point
         (inner-prod $ axis)   ; distance along line to point-projection
@@ -792,13 +812,15 @@
   is expressed in terms of the point.
   "
   [link point axis angle]
+  {:pre [(instance? clojure.lang.PersistentVector point)
+         (instance? clojure.lang.PersistentVector axis)
+         (instance? clojure.lang.PersistentVector angle)] }
   (cond
    (tol/near-zero? :tiny (first angle)) link
    :else
    (let [q1 (get-in link [:versor :rotate])
          q2 (axis-angle->quaternion axis angle)
-         q12 (quat-prod q2
-                        q1)
+         q12 (quat-prod q2 q1)
 
          x1 (get-in link [:versor :xlate])
          x2 (vec-diff point x1)

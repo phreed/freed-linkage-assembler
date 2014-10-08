@@ -2,10 +2,10 @@
   "Manipulating the CyPhy2CAD produced CADAssembly.xml
   file using stax."
   (:require
-   [isis.geom.machine
-    [geobj :as ga]
-    [tolerance :as tol]]
+   [isis.geom.machine [tolerance :as tol]]
+   [isis.geom.algebra [geobj :as ga]]
    [clojure.pprint :as pp] )
+
   (:import
    (java.util Date)
    (javax.xml.stream  XMLInputFactory

@@ -2,8 +2,8 @@
   "The geometric movement functions."
   (:require [isis.geom.machine
              [error-msg :as emsg]
-             [tolerance :as tol]
-             [geobj :as ga]]))
+             [tolerance :as tol]]
+            [isis.geom.algebra [geobj :as ga]]))
 
 (defn r2:p->p
   "Procedure to rotate body ?link, about axes ?axis-1 and ?axis-2,

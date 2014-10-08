@@ -2,8 +2,7 @@
   "Test the parallel-z assembly"
   (:require [midje.sweet :as tt]
             [clojure.pprint :as pp]
-            [isis.geom.machine
-             [geobj :as ga]]
+            [isis.geom.algebra [geobj :as ga]]
             [isis.geom.action
              [parallel-z-slice :as parallel-z]]))
 
@@ -27,10 +26,7 @@
         :rdof {:# 0}})}}))
 
 
-(let [kb (kb-three-fixed-planes-w-mobile-point)]
-
-  ;;===== t3-r3 =============
-
+ (defn- t3-r3-test! [kb]
   (parallel-z/assemble!->t3-r3
    kb
    [["mobile-point" "MARK-POINT"]
@@ -70,7 +66,7 @@
               {:# 1 :axis [1.0 0.0 0.0]} ) )))
 
 
-  ;;===== t3-r1 =============
+ (defn- t3-r1-test! "===== t3-r1 =====" [kb]
 
   (parallel-z/assemble!->t3-r1
    kb
@@ -110,9 +106,10 @@
               {:# 0,
                :point [3.0 4.0 2.0],
                :line (ga/line [2.0 2.0 2.0] [0.0 0.0 1.0]),
-               :lf [3.0 4.0 2.0]}) ) )
+               :lf [3.0 4.0 2.0]}) ) ))
 
-  ;;===== t3-r0 =============
+
+ (defn- t3-r0-test! "===== t3-r0 =====" [kb]
 
   (parallel-z/assemble!->t3-r0
    kb
@@ -155,6 +152,10 @@
               {:# 0,
                :point [1.0 0.0 3.0]}) ) ) )
 
+(let [kb (kb-three-fixed-planes-w-mobile-point)]
+  (t3-r3-test! kb)
+  (t3-r1-test! kb)
+  (t3-r0-test! kb))
 
 ;; a sample from a full model
 
