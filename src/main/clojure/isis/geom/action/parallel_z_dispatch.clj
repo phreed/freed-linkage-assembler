@@ -6,7 +6,7 @@
             [clojure.pprint :as pp]))
 
 
-(defn precondition?
+(defn precondition
   "Associated with each constraint type is a function which
   checks the preconditions.  If one of the markers has
   a fixed direction then the constrained
@@ -14,8 +14,8 @@
   The focus is on the constrained marker so that
   overconstrained conditions are still checked."
   [kb m1 m2]
-  (cond (invariant/marker-direction? kb m1) [m1 m2]
-        (invariant/marker-direction? kb m2) [m2 m1]
+  (cond (invariant/marker-direction? kb m1) [kb m1 m2]
+        (invariant/marker-direction? kb m2) [kb m2 m1]
         :else nil))
 
 (defn- assemble-dispatch
@@ -41,21 +41,21 @@
   :parallel-z
   [kb constraint]
   (let [{m1 :m1 m2 :m2} constraint
-        precon (precondition? kb m1 m2) ]
+        precon (precondition kb m1 m2) ]
     (if-not precon
       :pre-condition-not-met
       (try
         (pp/fresh-line)
-        (let [[ma mb] precon]
+        (let [[kb+ m1+ m2+] precon]
           (pp/pprint (str "parallel-z"
-                          (assemble-dispatch kb ma mb)))
-          (assemble! kb ma mb))
+                          (assemble-dispatch kb+ m1+ m2+)))
+          (assemble! kb+ m1+ m2+))
 
         (catch Exception ex
-          (let [[ma mb] precon]
+          (let [[kb+ m1+ m2+] precon]
             (ms/dump ex
-                     (assemble-dispatch kb ma mb)
-                     "parallel-z" kb ma mb) )
+                     (assemble-dispatch kb+ m1+ m2+)
+                     "parallel-z" kb+ m1+ m2+) )
           :exception-thrown)))))
 
 (ms/defmethod-symetric-transform assemble!)

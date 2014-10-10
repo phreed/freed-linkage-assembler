@@ -1,6 +1,5 @@
-
 (ns cyphy.excavator-boom-dipper-csys-test
-  (:require [midje.sweet :as t]]
+  (:require [midje.sweet :as tt]
             [isis.geom.cyphy
              [cyphy-zip :as cyphy]
              [cad-stax :as stax]]
@@ -9,7 +8,9 @@
             [clojure.data]
             [clojure.pprint :as pp]
             [isis.geom.model.meta-constraint :as meta-con]
+            [isis.geom.model.lower-joint :as lower-con]
             [isis.geom.machine.misc :as misc]
+            [isis.geom.algebra [geobj :as ga]]
 
             [isis.geom.analysis
              [position-analysis :refer [position-analysis]]]
@@ -27,252 +28,177 @@
              [parallel-z-dispatch]]))
 
 
-(t/defchecker ref->checker
+(tt/defchecker ref->checker
   "A checker that allows the names of references to be ignored."
   [expected]
-  (t/checker [actual]
-             (let [actual-deref (clojure.walk/postwalk
-                                 #(if (misc/reference? %) [:ref @%] %) actual)]
-               (= actual-deref expected)
-               #_(if (= actual-deref expected) true
-                   (do
-                     (clojure.pprint/pprint ["Actual result:" actual-deref])
-                     (clojure.pprint/pprint ["Expected result:" expected])
-                     )))))
+  (tt/checker [actual]
+              (let [actual-deref (clojure.walk/postwalk
+                                  #(if (misc/reference? %) [:ref @%] %) actual)]
+                (= actual-deref expected)
+                #_(if (= actual-deref expected) true
+                    (do
+                      (clojure.pprint/pprint ["Actual result:" actual-deref])
+                      (clojure.pprint/pprint ["Expected result:" expected])
+                      )))))
+
 
 (with-open [fis (-> "excavator/excavator_boom_dipper_csys.xml"
                     jio/resource jio/input-stream)]
   (let [kb (cyphy/knowledge-via-input-stream fis)
-        constraints (:constraint kb)
-        exp-constraints (meta-con/expand-collection constraints)
+        raw-constraints (:constraint kb)
+        meta-constraints (meta-con/expand-collection raw-constraints)
+        lower-constraints (lower-con/expand-collection meta-constraints)]
 
-        ;;  _ (pp/pprint ["exp-con:" exp-constraints])
+    ;;  _ (pp/pprint ["exp-con:" exp-constraints])
 
-        constraint-checker
-        (ref->checker
-         ' [{:type :coincident,
-             :m1
-             [["{cd51d123-aab8-4d6e-b27f-fd94701e0007}|1" "TOP"]
-              {:e [1.0 0.0 0.0]}],
-             :m2
-             [["{51f63ec8-cde2-4ac0-886f-7f9389faad04}" "TOP"]
-              {:e [1.0 0.0 0.0]}]}
-            {:type :coincident,
-             :m1
-             [["{cd51d123-aab8-4d6e-b27f-fd94701e0007}|1" "RIGHT"]
-              {:e [0.0 1.0 0.0]}],
-             :m2
-             [["{51f63ec8-cde2-4ac0-886f-7f9389faad04}" "RIGHT"]
-              {:e [0.0 1.0 0.0]}]}
-            {:type :coincident,
-             :m1
-             [["{cd51d123-aab8-4d6e-b27f-fd94701e0007}|1" "FRONT"]
-              {:e [0.0 0.0 1.0]}],
-             :m2
-             [["{51f63ec8-cde2-4ac0-886f-7f9389faad04}" "FRONT"]
-              {:e [0.0 0.0 1.0]}]}
-            {:type :csys,
-             :m1
-             [["{c1fb29d9-0a81-423c-bc8f-459735cb4db3}" "ARM_CSYS"]
-              {:e [-8625.71 4720.65 600.0], :q [0.0 0.0 1.0], :pi 1.3}],
-             :m2
-             [["{51f63ec8-cde2-4ac0-886f-7f9389faad04}" "BOOM_CSYS"]
-              {:e [3455.57 5.0 302.5], :q [1.0 0.0 0.0], :pi 1.0}]}])
+    (tt/facts
+     "about the parsed cad-assembly file with :csys"
+
+     (tt/fact
+      "about the constraints" raw-constraints =>
+      [{:m1 [["{CARRIAGE}" "FRONT"]
+             {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 0.0]}],
+        :m2 [["{ASSY}|1" "ASM_FRONT"]
+             {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 0.0]}],
+        :type :planar}
+       {:m1 [["{CARRIAGE}" "TOP"]
+             {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 0.0]}],
+        :m2 [["{ASSY}|1" "ASM_TOP"]
+             {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 0.0]}],
+        :type :planar}
+       {:m1 [["{CARRIAGE}" "RIGHT"]
+             {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 0.0]}],
+        :m2 [["{ASSY}|1" "ASM_RIGHT"]
+             {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 0.0]}],
+        :type :planar}
+       {:m1 [["{BOOM}" "ARM_CSYS"]
+             {:e [-8625.71 4720.65 600.0], :pi 1.3, :q [0.0 0.0 1.0]}],
+        :m2 [["{CARRIAGE}" "BOOM_CSYS"]
+             {:e [3455.57 5.0 302.5], :pi 1.0, :q [1.0 0.0 0.0]}],
+        :type :csys}] )
 
 
-        expanded-constraint-checker
-        (ref->checker
-         ' [{:type :coincident,
-             :m1
-             [["{cd51d123-aab8-4d6e-b27f-fd94701e0007}|1" "TOP"]
-              {:e [1.0 0.0 0.0]}],
-             :m2
-             [["{51f63ec8-cde2-4ac0-886f-7f9389faad04}" "TOP"]
-              {:e [1.0 0.0 0.0]}]}
-            {:type :coincident,
-             :m1
-             [["{cd51d123-aab8-4d6e-b27f-fd94701e0007}|1" "RIGHT"]
-              {:e [0.0 1.0 0.0]}],
-             :m2
-             [["{51f63ec8-cde2-4ac0-886f-7f9389faad04}" "RIGHT"]
-              {:e [0.0 1.0 0.0]}]}
-            {:type :coincident,
-             :m1
-             [["{cd51d123-aab8-4d6e-b27f-fd94701e0007}|1" "FRONT"]
-              {:e [0.0 0.0 1.0]}],
-             :m2
-             [["{51f63ec8-cde2-4ac0-886f-7f9389faad04}" "FRONT"]
-              {:e [0.0 0.0 1.0]}]}
-            {:type :coincident,
-             :m1
-             [["{c1fb29d9-0a81-423c-bc8f-459735cb4db3}" "ARM_CSYS-origin"]
-              {:e [-8625.71 4720.65 600.0]}],
-             :m2
-             [["{51f63ec8-cde2-4ac0-886f-7f9389faad04}" "BOOM_CSYS-origin"]
-              {:e [3455.57 5.0 302.5]}]}
-            {:type :coincident,
-             :m1
-             [["{c1fb29d9-0a81-423c-bc8f-459735cb4db3}" "ARM_CSYS-3x"]
-              {:e [-8802.045575687742 4477.944901687515 600.0]}],
-             :m2
-             [["{51f63ec8-cde2-4ac0-886f-7f9389faad04}" "BOOM_CSYS-3x"]
-              {:e [3755.57 5.0 302.5]}]}
-            {:type :coincident,
-             :m1
-             [["{c1fb29d9-0a81-423c-bc8f-459735cb4db3}" "ARM_CSYS-4y"]
-              {:e [-8302.10320225002 4485.53589908301 600.0]}],
-             :m2
-             [["{51f63ec8-cde2-4ac0-886f-7f9389faad04}" "BOOM_CSYS-4y"]
-              {:e [3455.57 -395.0 302.5]}]}])
+     (tt/fact
+      "about the expanded constraints"  meta-constraints =>
+      [{:m1 [["{CARRIAGE}" "FRONT"]  {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 0.0]}],
+        :m2 [["{ASSY}|1" "ASM_FRONT"]  {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 0.0]}],
+        :type :planar}
+       {:m1 [["{CARRIAGE}" "TOP"]  {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 0.0]}],
+        :m2 [["{ASSY}|1" "ASM_TOP"]  {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 0.0]}],
+        :type :planar}
+       {:m1 [["{CARRIAGE}" "RIGHT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 0.0]}],
+        :m2 [["{ASSY}|1" "ASM_RIGHT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 0.0]}],
+        :type :planar}
+       {:m1 [["{BOOM}" "ARM_CSYS-origin"] {:e [-8625.71 4720.65 600.0]}],
+        :m2 [["{CARRIAGE}" "BOOM_CSYS-origin"] {:e [3455.57 5.0 302.5]}],
+        :type :coincident}
+       {:m1 [["{BOOM}" "ARM_CSYS-3x"] {:e [-8802.045575687742 4477.944901687515 600.0]}],
+        :m2 [["{CARRIAGE}" "BOOM_CSYS-3x"] {:e [3755.57 5.0 302.5]}],
+        :type :coincident}
+       {:m1 [["{BOOM}" "ARM_CSYS-4y"] {:e [-8302.10320225002 4485.53589908301 600.0]}],
+        :m2 [["{CARRIAGE}" "BOOM_CSYS-4y"] {:e [3455.57 -395.0 302.5]}],
+        :type :coincident}] )
+
+     (tt/facts
+      "about the initial link settings"
+      (tt/fact "components" (-> kb :link keys set) =>
+               #{"{ASSY}|1" "{CARRIAGE}" "{BOOM}"})
+
+      (tt/fact "boom" (-> kb :link (get "{BOOM}") deref) =>
+               {:versor {:xlate [0.0 0.0 0.0], :rotate [1.0 0.0 0.0 0.0]},
+                :tdof {:# 3},
+                :rdof {:# 3}})
+      (tt/fact "boom" (-> kb :link (get "{CARRIAGE}") deref) =>
+               {:versor {:xlate [0.0 0.0 0.0], :rotate [1.0 0.0 0.0 0.0]},
+                :tdof {:# 3},
+                :rdof {:# 3}})
+      (tt/fact "boom" (-> kb :link (get "{ASSY}|1") deref) =>
+               {:versor {:xlate [0.0 0.0 0.0], :rotate [1.0 0.0 0.0 0.0]},
+                :tdof {:# 0},
+                :rdof {:# 0}}))
+
+     (tt/fact  "about the base link id" (:base kb) => "{ASSY}|1")
+
+     (tt/fact
+      "about the initial marker invariants"  (:invar kb) =>
+      (ref->checker
+       {:loc [:ref #{["{ASSY}|1"]}],
+        :dir [:ref #{["{ASSY}|1"]}],
+        :twist [:ref #{["{ASSY}|1"]}]}) )
 
 
-        link-checker
-        (ref->checker
-         ' {"{c1fb29d9-0a81-423c-bc8f-459735cb4db3}"
-            [:ref
-             {:versor {:xlate [0.0 0.0 0.0], :rotate [1.0 0.0 0.0 0.0]},
-              :tdof {:# 3},
-              :rdof {:# 3}}],
-            "{51f63ec8-cde2-4ac0-886f-7f9389faad04}"
-            [:ref
-             {:versor {:xlate [0.0 0.0 0.0], :rotate [1.0 0.0 0.0 0.0]},
-              :tdof {:# 3},
-              :rdof {:# 3}}],
-            "{cd51d123-aab8-4d6e-b27f-fd94701e0007}|1"
-            [:ref
-             {:versor {:xlate [0.0 0.0 0.0], :rotate [1.0 0.0 0.0 0.0]},
-              :tdof {:# 0},
-              :rdof {:# 0}}]})
+     (let [result (position-analysis kb lower-constraints)
+           [success? result-kb result-success result-failure] result
+           {result-mark :invar result-link :link} result-kb ]
+
+       ;; (pp/pprint result-success)
+       ;; (pp/pprint result-link)
+
+       (tt/facts
+        "about the final link settings"
+        (tt/fact "components" (-> result-link keys set) =>
+                 #{"{ASSY}|1" "{CARRIAGE}" "{BOOM}"})
+
+        (tt/fact "boom" (-> result-link (get "{BOOM}") deref) =>
+                 {:versor {:xlate [0.0 0.0 0.0], :rotate [1.0 0.0 0.0 0.0]},
+                  :tdof {:# 3},
+                  :rdof {:# 3}})
+        (tt/fact "carriage" (-> result-link (get "{CARRIAGE}") deref) =>
+                 {:rdof {:# 3},
+                  :tdof {:# 2, :lf [0.0 0.0 0.0],
+                         :plane (ga/plane [0.0 0.0 0.0] [0.0 0.0 1.0]),
+                         :point [0.0 0.0 0.0]},
+                  :versor {:rotate [1.0 0.0 0.0 0.0], :xlate [0.0 0.0 0.0]}})
+        (tt/fact "assembly" (-> result-link (get "{ASSY}|1") deref) =>
+                 {:versor {:xlate [0.0 0.0 0.0], :rotate [1.0 0.0 0.0 0.0]},
+                  :tdof {:# 0},
+                  :rdof {:# 0}}))
+
+       (tt/facts
+        "about the invariant markings"
+        (tt/fact "types:" (-> result-mark keys set) =>
+                 #{:loc :dir :twist})
+        (tt/fact "loc(ation)" (-> result-mark :loc deref) =>
+                 #{["{ASSY}|1"]} )
+        (tt/fact "dir(ection)" (-> result-mark :dir deref) =>
+                 #{["{ASSY}|1"]} )
+        (tt/fact "twist" (-> result-mark :twist deref) =>
+                 #{["{ASSY}|1"]} ))
+
+       (tt/fact
+        "about the success result" result-success =>
+        [{:type :coincident,
+          :m1 [["{ASSY}|1" "TOP"] {:e [1.0 0.0 0.0]}],
+          :m2 [["{CARRIAGE}" "TOP"] {:e [1.0 0.0 0.0]}]}
+         {:type :coincident,
+          :m1 [["{ASSY}|1" "RIGHT"] {:e [0.0 1.0 0.0]}],
+          :m2 [["{CARRIAGE}" "RIGHT"] {:e [0.0 1.0 0.0]}]}
+         {:type :coincident,
+          :m1 [["{ASSY}|1" "FRONT"] {:e [0.0 0.0 1.0]}],
+          :m2 [["{CARRIAGE}" "FRONT"] {:e [0.0 0.0 1.0]}]}
+         {:type :coincident,
+          :m1 [["{BOOM}" "ARM_CSYS-origin"] {:e [-8625.71 4720.65 600.0]}],
+          :m2 [["{CARRIAGE}" "BOOM_CSYS-origin"] {:e [3455.57 5.0 302.5]}]}
+         {:type :coincident,
+          :m1 [["{BOOM}" "ARM_CSYS-3x"]
+           {:e [-8802.045575687742 4477.944901687515 600.0]}],
+          :m2 [["{CARRIAGE}" "BOOM_CSYS-3x"] {:e [3755.57 5.0 302.5]}]}
+         {:type :coincident,
+          :m1 [["{BOOM}" "ARM_CSYS-4y"]
+           {:e [-8302.10320225002 4485.53589908301 600.0]}],
+          :m2 [["{CARRIAGE}" "BOOM_CSYS-4y"] {:e [3455.57 -395.0 302.5]}]}])
 
 
-        link-checker-2
-        (ref->checker
-         ' {"{c1fb29d9-0a81-423c-bc8f-459735cb4db3}"
-            [:ref
-             {:versor
-              {:xlate [2204.590945944376 -9748.074429784388 902.4999999999989],
-               :rotate
-               [2.779890061746713E-17
-                -0.45399049973954625
-                0.8910065241883681
-                5.455841439333469E-17]},
-              :tdof {:# 0, :point [3455.5699999999997 5.0 302.5]},
-              :rdof {:# 0}}],
-            "{51f63ec8-cde2-4ac0-886f-7f9389faad04}"
-            [:ref
-             {:versor {:xlate [0.0 0.0 0.0], :rotate [1.0 0.0 0.0 0.0]},
-              :tdof {:# 0, :point [1.0 0.0 0.0]},
-              :rdof {:# 0}}],
-            "{cd51d123-aab8-4d6e-b27f-fd94701e0007}|1"
-            [:ref
-             {:versor {:xlate [0.0 0.0 0.0], :rotate [1.0 0.0 0.0 0.0]},
-              :tdof {:# 0},
-              :rdof {:# 0}}]} )
+       (tt/fact "about the failure result" result-failure =>
+                (ref->checker '[]) )
 
 
-        invar-checker
-        (ref->checker
-         ' {:loc [:ref #{["{cd51d123-aab8-4d6e-b27f-fd94701e0007}|1"]}],
-            :dir [:ref #{["{cd51d123-aab8-4d6e-b27f-fd94701e0007}|1"]}],
-            :twist [:ref #{["{cd51d123-aab8-4d6e-b27f-fd94701e0007}|1"]}]})
 
+       #_(with-open [fis (-> "excavator/excavator_boom_dipper_csys.xml"
+                             jio/resource jio/input-stream)
+                     fos (-> "/tmp/excavator_boom_dipper_csys_aug.xml"
+                             jio/output-stream)]
 
-        invar-checker-2
-        (ref->checker
-         ' {:loc
-            [:ref
-             #{["{c1fb29d9-0a81-423c-bc8f-459735cb4db3}"]
-               ["{51f63ec8-cde2-4ac0-886f-7f9389faad04}"]
-               ["{cd51d123-aab8-4d6e-b27f-fd94701e0007}|1"]}],
-            :dir
-            [:ref
-             #{["{c1fb29d9-0a81-423c-bc8f-459735cb4db3}"]
-               ["{51f63ec8-cde2-4ac0-886f-7f9389faad04}"]
-               ["{cd51d123-aab8-4d6e-b27f-fd94701e0007}|1"]}],
-            :twist
-            [:ref
-             #{["{c1fb29d9-0a81-423c-bc8f-459735cb4db3}"]
-               ["{51f63ec8-cde2-4ac0-886f-7f9389faad04}"]
-               ["{cd51d123-aab8-4d6e-b27f-fd94701e0007}|1"]}]})
-
-
-        success-checker
-        (ref->checker
-         ' [{:type :coincident,
-             :m1
-             [["{cd51d123-aab8-4d6e-b27f-fd94701e0007}|1" "TOP"]
-              {:e [1.0 0.0 0.0]}],
-             :m2
-             [["{51f63ec8-cde2-4ac0-886f-7f9389faad04}" "TOP"]
-              {:e [1.0 0.0 0.0]}]}
-            {:type :coincident,
-             :m1
-             [["{cd51d123-aab8-4d6e-b27f-fd94701e0007}|1" "RIGHT"]
-              {:e [0.0 1.0 0.0]}],
-             :m2
-             [["{51f63ec8-cde2-4ac0-886f-7f9389faad04}" "RIGHT"]
-              {:e [0.0 1.0 0.0]}]}
-            {:type :coincident,
-             :m1
-             [["{cd51d123-aab8-4d6e-b27f-fd94701e0007}|1" "FRONT"]
-              {:e [0.0 0.0 1.0]}],
-             :m2
-             [["{51f63ec8-cde2-4ac0-886f-7f9389faad04}" "FRONT"]
-              {:e [0.0 0.0 1.0]}]}
-            {:type :coincident,
-             :m1
-             [["{c1fb29d9-0a81-423c-bc8f-459735cb4db3}" "ARM_CSYS-origin"]
-              {:e [-8625.71 4720.65 600.0]}],
-             :m2
-             [["{51f63ec8-cde2-4ac0-886f-7f9389faad04}" "BOOM_CSYS-origin"]
-              {:e [3455.57 5.0 302.5]}]}
-            {:type :coincident,
-             :m1
-             [["{c1fb29d9-0a81-423c-bc8f-459735cb4db3}" "ARM_CSYS-3x"]
-              {:e [-8802.045575687742 4477.944901687515 600.0]}],
-             :m2
-             [["{51f63ec8-cde2-4ac0-886f-7f9389faad04}" "BOOM_CSYS-3x"]
-              {:e [3755.57 5.0 302.5]}]}
-            {:type :coincident,
-             :m1
-             [["{c1fb29d9-0a81-423c-bc8f-459735cb4db3}" "ARM_CSYS-4y"]
-              {:e [-8302.10320225002 4485.53589908301 600.0]}],
-             :m2
-             [["{51f63ec8-cde2-4ac0-886f-7f9389faad04}" "BOOM_CSYS-4y"]
-              {:e [3455.57 -395.0 302.5]}]}])
-
-
-        failure-checker (ref->checker '[])
-        ]
-
-
-    (tt/facts "about the parsed cad-assembly file with :csys"
-             (tt/fact "about the constraints" constraints => constraint-checker)
-             (tt/fact "about the initial link settings" (:link kb) => link-checker)
-             (tt/fact "about the base link id" (:base kb) => "{cd51d123-aab8-4d6e-b27f-fd94701e0007}|1")
-             (tt/fact "about the initial marker invariants" (:invar kb) => invar-checker)
-
-
-             (tt/fact "about the expanded constraints" exp-constraints => expanded-constraint-checker))
-
-
-    (let [result (position-analysis kb exp-constraints)
-          [success? result-kb result-success result-failure] result
-          {result-mark :invar result-link :link} result-kb ]
-
-      ;; (pp/pprint result-success)
-      ;; (pp/pprint result-link)
-      (tt/facts "about results of linkage-assembly"
-               (tt/fact "about the mark result" result-mark => invar-checker-2)
-               (tt/fact "about the link result" result-link => link-checker-2)
-               (tt/fact "about the success result" result-success => success-checker)
-               (tt/fact "about the failure result" result-failure => failure-checker) )
-
-      #_(with-open [fis (-> "excavator/excavator_boom_dipper_csys.xml"
-                            jio/resource jio/input-stream)
-                    fos (-> "/tmp/excavator_boom_dipper_csys_aug.xml"
-                            jio/output-stream)]
-
-          (cyphy/update-cad-assembly-using-knowledge fis fos kb) ) ) ))
+           (cyphy/update-cad-assembly-using-knowledge fis fos kb) ) ) )) )
 
 

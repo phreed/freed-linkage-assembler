@@ -66,7 +66,6 @@
          axis (ga/outer-prod gmz1 gmz2)
          angle (ga/vec-angle gmz1 gmz2 axis) ]
     (dosync
-     (invariant/set-marker! kb [m2-link-name m2-proper-name] :dir)
      (alter m2-link merge
             (ga/rotate @m2-link m2-point
                        axis
@@ -158,6 +157,7 @@
               (ga/rotate @m2-link gmp1 (:d axis) angle))
        (dof/r2:a m2-link gmp2 angle m2-axis m2-axis-1 m2-axis-2))
 
+     (invariant/set-marker! kb [m2-link-name m2-proper-name] :dir)
      (alter m2-link assoc
             :tdof {:# 3}
             :rdof {:# 0} ) ))

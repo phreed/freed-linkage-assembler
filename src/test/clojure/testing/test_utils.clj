@@ -17,33 +17,33 @@
 (tt/facts "misc"
        (tt/fact "does the ref->str work"
              (ref->str
-              {"{c1fb29d9-0a81-423c-bc8f-459735cb4db3}"
+              {"{BOOM}"
                (ref
                 {:versor {:xlate [0.0 0.0 0.0], :rotate [1.0 0.0 0.0 0.0]},
                  :tdof {:# 3},
                  :rdof {:# 3}}),
-               "{51f63ec8-cde2-4ac0-886f-7f9389faad04}"
+               "{CARRIAGE}"
                (ref
                 {:versor {:xlate [0.0 0.0 0.0], :rotate [1.0 0.0 0.0 0.0]},
                  :tdof {:# 3},
                  :rdof {:# 3}}),
-               "{cd51d123-aab8-4d6e-b27f-fd94701e0007}|1"
+               "{ASSY}|1"
                (ref
                 {:versor {:xlate [0.0 0.0 0.0], :rotate [1.0 0.0 0.0 0.0]},
                  :tdof {:# 0},
                  :rdof {:# 0}})})
              =>
-             '{"{c1fb29d9-0a81-423c-bc8f-459735cb4db3}"
+             '{"{BOOM}"
                (:ref
                 {:versor {:xlate [0.0 0.0 0.0], :rotate [1.0 0.0 0.0 0.0]},
                  :tdof {:# 3},
                  :rdof {:# 3}}),
-               "{51f63ec8-cde2-4ac0-886f-7f9389faad04}"
+               "{CARRIAGE}"
                (:ref
                 {:versor {:xlate [0.0 0.0 0.0], :rotate [1.0 0.0 0.0 0.0]},
                  :tdof {:# 3},
                  :rdof {:# 3}}),
-               "{cd51d123-aab8-4d6e-b27f-fd94701e0007}|1"
+               "{ASSY}|1"
                (:ref
                 {:versor {:xlate [0.0 0.0 0.0], :rotate [1.0 0.0 0.0 0.0]},
                  :tdof {:# 0},
@@ -51,10 +51,10 @@
 
        (tt/fact "does the ref->str work"
              (ref->str
-              {:loc (ref #{["{cd51d123-aab8-4d6e-b27f-fd94701e0007}|1"]}),
-               :dir (ref #{["{cd51d123-aab8-4d6e-b27f-fd94701e0007}|1"]}),
-               :twist (ref #{["{cd51d123-aab8-4d6e-b27f-fd94701e0007}|1"]})} )
+              {:loc (ref #{["{ASSY}|1"]}),
+               :dir (ref #{["{ASSY}|1"]}),
+               :twist (ref #{["{ASSY}|1"]})} )
              =>
-             '{:loc (:ref #{["{cd51d123-aab8-4d6e-b27f-fd94701e0007}|1"]}),
-              :dir (:ref #{["{cd51d123-aab8-4d6e-b27f-fd94701e0007}|1"]}),
-              :twist (:ref #{["{cd51d123-aab8-4d6e-b27f-fd94701e0007}|1"]})} ))
+             '{:loc (:ref #{["{ASSY}|1"]}),
+              :dir (:ref #{["{ASSY}|1"]}),
+              :twist (:ref #{["{ASSY}|1"]})} ))

@@ -2,7 +2,7 @@
   "Sample assembly for rotate (and translate)."
   (:require [midje.sweet :as tt]
             [isis.geom.machine [tolerance :as tol]]
-            [isis.geom.algebra [geobj :as ga]
+            [isis.geom.algebra [geobj :as ga]]
             [isis.geom.action [auxiliary :as dof]]))
 
 (let [link {:versor {:xlate [0.0 0.0 0.0]

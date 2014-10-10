@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Assemblies xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" VersionInfo="" xsi:noNamespaceSchemaLocation="AssemblyInterface.xsd">
-  <Assembly ConfigurationID="{cd51d123-aab8-4d6e-b27f-fd94701e0007}|1" _id="id112">
-    <CADComponent ComponentID="{cd51d123-aab8-4d6e-b27f-fd94701e0007}|1" Name="Boom_Arm_CSYS_1" DisplayName="Boom_Arm_CSYS_1" Type="ASSEMBLY" SpecialInstruction="" MaterialID="" Representation="" _id="id113">
-      <CADComponent ComponentID="{51f63ec8-cde2-4ac0-886f-7f9389faad04}" Name="BOOM_EX_375" DisplayName="Arm" Type="PART" SpecialInstruction="" MaterialID="" Representation="" _id="id120">
+  <Assembly ConfigurationID="{ASSY}|1" _id="id112">
+    <CADComponent ComponentID="{ASSY}|1" Name="Boom_Arm_CSYS_1" DisplayName="Boom_Arm_CSYS_1" Type="ASSEMBLY" SpecialInstruction="" MaterialID="" Representation="" _id="id113">
+      <CADComponent ComponentID="{CARRIAGE}" Name="BOOM_EX_375" DisplayName="Arm" Type="PART" SpecialInstruction="" MaterialID="" Representation="" _id="id120">
         <Constraint _id="id124">
           <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="SURFACE" FeatureAlignmentType="ALIGN" _id="id125">
-            <ConstraintFeature ComponentID="{51f63ec8-cde2-4ac0-886f-7f9389faad04}" FeatureName="FRONT" FeatureOrientationType="SIDE_A" _id="id126" />
-            <ConstraintFeature ComponentID="{cd51d123-aab8-4d6e-b27f-fd94701e0007}|1" FeatureName="ASM_FRONT" FeatureOrientationType="SIDE_A" _id="id127" />
+            <ConstraintFeature ComponentID="{CARRIAGE}" FeatureName="FRONT" FeatureOrientationType="SIDE_A" _id="id126" />
+            <ConstraintFeature ComponentID="{ASSY}|1" FeatureName="ASM_FRONT" FeatureOrientationType="SIDE_A" _id="id127" />
           </Pair>
           <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="SURFACE" FeatureAlignmentType="ALIGN" _id="id128">
-            <ConstraintFeature ComponentID="{51f63ec8-cde2-4ac0-886f-7f9389faad04}" FeatureName="TOP" FeatureOrientationType="SIDE_A" _id="id129" />
-            <ConstraintFeature ComponentID="{cd51d123-aab8-4d6e-b27f-fd94701e0007}|1" FeatureName="ASM_TOP" FeatureOrientationType="SIDE_A" _id="id130" />
+            <ConstraintFeature ComponentID="{CARRIAGE}" FeatureName="TOP" FeatureOrientationType="SIDE_A" _id="id129" />
+            <ConstraintFeature ComponentID="{ASSY}|1" FeatureName="ASM_TOP" FeatureOrientationType="SIDE_A" _id="id130" />
           </Pair>
           <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="SURFACE" FeatureAlignmentType="ALIGN" _id="id131">
-            <ConstraintFeature ComponentID="{51f63ec8-cde2-4ac0-886f-7f9389faad04}" FeatureName="RIGHT" FeatureOrientationType="SIDE_A" _id="id132" />
-            <ConstraintFeature ComponentID="{cd51d123-aab8-4d6e-b27f-fd94701e0007}|1" FeatureName="ASM_RIGHT" FeatureOrientationType="SIDE_A" _id="id133" />
+            <ConstraintFeature ComponentID="{CARRIAGE}" FeatureName="RIGHT" FeatureOrientationType="SIDE_A" _id="id132" />
+            <ConstraintFeature ComponentID="{ASSY}|1" FeatureName="ASM_RIGHT" FeatureOrientationType="SIDE_A" _id="id133" />
           </Pair>
         </Constraint>
         <ParametricParameters _id="id121">
@@ -23,13 +23,13 @@
           </CADParameter>
         </ParametricParameters>
       </CADComponent>
-      <CADComponent ComponentID="{c1fb29d9-0a81-423c-bc8f-459735cb4db3}" Name="BOOM" DisplayName="Boom" Type="PART" SpecialInstruction="" MaterialID="" Representation="" _id="id134">
+      <CADComponent ComponentID="{BOOM}" Name="BOOM" DisplayName="Boom" Type="PART" SpecialInstruction="" MaterialID="" Representation="" _id="id134">
         <Constraint _id="id114">
           <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="CSYS" FeatureAlignmentType="CSYS" _id="id115">
-            <ConstraintFeature ComponentID="{c1fb29d9-0a81-423c-bc8f-459735cb4db3}" FeatureName="ARM_CSYS" FeatureOrientationType="NONE" _id="id116">
+            <ConstraintFeature ComponentID="{BOOM}" FeatureName="ARM_CSYS" FeatureOrientationType="NONE" _id="id116">
               <GeometryMarker x="-8625.71" y="4720.65" z="600" i="0" j="0" k="1" pi="1.30" _id="id117" />
             </ConstraintFeature>
-            <ConstraintFeature ComponentID="{51f63ec8-cde2-4ac0-886f-7f9389faad04}" FeatureName="BOOM_CSYS" FeatureOrientationType="NONE" _id="id118">
+            <ConstraintFeature ComponentID="{CARRIAGE}" FeatureName="BOOM_CSYS" FeatureOrientationType="NONE" _id="id118">
               <GeometryMarker x="3455.57" y="5" z="302.5" i="1" j="0" k="0" pi="1.0" _id="id119" />
             </ConstraintFeature>
           </Pair>

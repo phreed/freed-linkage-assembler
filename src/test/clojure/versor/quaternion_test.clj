@@ -1,7 +1,7 @@
 (ns versor.quaternion-test
   "Sample assembly for messing with quaternions."
   (:require [midje.sweet :as tt]
-            [isis.geom.algebra [geobj :as ga]
+            [isis.geom.algebra [geobj :as ga]]
             [isis.geom.machine [tolerance :as tol]]))
 
 
