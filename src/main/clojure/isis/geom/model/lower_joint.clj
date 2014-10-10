@@ -47,9 +47,9 @@
 (defmethod expand :ball [constraint] (expand-trivial constraint))
 
 (defmethod expand :planar [constraint]
-  (let [{j-type :type, ma :m1, mb :m2} constraint]
-  [ {:type :in-plane, :m1 ma, :m2 mb}
-    {:type :in-plane, :m1 mb, :m2 ma} ]))
+  (let [{j-type :type, m1 :m1, m2 :m2} constraint]
+  [ {:type :in-plane, :m1 m1, :m2 m2}
+    {:type :parallel-z, :m1 m1, :m2 m2} ]))
 
 (defmethod expand :linear [constraint] (expand-trivial constraint))
 (defmethod expand :universal [constraint] (expand-trivial constraint))
@@ -70,6 +70,14 @@
    :planar [:in-plane :parallel-z]
    :universal [:coincident :perpendicular-z]
    :fixed [:coincident :in-plane :offset-x] })
+
+(defmethod expand :coincident [constraint] [constraint])
+(defmethod expand :parallel-z [constraint] [constraint])
+(defmethod expand :offset-z [constraint] [constraint])
+(defmethod expand :offset-x [constraint] [constraint])
+(defmethod expand :in-line [constraint] [constraint])
+(defmethod expand :in-plane [constraint] [constraint])
+(defmethod expand :helical [constraint] [constraint])
 
 (defn expand-trivial
   "Expand a single lower joint into a vector of joint-primitives."
