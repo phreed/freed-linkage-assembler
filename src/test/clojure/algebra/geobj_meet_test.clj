@@ -1,4 +1,4 @@
-(ns versor.geobj-meet-test
+(ns algebra.geobj-meet-test
   "Sample intersection tests."
   (:require [midje.sweet :as tt]
             [isis.geom.algebra [geobj :as ga]]))

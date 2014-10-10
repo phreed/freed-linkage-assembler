@@ -1,4 +1,4 @@
-(ns versor.projection-test
+(ns algebra.projection-test
   "Test the projection of versors"
   (:require [midje.sweet :as tt]
             [isis.geom.algebra [geobj :as ga]]))

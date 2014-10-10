@@ -324,3 +324,46 @@
                      1285.2113238369175
                      220.0398552624306]}} ) )
 
+
+(let
+  [m1-link-name "{ASSY}|1"
+   m2-link-name "{CARRIAGE}"
+   [kb m1 m2 :as precon]
+   (parallel-z/precondition
+    {:invar {:dir (ref #{["{ASSY}|1"]}),
+             :twist (ref #{"{ASSY}|1"}),
+             :loc (ref #{"{ASSY}|1"})},
+     :link
+     {m1-link-name
+      (ref
+       {:versor {:xlate [0.0 0.0 0.0], :rotate [1.0 0.0 0.0 0.0]},
+        :tdof {:# 0},
+        :rdof {:# 0}}),
+      m2-link-name
+      (ref
+       {:versor {:xlate [0.0 0.0 0.0], :rotate [1.0 0.0 0.0 0.0]},
+        :tdof
+        {:# 2,
+         :point [0.0 0.0 0.0],
+         :plane {:e [0.0 0.0 0.0], :n [0.0 0.0 1.0]}},
+        :rdof {:# 1, :axis [0.0 0.0 1.0]}})}}
+    [[m1-link-name "ASM_TOP"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 0.0]}]
+    [[m2-link-name "TOP"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 0.0]}]) ]
+
+  (tt/fact "precondition statisfied" precon =not=> nil?)
+  (parallel-z/assemble! kb m1 m2)
+
+  (tt/fact
+   "parallel-z :t2-r1 m1"
+   @(get-in kb [:link m1-link-name]) =>
+    {:rdof {:# 0}, :tdof {:# 0},
+     :versor {:rotate [1.0 0.0 0.0 0.0], :xlate [0.0 0.0 0.0]}})
+
+  (tt/fact
+   "parallel-z :t2-r1 m2"
+   @(get-in kb [:link m2-link-name]) =>
+    {:rdof {:# 0},
+     :tdof {:# 2, :lf nil,
+            :plane {:e [0.0 0.0 0.0], :n [0.0 0.0 1.0]},
+            :point [0.0 0.0 0.0]},
+     :versor {:rotate [1.0 0.0 0.0 0.0], :xlate [0.0 0.0 0.0]}} ))

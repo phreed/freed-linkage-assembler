@@ -233,17 +233,20 @@ PFT entry: (2,1,parallel-z)
 ---
 
 Initial status:
-  2-TDOF(?link, ?point, ?plane, ?lf)
-  1-RDOF(?link, ?axis, ?axis_1, ?axis_2)
+  0-TDOF(?m1-link)
+  0-RDOF(?m1-link)
+
+  2-TDOF(?m2-link, ?m2-point, ?m2-plane, ?m2-lf)
+  1-RDOF(?m2-link, ?m2-axis, ?m2-axis_1, ?m2-axis_2)
 
 Branch variables:
   q_0, denoting a 2-way branch
 
 Plan fragment:
   begin
-  R[0] = line(?point, ?axis);
-  R[1] = vec-sum(?point, gmz(?M_1));
-  R[2] = vec-sum(?point, gmz(?M_2));
+  R[0] = line(?m2-point, ?m2-axis);
+  R[1] = vec-sum(?m2-point, gmz(?M_1));
+  R[2] = vec-sum(?m2-point, gmz(?M_2));
   R[3] = perp-base(R[1], R[0]);
   R[4] = perp-base(R[2], R[0]);
 
@@ -252,22 +255,22 @@ Plan fragment:
 
   R[5] = vec-diff(R[1], R[3]);
   R[6] = vec-diff(R[2], R[4]);
-  R[7] = vec-angle(R[6], R[5], ?axis);
+  R[7] = vec-angle(R[6], R[5], ?m2-axis);
 
-  if null?(?axis_1) and null?(?axis_2)
-    then rotate(?link, ?point, ?axis, R[7])
-    else 2r/a(?link, ?point, R[7], ?axis, ?axis_1, ?axis_2);
+  if null?(?m2-axis_1) and null?(?m2-axis_2)
+    then rotate(?m2-link, ?m2-point, ?m2-axis, R[7])
+    else 2r/a(?m2-link, ?m2-point, R[7], ?m2-axis, ?m2-axis_1, ?m2-axis_2);
   end;
 
 New status:
-  2-TDOF(?link, ?point, ?plane, ?lf)
-  0-RDOF(?link)
+  2-TDOF(?m2-link, ?m2-point, ?m2-plane, ?m2-lf)
+  0-RDOF(?m2-link)
 
 Explanation:
-  Geom ?link has one rotational and two translational degrees of freedom.
-  Therefore ?link must be rotated about its known point and know axis.
+  Geom ?m2-link has one rotational and two translational degrees of freedom.
+  Therefore ?m2-link must be rotated about its known point and know axis.
   The z-axes of the two markers must have the same projection onto
-  the line defined by ?point and ?axis.
+  the line defined by ?m2-point and ?m2-axis.
   The translational degrees of freedom are unaffected by this action.
 
 

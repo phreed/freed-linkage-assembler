@@ -44,18 +44,17 @@
         precon (precondition kb m1 m2) ]
     (if-not precon
       :pre-condition-not-met
-      (try
-        (pp/fresh-line)
-        (let [[kb+ m1+ m2+] precon]
+      (let [[kb+ m1+ m2+] precon]
+        (try
+          (pp/fresh-line)
           (pp/pprint (str "parallel-z"
                           (assemble-dispatch kb+ m1+ m2+)))
-          (assemble! kb+ m1+ m2+))
+          (assemble! kb+ m1+ m2+)
 
-        (catch Exception ex
-          (let [[kb+ m1+ m2+] precon]
+          (catch Exception ex
             (ms/dump ex
                      (assemble-dispatch kb+ m1+ m2+)
-                     "parallel-z" kb+ m1+ m2+) )
-          :exception-thrown)))))
+                     "parallel-z" kb+ m1+ m2+)
+            :exception-thrown))))))
 
 (ms/defmethod-symetric-transform assemble!)

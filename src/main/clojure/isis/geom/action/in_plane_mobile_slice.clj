@@ -107,8 +107,13 @@
   " PFT entry: (2,0,in-plane) (?M_1 moves)
 
   Initial status:
+
   2-TDOF(?m1-link, ?m1-point, ?m1-plane, ?m1-lf)
   0-RDOF(?m1-link)
+
+  0-TDOF(?m2-link)
+  0-RDOF(?m2-link)
+
 
   Plan fragment:
   begin
@@ -134,7 +139,7 @@
 
   (let [ [[m1-link-name m1-proper-name] _] m1
          m1-link (get-in kb [:link m1-link-name])
-         plane0 (-> m1-link deref :tdof :plane)
+         plane0 (-> @m1-link :tdof :plane)
 
          gmp2 (ga/gmp m2 kb)
          gmz2 (ga/gmz m2 kb)
@@ -156,7 +161,7 @@
                      :lf gmp1 } ) )))
   :progress-made)
 
-(defn assemble!->t2-r1 [kb m1 m2]  (ms/unimpl :t2-r1 slicer kb m1 m2))
+(defn assemble!->t2-r1 [kb m1 m2]  :not-applicable)
 (defn assemble!->t2-r2 [kb m1 m2]  (ms/unreal :t2-r2 slicer kb m1 m2))
 (defn assemble!->t2-r3 [kb m1 m2]  :not-applicable)
 

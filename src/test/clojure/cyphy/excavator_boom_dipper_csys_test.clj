@@ -28,20 +28,6 @@
              [parallel-z-dispatch]]))
 
 
-(tt/defchecker ref->checker
-  "A checker that allows the names of references to be ignored."
-  [expected]
-  (tt/checker [actual]
-              (let [actual-deref (clojure.walk/postwalk
-                                  #(if (misc/reference? %) [:ref @%] %) actual)]
-                (= actual-deref expected)
-                #_(if (= actual-deref expected) true
-                    (do
-                      (clojure.pprint/pprint ["Actual result:" actual-deref])
-                      (clojure.pprint/pprint ["Expected result:" expected])
-                      )))))
-
-
 (with-open [fis (-> "excavator/excavator_boom_dipper_csys.xml"
                     jio/resource jio/input-stream)]
   (let [kb (cyphy/knowledge-via-input-stream fis)
@@ -146,12 +132,13 @@
 
      (tt/fact  "about the base link id" (:base kb) => "{ASSY}|1")
 
-     (tt/fact
-      "about the initial marker invariants"  (:invar kb) =>
-      (ref->checker
-       {:loc [:ref #{["{ASSY}|1"]}],
-        :dir [:ref #{["{ASSY}|1"]}],
-        :twist [:ref #{["{ASSY}|1"]}]}) )
+     (tt/facts
+        "about the initial invariant markings"
+        (tt/fact "types:" (-> kb :invar keys set) =>
+                 #{:loc :dir :twist})
+        (tt/fact "loc(ation)" (-> kb :invar :loc deref) => #{["{ASSY}|1"]} )
+        (tt/fact "dir(ection)" (-> kb :invar :dir deref) => #{["{ASSY}|1"]} )
+        (tt/fact "twist" (-> kb :invar :twist deref) => #{["{ASSY}|1"]} ))
 
 
      (let [result (position-analysis kb lower-constraints)
@@ -216,8 +203,7 @@
           :m2 [["{CARRIAGE}" "BOOM_CSYS-4y"] {:e [3455.57 -395.0 302.5]}]}])
 
 
-       (tt/fact "about the failure result" result-failure =>
-                (ref->checker '[]) )
+       (tt/fact "about the failure result" result-failure => '[])
 
 
 

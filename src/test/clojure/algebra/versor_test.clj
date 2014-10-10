@@ -1,4 +1,4 @@
-(ns versor.versor-test
+(ns algebra.versor-test
   "The functions for developing versors."
   (:require [midje.sweet :as tt]
             [isis.geom.algebra [versor :as versor]]))

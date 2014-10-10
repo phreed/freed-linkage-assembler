@@ -2,8 +2,8 @@
  * **O** : cannot occur?
  * `<?>` : no progress made, only consistency checked
  * *<?>* : not specified as possible progress
- ***X**: no simple application
- * `?` : numerical solution possible, resulting DOF may differ.
+ * **X** : no simple application
+ * `?`   : numerical solution possible, resulting DOF may differ.
 
 
 ## coincident

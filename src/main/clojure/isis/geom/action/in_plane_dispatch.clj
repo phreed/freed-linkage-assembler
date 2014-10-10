@@ -11,7 +11,7 @@
             [clojure.pprint :as pp]))
 
 
-(defn- precondition?
+(defn precondition
   "Associated with each constraint type is a function which
   checks the preconditions and returns the marker which
   is under-constrained followed by the marker that is fully-constrained.
@@ -26,13 +26,15 @@
   nil indicates that there are insufficient constraints to
   make any inference."
   [kb point plane]
-  (cond (invariant/marker-position? kb plane) [point plane :mobile]
+  (cond (invariant/marker-position? kb plane) [kb point plane :mobile]
         (and (invariant/marker-position? kb point)
-             (invariant/marker-direction? kb point)) [point plane :fixed]
+             (invariant/marker-direction? kb point)) [kb point plane :fixed]
         :else nil))
 
 (defn- assemble-dispatch [kb point plane motive]
-    (let [[[link-name _] _] (case motive :fixed plane :mobile point)
+    (let [[[link-name _] _] (case motive
+                              :fixed plane,
+                              :mobile point)
           link @(get (:link kb) link-name)
           tdof (get-in link [:tdof :#])
           rdof (get-in link [:rdof :#]) ]
@@ -51,15 +53,22 @@
 (defmethod ms/constraint-attempt?
   :in-plane
   [kb constraint]
-  (let [{point :m1 plane :m2} constraint
-        precon (precondition? kb point plane) ]
+  (let [{m1 :m1 m2 :m2} constraint
+        precon (precondition kb m1 m2) ]
     (if-not precon
       :pre-condition-not-met
-      (let [[point plane motive] precon]
+      (let [[kb+ m1+ m2+ motive] precon]
         (pp/fresh-line)
-        (pp/pprint (str "in-plane"
-                        (assemble-dispatch kb point plane motive)))
-        (assemble! kb point plane motive) ))))
+        (try
+          (pp/pprint (str "in-plane"
+                          (assemble-dispatch kb+ m1+ m2+ motive)))
+          (assemble! kb+ m1+ m2+ motive)
+
+          (catch Exception ex
+            (ms/dump ex
+                     (assemble-dispatch kb+ m1+ m2+ motive)
+                     "in-plane" kb+ m1+ m2+)
+            :exception-thrown))))))
 
 
 (ms/defmethod-asymetric-transform assemble!)

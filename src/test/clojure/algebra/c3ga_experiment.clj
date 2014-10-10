@@ -1,4 +1,4 @@
-(ns versor.c3ga-experiment
+(ns algebra.c3ga-experiment
   (:require [midje.sweet :as tt] ))
 
 (defn -*- "the outer product" [a b] (* a b))

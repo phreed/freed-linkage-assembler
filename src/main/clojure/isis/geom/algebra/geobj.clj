@@ -443,15 +443,17 @@
   (let [scale (inner-prod vector-2 axis)
         center (into [] (map #(* % scale) axis))
         diff-1 (normalize (vec-diff vector-1 center))
-        diff-2 (normalize (vec-diff vector-2 center))
+        diff-2 (normalize (vec-diff vector-2 center))]
 
-        cosine (inner-prod diff-1 diff-2)
+    (if (some nil? [diff-1 diff-2])
+      [0.0 1.0]
+      (let [cosine (inner-prod diff-1 diff-2)
 
-        sine-vec (outer-prod diff-1 diff-2)
-        sine (if (pos? (inner-prod sine-vec axis))
-               (norm sine-vec)
-               (- (norm sine-vec)))]
-    [sine cosine]))
+            sine-vec (outer-prod diff-1 diff-2)
+            sine (if (pos? (inner-prod sine-vec axis))
+                   (norm sine-vec)
+                   (- (norm sine-vec)))]
+        [sine cosine]))))
 
 
 (defmulti versor-apply

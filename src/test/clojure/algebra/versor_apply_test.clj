@@ -1,4 +1,4 @@
-(ns versor.versor-apply-test
+(ns algebra.versor-apply-test
   "Sample assembly for rotate (and translate)."
   (:require [midje.sweet :as tt]
             [isis.geom.algebra [versor :as versor]]

@@ -1,4 +1,4 @@
-(ns versor.rotate-test
+(ns algebra.rotate-test
   "Sample assembly for rotate (and translate)."
   (:require [midje.sweet :as tt]
             [isis.geom.algebra [geobj :as ga]]

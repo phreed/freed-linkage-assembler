@@ -68,18 +68,19 @@
     (pp/pprint
      `(~'let [~'m1-link-name ~m1-link-name
             ~'m2-link-name ~m2-link-name
-            ~'kb
+            (~(str nspace "/precondition")
             {:link
              {~'m1-link-name (~'ref ~m1-link)
               ~'m2-link-name (~'ref ~m2-link) }
 
-             :invar {:loc (~'ref #{})
-                     :dir (~'ref #{})
-                     :twist (~'ref #{})} }
-            ~'m1 [[~'m1-link-name ~m1-proper-name] ~m1-payload]
-            ~'m2 [[~'m2-link-name ~m2-proper-name] ~m2-payload]
+             :invar {:loc (~'ref #{~'m1-link-name})
+                     :dir (~'ref #{~'m1-link-name})
+                     :twist (~'ref #{~'m1-link-name})} }
+             [[~'m1-link-name ~m1-proper-name] ~m1-payload]
+             [[~'m2-link-name ~m2-proper-name] ~m2-payload] )]
 
-            ~'assy-result (~(symbol (str nspace"/assemble!->" (name xform))) ~'kb ~'m1 ~'m2) ]
+            (tt/fact "precondition satisfied" ~'precon ~'=not=> ~'nil?)
+            (~(symbol (str nspace "/assemble!" 'kb 'm1 'm2)))
 
         (tt/fact ~(str nspace " " xform " m1")
                  @(~'get-in ~'kb [:link ~'m1-link-name]) ~'=>
