@@ -353,3 +353,58 @@
                      1285.2113238369175
                      220.0398552624306]}} ) )
 
+
+(comment "in-plane {:tdof 2, :rdof 0, :motive :mobile}")
+(let
+ [m1-link-name "{CARRIAGE}"
+  m2-link-name "{ASSY}|1"
+  [kb m1 m2 motive :as precon]
+  (in-plane-mobile/precondition
+   {:invar
+    {:dir (ref #{m2-link-name}),
+     :twist (ref #{m2-link-name}),
+     :loc (ref #{m2-link-name})},
+    :link
+    {m1-link-name
+     (ref
+      {:versor {:xlate [0.0 0.0 0.0], :rotate [1.0 0.0 0.0 0.0]},
+       :tdof
+       {:# 2,
+        :point [0.0 0.0 0.0],
+        :plane (ga/plane [0.0 0.0 0.0] [0.0 1.0 0.0]),
+        :lf nil},
+       :rdof {:# 0}}),
+     m2-link-name
+     (ref
+      {:versor {:xlate [0.0 0.0 0.0], :rotate [1.0 0.0 0.0 0.0]},
+       :tdof {:# 0},
+       :rdof {:# 0}})}}
+   [[m1-link-name "RIGHT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 0.0]}]
+   [[m2-link-name "RIGHT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 0.0]}] )]
+
+ (tt/fact "precondition satisfied" precon =not=> nil?)
+ (tt/fact "about motive" motive => :mobile)
+ (tt/fact
+  "about dispatch"
+  (in-plane-mobile/assemble-dispatch kb m1 m2 motive) =>
+  {:tdof 2 :rdof 0 :motive motive})
+
+ (in-plane-mobile/assemble! kb m1 m2 motive)
+
+ (tt/fact
+  "in-plane t2-r0 m1"
+  @(get-in kb [:link m1-link-name]) =>
+   {:rdof {:# 0},
+    :tdof {:# 1, :lf [0.0 0.0 0.0],
+           :line {:d [1.0 0.0 0.0], :e [0.0 0.0 0.0]},
+           :point [0.0 0.0 0.0]},
+    :versor {:rotate [1.0 0.0 0.0 0.0], :xlate [0.0 0.0 0.0]}} )
+
+ (tt/fact
+  "in-plane t2-r0 m2"
+  @(get-in kb [:link m2-link-name]) =>
+   {:rdof {:# 0}
+    :tdof {:# 0}
+    :versor {:rotate [1.0 0.0 0.0 0.0]
+             :xlate [0.0 0.0 0.0]}}) )
+

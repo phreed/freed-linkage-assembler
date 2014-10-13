@@ -44,7 +44,7 @@
         (println "inconsistently overconstrained in-plane" m1 m2)
         :inconsistent )) ))
 
-(def slicer "in-plane-fixed-slice")
+(def slicer "in-plane-fixed")
 
 (defn assemble!->t0-r1 [kb m1 m2]  (ms/unimpl :t0-r1 slicer kb m1 m2))
 (defn assemble!->t0-r2 [kb m1 m2]  (ms/unimpl :t0-r2 slicer kb m1 m2))

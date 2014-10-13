@@ -67,28 +67,29 @@
         m2-link @(get-in kb [:link m2-link-name])]
     (pp/pprint
      `(~'let [~'m1-link-name ~m1-link-name
-            ~'m2-link-name ~m2-link-name
-            (~(str nspace "/precondition")
-            {:link
-             {~'m1-link-name (~'ref ~m1-link)
-              ~'m2-link-name (~'ref ~m2-link) }
+              ~'m2-link-name ~m2-link-name
+              [~'kb ~'m1 ~'m2]
+              (~(symbol (str nspace "/precondition"))
+                {:link
+                 {~'m1-link-name (~'ref ~m1-link)
+                  ~'m2-link-name (~'ref ~m2-link) }
 
-             :invar {:loc (~'ref #{~'m1-link-name})
-                     :dir (~'ref #{~'m1-link-name})
-                     :twist (~'ref #{~'m1-link-name})} }
-             [[~'m1-link-name ~m1-proper-name] ~m1-payload]
-             [[~'m2-link-name ~m2-proper-name] ~m2-payload] )]
+                 :invar {:loc (~'ref #{~'m1-link-name})
+                         :dir (~'ref #{~'m1-link-name})
+                         :twist (~'ref #{~'m1-link-name})} }
+              [[~'m1-link-name ~m1-proper-name] ~m1-payload]
+              [[~'m2-link-name ~m2-proper-name] ~m2-payload]) ]
 
-            (tt/fact "precondition satisfied" ~'precon ~'=not=> ~'nil?)
-            (~(symbol (str nspace "/assemble!" 'kb 'm1 'm2)))
+             (tt/fact "precondition satisfied" ~'precon ~'=not=> ~'nil?)
+             (~(symbol (str nspace "/assemble!")) ~'kb ~'m1 ~'m2)
 
-        (tt/fact ~(str nspace " " xform " m1")
-                 @(~'get-in ~'kb [:link ~'m1-link-name]) ~'=>
-                 {:versor :m1-goal})
+             (tt/fact ~(str nspace " " xform " m1")
+                      @(~'get-in ~'kb [:link ~'m1-link-name]) ~'=>
+                      {:versor :m1-goal})
 
-        (tt/fact ~(str nspace " " xform " m2")
-                 @(~'get-in ~'kb [:link ~'m2-link-name]) ~'=>
-                 {:versor :m2-goal})))))
+             (tt/fact ~(str nspace " " xform " m2")
+                      @(~'get-in ~'kb [:link ~'m2-link-name]) ~'=>
+                      {:versor :m2-goal})))))
 
 (defn dump
   "Print a message building a test for this call. "

@@ -605,6 +605,7 @@
 (comment "Calculates the intersection of three planes.")
 (defmethod meet [Plane Plane Plane]
   [s1 s2 & xs]
+  (pp/pprint ["s1" s1 "s2" s2])
   (let [ a s1, b s2, c (first xs)
          det-helper (fn [v1 v2 v3]
                       (let [ [v11 v12 v13] v1
@@ -619,6 +620,7 @@
          {a- :e, an :n} a
          {b- :e, bn :n} b
          {c- :e, cn :n} c
+         _ (pp/pprint ["an" an "bn" bn "cn" cn])
          anbncn (det-helper an bn cn)]
 
     (if (zero? anbncn) nil
@@ -646,10 +648,16 @@
   [{e1 :e, n1 :n, :as s1}
    {e2 :e, n2 :n, :as s2} & ss1]
   (let [ln-axis (outer-prod n1 n2)]
-    (as-> ln-axis $       ; the axis of the line-of-intersection
-          (plane e1 $)    ; an arbitrary orthogonal plane
-          (meet $ s1 s2)  ; point on the line-of-intersection
-          (line $ ln-axis) )))  ; the line-of-intersection
+    (if (tol/near-zero? :tiny ln-axis)
+      (do
+        (pp/pprint ["degenerate/contradictory" ln-axis])
+        ;; FIXME What to do about parallel planes?
+        ;; The parallel planes can be detected when ln-axis has a 0 norm.
+        :degenerate )
+      (as-> ln-axis $       ; the axis of the line-of-intersection
+            (plane e1 $)    ; an arbitrary orthogonal plane
+            (meet $ s1 s2)  ; point on the line-of-intersection
+            (line $ ln-axis) ))))  ; the line-of-intersection
 
 
 (comment "Calculates the intersection of a line and a plane.

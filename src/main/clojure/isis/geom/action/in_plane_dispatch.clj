@@ -31,7 +31,7 @@
              (invariant/marker-direction? kb point)) [kb point plane :fixed]
         :else nil))
 
-(defn- assemble-dispatch
+(defn assemble-dispatch
   [kb point plane motive]
   (let [[[link-name _] _] (case motive
                             :fixed plane
