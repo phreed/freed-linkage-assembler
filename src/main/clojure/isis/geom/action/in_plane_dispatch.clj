@@ -31,16 +31,17 @@
              (invariant/marker-direction? kb point)) [kb point plane :fixed]
         :else nil))
 
-(defn- assemble-dispatch [kb point plane motive]
-    (let [[[link-name _] _] (case motive
-                              :fixed plane,
-                              :mobile point)
-          link @(get (:link kb) link-name)
-          tdof (get-in link [:tdof :#])
-          rdof (get-in link [:rdof :#]) ]
-      #_(pp/pprint ["in-plane assemble!" (str tdof ":" rdof "-" motive)
+(defn- assemble-dispatch
+  [kb point plane motive]
+  (let [[[link-name _] _] (case motive
+                            :fixed plane
+                            :mobile point)
+        link @(get (:link kb) link-name)
+        tdof (get-in link [:tdof :#])
+        rdof (get-in link [:rdof :#]) ]
+    #_(pp/pprint ["in-plane assemble!" (str tdof ":" rdof "-" motive)
                   "point" point "plane" plane])
-      {:tdof tdof :rdof rdof :motive motive}))
+    {:tdof tdof :rdof rdof :motive motive}))
 
 (defmulti assemble!
   "Transform the links and kb so that the constraint is met.

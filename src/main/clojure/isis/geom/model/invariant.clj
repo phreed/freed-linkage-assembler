@@ -26,6 +26,7 @@
   (let [[marker-name _] marker
         [marker-link-name _] marker-name ]
     (cond (contains? @marker-invs marker-name) true
+          (contains? @marker-invs marker-link-name) true
           (contains? @marker-invs [marker-link-name]) true
           :else false )))
 
