@@ -605,7 +605,7 @@
 (comment "Calculates the intersection of three planes.")
 (defmethod meet [Plane Plane Plane]
   [s1 s2 & xs]
-  (pp/pprint ["s1" s1 "s2" s2])
+  ;; (pp/pprint ["s1" s1 "s2" s2 "xs" xs])
   (let [ a s1, b s2, c (first xs)
          det-helper (fn [v1 v2 v3]
                       (let [ [v11 v12 v13] v1
@@ -620,7 +620,6 @@
          {a- :e, an :n} a
          {b- :e, bn :n} b
          {c- :e, cn :n} c
-         _ (pp/pprint ["an" an "bn" bn "cn" cn])
          anbncn (det-helper an bn cn)]
 
     (if (zero? anbncn) nil
