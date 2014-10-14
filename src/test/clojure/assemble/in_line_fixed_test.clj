@@ -7,7 +7,7 @@
 
 "in-line-fixed-slice :t2-r3"
 (let
- [m1-link-name "{dce1362d-1b44-4652-949b-995aa2ce5760}"
+ [m1-link-name "{CARRIAGE}"
   m2-link-name "{627ab157-62e1-485c-b797-8139c8f6c133}"
   kb
   {:invar {:dir (ref #{}), :twist (ref #{}), :loc (ref #{})},

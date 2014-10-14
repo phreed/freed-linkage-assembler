@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Assemblies xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" VersionInfo="" xsi:noNamespaceSchemaLocation="AssemblyInterface.xsd">
-  <Assembly ConfigurationID="{3451cc65-9ad0-4f78-8a0c-290d1595fe74}|1" _id="id409">
-    <CADComponent ComponentID="{3451cc65-9ad0-4f78-8a0c-290d1595fe74}|1" Name="NewDC__Excavator__1" DisplayName="NewDC__Excavator__1" Type="ASSEMBLY" SpecialInstruction="" MaterialID="" Representation="" _id="id410">
+  <Assembly ConfigurationID="{ASSY}|1" _id="id409">
+    <CADComponent ComponentID="{ASSY}|1" Name="NewDC__Excavator__1" DisplayName="NewDC__Excavator__1" Type="ASSEMBLY" SpecialInstruction="" MaterialID="" Representation="" _id="id410">
       <CADComponent ComponentID="{599679cf-2a4d-416f-89a3-dab9735d0a43}" Name="ARM_ASSEMBLY_2" DisplayName="arm2" Type="ASSEMBLY" SpecialInstruction="" MaterialID="" Representation="" Classification="arm" _id="id615">
         <Constraint _id="id456">
           <Joint Type="REVOLUTE" ID="id397" _id="id467">

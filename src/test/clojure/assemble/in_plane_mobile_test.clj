@@ -163,8 +163,8 @@
 
 (comment "in-plane :mobile :t3-r3")
 (let
-  [m1-link-name "{dce1362d-1b44-4652-949b-995aa2ce5760}"
-   m2-link-name "{3451cc65-9ad0-4f78-8a0c-290d1595fe74}|1"
+  [m1-link-name "{CARRIAGE}"
+   m2-link-name "{ASSY}|1"
 
    [kb m1 m2 motive :as precon]
    (in-plane-mobile/precondition
@@ -228,8 +228,8 @@
 
 (comment "not-implemented in-plane-mobile :t1-r3")
 (let
-  [m1-link-name "{dce1362d-1b44-4652-949b-995aa2ce5760}"
-   m2-link-name "{3451cc65-9ad0-4f78-8a0c-290d1595fe74}|1"
+  [m1-link-name "{CARRIAGE}"
+   m2-link-name "{ASSY}|1"
    [kb m1 m2 motive :as precon]
    (in-plane-mobile/precondition
     {:invar {:dir (ref #{m2-link-name}),
@@ -276,8 +276,8 @@
 
 (comment "not-implemented in-plane-mobile :t2-r3")
 (let
-  [m1-link-name "{a93ca8b7-6de8-42e3-bc35-7224ec4ed51f}"
-   m2-link-name "{99ce8e6a-8722-4ed7-aa1a-ed46facf3264}"
+  [m1-link-name "{ARM}"
+   m2-link-name "{BOOM}"
    [kb m1 m2 motive :as precon]
    (in-plane-mobile/precondition
     {:invar {:dir (ref #{m2-link-name}),

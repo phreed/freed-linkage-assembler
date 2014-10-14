@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Assemblies xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" VersionInfo="" xsi:noNamespaceSchemaLocation="AssemblyInterface.xsd">
-  <Assembly ConfigurationID="{3451cc65-9ad0-4f78-8a0c-290d1595fe74}|1" _id="id409">
-    <CADComponent ComponentID="{3451cc65-9ad0-4f78-8a0c-290d1595fe74}|1" Name="NewDC__Excavator__1" DisplayName="NewDC__Excavator__1" Type="ASSEMBLY" SpecialInstruction="" MaterialID="" Representation="" _id="id410">
+  <Assembly ConfigurationID="{ASSY}|1" _id="id409">
+    <CADComponent ComponentID="{ASSY}|1" Name="NewDC__Excavator__1" DisplayName="NewDC__Excavator__1" Type="ASSEMBLY" SpecialInstruction="" MaterialID="" Representation="" _id="id410">
       <CADComponent ComponentID="{599679cf-2a4d-416f-89a3-dab9735d0a43}" Name="ARM_ASSEMBLY_2" DisplayName="arm2" Type="ASSEMBLY" SpecialInstruction="" MaterialID="" Representation="" Classification="arm" _id="id615">
         <Constraint _id="id456">
           <Joint Type="REVOLUTE" ID="id397" _id="id467">
@@ -327,15 +327,15 @@
         <Constraint _id="id693">
           <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="SURFACE" FeatureAlignmentType="ALIGN" _id="id694">
             <ConstraintFeature ComponentID="{f699360f-60e7-4a74-8028-11279cc81487}" FeatureName="FRONT" FeatureOrientationType="SIDE_A" _id="id695" />
-            <ConstraintFeature ComponentID="{3451cc65-9ad0-4f78-8a0c-290d1595fe74}|1" FeatureName="ASM_FRONT" FeatureOrientationType="SIDE_A" _id="id696" />
+            <ConstraintFeature ComponentID="{ASSY}|1" FeatureName="ASM_FRONT" FeatureOrientationType="SIDE_A" _id="id696" />
           </Pair>
           <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="SURFACE" FeatureAlignmentType="ALIGN" _id="id697">
             <ConstraintFeature ComponentID="{f699360f-60e7-4a74-8028-11279cc81487}" FeatureName="TOP" FeatureOrientationType="SIDE_A" _id="id698" />
-            <ConstraintFeature ComponentID="{3451cc65-9ad0-4f78-8a0c-290d1595fe74}|1" FeatureName="ASM_TOP" FeatureOrientationType="SIDE_A" _id="id699" />
+            <ConstraintFeature ComponentID="{ASSY}|1" FeatureName="ASM_TOP" FeatureOrientationType="SIDE_A" _id="id699" />
           </Pair>
           <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="SURFACE" FeatureAlignmentType="ALIGN" _id="id700">
             <ConstraintFeature ComponentID="{f699360f-60e7-4a74-8028-11279cc81487}" FeatureName="RIGHT" FeatureOrientationType="SIDE_A" _id="id701" />
-            <ConstraintFeature ComponentID="{3451cc65-9ad0-4f78-8a0c-290d1595fe74}|1" FeatureName="ASM_RIGHT" FeatureOrientationType="SIDE_A" _id="id702" />
+            <ConstraintFeature ComponentID="{ASSY}|1" FeatureName="ASM_RIGHT" FeatureOrientationType="SIDE_A" _id="id702" />
           </Pair>
         </Constraint>
         <ParametricParameters _id="id686">

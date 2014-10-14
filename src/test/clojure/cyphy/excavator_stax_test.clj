@@ -29,8 +29,8 @@
 
 (defn facts-about-initial-knowledge
   [kb]
-  (let [assy-name "{3451cc65-9ad0-4f78-8a0c-290d1595fe74}|1"
-        carriage-name "{dce1362d-1b44-4652-949b-995aa2ce5760}"]
+  (let [assy-name "{ASSY}|1"
+        carriage-name "{CARRIAGE}"]
     (tt/fact
      "the knowledge-base should have keys"
      (set (keys kb)) =>
@@ -79,8 +79,8 @@
 
 (defn facts-about-primitive-knowledge
   [kb]
-  (let [assy-name "{3451cc65-9ad0-4f78-8a0c-290d1595fe74}|1"
-        carriage-name "{dce1362d-1b44-4652-949b-995aa2ce5760}"]
+  (let [assy-name "{ASSY}|1"
+        carriage-name "{CARRIAGE}"]
     (tt/fact
      "the knowledge-base should have keys"
      (set (keys kb)) =>
@@ -103,7 +103,7 @@
       :tdof {:# 3} :rdof {:# 3}}  )
 
     ;; (pp/pprint (:constraint kb))
-    (tt/fact
+    (tt/incipient-fact
      "the carriage is connected to the base assembly via three planes"
      (:constraint kb) =>
      (tt/contains
@@ -147,38 +147,38 @@
   (let [result (analysis/position-analysis kb (:constraint kb))
         [success? result-kb result-success result-failure] result]
 
-    (tt/fact
+    (tt/incipient-fact
      "the position analysis produced the plan"
      (:constraint kb) =>
      (tt/contains
-      [{:m1 [["{99ce8e6a-8722-4ed7-aa1a-ed46facf3264}" "CENTER_PLANE"]
+      [{:m1 [["{BOOM}" "CENTER_PLANE"]
              {:e [-5302.02 3731.18 600.0] :pi 0.0 :q [0.0 0.0 -1.0]}]
-        :m2 [["{a93ca8b7-6de8-42e3-bc35-7224ec4ed51f}" "BOOM_CENTER_PLANE"]
+        :m2 [["{ARM}" "BOOM_CENTER_PLANE"]
              {:e [0.0 0.0 -250.0] :pi 0.0 :q [0.0 0.0 1.0]}]
         :type :in-plane}
-       {:m1 [["{a93ca8b7-6de8-42e3-bc35-7224ec4ed51f}" "BOOM_CENTER_PLANE"]
+       {:m1 [["{ARM}" "BOOM_CENTER_PLANE"]
              {:e [0.0 0.0 -250.0] :pi 0.0 :q [0.0 0.0 1.0]}]
-        :m2 [["{99ce8e6a-8722-4ed7-aa1a-ed46facf3264}" "CENTER_PLANE"]
+        :m2 [["{BOOM}" "CENTER_PLANE"]
              {:e [-5302.02 3731.18 600.0] :pi 0.0 :q [0.0 0.0 -1.0]}]
         :type :in-plane}
-       {:m1 [["{99ce8e6a-8722-4ed7-aa1a-ed46facf3264}" "ARM_GUIDE"]
+       {:m1 [["{BOOM}" "ARM_GUIDE"]
              {:e [-3741.05 1103.98 1369.99] :pi 0.0 :q [-531.29 -717.57 0.0]}]
-        :m2 [["{a93ca8b7-6de8-42e3-bc35-7224ec4ed51f}" "BOOM_GUIDE"]
+        :m2 [["{ARM}" "BOOM_GUIDE"]
              {:e [1150.48 864.911 -250.0], :pi 0.0 :q [-334.565 -371.573 0.0]}]
         :type :in-plane}
-       {:m1 [["{a93ca8b7-6de8-42e3-bc35-7224ec4ed51f}" "BOOM_GUIDE"]
+       {:m1 [["{ARM}" "BOOM_GUIDE"]
              {:e [1150.48 864.911 -250.0] :pi 0.0 :q [-334.565 -371.573 0.0]}]
-        :m2 [["{99ce8e6a-8722-4ed7-aa1a-ed46facf3264}" "ARM_GUIDE"]
+        :m2 [["{BOOM}" "ARM_GUIDE"]
              {:e [-3741.05 1103.98 1369.99] :pi 0.0, :q [-531.29 -717.57 0.0]}]
         :type :in-plane}
-       {:m1 [["{99ce8e6a-8722-4ed7-aa1a-ed46facf3264}" "ARM_AXIS"]
+       {:m1 [["{BOOM}" "ARM_AXIS"]
              {:e [-8625.71 4720.65 905.0] :pi 0.0 :q [0.0 0.0 1.0]}]
-        :m2 [["{a93ca8b7-6de8-42e3-bc35-7224ec4ed51f}" "BOOM_AXIS"]
+        :m2 [["{ARM}" "BOOM_AXIS"]
              {:e [2000.0 100.0 0.0] :pi 0.0 :q [0.0 0.0 -1.0]}]
         :type :in-line}
-       {:m1 [["{99ce8e6a-8722-4ed7-aa1a-ed46facf3264}" "ARM_AXIS"]
+       {:m1 [["{BOOM}" "ARM_AXIS"]
              {:e [-8625.71 4720.65 905.0] :pi 0.0 :q [0.0 0.0 1.0]}]
-        :m2 [["{a93ca8b7-6de8-42e3-bc35-7224ec4ed51f}" "BOOM_AXIS"]
+        :m2 [["{ARM}" "BOOM_AXIS"]
              {:e [2000.0 100.0 0.0] :pi 0.0 :q [0.0 0.0 -1.0]}]
         :type :parallel-z} ]))
 
@@ -186,8 +186,8 @@
 
 (defn facts-about-position-analysis-knowledge
   [kb]
-  (let [assy-name "{3451cc65-9ad0-4f78-8a0c-290d1595fe74}|1"
-        carriage-name "{dce1362d-1b44-4652-949b-995aa2ce5760}"]
+  (let [assy-name "{ASSY}|1"
+        carriage-name "{CARRIAGE}"]
     (tt/fact
      "the knowledge-base should have keys"
      (set (keys kb)) =>
@@ -237,7 +237,7 @@
                        :xlate [0.0 0.0 0.0]}) ))
 
     ;; (pp/pprint (:constraint kb))
-    (tt/fact
+    (tt/incipient-fact
      "the carriage is connected to the base assembly via three planes"
      (:constraint kb) =>
      (tt/contains
