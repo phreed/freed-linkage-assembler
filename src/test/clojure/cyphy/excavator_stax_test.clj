@@ -217,12 +217,12 @@
 
        (tt/fact
         "about the rdof"
-        car-rdof => {:# 1, :dir [0.0 0.0 1637.3199999999997]})
+        car-rdof => {:# 0})
 
        (tt/facts
         "about the tdof"
         (tt/fact "about the keys"
-                (set (keys car-tdof)) => #{:# :plane :point})
+                (set (keys car-tdof)) => #{:# :lf :plane :point})
         (tt/fact "about the count" (:# car-tdof) => 2)
         (tt/fact "about the plane"
                 (:plane car-tdof) =>
