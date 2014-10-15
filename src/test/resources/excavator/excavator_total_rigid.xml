@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Assemblies xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" VersionInfo="" xsi:noNamespaceSchemaLocation="AssemblyInterface.xsd">
+  <Assembly ConfigurationID="{ASSY}|1" _id="id103">
+    <CADComponent ComponentID="{ASSY}|1" Name="Excavator_FLA_1" DisplayName="Excavator_FLA_1" Type="ASSEMBLY" SpecialInstruction="" MaterialID="" Representation="" _id="id104">
+      <CADComponent ComponentID="{ARM}" Name="ARM_ASSEMBLY_2" DisplayName="arm2" Type="ASSEMBLY" SpecialInstruction="" MaterialID="" Representation="" Classification="arm" _id="id150">
+        <Constraint _id="id134">
+          <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="SURFACE" FeatureAlignmentType="ALIGN" _id="id135">
+            <ConstraintFeature ComponentID="{BOOM}" FeatureName="ARM_GUIDE" FeatureOrientationType="SIDE_B" _id="id136">
+              <GeometryMarker x="-3741.05" y="1103.98" z="1369.99" i="-531.29" j="-717.57" k="0" pi="0" _id="id137" />
+            </ConstraintFeature>
+            <ConstraintFeature ComponentID="{ARM}" FeatureName="BOOM_GUIDE" FeatureOrientationType="SIDE_A" _id="id138">
+              <GeometryMarker x="1150.48" y="864.911" z="-250" i="-334.565" j="-371.573" k="0" pi="0" _id="id139" />
+            </ConstraintFeature>
+          </Pair>
+          <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="SURFACE" FeatureAlignmentType="ALIGN" _id="id140">
+            <ConstraintFeature ComponentID="{BOOM}" FeatureName="CENTER_PLANE" FeatureOrientationType="SIDE_B" _id="id141">
+              <GeometryMarker x="-5302.02" y="3731.18" z="600" i="0" j="0" k="-1" pi="0" _id="id142" />
+            </ConstraintFeature>
+            <ConstraintFeature ComponentID="{ARM}" FeatureName="BOOM_CENTER_PLANE" FeatureOrientationType="SIDE_A" _id="id143">
+              <GeometryMarker x="0" y="0" z="-250" i="0" j="0" k="1" pi="0" _id="id144" />
+            </ConstraintFeature>
+          </Pair>
+          <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="AXIS" FeatureAlignmentType="ALIGN" _id="id145">
+            <ConstraintFeature ComponentID="{BOOM}" FeatureName="ARM_AXIS" FeatureOrientationType="NONE" _id="id146">
+              <GeometryMarker x="-8625.71" y="4720.65" z="905" i="0" j="0" k="1" pi="0" _id="id147" />
+            </ConstraintFeature>
+            <ConstraintFeature ComponentID="{ARM}" FeatureName="BOOM_AXIS" FeatureOrientationType="NONE" _id="id148">
+              <GeometryMarker x="2000" y="100" z="0" i="0" j="0" k="-1" pi="0" _id="id149" />
+            </ConstraintFeature>
+          </Pair>
+        </Constraint>
+        <ParametricParameters _id="id151">
+          <CADParameter Name="SHEET_2_THICKNESS" Type="Float" Value="25.4" _id="id152">
+            <Units Value="mm" _id="id153" />
+          </CADParameter>
+          <CADParameter Name="MODELED_BY" Type="String" Value="0" _id="id154">
+            <Units Value="" _id="id155" />
+          </CADParameter>
+          <CADParameter Name="ARM_ANGLE" Type="Float" Value="10" _id="id156">
+            <Units Value="" _id="id157" />
+          </CADParameter>
+          <CADParameter Name="CENTER_LENGTH" Type="Float" Value="1500" _id="id158">
+            <Units Value="mm" _id="id159" />
+          </CADParameter>
+          <CADParameter Name="DESCRIPTION" Type="String" Value="0" _id="id160">
+            <Units Value="" _id="id161" />
+          </CADParameter>
+          <CADParameter Name="BUCKET_EYE_POSITION" Type="Float" Value="1867.57" _id="id162">
+            <Units Value="mm" _id="id163" />
+          </CADParameter>
+          <CADParameter Name="SHEET_1_THICKNESS" Type="Float" Value="12.7" _id="id164">
+            <Units Value="mm" _id="id165" />
+          </CADParameter>
+          <CADParameter Name="SHEET_3_THICKNESS" Type="Float" Value="25.4" _id="id166">
+            <Units Value="mm" _id="id167" />
+          </CADParameter>
+        </ParametricParameters>
+      </CADComponent>
+      <CADComponent ComponentID="{BOOM}" Name="BOOM" DisplayName="boom2" Type="PART" SpecialInstruction="" MaterialID="" Representation="" Classification="BOOM" _id="id168">
+        <Constraint _id="id118">
+          <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="SURFACE" FeatureAlignmentType="ALIGN" _id="id119">
+            <ConstraintFeature ComponentID="{BOOM}" FeatureName="GUIDE_PLANE" FeatureOrientationType="SIDE_A" _id="id120">
+              <GeometryMarker x="-2839.08" y="4470.16" z="1369.99" i="-143.69" j="478.91" k="0" pi="0" _id="id121" />
+            </ConstraintFeature>
+            <ConstraintFeature ComponentID="{CARRIAGE}" FeatureName="BOOM_GUIDE" FeatureOrientationType="SIDE_A" _id="id122">
+              <GeometryMarker x="0" y="2591.01" z="0" i="-196.231" j="154.9" k="0" pi="0" _id="id123" />
+            </ConstraintFeature>
+          </Pair>
+          <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="SURFACE" FeatureAlignmentType="ALIGN" _id="id124">
+            <ConstraintFeature ComponentID="{BOOM}" FeatureName="CENTER_PLANE" FeatureOrientationType="SIDE_A" _id="id125">
+              <GeometryMarker x="-5302.02" y="3731.18" z="600" i="0" j="0" k="-1" pi="0" _id="id126" />
+            </ConstraintFeature>
+            <ConstraintFeature ComponentID="{CARRIAGE}" FeatureName="CENTER_PLANE" FeatureOrientationType="SIDE_A" _id="id127">
+              <GeometryMarker x="0" y="0" z="-1636.32" i="0" j="0" k="1" pi="0" _id="id128" />
+            </ConstraintFeature>
+          </Pair>
+          <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="AXIS" FeatureAlignmentType="ALIGN" _id="id129">
+            <ConstraintFeature ComponentID="{BOOM}" FeatureName="BODY_AXIS" FeatureOrientationType="NONE" _id="id130">
+              <GeometryMarker x="-2058.7" y="4704.31" z="0" i="0" j="0" k="1" pi="0" _id="id131" />
+            </ConstraintFeature>
+            <ConstraintFeature ComponentID="{CARRIAGE}" FeatureName="UPPER_AXIS" FeatureOrientationType="NONE" _id="id132">
+              <GeometryMarker x="1457" y="4436.8" z="98.6836" i="0" j="0" k="-1" pi="0" _id="id133" />
+            </ConstraintFeature>
+          </Pair>
+        </Constraint>
+        <ParametricParameters _id="id169">
+          <CADParameter Name="PTC_MATERIAL_NAME" Type="String" Value="STEEL_LOW_ALLOY_A500_B" _id="id170">
+            <Units Value="" _id="id171" />
+          </CADParameter>
+        </ParametricParameters>
+      </CADComponent>
+      <CADComponent ComponentID="{CARRIAGE}" Name="UPPER_BODY" DisplayName="carriage2" Type="PART" SpecialInstruction="" MaterialID="" Representation="" _id="id172">
+        <Constraint _id="id180">
+          <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="SURFACE" FeatureAlignmentType="ALIGN" _id="id181">
+            <ConstraintFeature ComponentID="{CARRIAGE}" FeatureName="FRONT" FeatureOrientationType="SIDE_A" _id="id182">
+              <GeometryMarker x="0.0" y="0.0" z="0.0" i="0.0" j="0.0" k="1.0" pi="0" _id="id133" />
+            </ConstraintFeature>
+            <ConstraintFeature ComponentID="{ASSY}|1" FeatureName="ASM_FRONT" FeatureOrientationType="SIDE_A" _id="id183">
+              <GeometryMarker x="0.0" y="0.0" z="0.0" i="0.0" j="0.0" k="1.0" pi="0" _id="id133" />
+            </ConstraintFeature>
+          </Pair>
+          <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="SURFACE" FeatureAlignmentType="ALIGN" _id="id184">
+            <ConstraintFeature ComponentID="{CARRIAGE}" FeatureName="TOP" FeatureOrientationType="SIDE_A" _id="id185">
+              <GeometryMarker x="0.0" y="0.0" z="0.0" i="0.0" j="1.0" k="0.0" pi="0" _id="id133" />
+            </ConstraintFeature>
+            <ConstraintFeature ComponentID="{ASSY}|1" FeatureName="ASM_TOP" FeatureOrientationType="SIDE_A" _id="id186">
+              <GeometryMarker x="0.0" y="0.0" z="0.0" i="0.0" j="1.0" k="0.0" pi="0" _id="id133" />
+            </ConstraintFeature>
+          </Pair>
+          <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="SURFACE" FeatureAlignmentType="ALIGN" _id="id187">
+            <ConstraintFeature ComponentID="{CARRIAGE}" FeatureName="RIGHT" FeatureOrientationType="SIDE_A" _id="id188">
+              <GeometryMarker x="0.0" y="0.0" z="0.0" i="1.0" j="0.0" k="0.0" pi="0" _id="id133" />
+            </ConstraintFeature>
+            <ConstraintFeature ComponentID="{ASSY}|1" FeatureName="ASM_RIGHT" FeatureOrientationType="SIDE_A" _id="id189">
+              <GeometryMarker x="0.0" y="0.0" z="0.0" i="1.0" j="0.0" k="0.0" pi="0" _id="id133" />
+            </ConstraintFeature>
+          </Pair>
+        </Constraint>
+        <ParametricParameters _id="id173">
+          <CADParameter Name="DESCRIPTION" Type="String" Value="0" _id="id174">
+            <Units Value="" _id="id175" />
+          </CADParameter>
+          <CADParameter Name="MODELED_BY" Type="String" Value="0" _id="id176">
+            <Units Value="" _id="id177" />
+          </CADParameter>
+          <CADParameter Name="PTC_MATERIAL_NAME" Type="String" Value="STEEL_LOW_ALLOY_A500_B" _id="id178">
+            <Units Value="" _id="id179" />
+          </CADParameter>
+        </ParametricParameters>
+      </CADComponent>
+      <CADComponent ComponentID="{BUCKET}" Name="panel_bucket_assembly" DisplayName="zBucket_Assembly_2" Type="ASSEMBLY" SpecialInstruction="" MaterialID="" Representation="" Classification="Excavator_Bucket" _id="id190">
+        <Constraint _id="id105">
+          <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="SURFACE" FeatureAlignmentType="ALIGN" _id="id106">
+            <ConstraintFeature ComponentID="{ARM}" FeatureName="BUCKET_ATTACHMENT_PLANE" FeatureOrientationType="SIDE_A" _id="id107">
+              <GeometryMarker x="-1480.92" y="0" z="0" i="-1" j="0" k="0" pi="0" _id="id108" />
+            </ConstraintFeature>
+            <ConstraintFeature ComponentID="{BUCKET}" FeatureName="ARM_GUIDE" FeatureOrientationType="SIDE_A" _id="id109" />
+          </Pair>
+          <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="SURFACE" FeatureAlignmentType="ALIGN" _id="id110">
+            <ConstraintFeature ComponentID="{ARM}" FeatureName="BUCKET_CENTER_PLANE" FeatureOrientationType="SIDE_A" _id="id111">
+              <GeometryMarker x="0" y="0" z="-250" i="0" j="0" k="1" pi="0" _id="id112" />
+            </ConstraintFeature>
+            <ConstraintFeature ComponentID="{BUCKET}" FeatureName="CENTER_PLANE" FeatureOrientationType="SIDE_A" _id="id113" />
+          </Pair>
+          <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="AXIS" FeatureAlignmentType="ALIGN" _id="id114">
+            <ConstraintFeature ComponentID="{ARM}" FeatureName="BUCKET_AXIS" FeatureOrientationType="NONE" _id="id115">
+              <GeometryMarker x="-1480.92" y="100" z="0" i="0" j="0" k="-1" pi="0" _id="id116" />
+            </ConstraintFeature>
+            <ConstraintFeature ComponentID="{BUCKET}" FeatureName="LOWER_HOLE" FeatureOrientationType="NONE" _id="id117" />
+          </Pair>
+        </Constraint>
+        <ManufacturingParameter Name="procurement__make_or_buy" Value="Make" />
+        <ManufacturingParameter Name="procurement__cots_or_parametric" Value="COTS" />
+        <ParametricParameters _id="id191">
+          <CADParameter Name="BRACKET_CUT_DEPTH" Type="Float" Value="250" _id="id192">
+            <Units Value="" _id="id193" />
+          </CADParameter>
+          <CADParameter Name="MODELED_BY" Type="String" Value="0" _id="id194">
+            <Units Value="" _id="id195" />
+          </CADParameter>
+          <CADParameter Name="BRACKET_THICKNESS" Type="Float" Value="25.4" _id="id196">
+            <Units Value="" _id="id197" />
+          </CADParameter>
+          <CADParameter Name="DESCRIPTION" Type="String" Value="0" _id="id198">
+            <Units Value="" _id="id199" />
+          </CADParameter>
+        </ParametricParameters>
+      </CADComponent>
+    </CADComponent>
+    <Properties _id="id200">
+      <Units Value="value1" _id="id201" />
+    </Properties>
+  </Assembly>
+  <DataExchange _id="id202">
+    <STEPFormat Name="AP203_E2_Single_File" _id="id203" />
+    <STEPFormat Name="AP203_E2_Separate_Part_Files" _id="id204" />
+  </DataExchange>
+</Assemblies>

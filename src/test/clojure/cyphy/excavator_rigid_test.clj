@@ -1,5 +1,4 @@
-
-(ns cyphy.excavator-plane-test
+(ns cyphy.excavator-rigid-test
   (:require [midje.sweet :as tt]
             [isis.geom.cyphy
              [cyphy-zip :as cyphy]
@@ -28,13 +27,8 @@
              [offset-z-dispatch]
              [parallel-z-dispatch]]))
 
-(defn unref
-  "takes an arbitrary tree and replaces all futures
-  with agnostic strings."
-  [form]
-  (clojure.walk/postwalk #(if (misc/reference? %) @% %) form))
 
-(with-open [fis (-> "excavator/excavator_total_plane.xml"
+(with-open [fis (-> "excavator/excavator_total_rigid.xml"
                     jio/resource jio/input-stream)]
   (let [kb (cyphy/knowledge-via-input-stream fis)
         constraints-orig (:constraint kb)
@@ -45,8 +39,8 @@
         choose-pair (fn [x c1 c2]
                       (let [l1 (-> x :m1 first first)
                             l2 (-> x :m2 first first) ]
-                       (or (and (= l1 c1) (= l2 c2))
-                           (and (= l1 c2) (= l2 c1)) ))) ]
+                        (or (and (= l1 c1) (= l2 c2))
+                            (and (= l1 c2) (= l2 c1)) ))) ]
 
     ;; _ (pp/pprint ["constraints-orig:" constraints-orig])
 
@@ -60,29 +54,29 @@
       "original the carriage is connected to the base assembly via three planes"
       (filterv #(choose-pair % "{ASSY}|1" "{CARRIAGE}")
                constraints-orig) =>
-       [{:m1 [["{CARRIAGE}" "FRONT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 1.0]}],
-         :m2 [["{ASSY}|1" "ASM_FRONT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 1.0]}],
-         :type :planar}
-        {:m1 [["{CARRIAGE}" "TOP"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 1.0 0.0]}],
-         :m2 [["{ASSY}|1" "ASM_TOP"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 1.0 0.0]}],
-         :type :planar}
-        {:m1 [["{CARRIAGE}" "RIGHT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [1.0 0.0 0.0]}],
-         :m2 [["{ASSY}|1" "ASM_RIGHT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [1.0 0.0 0.0]}],
-         :type :planar}] )
+      [{:m1 [["{CARRIAGE}" "FRONT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 1.0]}],
+        :m2 [["{ASSY}|1" "ASM_FRONT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 1.0]}],
+        :type :planar}
+       {:m1 [["{CARRIAGE}" "TOP"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 1.0 0.0]}],
+        :m2 [["{ASSY}|1" "ASM_TOP"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 1.0 0.0]}],
+        :type :planar}
+       {:m1 [["{CARRIAGE}" "RIGHT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [1.0 0.0 0.0]}],
+        :m2 [["{ASSY}|1" "ASM_RIGHT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [1.0 0.0 0.0]}],
+        :type :planar}] )
 
      (tt/fact
       "meta expanded "
       (filterv #(choose-pair % "{ASSY}|1" "{CARRIAGE}")
                constraints-meta) =>
-       [{:m1 [["{CARRIAGE}" "FRONT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 1.0]}],
-         :m2 [["{ASSY}|1" "ASM_FRONT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 1.0]}],
-         :type :planar}
-        {:m1 [["{CARRIAGE}" "TOP"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 1.0 0.0]}],
-         :m2 [["{ASSY}|1" "ASM_TOP"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 1.0 0.0]}],
-         :type :planar}
-        {:m1 [["{CARRIAGE}" "RIGHT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [1.0 0.0 0.0]}],
-         :m2 [["{ASSY}|1" "ASM_RIGHT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [1.0 0.0 0.0]}],
-         :type :planar}] )
+      [{:m1 [["{CARRIAGE}" "FRONT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 1.0]}],
+        :m2 [["{ASSY}|1" "ASM_FRONT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 1.0]}],
+        :type :planar}
+       {:m1 [["{CARRIAGE}" "TOP"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 1.0 0.0]}],
+        :m2 [["{ASSY}|1" "ASM_TOP"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 1.0 0.0]}],
+        :type :planar}
+       {:m1 [["{CARRIAGE}" "RIGHT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [1.0 0.0 0.0]}],
+        :m2 [["{ASSY}|1" "ASM_RIGHT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [1.0 0.0 0.0]}],
+        :type :planar}] )
 
      (tt/fact
       "fully expanded to in-plane primitive-joints "
@@ -104,15 +98,15 @@
       (filterv #(and (choose-pair % "{ASSY}|1" "{CARRIAGE}")
                      (= :in-plane (:type %)) )
                constraints-lower) =>
-       [{:m1 [["{CARRIAGE}" "FRONT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 1.0]}],
-         :m2 [["{ASSY}|1" "ASM_FRONT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 1.0]}],
-         :type :in-plane}
-        {:m1 [["{CARRIAGE}" "TOP"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 1.0 0.0]}],
-         :m2 [["{ASSY}|1" "ASM_TOP"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 1.0 0.0]}],
-         :type :in-plane}
-        {:m1 [["{CARRIAGE}" "RIGHT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [1.0 0.0 0.0]}],
-         :m2 [["{ASSY}|1" "ASM_RIGHT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [1.0 0.0 0.0]}],
-         :type :in-plane}] )
+      [{:m1 [["{CARRIAGE}" "FRONT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 1.0]}],
+        :m2 [["{ASSY}|1" "ASM_FRONT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 1.0]}],
+        :type :in-plane}
+       {:m1 [["{CARRIAGE}" "TOP"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 1.0 0.0]}],
+        :m2 [["{ASSY}|1" "ASM_TOP"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 1.0 0.0]}],
+        :type :in-plane}
+       {:m1 [["{CARRIAGE}" "RIGHT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [1.0 0.0 0.0]}],
+        :m2 [["{ASSY}|1" "ASM_RIGHT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [1.0 0.0 0.0]}],
+        :type :in-plane}] )
 
 
      (tt/fact
@@ -120,7 +114,7 @@
       (filterv #(and (choose-pair % "{ASSY}|1" "{CARRIAGE}")
                      (= :in-line (:type %)) )
                constraints-lower) =>
-       []) )
+      []) )
 
 
     (tt/facts
@@ -130,75 +124,57 @@
       "original "
       (filterv #(choose-pair % "{BOOM}" "{ARM}")
                constraints-orig) =>
-       [{:m1
-         [["{BOOM}" "CENTER_PLANE"]
-          {:e [-5302.02 3731.18 600.0], :pi 0.0, :q [0.0 0.0 -1.0]}],
-         :m2
-         [["{ARM}" "BOOM_CENTER_PLANE"]
-          {:e [0.0 0.0 -250.0], :pi 0.0, :q [0.0 0.0 1.0]}],
-         :type :planar}
-        {:m1
-         [["{BOOM}" "ARM_GUIDE"]
-          {:e [-3741.05 1103.98 1369.99], :pi 0.0, :q [-531.29 -717.57 0.0]}],
-         :m2
-         [["{ARM}" "BOOM_GUIDE"]
-          {:e [1150.48 864.911 -250.0], :pi 0.0, :q [-334.565 -371.573 0.0]}],
-         :type :planar}
-        {:m1
-         [["{BOOM}" "ARM_AXIS"]
-          {:e [-8625.71 4720.65 905.0], :pi 0.0, :q [0.0 0.0 1.0]}],
-         :m2
-         [["{ARM}" "BOOM_AXIS"]
-          {:e [2000.0 100.0 0.0], :pi 0.0, :q [0.0 0.0 -1.0]}],
-         :type :linear}] )
+      [{:m1 [["{BOOM}" "ARM_GUIDE"]
+             {:e [-3741.05 1103.98 1369.99], :pi 0.0, :q [-531.29 -717.57 0.0]}],
+        :m2 [["{ARM}" "BOOM_GUIDE"]
+             {:e [1150.48 864.911 -250.0], :pi 0.0, :q [-334.565 -371.573 0.0]}],
+        :type :planar}
+       {:m1 [["{BOOM}" "CENTER_PLANE"]
+             {:e [-5302.02 3731.18 600.0], :pi 0.0, :q [0.0 0.0 -1.0]}],
+        :m2 [["{ARM}" "BOOM_CENTER_PLANE"]
+             {:e [0.0 0.0 -250.0], :pi 0.0, :q [0.0 0.0 1.0]}],
+        :type :planar}
+       {:m1 [["{BOOM}" "ARM_AXIS"]
+             {:e [-8625.71 4720.65 905.0], :pi 0.0, :q [0.0 0.0 1.0]}],
+        :m2 [["{ARM}" "BOOM_AXIS"]
+             {:e [2000.0 100.0 0.0], :pi 0.0, :q [0.0 0.0 -1.0]}],
+        :type :linear}] )
 
      (tt/fact
       "meta expanded "
       (filterv #(choose-pair % "{BOOM}" "{ARM}")
                constraints-meta) =>
-       [{:m1
-         [["{BOOM}" "CENTER_PLANE"]
-          {:e [-5302.02 3731.18 600.0], :pi 0.0, :q [0.0 0.0 -1.0]}],
-         :m2
-         [["{ARM}" "BOOM_CENTER_PLANE"]
-          {:e [0.0 0.0 -250.0], :pi 0.0, :q [0.0 0.0 1.0]}],
-         :type :planar}
-
-        {:m1
-         [["{BOOM}" "ARM_GUIDE"]
-          {:e [-3741.05 1103.98 1369.99], :pi 0.0, :q [-531.29 -717.57 0.0]}],
-         :m2
-         [["{ARM}" "BOOM_GUIDE"]
-          {:e [1150.48 864.911 -250.0], :pi 0.0, :q [-334.565 -371.573 0.0]}],
-         :type :planar}
-
-        {:m1
-         [["{BOOM}" "ARM_AXIS"]
-          {:e [-8625.71 4720.65 905.0], :pi 0.0, :q [0.0 0.0 1.0]}],
-         :m2
-         [["{ARM}" "BOOM_AXIS"]
-          {:e [2000.0 100.0 0.0], :pi 0.0, :q [0.0 0.0 -1.0]}],
-         :type :linear}] )
+      [{:m1 [["{BOOM}" "ARM_GUIDE"]
+             {:e [-3741.05 1103.98 1369.99], :pi 0.0, :q [-531.29 -717.57 0.0]}],
+        :m2 [["{ARM}" "BOOM_GUIDE"]
+             {:e [1150.48 864.911 -250.0], :pi 0.0, :q [-334.565 -371.573 0.0]}],
+        :type :planar}
+       {:m1 [["{BOOM}" "CENTER_PLANE"]
+             {:e [-5302.02 3731.18 600.0], :pi 0.0, :q [0.0 0.0 -1.0]}],
+        :m2 [["{ARM}" "BOOM_CENTER_PLANE"]
+             {:e [0.0 0.0 -250.0], :pi 0.0, :q [0.0 0.0 1.0]}],
+        :type :planar}
+       {:m1 [["{BOOM}" "ARM_AXIS"]
+             {:e [-8625.71 4720.65 905.0], :pi 0.0, :q [0.0 0.0 1.0]}],
+        :m2 [["{ARM}" "BOOM_AXIS"]
+             {:e [2000.0 100.0 0.0], :pi 0.0, :q [0.0 0.0 -1.0]}],
+        :type :linear}] )
 
      (tt/fact
       "fully expanded to in-plane primitive-joints "
       (filterv #(and (choose-pair % "{BOOM}" "{ARM}")
                      (= :parallel-z (:type %)) )
                constraints-lower) =>
-      ;; for each of the :planar joints
-      [{:m1 [["{BOOM}" "CENTER_PLANE"]
-             {:e [-5302.02 3731.18 600.0], :pi 0.0, :q [0.0 0.0 -1.0]}],
-        :m2 [["{ARM}" "BOOM_CENTER_PLANE"]
-             {:e [0.0 0.0 -250.0], :pi 0.0, :q [0.0 0.0 1.0]}],
-        :type :parallel-z}
-
-       {:m1 [["{BOOM}" "ARM_GUIDE"]
+      [{:m1 [["{BOOM}" "ARM_GUIDE"]
              {:e [-3741.05 1103.98 1369.99], :pi 0.0, :q [-531.29 -717.57 0.0]}],
         :m2 [["{ARM}" "BOOM_GUIDE"]
              {:e [1150.48 864.911 -250.0], :pi 0.0, :q [-334.565 -371.573 0.0]}],
         :type :parallel-z}
-
-       ;; for the :linear joint
+       {:m1 [["{BOOM}" "CENTER_PLANE"]
+             {:e [-5302.02 3731.18 600.0], :pi 0.0, :q [0.0 0.0 -1.0]}],
+        :m2 [["{ARM}" "BOOM_CENTER_PLANE"]
+             {:e [0.0 0.0 -250.0], :pi 0.0, :q [0.0 0.0 1.0]}],
+        :type :parallel-z}
        {:m1 [["{BOOM}" "ARM_AXIS"]
              {:e [-8625.71 4720.65 905.0], :pi 0.0, :q [0.0 0.0 1.0]}],
         :m2 [["{ARM}" "BOOM_AXIS"]
@@ -210,16 +186,15 @@
       (filterv #(and (choose-pair % "{BOOM}" "{ARM}")
                      (= :in-plane (:type %)) )
                constraints-lower) =>
-      [{:m1 [["{BOOM}" "CENTER_PLANE"]
-             {:e [-5302.02 3731.18 600.0], :pi 0.0, :q [0.0 0.0 -1.0]}],
-        :m2 [["{ARM}" "BOOM_CENTER_PLANE"]
-             {:e [0.0 0.0 -250.0], :pi 0.0, :q [0.0 0.0 1.0]}],
-        :type :in-plane}
-
-       {:m1 [["{BOOM}" "ARM_GUIDE"]
+      [{:m1 [["{BOOM}" "ARM_GUIDE"]
              {:e [-3741.05 1103.98 1369.99], :pi 0.0, :q [-531.29 -717.57 0.0]}],
         :m2 [["{ARM}" "BOOM_GUIDE"]
              {:e [1150.48 864.911 -250.0], :pi 0.0, :q [-334.565 -371.573 0.0]}],
+        :type :in-plane}
+       {:m1 [["{BOOM}" "CENTER_PLANE"]
+             {:e [-5302.02 3731.18 600.0], :pi 0.0, :q [0.0 0.0 -1.0]}],
+        :m2 [["{ARM}" "BOOM_CENTER_PLANE"]
+             {:e [0.0 0.0 -250.0], :pi 0.0, :q [0.0 0.0 1.0]}],
         :type :in-plane}] )
 
 
@@ -228,68 +203,44 @@
       (filterv #(and (choose-pair % "{BOOM}" "{ARM}")
                      (= :in-line (:type %)) )
                constraints-lower) =>
-       [{:m1 [["{BOOM}" "ARM_AXIS"]
-              {:e [-8625.71 4720.65 905.0], :pi 0.0, :q [0.0 0.0 1.0]}],
-         :m2 [["{ARM}" "BOOM_AXIS"]
-              {:e [2000.0 100.0 0.0], :pi 0.0, :q [0.0 0.0 -1.0]}],
-         :type :in-line}] ) )
+      [{:m1 [["{BOOM}" "ARM_AXIS"]
+             {:e [-8625.71 4720.65 905.0], :pi 0.0, :q [0.0 0.0 1.0]}],
+        :m2 [["{ARM}" "BOOM_AXIS"]
+             {:e [2000.0 100.0 0.0], :pi 0.0, :q [0.0 0.0 -1.0]}],
+        :type :in-line}] ) )
 
 
-     ;; The boom {99c..264} is connected to
-     ;; a hydraulic-jack {7d2..491} via a revolute joint.
     (tt/facts
-     "about the parsed cad-assembly file boom-to-arm-cyl"
+     "about the parsed cad-assembly file arm-to-bucket"
 
      (tt/fact
       "lower-joint original"
-      (filterv #(choose-pair % "{BOOM}" "{ARM-CYL}")
+      (filterv #(choose-pair % "{ARM}" "{BUCKET}")
                constraints-orig) =>
-       [{:m1
-         [["{BOOM}" "CENTER_PLANE"]
-          {:e [-5302.02 3731.18 600.0], :pi 0.0, :q [0.0 0.0 -1.0]}],
-         :m2
-         [["{ARM-CYL}" "CYLINDER_PLANE"]
-          {:e [-266.844 7143.04 -427.1],
-           :pi 0.0,
-           :q [-44.021 88.35 104.392]}],
-         :type :planar}
-        {:m1
-         [["{BOOM}" "UPPER_CYLINDER_AXIS"]
-          {:e [-5190.52 2830.18 675.0], :pi 0.0, :q [0.0 0.0 1.0]}],
-         :m2
-         [["{ARM-CYL}" "CYLINDER_AXIS"]
-          {:e [-1703.15 6384.66 -192.041], :pi 0.0, :q [-27.5 55.2 10.023]}],
-         :type :linear} ] )
-
-     ;; The hydaulic-jack {7d2..491} is connected to
-     ;; the arm {a93..51f} via a revolute joint.
-     (tt/fact
-      "upper-joint original"
-      (filterv #(choose-pair % "{BOOM}" "{ARM-CYL}")
-               constraints-orig) =>
-       [{:m1 [["{BOOM}" "CENTER_PLANE"]
-              {:e [-5302.02 3731.18 600.0], :pi 0.0, :q [0.0 0.0 -1.0]}],
-         :m2 [["{ARM-CYL}" "CYLINDER_PLANE"]
-              {:e [-266.844 7143.04 -427.1], :pi 0.0, :q [-44.021 88.35 104.392]}],
-         :type :planar}
-
-        {:m1 [["{BOOM}" "UPPER_CYLINDER_AXIS"]
-              {:e [-5190.52 2830.18 675.0], :pi 0.0, :q [0.0 0.0 1.0]}],
-         :m2 [["{ARM-CYL}" "CYLINDER_AXIS"]
-              {:e [-1703.15 6384.66 -192.041], :pi 0.0, :q [-27.5 55.2 10.023]}],
-         :type :linear}] ) )
+      [{:m1 [["{ARM}" "BUCKET_ATTACHMENT_PLANE"]
+             {:e [-1480.92 0.0 0.0], :pi 0.0, :q [-1.0 0.0 0.0]}],
+        :m2 [["{BUCKET}" "ARM_GUIDE"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 0.0]}],
+        :type :planar}
+       {:m1 [["{ARM}" "BUCKET_CENTER_PLANE"]
+             {:e [0.0 0.0 -250.0], :pi 0.0, :q [0.0 0.0 1.0]}],
+        :m2 [["{BUCKET}" "CENTER_PLANE"]
+             {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 0.0]}],
+        :type :planar}
+       {:m1 [["{ARM}" "BUCKET_AXIS"]
+             {:e [-1480.92 100.0 0.0], :pi 0.0, :q [0.0 0.0 -1.0]}],
+        :m2 [["{BUCKET}" "LOWER_HOLE"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 0.0]}],
+        :type :linear}] ) )
 
 
     (tt/facts
      "about the parsed cad-assembly file invariants"
 
-
      (tt/fact
       "about the initial link settings"
       (->> kb :link
            (filter #(contains? #{ "{ASSY}|1" "{CARRIAGE}"
-                                  "{ARM-CYL}" "{BOOM}"
-                                  "{ARM}"} (first %)))
+                                  "{BOOM}" "{ARM}"
+                                  "{BUCKET}"} (first %)))
            (mapv #(vector (first %) @(second %)))
            (into {})) =>
       { "{ASSY}|1"  {:rdof {:# 0}, :tdof {:# 0},
@@ -307,15 +258,16 @@
         "{ARM}" {:rdof {:# 3},
                  :tdof {:# 3},
                  :versor {:rotate [1.0 0.0 0.0 0.0],
-                 :xlate [0.0 0.0 0.0]}},
-        "{ARM-CYL}" {:rdof {:# 3},
-                     :tdof {:# 3},
-                     :versor {:rotate [1.0 0.0 0.0 0.0],
-                     :xlate [0.0 0.0 0.0]}} } )
+                          :xlate [0.0 0.0 0.0]}},
+        "{BUCKET}" {:rdof {:# 3},
+                    :tdof {:# 3},
+                    :versor {:rotate [1.0 0.0 0.0 0.0],
+                             :xlate [0.0 0.0 0.0]}} } )
 
 
      (tt/fact
-      "about the initial marker invariants" (unref (:invar kb)) =>
+      "about the initial marker invariants"
+      (into {} (map (fn [[k v]] [k @v]) (:invar kb))) =>
       {:loc #{["{ASSY}|1"]}
        :dir #{["{ASSY}|1"]}
        :twist #{["{ASSY}|1"]}} )  )
@@ -337,14 +289,14 @@
          []) ))
 
 
-     (tt/fact
-      "about the final link settings"
-      (->> result-link
-           (filter #(contains? #{ "{ASSY}|1" "{CARRIAGE}"
-                                  "{ARM-CYL}" "{BOOM}"
-                                  "{ARM}"} (first %)))
-           (mapv #(vector (first %) @(second %)))
-           (into {})) =>
+      (tt/fact
+       "about the final link settings"
+       (->> result-link
+            (filter #(contains? #{ "{ASSY}|1" "{CARRIAGE}"
+                                   "{BOOM}" "{ARM}"
+                                   "{BUCKET}"} (first %)))
+            (mapv #(vector (first %) @(second %)))
+            (into {})) =>
        {
         "{ASSY}|1" {:rdof {:# 0}, :tdof {:# 0},
                     :versor {:rotate [1.0 0.0 0.0 0.0], :xlate [0.0 0.0 0.0]}},
@@ -353,10 +305,10 @@
                       :versor {:rotate [1.0 0.0 0.0 0.0], :xlate [0.0 0.0 0.0]}}
         "{BOOM}" {:rdof {:# 3}, :tdof {:# 3},
                   :versor {:rotate [1.0 0.0 0.0 0.0], :xlate [0.0 0.0 0.0]}},
-        "{ARM-CYL}" {:rdof {:# 3}, :tdof {:# 3},
-                     :versor {:rotate [1.0 0.0 0.0 0.0], :xlate [0.0 0.0 0.0]}},
         "{ARM}" {:rdof {:# 3}, :tdof {:# 3},
                  :versor {:rotate [1.0 0.0 0.0 0.0], :xlate [0.0 0.0 0.0]}},
+        "{BUCKET}" {:rdof {:# 3}, :tdof {:# 3},
+                    :versor {:rotate [1.0 0.0 0.0 0.0], :xlate [0.0 0.0 0.0]}},
         } )
 
 
