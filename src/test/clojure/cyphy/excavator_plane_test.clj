@@ -11,9 +11,10 @@
             [isis.geom.model.meta-constraint :as meta-constraint]
             [isis.geom.model.lower-joint :as lower-joint]
             [isis.geom.machine.misc :as misc]
+            [isis.geom.algebra [geobj :as ga]]
 
             [isis.geom.analysis
-             [position-analysis :refer [position-analysis]]]
+             [position-analysis :as pa]]
 
             [isis.geom.machine.misc :as misc]
             [isis.geom.position-dispatch
@@ -59,28 +60,28 @@
       "original "
       (filterv #(choose-pair % "{ASSY}|1" "{CARRIAGE}")
                constraints-orig) =>
-       [{:m1 [["{CARRIAGE}" "FRONT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 0.0]}],
-         :m2 [["{ASSY}|1" "ASM_FRONT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 0.0]}],
+       [{:m1 [["{CARRIAGE}" "FRONT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 1.0]}],
+         :m2 [["{ASSY}|1" "ASM_FRONT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 1.0]}],
          :type :planar}
-        {:m1 [["{CARRIAGE}" "TOP"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 0.0]}],
-         :m2 [["{ASSY}|1" "ASM_TOP"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 0.0]}],
+        {:m1 [["{CARRIAGE}" "TOP"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 1.0 0.0]}],
+         :m2 [["{ASSY}|1" "ASM_TOP"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 1.0 0.0]}],
          :type :planar}
-        {:m1 [["{CARRIAGE}" "RIGHT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 0.0]}],
-         :m2 [["{ASSY}|1" "ASM_RIGHT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 0.0]}],
+        {:m1 [["{CARRIAGE}" "RIGHT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [1.0 0.0 0.0]}],
+         :m2 [["{ASSY}|1" "ASM_RIGHT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [1.0 0.0 0.0]}],
          :type :planar}] )
 
      (tt/fact
       "meta expanded "
       (filterv #(choose-pair % "{ASSY}|1" "{CARRIAGE}")
                constraints-meta) =>
-       [{:m1 [["{CARRIAGE}" "FRONT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 0.0]}],
-         :m2 [["{ASSY}|1" "ASM_FRONT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 0.0]}],
+       [{:m1 [["{CARRIAGE}" "FRONT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 1.0]}],
+         :m2 [["{ASSY}|1" "ASM_FRONT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 1.0]}],
          :type :planar}
-        {:m1 [["{CARRIAGE}" "TOP"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 0.0]}],
-         :m2 [["{ASSY}|1" "ASM_TOP"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 0.0]}],
+        {:m1 [["{CARRIAGE}" "TOP"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 1.0 0.0]}],
+         :m2 [["{ASSY}|1" "ASM_TOP"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 1.0 0.0]}],
          :type :planar}
-        {:m1 [["{CARRIAGE}" "RIGHT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 0.0]}],
-         :m2 [["{ASSY}|1" "ASM_RIGHT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 0.0]}],
+        {:m1 [["{CARRIAGE}" "RIGHT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [1.0 0.0 0.0]}],
+         :m2 [["{ASSY}|1" "ASM_RIGHT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [1.0 0.0 0.0]}],
          :type :planar}] )
 
      (tt/fact
@@ -88,14 +89,14 @@
       (filterv #(and (choose-pair % "{ASSY}|1" "{CARRIAGE}")
                      (= :parallel-z (:type %)) )
                constraints-lower) =>
-      [{:m1 [["{CARRIAGE}" "FRONT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 0.0]}],
-        :m2 [["{ASSY}|1" "ASM_FRONT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 0.0]}],
+      [{:m1 [["{CARRIAGE}" "FRONT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 1.0]}],
+        :m2 [["{ASSY}|1" "ASM_FRONT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 1.0]}],
         :type :parallel-z}
-       {:m1 [["{CARRIAGE}" "TOP"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 0.0]}],
-        :m2 [["{ASSY}|1" "ASM_TOP"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 0.0]}],
+       {:m1 [["{CARRIAGE}" "TOP"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 1.0 0.0]}],
+        :m2 [["{ASSY}|1" "ASM_TOP"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 1.0 0.0]}],
         :type :parallel-z}
-       {:m1 [["{CARRIAGE}" "RIGHT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 0.0]}],
-        :m2 [["{ASSY}|1" "ASM_RIGHT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 0.0]}],
+       {:m1 [["{CARRIAGE}" "RIGHT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [1.0 0.0 0.0]}],
+        :m2 [["{ASSY}|1" "ASM_RIGHT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [1.0 0.0 0.0]}],
         :type :parallel-z}] )
 
      (tt/fact
@@ -103,14 +104,14 @@
       (filterv #(and (choose-pair % "{ASSY}|1" "{CARRIAGE}")
                      (= :in-plane (:type %)) )
                constraints-lower) =>
-       [{:m1 [["{CARRIAGE}" "FRONT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 0.0]}],
-         :m2 [["{ASSY}|1" "ASM_FRONT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 0.0]}],
+       [{:m1 [["{CARRIAGE}" "FRONT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 1.0]}],
+         :m2 [["{ASSY}|1" "ASM_FRONT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 1.0]}],
          :type :in-plane}
-        {:m1 [["{CARRIAGE}" "TOP"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 0.0]}],
-         :m2 [["{ASSY}|1" "ASM_TOP"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 0.0]}],
+        {:m1 [["{CARRIAGE}" "TOP"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 1.0 0.0]}],
+         :m2 [["{ASSY}|1" "ASM_TOP"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 1.0 0.0]}],
          :type :in-plane}
-        {:m1 [["{CARRIAGE}" "RIGHT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 0.0]}],
-         :m2 [["{ASSY}|1" "ASM_RIGHT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 0.0]}],
+        {:m1 [["{CARRIAGE}" "RIGHT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [1.0 0.0 0.0]}],
+         :m2 [["{ASSY}|1" "ASM_RIGHT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [1.0 0.0 0.0]}],
          :type :in-plane}] )
 
 
@@ -321,7 +322,7 @@
 
 
 
-    (let [result (position-analysis kb constraints-lower)
+    (let [result (pa/position-analysis kb constraints-lower)
           [success? result-kb result-success result-failure] result
           {result-mark :invar result-link :link} result-kb ]
 
@@ -335,26 +336,36 @@
         (tt/contains
          []) ))
 
-      (tt/incipient-fact
-       "about the link result" result-link =>
+
+     (tt/fact
+      "about the final link settings"
+      (->> result-link
+           (filter #(contains? #{ "{ASSY}|1" "{CARRIAGE}"
+                                  "{ARM-CYL}" "{BOOM}"
+                                  "{ARM}"} (first %)))
+           (mapv #(vector (first %) @(second %)))
+           (into {})) =>
        {
-        "{ARM-CYL}"
-        {:versor {:xlate [0.0 0.0 0.0] :rotate [1.0 0.0 0.0 0.0]}
-         :tdof {:# 3} :rdof {:# 3}}
-        "{BOOM}"
-        {:versor {:xlate [0.0 0.0 0.0] :rotate [1.0 0.0 0.0 0.0]}
-         :tdof {:# 3} :rdof {:# 3}}
-        "{ARM}"
-        {:versor {:xlate [0.0 0.0 0.0] :rotate [1.0 0.0 0.0 0.0]}
-         :tdof {:# 3} :rdof {:# 3}}
+        "{ASSY}|1" {:rdof {:# 0}, :tdof {:# 0},
+                    :versor {:rotate [1.0 0.0 0.0 0.0], :xlate [0.0 0.0 0.0]}},
+        "{CARRIAGE}" {:rdof {:# 0},
+                      :tdof {:# 0 :point [0.0 0.0 0.0]},
+                      :versor {:rotate [1.0 0.0 0.0 0.0], :xlate [0.0 0.0 0.0]}}
+        "{BOOM}" {:rdof {:# 3}, :tdof {:# 3},
+                  :versor {:rotate [1.0 0.0 0.0 0.0], :xlate [0.0 0.0 0.0]}},
+        "{ARM-CYL}" {:rdof {:# 3}, :tdof {:# 3},
+                     :versor {:rotate [1.0 0.0 0.0 0.0], :xlate [0.0 0.0 0.0]}},
+        "{ARM}" {:rdof {:# 3}, :tdof {:# 3},
+                 :versor {:rotate [1.0 0.0 0.0 0.0], :xlate [0.0 0.0 0.0]}},
         } )
 
+
       (tt/incipient-fact
-       "about the success result" result-success => success-checker)
+       "about the success result" result-success => [])
 
       (tt/incipient-fact
        "about the failure result" result-failure =>
-       (tt/contains []) )
+       [] )
 
       #_(with-open [fis (-> "excavator/excavator_total_plane.xml"
                             jio/resource jio/input-stream)

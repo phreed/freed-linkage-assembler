@@ -66,7 +66,7 @@
 
   New status:
   0-TDOF(?m1-link, R[2])
-  3-RDOF(?m1-link)
+  0-RDOF(?m1-link)
 
   Explanation:
   This entry can arise when a point is constrainded to
@@ -150,20 +150,27 @@
 
     ;; What to do about :degenerate or parallel planes?
     (case line02
-          :degenerate :progress-made
+      :degenerate :progress-made
+      #_(let [gmp1 (ga/gmp m1 kb)]
+        (alter m1-link assoc
+               :tdof {:# 1
+                      :point gmp1
+                      :line line02
+                      :lf gmp1 } )
+        :progress-made)
 
-          (let [reject (ga/rejection gmp1 line02)]
-            (dosync
-             (alter m1-link merge
-                    (ga/translate @m1-link ga/vec-diff reject))
+      (let [reject (ga/rejection gmp1 line02)]
+        (dosync
+         (alter m1-link merge
+                (ga/translate @m1-link ga/vec-diff reject))
 
-             (let [gmp1 (ga/gmp m1 kb)]
-               (alter m1-link assoc
-                      :tdof {:# 1
-                             :point gmp1
-                             :line line02
-                             :lf gmp1 } ) ))
-            :progress-made)) ))
+         (let [gmp1 (ga/gmp m1 kb)]
+           (alter m1-link assoc
+                  :tdof {:# 1
+                         :point gmp1
+                         :line line02
+                         :lf gmp1 } ) ))
+        :progress-made)) ))
 
 (defn assemble!->t2-r1 [kb m1 m2]  :not-applicable)
 (defn assemble!->t2-r2 [kb m1 m2]  (ms/unreal :t2-r2 slicer kb m1 m2))

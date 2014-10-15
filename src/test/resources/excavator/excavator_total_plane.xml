@@ -412,16 +412,28 @@
       <CADComponent ComponentID="{CARRIAGE}" Name="UPPER_BODY" DisplayName="carriage2" Type="PART" SpecialInstruction="" MaterialID="" Representation="" _id="id1757">
         <Constraint _id="id1765">
           <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="SURFACE" FeatureAlignmentType="ALIGN" _id="id1766">
-            <ConstraintFeature ComponentID="{CARRIAGE}" FeatureName="FRONT" FeatureOrientationType="SIDE_A" _id="id1767" />
-            <ConstraintFeature ComponentID="{ASSY}|1" FeatureName="ASM_FRONT" FeatureOrientationType="SIDE_A" _id="id1768" />
+            <ConstraintFeature ComponentID="{CARRIAGE}" FeatureName="FRONT" FeatureOrientationType="SIDE_A" _id="id1767">
+              <GeometryMarker x="0.0" y="0.0" z="0.0" i="0.0" j="0.0" k="1.0" pi="0" />
+            </ConstraintFeature>
+            <ConstraintFeature ComponentID="{ASSY}|1" FeatureName="ASM_FRONT" FeatureOrientationType="SIDE_A" _id="id1768">
+              <GeometryMarker x="0.0" y="0.0" z="0.0" i="0.0" j="0.0" k="1.0" pi="0" />
+            </ConstraintFeature>
           </Pair>
           <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="SURFACE" FeatureAlignmentType="ALIGN" _id="id1769">
-            <ConstraintFeature ComponentID="{CARRIAGE}" FeatureName="TOP" FeatureOrientationType="SIDE_A" _id="id1770" />
-            <ConstraintFeature ComponentID="{ASSY}|1" FeatureName="ASM_TOP" FeatureOrientationType="SIDE_A" _id="id1771" />
+            <ConstraintFeature ComponentID="{CARRIAGE}" FeatureName="TOP" FeatureOrientationType="SIDE_A" _id="id1770" >
+              <GeometryMarker x="0.0" y="0.0" z="0.0" i="0.0" j="1.0" k="0.0" pi="0" />
+            </ConstraintFeature>
+            <ConstraintFeature ComponentID="{ASSY}|1" FeatureName="ASM_TOP" FeatureOrientationType="SIDE_A" _id="id1771" >
+              <GeometryMarker x="0.0" y="0.0" z="0.0" i="0.0" j="1.0" k="0.0" pi="0" />
+            </ConstraintFeature>
           </Pair>
           <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="SURFACE" FeatureAlignmentType="ALIGN" _id="id1772">
-            <ConstraintFeature ComponentID="{CARRIAGE}" FeatureName="RIGHT" FeatureOrientationType="SIDE_A" _id="id1773" />
-            <ConstraintFeature ComponentID="{ASSY}|1" FeatureName="ASM_RIGHT" FeatureOrientationType="SIDE_A" _id="id1774" />
+            <ConstraintFeature ComponentID="{CARRIAGE}" FeatureName="RIGHT" FeatureOrientationType="SIDE_A" _id="id1773" >
+              <GeometryMarker x="0.0" y="0.0" z="0.0" i="1.0" j="0.0" k="0.0" pi="0" />
+            </ConstraintFeature>
+            <ConstraintFeature ComponentID="{ASSY}|1" FeatureName="ASM_RIGHT" FeatureOrientationType="SIDE_A" _id="id1774" >
+              <GeometryMarker x="0.0" y="0.0" z="0.0" i="1.0" j="0.0" k="0.0" pi="0" />
+            </ConstraintFeature>
           </Pair>
         </Constraint>
         <ParametricParameters _id="id1758">
