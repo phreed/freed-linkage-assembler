@@ -109,7 +109,7 @@
                              (invariant/init-link :fixed)
                              (invariant/init-link :free)
                              )) (keys links)))} ]
-     (invariant/set-link! kb base-link-name))))
+     (invariant/anchor-link! kb base-link-name))))
 
 
 (defn joints->constraints

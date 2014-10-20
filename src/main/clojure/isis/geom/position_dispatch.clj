@@ -66,9 +66,10 @@
         m1-link @(get-in kb [:link m1-link-name])
         m2-link @(get-in kb [:link m2-link-name])]
     (pp/pprint
-     `(~'let [~'m1-link-name ~m1-link-name
+     `(~'defn (str "test-" xform) []
+           (~'let [~'m1-link-name ~m1-link-name
               ~'m2-link-name ~m2-link-name
-              [~'kb ~'m1 ~'m2]
+              [~'kb ~'m1 ~'m2 :as ~'precon]
               (~(symbol (str nspace "/precondition"))
                 {:link
                  {~'m1-link-name (~'ref ~m1-link)
@@ -89,7 +90,7 @@
 
              (tt/fact ~(str nspace " " xform " m2")
                       @(~'get-in ~'kb [:link ~'m2-link-name]) ~'=>
-                      {:versor :m2-goal})))))
+                      {:versor :m2-goal}))))))
 
 (defn dump
   "Print a message building a test for this call. "

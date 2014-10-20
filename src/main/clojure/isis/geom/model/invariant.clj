@@ -9,7 +9,7 @@
   {:loc (ref #{}) :dir (ref #{}) :twist (ref #{})})
 
 
-(defn set-marker!
+(defn anchor-marker!
   "Abstract away the addition of the invariant so
   programs do not have to reference a global variable.
   The current types of invariant are:
@@ -17,6 +17,25 @@
   [kb [link-name proper-name] invariant-type]
   (alter (get-in kb [:invar invariant-type])
          conj [link-name proper-name]) )
+
+(defn- link-filter
+  [inv-set link-name]
+  (into #{[link-name]}
+        (filter #(let [[lname] %] (not= link-name lname))
+                (seq inv-set))))
+
+
+(defn anchor-link!
+  "When a link has no degrees of freedom all properties
+  for all of its markers become invariant."
+  [kb link-name]
+  (let [loc-inv (get-in kb [:invar :loc])
+        z-axis-inv (get-in kb [:invar :dir])
+        x-axis-inv (get-in kb [:invar :twist]) ]
+    (alter loc-inv link-filter link-name)
+    (alter z-axis-inv link-filter link-name)
+    (alter x-axis-inv link-filter link-name)
+    kb ))
 
 
 (defn- marker?
@@ -48,25 +67,6 @@
   [kb marker]
   (marker? marker (get-in kb [:invar :twist])))
 
-
-
-(defn- link-filter
-  [inv-set link-name]
-  (into #{[link-name]}
-        (filter #(let [[lname] %] (not= link-name lname))
-                (seq inv-set))))
-
-(defn set-link!
-  "When a link has no degrees of freedom all properties
-  for all of its markers become invariant."
-  [kb link-name]
-  (let [loc-inv (get-in kb [:invar :loc])
-        z-axis-inv (get-in kb [:invar :dir])
-        x-axis-inv (get-in kb [:invar :twist]) ]
-    (alter loc-inv link-filter link-name)
-    (alter z-axis-inv link-filter link-name)
-    (alter x-axis-inv link-filter link-name)
-    kb ))
 
 (defn make
   "Create a invariant in the link as outlined in C.3

@@ -93,7 +93,7 @@
      (alter m1-link merge
             (ga/translate @m1-link ga/vec-diff pnt1))
 
-     (invariant/set-marker! kb [m1-link-name m1-proper-name] :loc)
+     (invariant/anchor-link! kb m1-link-name)
 
      (alter m1-link assoc
             :tdof {:# 0 :point final-loc} )))

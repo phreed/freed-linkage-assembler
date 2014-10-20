@@ -8,19 +8,22 @@
             [clojure.pprint :as pp]))
 
 
-(defn precondition?
+(defn precondition
   "Associated with each constraint type is a function which
   checks the preconditions and returns the marker which
   is underconstrained."
   [kb point line]
-  (cond (invariant/marker-position? kb line)  [point line :mobile]
+  (cond (invariant/marker-position? kb line)  [kb point line :mobile]
         (and (invariant/marker-position? kb point)
-             (invariant/marker-direction? kb point)) [point line :fixed]
+             (invariant/marker-direction? kb point)) [kb point line :fixed]
         :else nil))
 
 
-(defn- assemble-dispatch [kb point line motive]
-  (let [[[link-name _] _] (case motive :fixed line :mobile point)
+(defn assemble-dispatch
+  [kb point line motive]
+  (let [[[link-name _] _] (case motive
+                            :fixed line
+                            :mobile point)
         link @(get (:link kb) link-name)
         tdof (get-in link [:tdof :#])
         rdof (get-in link [:rdof :#]) ]
@@ -40,10 +43,10 @@
   :in-line
   [kb constraint]
   (let [{point :m1 line :m2} constraint
-        precon (precondition? kb point line) ]
+        precon (precondition kb point line) ]
     (if-not precon
       :pre-condition-not-met
-      (let [[point line motive] precon]
+      (let [[kb point line motive] precon]
         (pp/fresh-line)
         (pp/pprint (str "in-line"
                         (assemble-dispatch kb point line motive)))

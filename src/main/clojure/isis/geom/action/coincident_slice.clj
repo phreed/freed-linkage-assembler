@@ -78,7 +78,7 @@ Explanation:
             (dof/r1:p->p @m2-link m2-point
                          (ga/gmp m2 kb) (ga/gmp m1 kb)
                          m2-axis m2-axis-1 m2-axis-2))
-     (invariant/set-link! kb m2-link-name)
+     (invariant/anchor-link! kb m2-link-name)
      (alter m2-link assoc
             :rdof {:# 0} ) ))
   :progress-made)
@@ -111,8 +111,8 @@ Explanation:
         m2-link (get-in kb [:link m2-link-name])
         m2-point (get-in @m2-link [:tdof :point])]
     (dosync
-     (invariant/set-marker! kb [m2-link-name m2-proper-name] :loc)
-     (invariant/set-marker! kb [m2-link-name m2-proper-name] :dir)
+     (invariant/anchor-marker! kb [m2-link-name m2-proper-name] :loc)
+     (invariant/anchor-marker! kb [m2-link-name m2-proper-name] :dir)
      (alter m2-link merge
             (dof/r3:p->p @m2-link m2-point
                          (ga/gmp m2 kb) (ga/gmp m1 kb)))
@@ -163,7 +163,7 @@ Explanation:
             (ga/translate @m2-link ga/vec-sum
                        (ga/vec-diff (ga/gmp m1 kb) (ga/gmp m2 kb))))
 
-     (invariant/set-marker! kb [m2-link-name m2-proper-name] :loc)
+     (invariant/anchor-marker! kb [m2-link-name m2-proper-name] :loc)
 
      (alter m2-link assoc
             :tdof {:# 0

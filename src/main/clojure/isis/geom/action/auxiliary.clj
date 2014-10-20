@@ -95,3 +95,15 @@
           (r1:p->p ?link ?center ?from-point ?to-point
                    (ga/outer-prod from-dir to-dir) nil nil))))
 
+(defn t2-r1:p->p
+  [?link ?point ?plane ?axis ?axis-1 ?axis-2 ?from-point ?to-point ?branch]
+  (let [r0 (ga/vec-diff ?to-point ?from-point)
+        _ (ga/translate ?link r0)
+        r1 (ga/line ?to-point ?axis)
+        r2 (ga/projection ?point r1)
+        r3 (ga/circle r2 ?axis (ga/rejection ?point r2))
+        r4 (ga/meet ?plane r3 ?branch)]
+    (if-not (ga/point? r4)
+      (emsg/mark-place-ic (ga/rejection ?plane r3))
+      (r1:p->p ?link ?from-point ?point r4 ?axis ?axis-1 ?axis-2))))
+

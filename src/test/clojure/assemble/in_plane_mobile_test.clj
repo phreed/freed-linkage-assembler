@@ -161,7 +161,7 @@
               (:rdof mobile-point) => {:# 3})  ) ) )
 
 
-(comment "in-plane :mobile :t3-r3")
+(defn test-t3-r3 []
 (let
   [m1-link-name "{CARRIAGE}"
    m2-link-name "{ASSY}|1"
@@ -223,10 +223,11 @@
    {:rdof {:# 0},
     :tdof {:# 0},
     :versor {:rotate [1.0 0.0 0.0 0.0],
-             :xlate [0.0 0.0 0.0]}}) )
+             :xlate [0.0 0.0 0.0]}}) ) )
 
 
-(comment "not-implemented in-plane-mobile :t1-r3")
+
+(defn test-t1-r3 []
 (let
   [m1-link-name "{CARRIAGE}"
    m2-link-name "{ASSY}|1"
@@ -272,9 +273,9 @@
    {:rdof {:# 0}
     :tdof {:# 0}
     :versor {:rotate [1.0 0.0 0.0 0.0]
-             :xlate [0.0 0.0 0.0]}}) )
+             :xlate [0.0 0.0 0.0]}}) ) )
 
-(comment "not-implemented in-plane-mobile :t2-r3")
+(defn test-t2-r3 []
 (let
   [m1-link-name "{ARM}"
    m2-link-name "{BOOM}"
@@ -351,10 +352,10 @@
                       0.4085080691896436]
              :xlate [6056.068568289035
                      1285.2113238369175
-                     220.0398552624306]}} ) )
+                     220.0398552624306]}} ) ) )
 
 
-(comment "in-plane {:tdof 2, :rdof 0, :motive :mobile}")
+(defn test-t2-r0 []
 (let
  [m1-link-name "{CARRIAGE}"
   m2-link-name "{ASSY}|1"
@@ -406,5 +407,10 @@
    {:rdof {:# 0}
     :tdof {:# 0}
     :versor {:rotate [1.0 0.0 0.0 0.0]
-             :xlate [0.0 0.0 0.0]}}) )
+             :xlate [0.0 0.0 0.0]}}) ) )
 
+
+(test-t3-r3)
+(test-t1-r3)
+(test-t2-r3)
+(test-t2-r0)

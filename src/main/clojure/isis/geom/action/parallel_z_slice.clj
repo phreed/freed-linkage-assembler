@@ -101,7 +101,7 @@ Explanation:
               (ga/rotate @m2-link m2-point m2-axis angle))
        (dof/r2:a m2-link m2-point angle m2-axis m2-axis-1 m2-axis-2))
 
-     (invariant/set-marker! kb [m2-link-name m2-proper-name] :dir)
+     (invariant/anchor-marker! kb [m2-link-name m2-proper-name] :dir)
      (alter m2-link assoc
             :tdof {:# 2, :point m2-point,
                    :plane m2-plane, :lf m2-lf}
@@ -246,7 +246,7 @@ Explanation:
               (ga/rotate @m2-link gmp1 (:d axis) angle))
        (dof/r2:a m2-link gmp2 angle m2-axis m2-axis-1 m2-axis-2))
 
-     (invariant/set-marker! kb [m2-link-name m2-proper-name] :dir)
+     (invariant/anchor-marker! kb [m2-link-name m2-proper-name] :dir)
      (alter m2-link assoc
             :tdof {:# 3}
             :rdof {:# 0} ) ))

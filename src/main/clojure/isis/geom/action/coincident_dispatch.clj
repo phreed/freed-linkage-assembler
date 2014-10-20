@@ -6,13 +6,13 @@
             [isis.geom.action [coincident-slice :as xlice]]))
 
 
-(defn- precondition?
+(defn precondition
   "Associated with each constraint type is a function which
   checks the preconditions and returns the marker which
   is underconstrained followed by the marker that is constrained."
   [kb m1 m2]
-  (cond (invariant/marker-position? kb m2) [m2 m1]
-        (invariant/marker-position? kb m1) [m1 m2]
+  (cond (invariant/marker-position? kb m2) [kb m2 m1]
+        (invariant/marker-position? kb m1) [kb m1 m2]
         :else false))
 
 
@@ -38,10 +38,10 @@
   :coincident
   [kb constraint]
   (let [{m1 :m1 m2 :m2} constraint
-        precon (precondition? kb m1 m2) ]
+        precon (precondition kb m1 m2) ]
     (if-not precon
       :pre-condition-not-met
-      (let [[ma1 ma2] precon]
+      (let [[kb ma1 ma2] precon]
         (pp/fresh-line)
         (pp/pprint (str "coincident" (assemble-dispatch kb ma1 ma2)))
         (assemble! kb ma1 ma2) ))))
