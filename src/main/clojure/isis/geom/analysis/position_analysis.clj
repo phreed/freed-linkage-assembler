@@ -2,8 +2,7 @@
   (:require   [isis.geom.position-dispatch
                :refer [constraint-attempt?]]
               [isis.geom.machine.misc :as misc]
-              [clojure.inspector :as jap]
-              [spyscope.repl :as spy]))
+              [clojure.inspector :as jap]))
 
 
 (defn- model->graph [model])
