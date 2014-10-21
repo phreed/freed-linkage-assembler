@@ -228,18 +228,16 @@
             (into {})) =>
         {"{ASSY}" {:rdof {:# 0}, :tdof {:# 0},
                    :versor {:rotate [1.0 0.0 0.0 0.0], :xlate [0.0 0.0 0.0]}},
-         "{BAR-1}" {:rdof {:# 0},
-                    :tdof {:# 2, :lf nil,
-                           :plane (ga/plane [0.0 0.0 0.0] [0.0 0.0 1.0]),
-                           :point [0.0 0.0 0.0]},
+         "{BAR-1}" {:rdof {:# 0}, :tdof {:# 0, :point [0.0 0.0 0.0]},
                     :versor {:rotate [1.0 0.0 0.0 0.0], :xlate [0.0 0.0 0.0]}},
-         "{BAR-2}" {:rdof {:# 3}, :tdof {:# 3},
-                    :versor {:rotate [1.0 0.0 0.0 0.0], :xlate [0.0 0.0 0.0]}},
-         "{BAR-3}" {:rdof {:# 3}, :tdof {:# 3},
-                    :versor {:rotate [1.0 0.0 0.0 0.0],
-                                                         :xlate [0.0 0.0 0.0]}},
-         "{BAR-4}" {:rdof {:# 3}, :tdof {:# 3},
-                    :versor {:rotate [1.0 0.0 0.0 0.0], :xlate [0.0 0.0 0.0]}}} )
+         "{BAR-2}" {:rdof {:# 0}, :tdof {:# 0, :point [0.0 0.0 50.0]},
+                    :versor {:rotate [0.7071067811865476 0.0 -0.7071067811865475 0.0],
+                             :xlate [-50.0 0.0 50.0]}},
+         "{BAR-3}" {:rdof {:# 0}, :tdof {:# 0, :point [-100.0 0.0 50.0]},
+                    :versor {:rotate [1.0 0.0 0.0 0.0], :xlate [-100.0 0.0 100.0]}},
+         "{BAR-4}" {:rdof {:# 0}, :tdof {:# 0, :point [-100.0 0.0 150.0]},
+                    :versor {:rotate [0.7071067811865476 0.0 -0.7071067811865475 0.0],
+                             :xlate [-150.0 0.0 150.0]}}} )
 
 
       (tt/incipient-fact

@@ -145,6 +145,12 @@
       nil
       (mapv #(/ % weight) vect))))
 
+(defn ptwist
+  "twist a vector making an arbitrary perpendicular vector."
+  [vect]
+  (let [[x y z] vect] [y z x]))
+
+
 (defn quat-normalize
   "Take a quaternion and normalize it to a unit quaternion."
   [[q0 q1 q2 q3]]

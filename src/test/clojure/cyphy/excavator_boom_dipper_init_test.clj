@@ -2,7 +2,7 @@
   "Sample assembly consisting of a boom and a dipper."
   (:require [midje.sweet :as tt]
 
-            [isis.geom.cyphy.cad-zipper :as cyphy]
+            [isis.geom.cyphy.cyphy-zip :as cyphy]
 
             [clojure.java.io :as jio]
             [clojure.zip :as zip]
@@ -37,7 +37,7 @@
   (clojure.walk/postwalk #(if (misc/reference? %) [:ref @%] %) form))
 
 
-(let [excavator-graph
+#_(let [excavator-graph
       (with-open [is (-> "excavator/excavator_boom_dipper_point.xml"
                          jio/resource jio/input-stream)]
         (cyphy/graph-from-cyphy-input-stream is))]
@@ -67,7 +67,7 @@
 
 
 
-(let [graph
+#_(let [graph
       (with-open [is (-> "excavator/excavator_boom_dipper_point.xml"
                          jio/resource jio/input-stream)]
         (cyphy/graph-from-cyphy-input-stream is))

@@ -4,10 +4,11 @@
             [isis.geom.machine [tolerance :as tol]]
             [isis.geom.algebra [geobj :as ga]]
             [isis.geom.action [auxiliary :as dof]]
-            [isis.geom.model [invariant :as invariant]] ))
+            [isis.geom.model [invariant :as invariant]]
+            [clojure.pprint :as pp]))
 
 
-(def slicer "coincident-slice")
+(def slicer "coincident")
 
 (defn assemble!->t0-r0
 "PFT entry: (0,0,coincident)
@@ -110,6 +111,7 @@ Explanation:
   (let [[[m2-link-name m2-proper-name] _] m2
         m2-link (get-in kb [:link m2-link-name])
         m2-point (get-in @m2-link [:tdof :point])]
+    ;; (pp/pprint ["m1" m1 "m2" m2 "m2-link" @m2-link])
     (dosync
      (invariant/anchor-marker! kb [m2-link-name m2-proper-name] :loc)
      (invariant/anchor-marker! kb [m2-link-name m2-proper-name] :dir)

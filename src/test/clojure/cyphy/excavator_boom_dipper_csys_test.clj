@@ -42,14 +42,14 @@
 
      (tt/fact
       "about the constraints" raw-constraints =>
-      [{:m1 [["{CARRIAGE}" "FRONT"]  {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 0.0]}],
-        :m2 [["{ASSY}|1" "ASM_FRONT"]  {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 0.0]}],
+      [{:m1 [["{CARRIAGE}" "FRONT"]  {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 1.0]}],
+        :m2 [["{ASSY}|1" "ASM_FRONT"]  {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 1.0]}],
         :type :planar}
-       {:m1 [["{CARRIAGE}" "TOP"]  {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 0.0]}],
-        :m2 [["{ASSY}|1" "ASM_TOP"]  {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 0.0]}],
+       {:m1 [["{CARRIAGE}" "TOP"]  {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 1.0]}],
+        :m2 [["{ASSY}|1" "ASM_TOP"]  {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 1.0]}],
         :type :planar}
-       {:m1 [["{CARRIAGE}" "RIGHT"]  {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 0.0]}],
-        :m2 [["{ASSY}|1" "ASM_RIGHT"]  {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 0.0]}],
+       {:m1 [["{CARRIAGE}" "RIGHT"]  {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 1.0]}],
+        :m2 [["{ASSY}|1" "ASM_RIGHT"]  {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 1.0]}],
         :type :planar}
        {:m1 [["{BOOM}" "ARM_CSYS"]  {:e [-8625.71 4720.65 600.0], :pi 1.3, :q [0.0 0.0 1.0]}],
         :m2 [["{CARRIAGE}" "BOOM_CSYS"]  {:e [3455.57 5.0 302.5], :pi 1.0, :q [1.0 0.0 0.0]}],
@@ -58,14 +58,14 @@
 
      (tt/fact
       "about the expanded :csys constraint"  meta-constraints =>
-      [{:m1 [["{CARRIAGE}" "FRONT"]  {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 0.0]}],
-        :m2 [["{ASSY}|1" "ASM_FRONT"]  {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 0.0]}],
+      [{:m1 [["{CARRIAGE}" "FRONT"]  {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 1.0]}],
+        :m2 [["{ASSY}|1" "ASM_FRONT"]  {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 1.0]}],
         :type :planar}
-       {:m1 [["{CARRIAGE}" "TOP"]  {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 0.0]}],
-        :m2 [["{ASSY}|1" "ASM_TOP"]  {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 0.0]}],
+       {:m1 [["{CARRIAGE}" "TOP"]  {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 1.0]}],
+        :m2 [["{ASSY}|1" "ASM_TOP"]  {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 1.0]}],
         :type :planar}
-       {:m1 [["{CARRIAGE}" "RIGHT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 0.0]}],
-        :m2 [["{ASSY}|1" "ASM_RIGHT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 0.0]}],
+       {:m1 [["{CARRIAGE}" "RIGHT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 1.0]}],
+        :m2 [["{ASSY}|1" "ASM_RIGHT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 1.0]}],
         :type :planar}
        {:m1 [["{BOOM}" "ARM_CSYS-origin"] {:e [-8625.71 4720.65 600.0]}],
         :m2 [["{CARRIAGE}" "BOOM_CSYS-origin"] {:e [3455.57 5.0 302.5]}],
@@ -80,23 +80,23 @@
      (tt/fact
       "about the expanded :planar constraints"  lower-constraints =>
       (tt/contains
-      [{:m1 [["{CARRIAGE}" "FRONT"]  {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 0.0]}],
-        :m2 [["{ASSY}|1" "ASM_FRONT"]  {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 0.0]}],
+      [{:m1 [["{CARRIAGE}" "FRONT"]  {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 1.0]}],
+        :m2 [["{ASSY}|1" "ASM_FRONT"]  {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 1.0]}],
         :type :in-plane}
-       {:m1 [["{CARRIAGE}" "FRONT"]  {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 0.0]}],
-        :m2 [["{ASSY}|1" "ASM_FRONT"]  {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 0.0]}],
+       {:m1 [["{CARRIAGE}" "FRONT"]  {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 1.0]}],
+        :m2 [["{ASSY}|1" "ASM_FRONT"]  {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 1.0]}],
         :type :parallel-z}
-       {:m1 [["{CARRIAGE}" "TOP"]  {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 0.0]}],
-        :m2 [["{ASSY}|1" "ASM_TOP"]  {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 0.0]}],
+       {:m1 [["{CARRIAGE}" "TOP"]  {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 1.0]}],
+        :m2 [["{ASSY}|1" "ASM_TOP"]  {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 1.0]}],
         :type :in-plane}
-       {:m1 [["{CARRIAGE}" "TOP"]  {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 0.0]}],
-        :m2 [["{ASSY}|1" "ASM_TOP"]  {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 0.0]}],
+       {:m1 [["{CARRIAGE}" "TOP"]  {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 1.0]}],
+        :m2 [["{ASSY}|1" "ASM_TOP"]  {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 1.0]}],
         :type :parallel-z}
-       {:m1 [["{CARRIAGE}" "RIGHT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 0.0]}],
-        :m2 [["{ASSY}|1" "ASM_RIGHT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 0.0]}],
+       {:m1 [["{CARRIAGE}" "RIGHT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 1.0]}],
+        :m2 [["{ASSY}|1" "ASM_RIGHT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 1.0]}],
         :type :in-plane}
-       {:m1 [["{CARRIAGE}" "RIGHT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 0.0]}],
-        :m2 [["{ASSY}|1" "ASM_RIGHT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 0.0]}],
+       {:m1 [["{CARRIAGE}" "RIGHT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 1.0]}],
+        :m2 [["{ASSY}|1" "ASM_RIGHT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 1.0]}],
         :type :parallel-z} ]))
 
      (tt/fact
@@ -193,23 +193,23 @@
 
        (tt/fact
         "about the success result" result-success =>
-        [{:m1 [["{CARRIAGE}" "FRONT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 0.0]}],
-          :m2 [["{ASSY}|1" "ASM_FRONT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 0.0]}],
+        [{:m1 [["{CARRIAGE}" "FRONT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 1.0]}],
+          :m2 [["{ASSY}|1" "ASM_FRONT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 1.0]}],
           :type :in-plane}
-         {:m1 [["{CARRIAGE}" "FRONT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 0.0]}],
-          :m2 [["{ASSY}|1" "ASM_FRONT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 0.0]}],
+         {:m1 [["{CARRIAGE}" "FRONT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 1.0]}],
+          :m2 [["{ASSY}|1" "ASM_FRONT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 1.0]}],
           :type :parallel-z}
-         {:m1 [["{CARRIAGE}" "TOP"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 0.0]}],
-          :m2 [["{ASSY}|1" "ASM_TOP"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 0.0]}],
+         {:m1 [["{CARRIAGE}" "TOP"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 1.0]}],
+          :m2 [["{ASSY}|1" "ASM_TOP"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 1.0]}],
           :type :parallel-z}
-         {:m1 [["{CARRIAGE}" "RIGHT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 0.0]}],
-          :m2 [["{ASSY}|1" "ASM_RIGHT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 0.0]}],
+         {:m1 [["{CARRIAGE}" "RIGHT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 1.0]}],
+          :m2 [["{ASSY}|1" "ASM_RIGHT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 1.0]}],
           :type :in-plane}
-         {:m1 [["{CARRIAGE}" "RIGHT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 0.0]}],
-          :m2 [["{ASSY}|1" "ASM_RIGHT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 0.0]}],
+         {:m1 [["{CARRIAGE}" "RIGHT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 1.0]}],
+          :m2 [["{ASSY}|1" "ASM_RIGHT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 1.0]}],
           :type :parallel-z}
-         {:m1 [["{CARRIAGE}" "TOP"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 0.0]}],
-          :m2 [["{ASSY}|1" "ASM_TOP"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 0.0]}],
+         {:m1 [["{CARRIAGE}" "TOP"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 1.0]}],
+          :m2 [["{ASSY}|1" "ASM_TOP"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 1.0]}],
           :type :in-plane}] )
 
 

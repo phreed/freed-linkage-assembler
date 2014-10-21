@@ -1,6 +1,7 @@
 (ns isis.geom.action.auxiliary
   "The geometric movement functions."
-  (:require [isis.geom.machine
+  (:require [clojure.pprint :as pp]
+            [isis.geom.machine
              [error-msg :as emsg]
              [tolerance :as tol]]
             [isis.geom.algebra [geobj :as ga]]))
@@ -53,6 +54,8 @@
   The procedure keeps the position of point ?center invariant,
   and moves ?from-point on ?link to globally-fixed ?to-point."
   [?link ?center ?from-point ?to-point ?axis ?axis-1 ?axis-2]
+  ;; (pp/pprint ["r1:p->p" "c" ?center "fp" ?from-point
+  ;;             "tp" ?to-point  "ax" ?axis])
   (let [pivot (ga/projection ?to-point (ga/line ?center ?axis))
         from-dir (ga/vec-diff ?from-point pivot)
         to-dir (ga/vec-diff ?to-point pivot)]
@@ -92,8 +95,13 @@
           (emsg/dim-oc ?from-point ?to-point ?center nil)
 
           :else
-          (r1:p->p ?link ?center ?from-point ?to-point
-                   (ga/outer-prod from-dir to-dir) nil nil))))
+          (let [axis (ga/outer-prod from-dir to-dir)]
+            (r1:p->p ?link ?center ?from-point ?to-point
+                     (ga/normalize
+                      (if-not (tol/near-zero? :default axis)
+                        axis
+                        (ga/ptwist from-dir)) )
+                     nil nil)))))
 
 (defn t2-r1:p->p
   [?link ?point ?plane ?axis ?axis-1 ?axis-2 ?from-point ?to-point ?branch]
