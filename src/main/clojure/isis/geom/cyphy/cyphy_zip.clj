@@ -26,6 +26,21 @@
          (parse-numeric (:j orig))
          (parse-numeric (:k orig))] }))
 
+(def ^{:private true} dummy-marker
+  {:e [0.0 0.0 0.0] :pi 0.0 :q [0.0 0.0 1.0]})
+
+(defn- reform-marker-pair
+  "If one of the markers is missing fill in with something reasonable.
+  If a geometric-marker is missing then a dummy will be created.
+  If one geomeric-marker is present then it is duplicated.
+  If neither geometric-marker is present then a default marker is used."
+  [g-a g-b]
+  (cond (and (nil? g-a) (nil? g-b)) [dummy-marker dummy-marker]
+        (nil? g-a) (let [real (reform-marker g-b)] [real real])
+        (nil? g-b) (let [real (reform-marker g-a)] [real real])
+        :else [(reform-marker g-a) (reform-marker g-b)] ))
+
+
 (def ^{:private true} constraint-type-map
   "A mapping between the types specified in the xml and the type required."
   {"SURFACE" :planar
@@ -92,13 +107,15 @@
             a-feat (first feature-pair)
             a-link-name (zx/attr a-feat :ComponentID)
             a-proper-name (zx/attr a-feat :FeatureName)
-            a-marker (reform-marker (zx/xml1-> a-feat :GeometryMarker))
+            a-geom (zx/xml1-> a-feat :GeometryMarker)
 
             b-feat (second feature-pair)
             b-link-name (zx/attr b-feat :ComponentID)
             b-proper-name (zx/attr b-feat :FeatureName)
-            b-marker (reform-marker (zx/xml1-> b-feat :GeometryMarker))
-            ]
+            b-geom (zx/xml1-> b-feat :GeometryMarker)
+
+            [a-marker b-marker] (reform-marker-pair a-geom b-geom) ]
+
         {:type (get constraint-type-map c-type "UNKNOWN")
          :m1 [[a-link-name a-proper-name] a-marker]
          :m2 [[b-link-name b-proper-name] b-marker]} ))))

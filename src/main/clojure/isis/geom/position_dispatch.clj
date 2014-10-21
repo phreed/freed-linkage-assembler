@@ -66,7 +66,7 @@
         m1-link @(get-in kb [:link m1-link-name])
         m2-link @(get-in kb [:link m2-link-name])]
     (pp/pprint
-     `(~'defn (str "test-" xform) []
+     `(~'defn ~(str "test-" xform) []
            (~'let [~'m1-link-name ~m1-link-name
               ~'m2-link-name ~m2-link-name
               [~'kb ~'m1 ~'m2 :as ~'precon]

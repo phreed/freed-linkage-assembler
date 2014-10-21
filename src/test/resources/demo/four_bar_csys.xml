@@ -8,19 +8,19 @@
             <ConstraintFeature ComponentID="{BAR-1}" FeatureName="FRONT" FeatureOrientationType="SIDE_A" _id="id29">
               <GeometryMarker x="0" y="0" z="0" i="0" j="0" k="1" pi="0" _id="id30" />
             </ConstraintFeature>
-            <ConstraintFeature ComponentID="{ASSY}" FeatureName="ASM_FRONT" FeatureOrientationType="SIDE_A" _id="id31" />
+            <ConstraintFeature ComponentID="{ASSY}" FeatureName="ASM_FRONT" FeatureOrientationType="SIDE_A" _id="id31"/>
           </Pair>
           <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="SURFACE" FeatureAlignmentType="ALIGN" _id="id32">
             <ConstraintFeature ComponentID="{BAR-1}" FeatureName="TOP" FeatureOrientationType="SIDE_A" _id="id33">
               <GeometryMarker x="0" y="0" z="0" i="0" j="1" k="0" pi="0" _id="id34" />
             </ConstraintFeature>
-            <ConstraintFeature ComponentID="{ASSY}" FeatureName="ASM_TOP" FeatureOrientationType="SIDE_A" _id="id35" />
+            <ConstraintFeature ComponentID="{ASSY}" FeatureName="ASM_TOP" FeatureOrientationType="SIDE_A" _id="id35"/>
           </Pair>
           <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="SURFACE" FeatureAlignmentType="ALIGN" _id="id36">
             <ConstraintFeature ComponentID="{BAR-1}" FeatureName="RIGHT" FeatureOrientationType="SIDE_A" _id="id37">
               <GeometryMarker x="0" y="0" z="0" i="1" j="0" k="0" pi="0" _id="id38" />
             </ConstraintFeature>
-            <ConstraintFeature ComponentID="{ASSY}" FeatureName="ASM_RIGHT" FeatureOrientationType="SIDE_A" _id="id39" />
+            <ConstraintFeature ComponentID="{ASSY}" FeatureName="ASM_RIGHT" FeatureOrientationType="SIDE_A" _id="id39"/>
           </Pair>
         </Constraint>
         <ParametricParameters _id="id22">

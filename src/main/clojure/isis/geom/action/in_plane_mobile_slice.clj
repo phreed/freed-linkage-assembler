@@ -147,6 +147,7 @@
 
          plane2 (ga/plane gmp2 gmz2)
          line02 (ga/meet plane0 plane2) ]
+    (pp/pprint ["m1" m1 "m2" m2 "m1-link" @m1-link])
 
     ;; What to do about :degenerate or parallel planes?
     (case line02
@@ -217,6 +218,7 @@
 
          [[m1-link-name m1-proper-name] _] m1
          m1-link (get-in kb [:link m1-link-name])]
+    (pp/pprint ["m1" m1 "m2" m2 "m1-link" @m1-link])
     (dosync
      (alter m1-link merge
             (ga/translate @m1-link ga/vec-diff reject))

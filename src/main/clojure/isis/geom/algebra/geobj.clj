@@ -649,7 +649,7 @@
   (let [ln-axis (outer-prod n1 n2)]
     (if (tol/near-zero? :tiny ln-axis)
       (do
-        (pp/pprint ["degenerate/contradictory" ln-axis])
+        (pp/pprint ["degenerate/contradictory" ln-axis "s1" s1 "s2" s2])
         ;; FIXME What to do about parallel planes?
         ;; The parallel planes can be detected when ln-axis has a 0 norm.
         :degenerate )
