@@ -146,9 +146,16 @@
       (mapv #(/ % weight) vect))))
 
 (defn ptwist
-  "twist a vector making an arbitrary perpendicular vector."
+  "twist a vector making an arbitrary perpendicular vector.
+  There are any number of solutions to this problem.
+  Using the fact that a zero dot-product is a sign of
+  perpendicularity, three solutions are [-y x 0], [0 z -y]
+  and [-z 0 x].  We are looking for a solution that
+  is insensitive to zeros in the input vector, this
+  can be achieved via a linear combination of these
+  three primitive solutions. "
   [vect]
-  (let [[x y z] vect] [y z x]))
+  (let [[x y z] vect] [(- (+ y z)) (+ x z) (- x y)]))
 
 
 (defn quat-normalize

@@ -240,10 +240,55 @@
                              :xlate [-150.0 0.0 150.0]}}} )
 
 
-      (tt/incipient-fact
-       "about the success result" result-success => [])
+      (tt/fact
+       "about the success result" result-success =>
+        [{:m1 [["{BAR-1}" "FRONT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 1.0]}],
+          :m2 [["{ASSY}" "ASM_FRONT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 1.0]}],
+          :type :in-plane}
+         {:m1 [["{BAR-1}" "FRONT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 1.0]}],
+          :m2 [["{ASSY}" "ASM_FRONT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 1.0]}],
+          :type :parallel-z}
+         {:m1 [["{BAR-1}" "TOP"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 1.0 0.0]}],
+          :m2 [["{ASSY}" "ASM_TOP"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 1.0 0.0]}],
+          :type :parallel-z}
+         {:m1 [["{BAR-1}" "RIGHT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [1.0 0.0 0.0]}],
+          :m2 [["{ASSY}" "ASM_RIGHT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [1.0 0.0 0.0]}],
+          :type :in-plane}
+         {:m1 [["{BAR-1}" "RIGHT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [1.0 0.0 0.0]}],
+          :m2 [["{ASSY}" "ASM_RIGHT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [1.0 0.0 0.0]}],
+          :type :parallel-z}
+         {:m1 [["{BAR-1}" "TOP"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 1.0 0.0]}],
+          :m2 [["{ASSY}" "ASM_TOP"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 1.0 0.0]}],
+          :type :in-plane}
+         {:m1 [["{BAR-1}" "CS1-origin"] {:e [0.0 0.0 50.0]}],
+          :m2 [["{BAR-2}" "CS0-origin"] {:e [0.0 0.0 -50.0]}],
+          :type :coincident}
+         {:m1 [["{BAR-1}" "CS1-3x"] {:e [300.0 0.0 50.0]}],
+          :m2 [["{BAR-2}" "CS0-3x"] {:e [0.0 0.0 -350.0]}],
+          :type :coincident}
+         {:m1 [["{BAR-1}" "CS1-4y"] {:e [0.0 400.0 50.0]}],
+          :m2 [["{BAR-2}" "CS0-4y"] {:e [0.0 400.0 -50.0]}],
+          :type :coincident}
+         {:m1 [["{BAR-3}" "CS0-origin"] {:e [0.0 0.0 -50.0]}],
+          :m2 [["{BAR-2}" "CS1-origin"] {:e [0.0 0.0 50.0]}],
+          :type :coincident}
+         {:m1 [["{BAR-3}" "CS0-3x"] {:e [0.0 0.0 -350.0]}],
+          :m2 [["{BAR-2}" "CS1-3x"] {:e [300.0 0.0 50.0]}],
+          :type :coincident}
+         {:m1 [["{BAR-3}" "CS0-4y"] {:e [0.0 400.0 -50.0]}],
+          :m2 [["{BAR-2}" "CS1-4y"] {:e [0.0 400.0 50.0]}],
+          :type :coincident}
+         {:m1 [["{BAR-3}" "CS1-origin"] {:e [0.0 0.0 50.0]}],
+          :m2 [["{BAR-4}" "CS0-origin"] {:e [0.0 0.0 -50.0]}],
+          :type :coincident}
+         {:m1 [["{BAR-3}" "CS1-3x"] {:e [300.0 0.0 50.0]}],
+          :m2 [["{BAR-4}" "CS0-3x"] {:e [0.0 0.0 -350.0]}],
+          :type :coincident}
+         {:m1 [["{BAR-3}" "CS1-4y"] {:e [0.0 400.0 50.0]}],
+          :m2 [["{BAR-4}" "CS0-4y"] {:e [0.0 400.0 -50.0]}],
+          :type :coincident}] )
 
-      (tt/incipient-fact
+      (tt/fact
        "about the failure result" result-failure =>
        [] )
 
