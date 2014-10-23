@@ -255,52 +255,58 @@
 
 
       (tt/fact
-       "about order of the constraint application in success result"
-       result-success =>
-       [{:m1 [["{BAR-1}" "FRONT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 1.0]}],
-         :m2 [["{ASSY}" "ASM_FRONT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 1.0]}],
+       "about order of the constraint application in success result."
+       (comment "only the names and types are important.
+         we are checking the plan schedule.")
+       (for [con result-success]
+         {:m1 (-> con :m1 first)
+          :m2 (-> con :m2 first)
+          :type (:type con)})
+           =>
+       [{:m1 ["{BAR-1}" "FRONT"]
+         :m2 ["{ASSY}" "ASM_FRONT"]
          :type :in-plane}
-        {:m1 [["{BAR-1}" "FRONT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 1.0]}],
-         :m2 [["{ASSY}" "ASM_FRONT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 1.0]}],
+        {:m1 ["{BAR-1}" "FRONT"]
+         :m2 ["{ASSY}" "ASM_FRONT"]
          :type :parallel-z}
-        {:m1 [["{BAR-1}" "TOP"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 1.0 0.0]}],
-         :m2 [["{ASSY}" "ASM_TOP"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 1.0 0.0]}],
+        {:m1 ["{BAR-1}" "TOP"]
+         :m2 ["{ASSY}" "ASM_TOP"]
          :type :parallel-z}
-        {:m1 [["{BAR-1}" "RIGHT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [1.0 0.0 0.0]}],
-         :m2 [["{ASSY}" "ASM_RIGHT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [1.0 0.0 0.0]}],
+        {:m1 ["{BAR-1}" "RIGHT"]
+         :m2 ["{ASSY}" "ASM_RIGHT"]
          :type :in-plane}
-        {:m1 [["{BAR-1}" "RIGHT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [1.0 0.0 0.0]}],
-         :m2 [["{ASSY}" "ASM_RIGHT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [1.0 0.0 0.0]}],
+        {:m1 ["{BAR-1}" "RIGHT"]
+         :m2 ["{ASSY}" "ASM_RIGHT"]
          :type :parallel-z}
-        {:m1 [["{BAR-1}" "TOP"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 1.0 0.0]}],
-         :m2 [["{ASSY}" "ASM_TOP"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 1.0 0.0]}],
+        {:m1 ["{BAR-1}" "TOP"]
+         :m2 ["{ASSY}" "ASM_TOP"]
          :type :in-plane}
-        {:m1 [["{BAR-1}" "CS1-origin"] {:e [50.0 0.0 0.0]}],
-         :m2 [["{BAR-2}" "CS0-origin"] {:e [-50.0 0.0 0.0]}],
+        {:m1 ["{BAR-1}" "CS1-origin"]
+         :m2 ["{BAR-2}" "CS0-origin"]
          :type :coincident}
-        {:m1 [["{BAR-1}" "CS1-3x"] {:e [50.0 300.0 0.0]}],
-         :m2 [["{BAR-2}" "CS0-3x"] {:e [250.0 0.0 0.0]}],
+        {:m1 ["{BAR-1}" "CS1-3x"]
+         :m2 ["{BAR-2}" "CS0-3x"]
          :type :coincident}
-        {:m1 [["{BAR-1}" "CS1-4y"] {:e [-350.0 0.0 0.0]}],
-         :m2 [["{BAR-2}" "CS0-4y"] {:e [-50.0 400.0 0.0]}],
+        {:m1 ["{BAR-1}" "CS1-4y"]
+         :m2 ["{BAR-2}" "CS0-4y"]
          :type :coincident}
-        {:m1 [["{BAR-3}" "CS0-origin"] {:e [-50.0 0.0 0.0]}],
-         :m2 [["{BAR-2}" "CS1-origin"] {:e [50.0 0.0 0.0]}],
+        {:m1 ["{BAR-3}" "CS0-origin"]
+         :m2 ["{BAR-2}" "CS1-origin"]
          :type :coincident}
-        {:m1 [["{BAR-3}" "CS0-3x"] {:e [250.0 0.0 0.0]}],
-         :m2 [["{BAR-2}" "CS1-3x"] {:e [50.0 300.0 0.0]}],
+        {:m1 ["{BAR-3}" "CS0-3x"]
+         :m2 ["{BAR-2}" "CS1-3x"]
          :type :coincident}
-        {:m1 [["{BAR-3}" "CS0-4y"] {:e [-50.0 400.0 0.0]}],
-         :m2 [["{BAR-2}" "CS1-4y"] {:e [-350.0 0.0 0.0]}],
+        {:m1 ["{BAR-3}" "CS0-4y"]
+         :m2 ["{BAR-2}" "CS1-4y"]
          :type :coincident}
-        {:m1 [["{BAR-3}" "CS1-origin"] {:e [50.0 0.0 0.0]}],
-         :m2 [["{BAR-4}" "CS0-origin"] {:e [-50.0 0.0 0.0]}],
+        {:m1 ["{BAR-3}" "CS1-origin"]
+         :m2 ["{BAR-4}" "CS0-origin"]
          :type :coincident}
-        {:m1 [["{BAR-3}" "CS1-3x"] {:e [50.0 300.0 0.0]}],
-         :m2 [["{BAR-4}" "CS0-3x"] {:e [250.0 0.0 0.0]}],
+        {:m1 ["{BAR-3}" "CS1-3x"]
+         :m2 ["{BAR-4}" "CS0-3x"]
          :type :coincident}
-        {:m1 [["{BAR-3}" "CS1-4y"] {:e [-350.0 0.0 0.0]}],
-         :m2 [["{BAR-4}" "CS0-4y"] {:e [-50.0 400.0 0.0]}],
+        {:m1 ["{BAR-3}" "CS1-4y"]
+         :m2 ["{BAR-4}" "CS0-4y"]
          :type :coincident}])
 
 

@@ -219,50 +219,65 @@
                constraints-orig) =>
       [{:m1 [["{ARM}" "BUCKET_ATTACHMENT_PLANE"]
              {:e [-1480.92 0.0 0.0], :pi 0.0, :q [-1.0 0.0 0.0]}],
-        :m2 [["{BUCKET}" "ARM_GUIDE"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 0.0]}],
+        :m2 [["{BUCKET}" "ARM_GUIDE"]
+             {:e [-1480.92 0.0 0.0], :pi 0.0, :q [-1.0 0.0 0.0]}],
         :type :planar}
        {:m1 [["{ARM}" "BUCKET_CENTER_PLANE"]
              {:e [0.0 0.0 -250.0], :pi 0.0, :q [0.0 0.0 1.0]}],
         :m2 [["{BUCKET}" "CENTER_PLANE"]
-             {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 0.0]}],
+             {:e [0.0 0.0 -250.0], :pi 0.0, :q [0.0 0.0 1.0]}],
         :type :planar}
        {:m1 [["{ARM}" "BUCKET_AXIS"]
              {:e [-1480.92 100.0 0.0], :pi 0.0, :q [0.0 0.0 -1.0]}],
-        :m2 [["{BUCKET}" "LOWER_HOLE"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 0.0]}],
-        :type :linear}] ) )
+        :m2 [["{BUCKET}" "LOWER_HOLE"]
+             {:e [-1480.92 100.0 0.0], :pi 0.0, :q [0.0 0.0 -1.0]}],
+        :type :linear}]))
+
 
 
     (tt/facts
      "about the parsed cad-assembly file invariants"
 
-     (tt/fact
-      "about the initial link settings"
-      (->> kb :link
-           (filter #(contains? #{ "{ASSY}|1" "{CARRIAGE}"
-                                  "{BOOM}" "{ARM}"
-                                  "{BUCKET}"} (first %)))
-           (mapv #(vector (first %) @(second %)))
-           (into {})) =>
-      { "{ASSY}|1"  {:rdof {:# 0}, :tdof {:# 0},
+      (tt/fact
+      "about the final ASSY link settings"
+      (-> kb :link (get "{ASSY}|1") deref) =>
+       {:name nil
+                 :rdof {:# 0}, :tdof {:# 0},
                      :versor {:rotate [1.0 0.0 0.0 0.0],
-                              :xlate [0.0 0.0 0.0]}},
+                              :xlate [0.0 0.0 0.0]}})
 
-        "{CARRIAGE}" {:rdof {:# 3}, :tdof {:# 3},
+      (tt/fact
+      "about the final CARRIAGE link settings"
+      (-> kb :link (get "{CARRIAGE}") deref) =>
+        {:name "UPPER_BODY"
+                 :rdof {:# 3}, :tdof {:# 3},
                       :versor {:rotate [1.0 0.0 0.0 0.0],
-                               :xlate [0.0 0.0 0.0]}},
+                               :xlate [0.0 0.0 0.0]}})
 
-        "{BOOM}" {:rdof {:# 3},
+      (tt/fact
+      "about the final BOOM link settings"
+      (-> kb :link (get "{BOOM}") deref) =>
+        {:name "BOOM"
+                 :rdof {:# 3},
                   :tdof {:# 3},
                   :versor {:rotate [1.0 0.0 0.0 0.0],
-                           :xlate [0.0 0.0 0.0]}},
-        "{ARM}" {:rdof {:# 3},
+                           :xlate [0.0 0.0 0.0]}})
+      (tt/fact
+      "about the final ARM link settings"
+      (-> kb :link (get "{ARM}") deref) =>
+        {:name "ARM_ASSEMBLY_2"
+                 :rdof {:# 3},
                  :tdof {:# 3},
                  :versor {:rotate [1.0 0.0 0.0 0.0],
-                          :xlate [0.0 0.0 0.0]}},
-        "{BUCKET}" {:rdof {:# 3},
+                          :xlate [0.0 0.0 0.0]}} )
+      (tt/fact
+      "about the final BUCKET link settings"
+      (-> kb :link (get "{BUCKET}") deref) =>
+        {:name "panel_bucket_assembly"
+                 :rdof {:# 3},
                     :tdof {:# 3},
                     :versor {:rotate [1.0 0.0 0.0 0.0],
-                             :xlate [0.0 0.0 0.0]}} } )
+                             :xlate [0.0 0.0 0.0]}} )
 
 
      (tt/fact
@@ -297,19 +312,32 @@
                                    "{BUCKET}"} (first %)))
             (mapv #(vector (first %) @(second %)))
             (into {})) =>
-       {
-        "{ASSY}|1" {:rdof {:# 0}, :tdof {:# 0},
+       {"{ASSY}|1" {:name nil,
+                    :rdof {:# 0},
+                    :tdof {:# 0},
                     :versor {:rotate [1.0 0.0 0.0 0.0], :xlate [0.0 0.0 0.0]}},
-        "{CARRIAGE}" {:rdof {:# 0},
-                      :tdof {:# 0 :point [0.0 0.0 0.0]},
-                      :versor {:rotate [1.0 0.0 0.0 0.0], :xlate [0.0 0.0 0.0]}}
-        "{BOOM}" {:rdof {:# 3}, :tdof {:# 3},
-                  :versor {:rotate [1.0 0.0 0.0 0.0], :xlate [0.0 0.0 0.0]}},
-        "{ARM}" {:rdof {:# 3}, :tdof {:# 3},
-                 :versor {:rotate [1.0 0.0 0.0 0.0], :xlate [0.0 0.0 0.0]}},
-        "{BUCKET}" {:rdof {:# 3}, :tdof {:# 3},
-                    :versor {:rotate [1.0 0.0 0.0 0.0], :xlate [0.0 0.0 0.0]}},
-        } )
+
+        "{CARRIAGE}" {:name "UPPER_BODY",
+                      :rdof {:# 0}, :tdof {:# 0, :point [0.0 0.0 0.0]},
+                      :versor {:rotate [1.0 0.0 0.0 0.0], :xlate [0.0 0.0 0.0]}},
+
+        "{BOOM}" {:name "BOOM",
+                  :rdof {:# 0},
+                  :tdof {:# 1, :lf [300.68126469514755 2971.920169479622 -1636.3200000000002],
+                         :line (ga/line [0.0 2591.01 -1636.32]
+                                        [0.6195969498011189 0.7849201359355931 -0.0]),
+                         :point [300.68126469514755 2971.920169479622 -1636.3200000000002]},
+                  :versor {:rotate [5.979528364703837E-5 0.43823076369396 0.5550646082780856 -0.70700571059492],
+                           :xlate [-4408.6225178875175 7453.869697754217 -1993.6805772209982]}},
+       "{ARM}" {:name "ARM_ASSEMBLY_2",
+                 :rdof {:# 1,
+                        :axis [-3250.2573521235577 6540.758298656562 3119.1696376160976]},
+                 :tdof {:# 3},
+                 :versor {:rotate [0.8344893664574996 0.49345661392998297 0.2452102514947461 0.0],
+                          :xlate [-1745.4318404411147 3512.4750314450243 1013.0785487003541]}},
+        "{BUCKET}" {:name "panel_bucket_assembly",
+                    :rdof {:# 3}, :tdof {:# 3},
+                    :versor {:rotate [1.0 0.0 0.0 0.0], :xlate [0.0 0.0 0.0]}} } )
 
 
       (tt/incipient-fact
@@ -325,5 +353,3 @@
                             jio/output-stream)]
 
           (cyphy/update-cad-assembly-using-knowledge fis fos kb) ) ) ))
-
-
