@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Assemblies xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" VersionInfo="" xsi:noNamespaceSchemaLocation="AssemblyInterface.xsd">
+  <Assembly ConfigurationID="{ASSY}" _id="id1">
+    <CADComponent ComponentID="{ASSY}" Name="ComponentAssembly_1" DisplayName="ComponentAssembly_1" Type="ASSEMBLY" SpecialInstruction="" MaterialID="" Representation="" _id="id2">
+      <CADComponent ComponentID="{BAR-1}" Name="BAR_1" DisplayName="Bar_1" Type="PART" SpecialInstruction="" MaterialID="" Representation="" Classification="Unknown" _id="id21">
+        <Constraint _id="id27">
+          <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="SURFACE" FeatureAlignmentType="ALIGN" _id="id28">
+            <ConstraintFeature ComponentID="{BAR-1}" FeatureName="FRONT" FeatureOrientationType="SIDE_A" _id="id29">
+              <GeometryMarker x="0" y="0" z="0" i="0" j="0" k="1" pi="0" _id="id30" />
+            </ConstraintFeature>
+            <ConstraintFeature ComponentID="{ASSY}" FeatureName="ASM_FRONT" FeatureOrientationType="SIDE_A" _id="id31" />
+          </Pair>
+          <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="SURFACE" FeatureAlignmentType="ALIGN" _id="id32">
+            <ConstraintFeature ComponentID="{BAR-1}" FeatureName="TOP" FeatureOrientationType="SIDE_A" _id="id33">
+              <GeometryMarker x="0" y="0" z="0" i="0" j="1" k="0" pi="0" _id="id34" />
+            </ConstraintFeature>
+            <ConstraintFeature ComponentID="{ASSY}" FeatureName="ASM_TOP" FeatureOrientationType="SIDE_A" _id="id35" />
+          </Pair>
+          <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="SURFACE" FeatureAlignmentType="ALIGN" _id="id36">
+            <ConstraintFeature ComponentID="{BAR-1}" FeatureName="RIGHT" FeatureOrientationType="SIDE_A" _id="id37">
+              <GeometryMarker x="0" y="0" z="0" i="1" j="0" k="0" pi="0" _id="id38" />
+            </ConstraintFeature>
+            <ConstraintFeature ComponentID="{ASSY}" FeatureName="ASM_RIGHT" FeatureOrientationType="SIDE_A" _id="id39" />
+          </Pair>
+        </Constraint>
+        <ParametricParameters _id="id22">
+          <CADParameter Name="MODELED_BY" Type="String" Value="0" _id="id23">
+            <Units Value="" _id="id24" />
+          </CADParameter>
+          <CADParameter Name="DESCRIPTION" Type="String" Value="0" _id="id25">
+            <Units Value="" _id="id26" />
+          </CADParameter>
+        </ParametricParameters>
+      </CADComponent>
+      <CADComponent ComponentID="{BAR-2}" Name="BAR_1" DisplayName="Bar_2" Type="PART" SpecialInstruction="" MaterialID="" Representation="" Classification="Unknown" _id="id40">
+        <Constraint _id="id3">
+          <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="CSYS" FeatureAlignmentType="CSYS" _id="id4">
+            <ConstraintFeature ComponentID="{BAR-1}" FeatureName="CS1" FeatureOrientationType="NONE" _id="id5">
+              <GeometryMarker x="50" y="0" z="0" i="0" j="0" k="1" pi="0.5" _id="id6" />
+            </ConstraintFeature>
+            <ConstraintFeature ComponentID="{BAR-2}" FeatureName="CS0" FeatureOrientationType="NONE" _id="id7">
+              <GeometryMarker x="-50" y="0" z="0" i="0" j="0" k="1" pi="0" _id="id8" />
+            </ConstraintFeature>
+          </Pair>
+        </Constraint>
+        <ParametricParameters _id="id41">
+          <CADParameter Name="DESCRIPTION" Type="String" Value="0" _id="id42">
+            <Units Value="" _id="id43" />
+          </CADParameter>
+          <CADParameter Name="MODELED_BY" Type="String" Value="0" _id="id44">
+            <Units Value="" _id="id45" />
+          </CADParameter>
+        </ParametricParameters>
+      </CADComponent>
+      <CADComponent ComponentID="{BAR-3}" Name="BAR_1" DisplayName="Bar_3" Type="PART" SpecialInstruction="" MaterialID="" Representation="" Classification="Unknown" _id="id46">
+        <Constraint _id="id9">
+          <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="CSYS" FeatureAlignmentType="CSYS" _id="id10">
+            <ConstraintFeature ComponentID="{BAR-3}" FeatureName="CS0" FeatureOrientationType="NONE" _id="id11">
+              <GeometryMarker x="-50" y="0" z="0" i="0" j="0" k="1" pi="0" _id="id12" />
+            </ConstraintFeature>
+            <ConstraintFeature ComponentID="{BAR-2}" FeatureName="CS1" FeatureOrientationType="NONE" _id="id13">
+              <GeometryMarker x="50" y="0" z="0" i="0" j="0" k="1" pi="0.5" _id="id14" />
+            </ConstraintFeature>
+          </Pair>
+        </Constraint>
+        <ParametricParameters _id="id47">
+          <CADParameter Name="DESCRIPTION" Type="String" Value="0" _id="id48">
+            <Units Value="" _id="id49" />
+          </CADParameter>
+          <CADParameter Name="MODELED_BY" Type="String" Value="0" _id="id50">
+            <Units Value="" _id="id51" />
+          </CADParameter>
+        </ParametricParameters>
+      </CADComponent>
+      <CADComponent ComponentID="{BAR-4}" Name="BAR_1" DisplayName="Bar_4" Type="PART" SpecialInstruction="" MaterialID="" Representation="" Classification="Unknown" _id="id52">
+        <Constraint _id="id15">
+          <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="CSYS" FeatureAlignmentType="CSYS" _id="id16">
+            <ConstraintFeature ComponentID="{BAR-3}" FeatureName="CS1" FeatureOrientationType="NONE" _id="id17">
+              <GeometryMarker x="50" y="0" z="0" i="0" j="0" k="1" pi="0.5" _id="id18" />
+            </ConstraintFeature>
+            <ConstraintFeature ComponentID="{BAR-4}" FeatureName="CS0" FeatureOrientationType="NONE" _id="id19">
+              <GeometryMarker x="-50" y="0" z="0" i="0" j="0" k="1" pi="0" _id="id20" />
+            </ConstraintFeature>
+          </Pair>
+        </Constraint>
+        <ParametricParameters _id="id53">
+          <CADParameter Name="MODELED_BY" Type="String" Value="0" _id="id54">
+            <Units Value="" _id="id55" />
+          </CADParameter>
+          <CADParameter Name="DESCRIPTION" Type="String" Value="0" _id="id56">
+            <Units Value="" _id="id57" />
+          </CADParameter>
+        </ParametricParameters>
+      </CADComponent>
+    </CADComponent>
+    <Properties _id="id58">
+      <Units Value="value1" _id="id59" />
+    </Properties>
+  </Assembly>
+  <DataExchange _id="id60">
+    <STEPFormat Name="AP203_E2_Single_File" _id="id61" />
+    <STEPFormat Name="AP203_E2_Separate_Part_Files" _id="id62" />
+  </DataExchange>
+</Assemblies>

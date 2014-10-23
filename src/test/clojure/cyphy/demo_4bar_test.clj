@@ -3,6 +3,8 @@
             [isis.geom.cyphy
              [cyphy-zip :as cyphy]
              [cad-stax :as stax]]
+            [isis.geom.visual
+             [openscad :as openscad]]
 
             [clojure.java.io :as jio]
             [clojure.data]
@@ -28,7 +30,7 @@
              [parallel-z-dispatch]]))
 
 
-(with-open [fis (-> "demo/four_bar_csys.xml"
+(with-open [fis (-> "demo/four_bar_csys_a.xml"
                     jio/resource jio/input-stream)]
   (let [kb (cyphy/knowledge-via-input-stream fis)
         constraints-orig (:constraint kb)
@@ -54,44 +56,45 @@
       "original the carriage is connected to the base assembly via three planes"
       (filterv #(choose-pair % "{ASSY}" "{BAR-1}")
                constraints-orig) =>
-       [{:m1 [["{BAR-1}" "FRONT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 1.0]}],
-         :m2 [["{ASSY}" "ASM_FRONT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 1.0]}],
-         :type :planar}
-        {:m1 [["{BAR-1}" "TOP"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 1.0 0.0]}],
-         :m2 [["{ASSY}" "ASM_TOP"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 1.0 0.0]}],
-         :type :planar}
-        {:m1 [["{BAR-1}" "RIGHT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [1.0 0.0 0.0]}],
-         :m2 [["{ASSY}" "ASM_RIGHT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [1.0 0.0 0.0]}],
-         :type :planar}] )
+      [{:m1 [["{BAR-1}" "FRONT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 1.0]}],
+        :m2 [["{ASSY}" "ASM_FRONT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 1.0]}],
+        :type :planar}
+       {:m1 [["{BAR-1}" "TOP"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 1.0 0.0]}],
+        :m2 [["{ASSY}" "ASM_TOP"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 1.0 0.0]}],
+        :type :planar}
+       {:m1 [["{BAR-1}" "RIGHT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [1.0 0.0 0.0]}],
+        :m2 [["{ASSY}" "ASM_RIGHT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [1.0 0.0 0.0]}],
+        :type :planar}] )
 
      (tt/fact
       "meta expanded "
       (filterv #(choose-pair % "{BAR-1}" "{BAR-2}")
                constraints-meta) =>
-      [{:m1 [["{BAR-1}" "CS1-origin"] {:e [0.0 0.0 50.0]}],
-        :m2 [["{BAR-2}" "CS0-origin"] {:e [0.0 0.0 -50.0]}],
+      [{:m1 [["{BAR-1}" "CS1-origin"] {:e [50.0 0.0 0.0]}],
+        :m2 [["{BAR-2}" "CS0-origin"] {:e [-50.0 0.0 0.0]}],
         :type :coincident}
-       {:m1 [["{BAR-1}" "CS1-3x"] {:e [300.0 0.0 50.0]}],
-                            :m2 [["{BAR-2}" "CS0-3x"] {:e [0.0 0.0 -350.0]}],
+       {:m1 [["{BAR-1}" "CS1-3x"] {:e [50.0 300.0 0.0]}],
+        :m2 [["{BAR-2}" "CS0-3x"] {:e [250.0 0.0 0.0]}],
         :type :coincident}
-       {:m1 [["{BAR-1}" "CS1-4y"] {:e [0.0 400.0 50.0]}],
-        :m2 [["{BAR-2}" "CS0-4y"] {:e [0.0 400.0 -50.0]}],
+       {:m1 [["{BAR-1}" "CS1-4y"] {:e [-350.0 0.0 0.0]}],
+        :m2 [["{BAR-2}" "CS0-4y"] {:e [-50.0 400.0 0.0]}],
         :type :coincident}] )
+
 
      (tt/fact
       "fully expanded to in-plane primitive-joints "
       (filterv #(and (choose-pair % "{ASSY}" "{BAR-1}")
                      (= :parallel-z (:type %)) )
                constraints-lower) =>
-       [{:m1 [["{BAR-1}" "FRONT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 1.0]}],
-         :m2 [["{ASSY}" "ASM_FRONT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 1.0]}],
-         :type :parallel-z}
-        {:m1 [["{BAR-1}" "TOP"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 1.0 0.0]}],
-         :m2 [["{ASSY}" "ASM_TOP"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 1.0 0.0]}],
-         :type :parallel-z}
-        {:m1 [["{BAR-1}" "RIGHT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [1.0 0.0 0.0]}],
-         :m2 [["{ASSY}" "ASM_RIGHT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [1.0 0.0 0.0]}],
-         :type :parallel-z}])
+      [{:m1 [["{BAR-1}" "FRONT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 1.0]}],
+        :m2 [["{ASSY}" "ASM_FRONT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 1.0]}],
+        :type :parallel-z}
+       {:m1 [["{BAR-1}" "TOP"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 1.0 0.0]}],
+        :m2 [["{ASSY}" "ASM_TOP"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 1.0 0.0]}],
+        :type :parallel-z}
+       {:m1 [["{BAR-1}" "RIGHT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [1.0 0.0 0.0]}],
+        :m2 [["{ASSY}" "ASM_RIGHT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [1.0 0.0 0.0]}],
+        :type :parallel-z}])
 
 
      (tt/fact
@@ -125,23 +128,22 @@
       "original "
       (filterv #(choose-pair % "{BAR-1}" "{BAR-2}")
                constraints-orig) =>
-      [{:m1 [["{BAR-1}" "CS1"] {:e [0.0 0.0 50.0], :pi 0.0, :q [1.0 0.0 0.0]}],
-        :m2 [["{BAR-2}" "CS0"] {:e [0.0 0.0 -50.0], :pi 0.5, :q [0.0 1.0 0.0]}],
+      [{:m1 [["{BAR-1}" "CS1"] {:e [50.0 0.0 0.0], :pi 0.5, :q [0.0 0.0 1.0]}],
+        :m2 [["{BAR-2}" "CS0"] {:e [-50.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 1.0]}],
         :type :csys}] )
-
 
      (tt/fact
       "meta expanded "
       (filterv #(choose-pair % "{BAR-1}" "{BAR-2}")
                constraints-meta) =>
-      [{:m1 [["{BAR-1}" "CS1-origin"] {:e [0.0 0.0 50.0]}],
-        :m2 [["{BAR-2}" "CS0-origin"] {:e [0.0 0.0 -50.0]}],
+      [{:m1 [["{BAR-1}" "CS1-origin"] {:e [50.0 0.0 0.0]}],
+        :m2 [["{BAR-2}" "CS0-origin"] {:e [-50.0 0.0 0.0]}],
         :type :coincident}
-       {:m1 [["{BAR-1}" "CS1-3x"] {:e [300.0 0.0 50.0]}],
-        :m2 [["{BAR-2}" "CS0-3x"] {:e [0.0 0.0 -350.0]}],
+       {:m1 [["{BAR-1}" "CS1-3x"] {:e [50.0 300.0 0.0]}],
+        :m2 [["{BAR-2}" "CS0-3x"] {:e [250.0 0.0 0.0]}],
         :type :coincident}
-       {:m1 [["{BAR-1}" "CS1-4y"] {:e [0.0 400.0 50.0]}],
-        :m2 [["{BAR-2}" "CS0-4y"] {:e [0.0 400.0 -50.0]}],
+       {:m1 [["{BAR-1}" "CS1-4y"] {:e [-350.0 0.0 0.0]}],
+        :m2 [["{BAR-2}" "CS0-4y"] {:e [-50.0 400.0 0.0]}],
         :type :coincident}] )
 
 
@@ -150,15 +152,15 @@
       (filterv #(and (choose-pair % "{BAR-1}" "{BAR-2}")
                      (= :coincident (:type %)) )
                constraints-lower) =>
-      [{:m1 [["{BAR-1}" "CS1-origin"] {:e [0.0 0.0 50.0]}],
-        :m2 [["{BAR-2}" "CS0-origin"] {:e [0.0 0.0 -50.0]}],
+      [{:m1 [["{BAR-1}" "CS1-origin"] {:e [50.0 0.0 0.0]}],
+        :m2 [["{BAR-2}" "CS0-origin"] {:e [-50.0 0.0 0.0]}],
         :type :coincident}
-       {:m1 [["{BAR-1}" "CS1-3x"] {:e [300.0 0.0 50.0]}],
-        :m2 [["{BAR-2}" "CS0-3x"] {:e [0.0 0.0 -350.0]}],
+       {:m1 [["{BAR-1}" "CS1-3x"] {:e [50.0 300.0 0.0]}],
+        :m2 [["{BAR-2}" "CS0-3x"] {:e [250.0 0.0 0.0]}],
         :type :coincident}
-       {:m1 [["{BAR-1}" "CS1-4y"] {:e [0.0 400.0 50.0]}],
-        :m2 [["{BAR-2}" "CS0-4y"] {:e [0.0 400.0 -50.0]}],
-        :type :coincident}] ) )
+       {:m1 [["{BAR-1}" "CS1-4y"] {:e [-350.0 0.0 0.0]}],
+        :m2 [["{BAR-2}" "CS0-4y"] {:e [-50.0 400.0 0.0]}],
+        :type :coincident}] ))
 
 
     (tt/facts
@@ -172,26 +174,31 @@
                                   "{BAR-4}"} (first %)))
            (mapv #(vector (first %) @(second %)))
            (into {})) =>
-      { "{ASSY}"  {:rdof {:# 0}, :tdof {:# 0},
-                     :versor {:rotate [1.0 0.0 0.0 0.0],
-                              :xlate [0.0 0.0 0.0]}},
+      { "{ASSY}"  {:name nil
+                   :rdof {:# 0}, :tdof {:# 0},
+                   :versor {:rotate [1.0 0.0 0.0 0.0],
+                            :xlate [0.0 0.0 0.0]}},
 
-        "{BAR-1}" {:rdof {:# 3}, :tdof {:# 3},
-                      :versor {:rotate [1.0 0.0 0.0 0.0],
-                               :xlate [0.0 0.0 0.0]}},
+        "{BAR-1}" {:name "BAR_1"
+                   :rdof {:# 3}, :tdof {:# 3},
+                   :versor {:rotate [1.0 0.0 0.0 0.0],
+                            :xlate [0.0 0.0 0.0]}},
 
-        "{BAR-2}" {:rdof {:# 3},
-                  :tdof {:# 3},
-                  :versor {:rotate [1.0 0.0 0.0 0.0],
-                           :xlate [0.0 0.0 0.0]}},
-        "{BAR-3}" {:rdof {:# 3},
-                 :tdof {:# 3},
-                 :versor {:rotate [1.0 0.0 0.0 0.0],
-                          :xlate [0.0 0.0 0.0]}},
-        "{BAR-4}" {:rdof {:# 3},
-                    :tdof {:# 3},
-                    :versor {:rotate [1.0 0.0 0.0 0.0],
-                             :xlate [0.0 0.0 0.0]}} } )
+        "{BAR-2}" {:name "BAR_1"
+                   :rdof {:# 3},
+                   :tdof {:# 3},
+                   :versor {:rotate [1.0 0.0 0.0 0.0],
+                            :xlate [0.0 0.0 0.0]}},
+        "{BAR-3}" {:name "BAR_1"
+                   :rdof {:# 3},
+                   :tdof {:# 3},
+                   :versor {:rotate [1.0 0.0 0.0 0.0],
+                            :xlate [0.0 0.0 0.0]}},
+        "{BAR-4}" {:name "BAR_1"
+                   :rdof {:# 3},
+                   :tdof {:# 3},
+                   :versor {:rotate [1.0 0.0 0.0 0.0],
+                            :xlate [0.0 0.0 0.0]}} } )
 
 
      (tt/fact
@@ -226,67 +233,76 @@
                                    "{BAR-4}"} (first %)))
             (mapv #(vector (first %) @(second %)))
             (into {})) =>
-        {"{ASSY}" {:rdof {:# 0}, :tdof {:# 0},
+       {"{ASSY}" {:name nil,
+                  :rdof {:# 0}, :tdof {:# 0},
+                  :versor {:rotate [1.0 0.0 0.0 0.0], :xlate [0.0 0.0 0.0]}},
+        "{BAR-1}" {:name "BAR_1",
+                   :rdof {:# 0}, :tdof {:# 0, :point [0.0 0.0 0.0]},
                    :versor {:rotate [1.0 0.0 0.0 0.0], :xlate [0.0 0.0 0.0]}},
-         "{BAR-1}" {:rdof {:# 0}, :tdof {:# 0, :point [0.0 0.0 0.0]},
-                    :versor {:rotate [1.0 0.0 0.0 0.0], :xlate [0.0 0.0 0.0]}},
-         "{BAR-2}" {:rdof {:# 0}, :tdof {:# 0, :point [0.0 0.0 50.0]},
-                    :versor {:rotate [0.7071067811865476 0.0 -0.7071067811865475 0.0],
-                             :xlate [-50.0 0.0 50.0]}},
-         "{BAR-3}" {:rdof {:# 0}, :tdof {:# 0, :point [-100.0 0.0 50.0]},
-                    :versor {:rotate [1.0 0.0 0.0 0.0], :xlate [-100.0 0.0 100.0]}},
-         "{BAR-4}" {:rdof {:# 0}, :tdof {:# 0, :point [-100.0 0.0 150.0]},
-                    :versor {:rotate [0.7071067811865476 0.0 -0.7071067811865475 0.0],
-                             :xlate [-150.0 0.0 150.0]}}} )
+        "{BAR-2}" {:name "BAR_1",
+                   :rdof {:# 0}, :tdof {:# 0, :point [50.0 0.0 0.0]},
+                   :versor {:rotate [0.7071067811865476 0.0 0.0 0.7071067811865475],
+                            :xlate [50.0 50.0 0.0]}},
+        "{BAR-3}" {:name "BAR_1",
+                   :rdof {:# 0},
+                   :tdof {:# 0, :point [50.0 100.0 0.0]},
+                   :versor {:rotate [1.0 0.0 0.0 0.0], :xlate [100.0 100.0 0.0]}},
+        "{BAR-4}" {:name "BAR_1",
+                   :rdof {:# 0},
+                   :tdof {:# 0, :point [150.0 100.0 0.0]},
+                   :versor {:rotate [0.7071067811865476 0.0 0.0 0.7071067811865475],
+                            :xlate [150.0 150.0 0.0]}}} )
 
 
       (tt/fact
-       "about the success result" result-success =>
-        [{:m1 [["{BAR-1}" "FRONT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 1.0]}],
-          :m2 [["{ASSY}" "ASM_FRONT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 1.0]}],
-          :type :in-plane}
-         {:m1 [["{BAR-1}" "FRONT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 1.0]}],
-          :m2 [["{ASSY}" "ASM_FRONT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 1.0]}],
-          :type :parallel-z}
-         {:m1 [["{BAR-1}" "TOP"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 1.0 0.0]}],
-          :m2 [["{ASSY}" "ASM_TOP"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 1.0 0.0]}],
-          :type :parallel-z}
-         {:m1 [["{BAR-1}" "RIGHT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [1.0 0.0 0.0]}],
-          :m2 [["{ASSY}" "ASM_RIGHT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [1.0 0.0 0.0]}],
-          :type :in-plane}
-         {:m1 [["{BAR-1}" "RIGHT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [1.0 0.0 0.0]}],
-          :m2 [["{ASSY}" "ASM_RIGHT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [1.0 0.0 0.0]}],
-          :type :parallel-z}
-         {:m1 [["{BAR-1}" "TOP"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 1.0 0.0]}],
-          :m2 [["{ASSY}" "ASM_TOP"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 1.0 0.0]}],
-          :type :in-plane}
-         {:m1 [["{BAR-1}" "CS1-origin"] {:e [0.0 0.0 50.0]}],
-          :m2 [["{BAR-2}" "CS0-origin"] {:e [0.0 0.0 -50.0]}],
-          :type :coincident}
-         {:m1 [["{BAR-1}" "CS1-3x"] {:e [300.0 0.0 50.0]}],
-          :m2 [["{BAR-2}" "CS0-3x"] {:e [0.0 0.0 -350.0]}],
-          :type :coincident}
-         {:m1 [["{BAR-1}" "CS1-4y"] {:e [0.0 400.0 50.0]}],
-          :m2 [["{BAR-2}" "CS0-4y"] {:e [0.0 400.0 -50.0]}],
-          :type :coincident}
-         {:m1 [["{BAR-3}" "CS0-origin"] {:e [0.0 0.0 -50.0]}],
-          :m2 [["{BAR-2}" "CS1-origin"] {:e [0.0 0.0 50.0]}],
-          :type :coincident}
-         {:m1 [["{BAR-3}" "CS0-3x"] {:e [0.0 0.0 -350.0]}],
-          :m2 [["{BAR-2}" "CS1-3x"] {:e [300.0 0.0 50.0]}],
-          :type :coincident}
-         {:m1 [["{BAR-3}" "CS0-4y"] {:e [0.0 400.0 -50.0]}],
-          :m2 [["{BAR-2}" "CS1-4y"] {:e [0.0 400.0 50.0]}],
-          :type :coincident}
-         {:m1 [["{BAR-3}" "CS1-origin"] {:e [0.0 0.0 50.0]}],
-          :m2 [["{BAR-4}" "CS0-origin"] {:e [0.0 0.0 -50.0]}],
-          :type :coincident}
-         {:m1 [["{BAR-3}" "CS1-3x"] {:e [300.0 0.0 50.0]}],
-          :m2 [["{BAR-4}" "CS0-3x"] {:e [0.0 0.0 -350.0]}],
-          :type :coincident}
-         {:m1 [["{BAR-3}" "CS1-4y"] {:e [0.0 400.0 50.0]}],
-          :m2 [["{BAR-4}" "CS0-4y"] {:e [0.0 400.0 -50.0]}],
-          :type :coincident}] )
+       "about order of the constraint application in success result"
+       result-success =>
+       [{:m1 [["{BAR-1}" "FRONT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 1.0]}],
+         :m2 [["{ASSY}" "ASM_FRONT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 1.0]}],
+         :type :in-plane}
+        {:m1 [["{BAR-1}" "FRONT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 1.0]}],
+         :m2 [["{ASSY}" "ASM_FRONT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 1.0]}],
+         :type :parallel-z}
+        {:m1 [["{BAR-1}" "TOP"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 1.0 0.0]}],
+         :m2 [["{ASSY}" "ASM_TOP"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 1.0 0.0]}],
+         :type :parallel-z}
+        {:m1 [["{BAR-1}" "RIGHT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [1.0 0.0 0.0]}],
+         :m2 [["{ASSY}" "ASM_RIGHT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [1.0 0.0 0.0]}],
+         :type :in-plane}
+        {:m1 [["{BAR-1}" "RIGHT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [1.0 0.0 0.0]}],
+         :m2 [["{ASSY}" "ASM_RIGHT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [1.0 0.0 0.0]}],
+         :type :parallel-z}
+        {:m1 [["{BAR-1}" "TOP"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 1.0 0.0]}],
+         :m2 [["{ASSY}" "ASM_TOP"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 1.0 0.0]}],
+         :type :in-plane}
+        {:m1 [["{BAR-1}" "CS1-origin"] {:e [50.0 0.0 0.0]}],
+         :m2 [["{BAR-2}" "CS0-origin"] {:e [-50.0 0.0 0.0]}],
+         :type :coincident}
+        {:m1 [["{BAR-1}" "CS1-3x"] {:e [50.0 300.0 0.0]}],
+         :m2 [["{BAR-2}" "CS0-3x"] {:e [250.0 0.0 0.0]}],
+         :type :coincident}
+        {:m1 [["{BAR-1}" "CS1-4y"] {:e [-350.0 0.0 0.0]}],
+         :m2 [["{BAR-2}" "CS0-4y"] {:e [-50.0 400.0 0.0]}],
+         :type :coincident}
+        {:m1 [["{BAR-3}" "CS0-origin"] {:e [-50.0 0.0 0.0]}],
+         :m2 [["{BAR-2}" "CS1-origin"] {:e [50.0 0.0 0.0]}],
+         :type :coincident}
+        {:m1 [["{BAR-3}" "CS0-3x"] {:e [250.0 0.0 0.0]}],
+         :m2 [["{BAR-2}" "CS1-3x"] {:e [50.0 300.0 0.0]}],
+         :type :coincident}
+        {:m1 [["{BAR-3}" "CS0-4y"] {:e [-50.0 400.0 0.0]}],
+         :m2 [["{BAR-2}" "CS1-4y"] {:e [-350.0 0.0 0.0]}],
+         :type :coincident}
+        {:m1 [["{BAR-3}" "CS1-origin"] {:e [50.0 0.0 0.0]}],
+         :m2 [["{BAR-4}" "CS0-origin"] {:e [-50.0 0.0 0.0]}],
+         :type :coincident}
+        {:m1 [["{BAR-3}" "CS1-3x"] {:e [50.0 300.0 0.0]}],
+         :m2 [["{BAR-4}" "CS0-3x"] {:e [250.0 0.0 0.0]}],
+         :type :coincident}
+        {:m1 [["{BAR-3}" "CS1-4y"] {:e [-350.0 0.0 0.0]}],
+         :m2 [["{BAR-4}" "CS0-4y"] {:e [-50.0 400.0 0.0]}],
+         :type :coincident}])
+
 
       (tt/fact
        "about the failure result" result-failure =>
@@ -296,7 +312,10 @@
                             jio/resource jio/input-stream)
                     fos (-> "/tmp/four_bar_csys_aug.xml"
                             jio/output-stream)]
+          (cyphy/update-cad-assembly-using-knowledge fis fos kb) )
 
-          (cyphy/update-cad-assembly-using-knowledge fis fos kb) ) ) ))
+      (with-open [fos (-> "/temp/four_bar_csys.scad"
+                          jio/output-stream)]
+        (openscad/write-knowledge fos kb) ) ) ))
 
 

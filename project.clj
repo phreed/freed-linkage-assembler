@@ -1,5 +1,5 @@
-(defproject geometric-assembler "0.1.0-SNAPSHOT"
-  :description "develop examples for geometric assembly"
+(defproject freed-linkage-assembler "0.1.0-SNAPSHOT"
+  :description "a freed version of the linkage assembler."
   :url "http://example.com/FIXME"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
@@ -8,7 +8,7 @@
   ;; :java-source-paths ["src/main/java"]
   :dependencies [[org.clojure/clojure "1.6.0"]
                  [org.clojure/tools.cli "0.3.1"]
-                 ;; [org.clojure/data ]
+                 [scad-clj "0.3.0"]
                  [org.clojure/data.xml "0.0.8"]
                  [org.clojure/data.zip "0.1.1"]
                  [org.codehaus.woodstox/stax2-api "3.1.4"]

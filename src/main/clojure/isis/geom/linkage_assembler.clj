@@ -9,12 +9,20 @@
              [cyphy-zip :as cyphy]
              [cad-stax :as stax]]
 
+            [isis.geom.visual
+             [openscad :as openscad]
+             [freecad :as freecad]]
+
             [clojure.tools.cli :refer [parse-opts]]
             [clojure.string :as string]
             [clojure.java.io :as jio]
 
             [isis.geom.analysis.position-analysis
              :refer [position-analysis]]
+
+            [isis.geom.model
+             [meta-constraint :as meta-constraint]
+             [lower-joint :as lower-joint]]
 
             [isis.geom.action
              [coincident-dispatch]
@@ -36,6 +44,11 @@
    ["-o" "--output OUTPUT" "cyphy2cad file (CADAssembly.xml) augmented with versors"
     :id :output
     :default "CADAssembly_augmented.xml"
+    :parse-fn #(jio/as-file %)
+    :validate [(constantly true) "Must be a valid writable file path"] ]
+   ["-s" "--openscad OSCAD" "openSCAD file with versors"
+    :id :openscad
+    :default "CADAssembly.scad"
     :parse-fn #(jio/as-file %)
     :validate [(constantly true) "Must be a valid writable file path"] ]
    ;; A non-idempotent option
@@ -83,13 +96,21 @@
     (with-open [fis (-> (:input options) jio/input-stream)]
       ;; (let [kb (graph-from-cyphy-input-stream is)
       (let [kb (cyphy/knowledge-via-input-stream fis)
-            constraints (:constraint kb)
+            constraints (-> kb
+                            :constraint
+                            lower-joint/nil-patch-collection
+                            meta-constraint/expand-collection
+                            lower-joint/expand-collection)
+
             ;; here is the call to the position analysis
             [success? result-kb result-success result-failure]
             (position-analysis kb constraints)]
         (with-open [fis (-> (:input options) jio/input-stream)
                     fos (-> (:output options) jio/output-stream)]
 
-          (stax/update-cad-assembly-using-knowledge fis fos kb) ) ) )))
+          (stax/update-cad-assembly-using-knowledge fis fos kb) )
+
+        (with-open [fos (-> (:openscad options) jio/output-stream)]
+          (openscad/write-knowledge fos kb) ) ) )))
 
 

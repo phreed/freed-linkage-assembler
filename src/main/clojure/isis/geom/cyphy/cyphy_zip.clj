@@ -141,11 +141,13 @@
         (conj
          (for [ link (zx/xml-> asm-link :CADComponent) ]
            [(zx/attr link :ComponentID)
-            (ref {:tdof {:# 3} :rdof {:# 3}
+            (ref {:name (zx/attr link :Name)
+                  :tdof {:# 3} :rdof {:# 3}
                   :versor {:xlate [0.0 0.0 0.0]
                            :rotate [1.0 0.0 0.0 0.0]}})])
          [base-link-name
-          (ref {:tdof {:# 0} :rdof {:# 0}
+          (ref {:name nil
+                :tdof {:# 0} :rdof {:# 0}
                 :versor {:xlate [0.0 0.0 0.0]
                          :rotate [1.0 0.0 0.0 0.0]}})] )))
 
