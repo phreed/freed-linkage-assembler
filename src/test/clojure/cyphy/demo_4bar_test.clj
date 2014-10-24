@@ -135,7 +135,7 @@
      (tt/fact
       "meta expanded "
       (filterv #(choose-pair % "{BAR-1}" "{BAR-2}")
-               constraints-meta) =>
+               constraints-lower) =>
       [{:m1 [["{BAR-1}" "CS1-origin"] {:e [50.0 0.0 0.0]}],
         :m2 [["{BAR-2}" "CS0-origin"] {:e [-50.0 0.0 0.0]}],
         :type :coincident}
@@ -206,14 +206,13 @@
 
       ;; (pp/pprint result-success)
       ;; (pp/pprint result-link)
-      (tt/facts
-       "about results of linkage-assembly"
 
-       (tt/fact
-        "about the mark result" result-mark =>
-        (tt/contains
-         []) ))
-
+     (tt/fact
+      "about the initial marker invariants"
+      (into {} (map (fn [[k v]] [k @v]) (:invar kb))) =>
+      {:loc #{["{ASSY}"] ["{BAR-1}"] ["{BAR-2}"] ["{BAR-3}"] ["{BAR-4}"]}
+       :dir #{["{ASSY}"] ["{BAR-1}"] ["{BAR-2}"] ["{BAR-3}"] ["{BAR-4}"]}
+       :twist #{["{ASSY}"] ["{BAR-1}"] ["{BAR-2}"] ["{BAR-3}"] ["{BAR-4}"]} })
 
       (tt/fact
        "about the final ASSY link settings"
@@ -221,34 +220,38 @@
        {:name nil,
         :rdof {:# 0}, :tdof {:# 0},
         :versor {:rotate [1.0 0.0 0.0 0.0], :xlate [0.0 0.0 0.0]}} )
+
       (tt/fact
        "about the final BAR-1 link settings"
        (-> result-link (get "{BAR-1}") deref) =>
        {:name "BAR_1",
         :rdof {:# 0}, :tdof {:# 0, :point [0.0 0.0 0.0]},
         :versor {:rotate [1.0 0.0 0.0 0.0], :xlate [0.0 0.0 0.0]}} )
+
       (tt/fact
        "about the final BAR-2 link settings"
        (-> result-link (get "{BAR-2}") deref) =>
-       {:name "BAR_1",
-        :rdof {:# 0}, :tdof {:# 0, :point [50.0 0.0 0.0]},
-        :versor {:rotate [0.7071067811865476 0.0 0.0 0.7071067811865475],
-                 :xlate [50.0 50.0 0.0]}})
+       {:name "BAR_1", :rdof {:# 0}, :tdof {:# 0, :point [50.0 0.0 0.0]},
+        :versor {:rotate [4.329780281177467E-17 -0.7071067811865475
+                          -0.7071067811865476 -4.329780281177466E-17],
+                 :xlate [50.00000000000008 49.999999999999986 0.0]}})
+
       (tt/fact
        "about the final BAR-3 link settings"
        (-> result-link (get "{BAR-3}") deref) =>
-       {:name "BAR_1",
-        :rdof {:# 0},
-        :tdof {:# 0, :point [50.0 100.0 0.0]},
-        :versor {:rotate [1.0 0.0 0.0 0.0], :xlate [100.0 100.0 0.0]}} )
+        {:name "BAR_1", :rdof {:# 0},
+         :tdof {:# 0, :point [50.000000000000085 99.99999999999999 0.0]},
+         :versor {:rotate [1.0 0.0 0.0 0.0],
+                  :xlate [100.00000000000009 99.99999999999999 0.0]}})
+
       (tt/fact
        "about the final BAR-4 link settings"
        (-> result-link (get "{BAR-4}") deref) =>
-       {:name "BAR_1",
-        :rdof {:# 0},
-        :tdof {:# 0, :point [150.0 100.0 0.0]},
-        :versor {:rotate [0.7071067811865476 0.0 0.0 0.7071067811865475],
-                 :xlate [150.0 150.0 0.0]}})
+       {:name "BAR_1", :rdof {:# 0},
+        :tdof {:# 0, :point [150.00000000000009 99.99999999999999 0.0]},
+        :versor {:rotate [4.329780281177467E-17 -0.7071067811865475
+                          -0.7071067811865476 -4.329780281177466E-17],
+                 :xlate [150.00000000000017 150.0 0.0]}})
 
 
       (tt/fact

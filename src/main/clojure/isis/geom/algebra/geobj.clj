@@ -831,14 +831,14 @@
   Where
   e(i*theta/2) = cos(theta/2) + i*sin(theta/2)
   Note it is assumed that the translation
-  is expressed in terms of the point.
-  "
+  is expressed in terms of the point. "
   [link point axis angle]
   {:pre [(instance? clojure.lang.PersistentVector point)
          (instance? clojure.lang.PersistentVector axis)
          (instance? clojure.lang.PersistentVector angle)] }
+  ;; (pp/pprint ["point" point "axis" axis "angle" angle])
   (cond
-   (tol/near-zero? :tiny (first angle)) link
+   (tol/near-equal? :tiny (second angle) 1.0) link
    :else
    (let [q1 (get-in link [:versor :rotate])
          q2 (axis-angle->quaternion axis angle)
@@ -849,6 +849,7 @@
          x3 (quat-sandwich (quat-conj q1) x2)
          x4 (quat-sandwich q12 x3)
          x12 (vec-diff point x4)]
+     ;; (pp/pprint ["xlate" x12 "rotate" q12])
      (merge link {:versor {:xlate x12 :rotate q12} }))))
 
 

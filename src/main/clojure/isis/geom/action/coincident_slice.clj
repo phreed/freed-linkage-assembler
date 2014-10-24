@@ -73,12 +73,14 @@ Explanation:
         m2-point (get-in @m2-link [:tdof :point])
         m2-axis (get-in @m2-link [:rdof :axis])
         m2-axis-1 (get-in @m2-link [:rdof :axis-1])
-        m2-axis-2 (get-in @m2-link [:rdof :axis-2])]
+        m2-axis-2 (get-in @m2-link [:rdof :axis-2])
+        gmp1 (ga/gmp m1 kb)
+        gmp2 (ga/gmp m2 kb) ]
+    ;; (pp/pprint ["m1" m1 "m2" m2 "m2-link" @m2-link])
     (dosync
      (alter m2-link merge
             (dof/r1:p->p @m2-link m2-point
-                         (ga/gmp m2 kb) (ga/gmp m1 kb)
-                         m2-axis m2-axis-1 m2-axis-2))
+                         gmp2 gmp1 m2-axis m2-axis-1 m2-axis-2))
      (invariant/anchor-link! kb m2-link-name)
      (alter m2-link assoc
             :rdof {:# 0} ) ))

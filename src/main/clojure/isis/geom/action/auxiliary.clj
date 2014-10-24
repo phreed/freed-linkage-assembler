@@ -12,6 +12,8 @@
   moving ?from-point on ?link to globally fixed ?to-point.
   The ?branch indicates which of the possible solutions to choose."
   [?link ?center ?from-point ?to-point ?axis-1 ?axis-2 ?branch]
+  (pp/pprint ["r2:p->p" ?link "center" ?center "from" ?from-point "to" ?to-point
+              "ax1" ?axis-1 "ax2" ?axis-2])
   (let [r0 (ga/line ?center ?axis-2)
         r1 (ga/line ?center ?axis-1)
         r2 (ga/projection ?from-point r0)
@@ -54,32 +56,33 @@
   The procedure keeps the position of point ?center invariant,
   and moves ?from-point on ?link to globally-fixed ?to-point."
   [?link ?center ?from-point ?to-point ?axis ?axis-1 ?axis-2]
-  ;; (pp/pprint ["r1:p->p" "c" ?center "fp" ?from-point
-  ;;             "tp" ?to-point  "ax" ?axis])
+  ;; (pp/pprint ["r1:p->p" "c" ?center "fp" ?from-point "tp" ?to-point  "ax" ?axis])
+
   (let [pivot (ga/projection ?to-point (ga/line ?center ?axis))
         from-dir (ga/vec-diff ?from-point pivot)
         to-dir (ga/vec-diff ?to-point pivot)]
-    (cond (tol/near-same? :default from-dir to-dir)
-          ?link
+    (cond
+     (tol/near-same? :default from-dir to-dir)
+     ?link
 
-          (not (tol/near-equal? :default (ga/norm to-dir) (ga/norm from-dir)))
-          (emsg/dim-oc ?from-point ?to-point ?center ?axis)
+     (not (tol/near-equal? :default (ga/norm to-dir) (ga/norm from-dir)))
+     (emsg/dim-oc ?from-point ?to-point ?center ?axis)
 
-          :else
-          (let [possible-axis
-                (ga/outer-prod (ga/normalize to-dir)
-                               (ga/normalize from-dir))]
-            (cond
-             (and (not (tol/near-zero? :default possible-axis))
-                  (not (ga/parallel? possible-axis ?axis false)))
-             (emsg/inconst-rot possible-axis ?axis)
+     :else
+     (let [possible-axis (ga/outer-prod (ga/normalize to-dir)
+                                        (ga/normalize from-dir))]
+       ;; (pp/pprint ["normal" possible-axis])
+       (cond
+        (and (not (tol/near-zero? :default possible-axis))
+             (not (ga/parallel? possible-axis ?axis false)))
+        (emsg/inconst-rot possible-axis ?axis)
 
-             :else
-             (if (and (nil? ?axis-1) (nil? ?axis-2))
-               (ga/rotate ?link pivot ?axis
-                          (ga/vec-angle from-dir to-dir ?axis))
-               (r2:p->p ?link ?center
-                        ?from-point ?to-point ?axis-1 ?axis-2 1)))))))
+        :else
+        (if (and (nil? ?axis-1) (nil? ?axis-2))
+           (ga/rotate ?link pivot ?axis
+                      (ga/vec-angle from-dir to-dir ?axis))
+           (r2:p->p ?link ?center
+                    ?from-point ?to-point ?axis-1 ?axis-2 1)))))))
 
 (defn r3:p->p
   "Procedure to rotate body ?link about ?center,
