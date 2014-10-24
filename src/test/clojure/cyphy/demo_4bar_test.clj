@@ -73,12 +73,12 @@
       [{:m1 [["{BAR-1}" "CS1-origin"] {:e [50.0 0.0 0.0]}],
         :m2 [["{BAR-2}" "CS0-origin"] {:e [-50.0 0.0 0.0]}],
         :type :coincident}
-       {:m1 [["{BAR-1}" "CS1-3x"] {:e [50.0 300.0 0.0]}],
-        :m2 [["{BAR-2}" "CS0-3x"] {:e [250.0 0.0 0.0]}],
+       {:m1 [["{BAR-1}" "CS1-3x"] {:e [350.0 0.0 0.0]}],
+        :m2 [["{BAR-2}" "CS0-3x"] {:e [-50.0 299.99999999999994 0.0]}],
         :type :coincident}
-       {:m1 [["{BAR-1}" "CS1-4y"] {:e [-350.0 0.0 0.0]}],
-        :m2 [["{BAR-2}" "CS0-4y"] {:e [-50.0 400.0 0.0]}],
-        :type :coincident}] )
+       {:m1 [["{BAR-1}" "CS1-4y"] {:e [50.0 400.0 0.0]}],
+        :m2 [["{BAR-2}" "CS0-4y"] {:e [349.9999999999999 0.0 0.0]}],
+        :type :coincident}])
 
 
      (tt/fact
@@ -128,8 +128,8 @@
       "original "
       (filterv #(choose-pair % "{BAR-1}" "{BAR-2}")
                constraints-orig) =>
-      [{:m1 [["{BAR-1}" "CS1"] {:e [50.0 0.0 0.0], :pi 0.5, :q [0.0 0.0 1.0]}],
-        :m2 [["{BAR-2}" "CS0"] {:e [-50.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 1.0]}],
+      [{:m1 [["{BAR-1}" "CS1"] {:e [50.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 1.0]}],
+        :m2 [["{BAR-2}" "CS0"] {:e [-50.0 0.0 0.0], :pi 1.0, :q [1.0 1.0 0.0]}],
         :type :csys}] )
 
      (tt/fact
@@ -139,67 +139,57 @@
       [{:m1 [["{BAR-1}" "CS1-origin"] {:e [50.0 0.0 0.0]}],
         :m2 [["{BAR-2}" "CS0-origin"] {:e [-50.0 0.0 0.0]}],
         :type :coincident}
-       {:m1 [["{BAR-1}" "CS1-3x"] {:e [50.0 300.0 0.0]}],
-        :m2 [["{BAR-2}" "CS0-3x"] {:e [250.0 0.0 0.0]}],
+       {:m1 [["{BAR-1}" "CS1-3x"] {:e [350.0 0.0 0.0]}],
+        :m2 [["{BAR-2}" "CS0-3x"] {:e [-50.0 299.99999999999994 0.0]}],
         :type :coincident}
-       {:m1 [["{BAR-1}" "CS1-4y"] {:e [-350.0 0.0 0.0]}],
-        :m2 [["{BAR-2}" "CS0-4y"] {:e [-50.0 400.0 0.0]}],
-        :type :coincident}] )
-
-
-     (tt/fact
-      "fully expanded to in-plane primitive-joints "
-      (filterv #(and (choose-pair % "{BAR-1}" "{BAR-2}")
-                     (= :coincident (:type %)) )
-               constraints-lower) =>
-      [{:m1 [["{BAR-1}" "CS1-origin"] {:e [50.0 0.0 0.0]}],
-        :m2 [["{BAR-2}" "CS0-origin"] {:e [-50.0 0.0 0.0]}],
-        :type :coincident}
-       {:m1 [["{BAR-1}" "CS1-3x"] {:e [50.0 300.0 0.0]}],
-        :m2 [["{BAR-2}" "CS0-3x"] {:e [250.0 0.0 0.0]}],
-        :type :coincident}
-       {:m1 [["{BAR-1}" "CS1-4y"] {:e [-350.0 0.0 0.0]}],
-        :m2 [["{BAR-2}" "CS0-4y"] {:e [-50.0 400.0 0.0]}],
-        :type :coincident}] ))
+       {:m1 [["{BAR-1}" "CS1-4y"] {:e [50.0 400.0 0.0]}],
+        :m2 [["{BAR-2}" "CS0-4y"] {:e [349.9999999999999 0.0 0.0]}],
+        :type :coincident}])
 
 
     (tt/facts
      "about the parsed cad-assembly file invariants"
 
      (tt/fact
-      "about the initial link settings"
-      (->> kb :link
-           (filter #(contains? #{ "{ASSY}" "{BAR-1}"
-                                  "{BAR-2}" "{BAR-3}"
-                                  "{BAR-4}"} (first %)))
-           (mapv #(vector (first %) @(second %)))
-           (into {})) =>
-      { "{ASSY}"  {:name nil
-                   :rdof {:# 0}, :tdof {:# 0},
-                   :versor {:rotate [1.0 0.0 0.0 0.0],
-                            :xlate [0.0 0.0 0.0]}},
+      "about the initial ASSY link settings"
+      (-> kb :link (get "{ASSY}") deref) =>
+      {:name nil
+       :rdof {:# 0}, :tdof {:# 0},
+       :versor {:rotate [1.0 0.0 0.0 0.0],
+                :xlate [0.0 0.0 0.0]}})
 
-        "{BAR-1}" {:name "BAR_1"
-                   :rdof {:# 3}, :tdof {:# 3},
-                   :versor {:rotate [1.0 0.0 0.0 0.0],
-                            :xlate [0.0 0.0 0.0]}},
+     (tt/fact
+      "about the initial BAR-1 link settings"
+      (-> kb :link (get "{BAR-1}") deref) =>
+      {:name "BAR_1"
+       :rdof {:# 3}, :tdof {:# 3},
+       :versor {:rotate [1.0 0.0 0.0 0.0],
+                :xlate [0.0 0.0 0.0]}})
 
-        "{BAR-2}" {:name "BAR_1"
-                   :rdof {:# 3},
-                   :tdof {:# 3},
-                   :versor {:rotate [1.0 0.0 0.0 0.0],
-                            :xlate [0.0 0.0 0.0]}},
-        "{BAR-3}" {:name "BAR_1"
-                   :rdof {:# 3},
-                   :tdof {:# 3},
-                   :versor {:rotate [1.0 0.0 0.0 0.0],
-                            :xlate [0.0 0.0 0.0]}},
-        "{BAR-4}" {:name "BAR_1"
-                   :rdof {:# 3},
-                   :tdof {:# 3},
-                   :versor {:rotate [1.0 0.0 0.0 0.0],
-                            :xlate [0.0 0.0 0.0]}} } )
-
+     (tt/fact
+      "about the initial BAR-2 link settings"
+      (-> kb :link (get "{BAR-2}") deref) =>
+      {:name "BAR_1"
+       :rdof {:# 3},
+       :tdof {:# 3},
+       :versor {:rotate [1.0 0.0 0.0 0.0],
+                :xlate [0.0 0.0 0.0]}})
+     (tt/fact
+      "about the initial BAR-3 link settings"
+      (-> kb :link (get "{BAR-3}") deref) =>
+      {:name "BAR_1"
+       :rdof {:# 3},
+       :tdof {:# 3},
+       :versor {:rotate [1.0 0.0 0.0 0.0],
+                :xlate [0.0 0.0 0.0]}})
+     (tt/fact
+      "about the initial BAR-4 link settings"
+      (-> kb :link (get "{BAR-4}") deref) =>
+      {:name "BAR_1"
+       :rdof {:# 3},
+       :tdof {:# 3},
+       :versor {:rotate [1.0 0.0 0.0 0.0],
+                :xlate [0.0 0.0 0.0]}})
 
      (tt/fact
       "about the initial marker invariants"
@@ -226,32 +216,39 @@
 
 
       (tt/fact
-       "about the final link settings"
-       (->> result-link
-            (filter #(contains? #{ "{ASSY}" "{BAR-1}"
-                                   "{BAR-2}" "{BAR-3}"
-                                   "{BAR-4}"} (first %)))
-            (mapv #(vector (first %) @(second %)))
-            (into {})) =>
-       {"{ASSY}" {:name nil,
-                  :rdof {:# 0}, :tdof {:# 0},
-                  :versor {:rotate [1.0 0.0 0.0 0.0], :xlate [0.0 0.0 0.0]}},
-        "{BAR-1}" {:name "BAR_1",
-                   :rdof {:# 0}, :tdof {:# 0, :point [0.0 0.0 0.0]},
-                   :versor {:rotate [1.0 0.0 0.0 0.0], :xlate [0.0 0.0 0.0]}},
-        "{BAR-2}" {:name "BAR_1",
-                   :rdof {:# 0}, :tdof {:# 0, :point [50.0 0.0 0.0]},
-                   :versor {:rotate [0.7071067811865476 0.0 0.0 0.7071067811865475],
-                            :xlate [50.0 50.0 0.0]}},
-        "{BAR-3}" {:name "BAR_1",
-                   :rdof {:# 0},
-                   :tdof {:# 0, :point [50.0 100.0 0.0]},
-                   :versor {:rotate [1.0 0.0 0.0 0.0], :xlate [100.0 100.0 0.0]}},
-        "{BAR-4}" {:name "BAR_1",
-                   :rdof {:# 0},
-                   :tdof {:# 0, :point [150.0 100.0 0.0]},
-                   :versor {:rotate [0.7071067811865476 0.0 0.0 0.7071067811865475],
-                            :xlate [150.0 150.0 0.0]}}} )
+       "about the final ASSY link settings"
+       (-> result-link (get "{ASSY}") deref) =>
+       {:name nil,
+        :rdof {:# 0}, :tdof {:# 0},
+        :versor {:rotate [1.0 0.0 0.0 0.0], :xlate [0.0 0.0 0.0]}} )
+      (tt/fact
+       "about the final BAR-1 link settings"
+       (-> result-link (get "{BAR-1}") deref) =>
+       {:name "BAR_1",
+        :rdof {:# 0}, :tdof {:# 0, :point [0.0 0.0 0.0]},
+        :versor {:rotate [1.0 0.0 0.0 0.0], :xlate [0.0 0.0 0.0]}} )
+      (tt/fact
+       "about the final BAR-2 link settings"
+       (-> result-link (get "{BAR-2}") deref) =>
+       {:name "BAR_1",
+        :rdof {:# 0}, :tdof {:# 0, :point [50.0 0.0 0.0]},
+        :versor {:rotate [0.7071067811865476 0.0 0.0 0.7071067811865475],
+                 :xlate [50.0 50.0 0.0]}})
+      (tt/fact
+       "about the final BAR-3 link settings"
+       (-> result-link (get "{BAR-3}") deref) =>
+       {:name "BAR_1",
+        :rdof {:# 0},
+        :tdof {:# 0, :point [50.0 100.0 0.0]},
+        :versor {:rotate [1.0 0.0 0.0 0.0], :xlate [100.0 100.0 0.0]}} )
+      (tt/fact
+       "about the final BAR-4 link settings"
+       (-> result-link (get "{BAR-4}") deref) =>
+       {:name "BAR_1",
+        :rdof {:# 0},
+        :tdof {:# 0, :point [150.0 100.0 0.0]},
+        :versor {:rotate [0.7071067811865476 0.0 0.0 0.7071067811865475],
+                 :xlate [150.0 150.0 0.0]}})
 
 
       (tt/fact
@@ -322,6 +319,6 @@
 
       (with-open [fos (-> "/temp/four_bar_csys.scad"
                           jio/output-stream)]
-        (openscad/write-knowledge fos kb) ) ) ))
+        (openscad/write-knowledge fos kb) ) ) )))
 
 

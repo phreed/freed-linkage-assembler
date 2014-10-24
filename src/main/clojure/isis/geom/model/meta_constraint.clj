@@ -11,12 +11,12 @@
   [(assoc-in constraint [:type] :coincident)])
 
 
-(defn- expand-csys
+(defn expand-csys
   "When a component is placed with a csys it
   can be implemented with three
   standardized coincident constraints.
   These constraints are: origin, point on rotated
-  x-axis and rotated z-axis."
+  x-axis and z-axis."
   [constraint]
   (let [{c-type :type, m1 :m1, m2 :m2} constraint
         [[m1-link-name m1-proper-name] m1-values] m1
@@ -41,8 +41,8 @@
         :m2 [[m2-link-name (str m2-proper-name "-3x")] {:e m2-3x}]}
       { :type :coincident
         :m1 [[m1-link-name (str m1-proper-name "-4y")] {:e m1-4y}]
-        :m2 [[m2-link-name (str m2-proper-name "-4y")] {:e m2-4y}]}
-      ]))
+        :m2 [[m2-link-name (str m2-proper-name "-4y")] {:e m2-4y}]} ]))
+
 
 
 (defn- expand-planar

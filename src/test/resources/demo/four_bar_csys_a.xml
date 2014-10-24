@@ -36,10 +36,10 @@
         <Constraint _id="id3">
           <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="CSYS" FeatureAlignmentType="CSYS" _id="id4">
             <ConstraintFeature ComponentID="{BAR-1}" FeatureName="CS1" FeatureOrientationType="NONE" _id="id5">
-              <GeometryMarker x="50" y="0" z="0" i="0" j="0" k="1" pi="0.5" _id="id6" />
+              <GeometryMarker x="50" y="0" z="0.0" i="0" j="0" k="1" pi="0" _id="id6" />
             </ConstraintFeature>
             <ConstraintFeature ComponentID="{BAR-2}" FeatureName="CS0" FeatureOrientationType="NONE" _id="id7">
-              <GeometryMarker x="-50" y="0" z="0" i="0" j="0" k="1" pi="0" _id="id8" />
+              <GeometryMarker x="-50" y="0" z="0" i="1" j="1" k="0" pi="1" _id="id8" />
             </ConstraintFeature>
           </Pair>
         </Constraint>
@@ -59,7 +59,7 @@
               <GeometryMarker x="-50" y="0" z="0" i="0" j="0" k="1" pi="0" _id="id12" />
             </ConstraintFeature>
             <ConstraintFeature ComponentID="{BAR-2}" FeatureName="CS1" FeatureOrientationType="NONE" _id="id13">
-              <GeometryMarker x="50" y="0" z="0" i="0" j="0" k="1" pi="0.5" _id="id14" />
+              <GeometryMarker x="50" y="0" z="0" i="1" j="1" k="0" pi="1" _id="id14" />
             </ConstraintFeature>
           </Pair>
         </Constraint>
@@ -76,10 +76,10 @@
         <Constraint _id="id15">
           <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="CSYS" FeatureAlignmentType="CSYS" _id="id16">
             <ConstraintFeature ComponentID="{BAR-3}" FeatureName="CS1" FeatureOrientationType="NONE" _id="id17">
-              <GeometryMarker x="50" y="0" z="0" i="0" j="0" k="1" pi="0.5" _id="id18" />
+              <GeometryMarker x="50" y="0" z="0" i="0" j="0" k="1" pi="0" _id="id18" />
             </ConstraintFeature>
             <ConstraintFeature ComponentID="{BAR-4}" FeatureName="CS0" FeatureOrientationType="NONE" _id="id19">
-              <GeometryMarker x="-50" y="0" z="0" i="0" j="0" k="1" pi="0" _id="id20" />
+              <GeometryMarker x="-50" y="0" z="0" i="1" j="1" k="0" pi="1" _id="id20" />
             </ConstraintFeature>
           </Pair>
         </Constraint>
