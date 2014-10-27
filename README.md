@@ -23,10 +23,12 @@ Implementation
 The work was originally implemented in Lisp.
 This project starts with that work converting it into the Clojure dialect of Lisp.
 Adaptors to specific engineering environments are provided:
+
   * GME : via ClojureCLR generating specific interpretors.
   * WebGME : via ClojureScript or Wisp.
   * FreeCAD : via Jython and Clojure.
   * BRL-CAD : via ?
+  
 The implementation is proceeding but is not yet complete.
 Presently the coincident points are being placed.
 The higher joint, csys, has been implemented via a set of three point constraints.
@@ -57,5 +59,5 @@ References
 Inspiration
 ===========
 
-http://www.cloud-invent.com/CAD-Future/CloudCAD.aspx
+
 
