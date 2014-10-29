@@ -1,0 +1,980 @@
+{
+  "format_version" : "1.0",
+  "generated_by" : "cytoscape-3.1.1",
+  "target_cytoscapejs_version" : "~2.1",
+  "data" : {
+    "selected" : true,
+    "__Annotations" : [ ],
+    "shared_name" : "primitive",
+    "SUID" : 203,
+    "name" : "primitive"
+  },
+  "elements" : {
+    "nodes" : [ {
+      "data" : {
+        "id" : "242",
+        "shared_name" : "t3-r3",
+        "SUID" : 242,
+        "selected" : false,
+        "name" : "t3-r3"
+      }
+    }, {
+      "data" : {
+        "id" : "240",
+        "shared_name" : "t3-r1",
+        "SUID" : 240,
+        "selected" : false,
+        "name" : "t3-r1"
+      }
+    }, {
+      "data" : {
+        "id" : "238",
+        "shared_name" : "t3-r0",
+        "SUID" : 238,
+        "selected" : false,
+        "name" : "t3-r0"
+      }
+    }, {
+      "data" : {
+        "id" : "236",
+        "shared_name" : "t2-r3",
+        "SUID" : 236,
+        "selected" : false,
+        "name" : "t2-r3"
+      }
+    }, {
+      "data" : {
+        "id" : "234",
+        "shared_name" : "t2-r1",
+        "SUID" : 234,
+        "selected" : false,
+        "name" : "t2-r1"
+      }
+    }, {
+      "data" : {
+        "id" : "232",
+        "shared_name" : "t2-r0",
+        "SUID" : 232,
+        "selected" : false,
+        "name" : "t2-r0"
+      }
+    }, {
+      "data" : {
+        "id" : "230",
+        "shared_name" : "t1-r3",
+        "SUID" : 230,
+        "selected" : false,
+        "name" : "t1-r3"
+      }
+    }, {
+      "data" : {
+        "id" : "228",
+        "shared_name" : "t1-r1",
+        "SUID" : 228,
+        "selected" : false,
+        "name" : "t1-r1"
+      }
+    }, {
+      "data" : {
+        "id" : "226",
+        "shared_name" : "t1-r0",
+        "SUID" : 226,
+        "selected" : false,
+        "name" : "t1-r0"
+      }
+    }, {
+      "data" : {
+        "id" : "224",
+        "shared_name" : "th-rh",
+        "SUID" : 224,
+        "selected" : false,
+        "name" : "th-rh"
+      }
+    }, {
+      "data" : {
+        "id" : "222",
+        "shared_name" : "t0-r3",
+        "SUID" : 222,
+        "selected" : false,
+        "name" : "t0-r3"
+      }
+    }, {
+      "data" : {
+        "id" : "220",
+        "shared_name" : "t0-r2",
+        "SUID" : 220,
+        "selected" : false,
+        "name" : "t0-r2"
+      }
+    }, {
+      "data" : {
+        "id" : "218",
+        "shared_name" : "t0-r1",
+        "SUID" : 218,
+        "selected" : false,
+        "name" : "t0-r1"
+      }
+    }, {
+      "data" : {
+        "id" : "216",
+        "shared_name" : "t0-r0",
+        "SUID" : 216,
+        "selected" : false,
+        "name" : "t0-r0"
+      }
+    }, {
+      "data" : {
+        "id" : "215",
+        "shared_name" : "t3-r2",
+        "SUID" : 215,
+        "selected" : false,
+        "name" : "t3-r2"
+      }
+    }, {
+      "data" : {
+        "id" : "214",
+        "shared_name" : "t2-r2",
+        "SUID" : 214,
+        "selected" : false,
+        "name" : "t2-r2"
+      }
+    }, {
+      "data" : {
+        "id" : "213",
+        "shared_name" : "t1-r2",
+        "SUID" : 213,
+        "selected" : false,
+        "name" : "t1-r2"
+      }
+    } ],
+    "edges" : [ {
+      "data" : {
+        "id" : "280",
+        "source" : "242",
+        "target" : "230",
+        "selected" : false,
+        "interaction" : "in-line",
+        "shared_interaction" : "in-line",
+        "shared_name" : "t3-r3 (in-line) t1-r3",
+        "SUID" : 280,
+        "name" : "t3-r3 (in-line) t1-r3"
+      }
+    }, {
+      "data" : {
+        "id" : "268",
+        "source" : "242",
+        "target" : "236",
+        "selected" : false,
+        "interaction" : "in-plane",
+        "shared_interaction" : "in-plane",
+        "shared_name" : "t3-r3 (in-plane) t2-r3",
+        "SUID" : 268,
+        "name" : "t3-r3 (in-plane) t2-r3"
+      }
+    }, {
+      "data" : {
+        "id" : "257",
+        "source" : "242",
+        "target" : "240",
+        "selected" : false,
+        "interaction" : "parallel-axis",
+        "shared_interaction" : "parallel-axis",
+        "shared_name" : "t3-r3 (parallel-axis) t3-r1",
+        "SUID" : 257,
+        "name" : "t3-r3 (parallel-axis) t3-r1"
+      }
+    }, {
+      "data" : {
+        "id" : "243",
+        "source" : "242",
+        "target" : "240",
+        "selected" : false,
+        "interaction" : "coincident",
+        "shared_interaction" : "coincident",
+        "shared_name" : "t3-r3 (coincident) t3-r1",
+        "SUID" : 243,
+        "name" : "t3-r3 (coincident) t3-r1"
+      }
+    }, {
+      "data" : {
+        "id" : "295",
+        "source" : "240",
+        "target" : "240",
+        "selected" : false,
+        "interaction" : "offset-angle",
+        "shared_interaction" : "offset-angle",
+        "shared_name" : "t3-r1 (offset-angle) t3-r1",
+        "SUID" : 295,
+        "name" : "t3-r1 (offset-angle) t3-r1"
+      }
+    }, {
+      "data" : {
+        "id" : "279",
+        "source" : "240",
+        "target" : "228",
+        "selected" : false,
+        "interaction" : "in-line",
+        "shared_interaction" : "in-line",
+        "shared_name" : "t3-r1 (in-line) t1-r1",
+        "SUID" : 279,
+        "name" : "t3-r1 (in-line) t1-r1"
+      }
+    }, {
+      "data" : {
+        "id" : "267",
+        "source" : "240",
+        "target" : "234",
+        "selected" : false,
+        "interaction" : "in-plane",
+        "shared_interaction" : "in-plane",
+        "shared_name" : "t3-r1 (in-plane) t2-r1",
+        "SUID" : 267,
+        "name" : "t3-r1 (in-plane) t2-r1"
+      }
+    }, {
+      "data" : {
+        "id" : "256",
+        "source" : "240",
+        "target" : "238",
+        "selected" : false,
+        "interaction" : "parallel-axis",
+        "shared_interaction" : "parallel-axis",
+        "shared_name" : "t3-r1 (parallel-axis) t3-r0",
+        "SUID" : 256,
+        "name" : "t3-r1 (parallel-axis) t3-r0"
+      }
+    }, {
+      "data" : {
+        "id" : "241",
+        "source" : "240",
+        "target" : "218",
+        "selected" : false,
+        "interaction" : "coincident",
+        "shared_interaction" : "coincident",
+        "shared_name" : "t3-r1 (coincident) t0-r1",
+        "SUID" : 241,
+        "name" : "t3-r1 (coincident) t0-r1"
+      }
+    }, {
+      "data" : {
+        "id" : "294",
+        "source" : "238",
+        "target" : "238",
+        "selected" : false,
+        "interaction" : "offset-angle",
+        "shared_interaction" : "offset-angle",
+        "shared_name" : "t3-r0 (offset-angle) t3-r0",
+        "SUID" : 294,
+        "name" : "t3-r0 (offset-angle) t3-r0"
+      }
+    }, {
+      "data" : {
+        "id" : "278",
+        "source" : "238",
+        "target" : "226",
+        "selected" : false,
+        "interaction" : "in-line",
+        "shared_interaction" : "in-line",
+        "shared_name" : "t3-r0 (in-line) t1-r0",
+        "SUID" : 278,
+        "name" : "t3-r0 (in-line) t1-r0"
+      }
+    }, {
+      "data" : {
+        "id" : "266",
+        "source" : "238",
+        "target" : "232",
+        "selected" : false,
+        "interaction" : "in-plane",
+        "shared_interaction" : "in-plane",
+        "shared_name" : "t3-r0 (in-plane) t2-r0",
+        "SUID" : 266,
+        "name" : "t3-r0 (in-plane) t2-r0"
+      }
+    }, {
+      "data" : {
+        "id" : "255",
+        "source" : "238",
+        "target" : "238",
+        "selected" : false,
+        "interaction" : "parallel-axis",
+        "shared_interaction" : "parallel-axis",
+        "shared_name" : "t3-r0 (parallel-axis) t3-r0",
+        "SUID" : 255,
+        "name" : "t3-r0 (parallel-axis) t3-r0"
+      }
+    }, {
+      "data" : {
+        "id" : "239",
+        "source" : "238",
+        "target" : "216",
+        "selected" : false,
+        "interaction" : "coincident",
+        "shared_interaction" : "coincident",
+        "shared_name" : "t3-r0 (coincident) t0-r0",
+        "SUID" : 239,
+        "name" : "t3-r0 (coincident) t0-r0"
+      }
+    }, {
+      "data" : {
+        "id" : "254",
+        "source" : "236",
+        "target" : "232",
+        "selected" : false,
+        "interaction" : "parallel-axis",
+        "shared_interaction" : "parallel-axis",
+        "shared_name" : "t2-r3 (parallel-axis) t2-r0",
+        "SUID" : 254,
+        "name" : "t2-r3 (parallel-axis) t2-r0"
+      }
+    }, {
+      "data" : {
+        "id" : "237",
+        "source" : "236",
+        "target" : "220",
+        "selected" : false,
+        "interaction" : "coincident",
+        "shared_interaction" : "coincident",
+        "shared_name" : "t2-r3 (coincident) t0-r2",
+        "SUID" : 237,
+        "name" : "t2-r3 (coincident) t0-r2"
+      }
+    }, {
+      "data" : {
+        "id" : "293",
+        "source" : "234",
+        "target" : "232",
+        "selected" : false,
+        "interaction" : "offset-angle",
+        "shared_interaction" : "offset-angle",
+        "shared_name" : "t2-r1 (offset-angle) t2-r0",
+        "SUID" : 293,
+        "name" : "t2-r1 (offset-angle) t2-r0"
+      }
+    }, {
+      "data" : {
+        "id" : "277",
+        "source" : "234",
+        "target" : "224",
+        "selected" : false,
+        "interaction" : "in-line",
+        "shared_interaction" : "in-line",
+        "shared_name" : "t2-r1 (in-line) th-rh",
+        "SUID" : 277,
+        "name" : "t2-r1 (in-line) th-rh"
+      }
+    }, {
+      "data" : {
+        "id" : "253",
+        "source" : "234",
+        "target" : "232",
+        "selected" : false,
+        "interaction" : "parallel-axis",
+        "shared_interaction" : "parallel-axis",
+        "shared_name" : "t2-r1 (parallel-axis) t2-r0",
+        "SUID" : 253,
+        "name" : "t2-r1 (parallel-axis) t2-r0"
+      }
+    }, {
+      "data" : {
+        "id" : "235",
+        "source" : "234",
+        "target" : "216",
+        "selected" : false,
+        "interaction" : "coincident",
+        "shared_interaction" : "coincident",
+        "shared_name" : "t2-r1 (coincident) t0-r0",
+        "SUID" : 235,
+        "name" : "t2-r1 (coincident) t0-r0"
+      }
+    }, {
+      "data" : {
+        "id" : "292",
+        "source" : "232",
+        "target" : "232",
+        "selected" : false,
+        "interaction" : "offset-angle",
+        "shared_interaction" : "offset-angle",
+        "shared_name" : "t2-r0 (offset-angle) t2-r0",
+        "SUID" : 292,
+        "name" : "t2-r0 (offset-angle) t2-r0"
+      }
+    }, {
+      "data" : {
+        "id" : "276",
+        "source" : "232",
+        "target" : "216",
+        "selected" : false,
+        "interaction" : "in-line",
+        "shared_interaction" : "in-line",
+        "shared_name" : "t2-r0 (in-line) t0-r0",
+        "SUID" : 276,
+        "name" : "t2-r0 (in-line) t0-r0"
+      }
+    }, {
+      "data" : {
+        "id" : "265",
+        "source" : "232",
+        "target" : "226",
+        "selected" : false,
+        "interaction" : "in-plane",
+        "shared_interaction" : "in-plane",
+        "shared_name" : "t2-r0 (in-plane) t1-r0",
+        "SUID" : 265,
+        "name" : "t2-r0 (in-plane) t1-r0"
+      }
+    }, {
+      "data" : {
+        "id" : "252",
+        "source" : "232",
+        "target" : "232",
+        "selected" : false,
+        "interaction" : "parallel-axis",
+        "shared_interaction" : "parallel-axis",
+        "shared_name" : "t2-r0 (parallel-axis) t2-r0",
+        "SUID" : 252,
+        "name" : "t2-r0 (parallel-axis) t2-r0"
+      }
+    }, {
+      "data" : {
+        "id" : "233",
+        "source" : "232",
+        "target" : "216",
+        "selected" : false,
+        "interaction" : "coincident",
+        "shared_interaction" : "coincident",
+        "shared_name" : "t2-r0 (coincident) t0-r0",
+        "SUID" : 233,
+        "name" : "t2-r0 (coincident) t0-r0"
+      }
+    }, {
+      "data" : {
+        "id" : "251",
+        "source" : "230",
+        "target" : "228",
+        "selected" : false,
+        "interaction" : "parallel-axis",
+        "shared_interaction" : "parallel-axis",
+        "shared_name" : "t1-r3 (parallel-axis) t1-r1",
+        "SUID" : 251,
+        "name" : "t1-r3 (parallel-axis) t1-r1"
+      }
+    }, {
+      "data" : {
+        "id" : "231",
+        "source" : "230",
+        "target" : "218",
+        "selected" : false,
+        "interaction" : "coincident",
+        "shared_interaction" : "coincident",
+        "shared_name" : "t1-r3 (coincident) t0-r1",
+        "SUID" : 231,
+        "name" : "t1-r3 (coincident) t0-r1"
+      }
+    }, {
+      "data" : {
+        "id" : "300",
+        "source" : "228",
+        "target" : "224",
+        "selected" : false,
+        "interaction" : "helical",
+        "shared_interaction" : "helical",
+        "shared_name" : "t1-r1 (helical) th-rh",
+        "SUID" : 300,
+        "name" : "t1-r1 (helical) th-rh"
+      }
+    }, {
+      "data" : {
+        "id" : "291",
+        "source" : "228",
+        "target" : "226",
+        "selected" : false,
+        "interaction" : "offset-angle",
+        "shared_interaction" : "offset-angle",
+        "shared_name" : "t1-r1 (offset-angle) t1-r0",
+        "SUID" : 291,
+        "name" : "t1-r1 (offset-angle) t1-r0"
+      }
+    }, {
+      "data" : {
+        "id" : "275",
+        "source" : "228",
+        "target" : "216",
+        "selected" : false,
+        "interaction" : "in-line",
+        "shared_interaction" : "in-line",
+        "shared_name" : "t1-r1 (in-line) t0-r0",
+        "SUID" : 275,
+        "name" : "t1-r1 (in-line) t0-r0"
+      }
+    }, {
+      "data" : {
+        "id" : "264",
+        "source" : "228",
+        "target" : "224",
+        "selected" : false,
+        "interaction" : "in-plane",
+        "shared_interaction" : "in-plane",
+        "shared_name" : "t1-r1 (in-plane) th-rh",
+        "SUID" : 264,
+        "name" : "t1-r1 (in-plane) th-rh"
+      }
+    }, {
+      "data" : {
+        "id" : "250",
+        "source" : "228",
+        "target" : "226",
+        "selected" : false,
+        "interaction" : "parallel-axis",
+        "shared_interaction" : "parallel-axis",
+        "shared_name" : "t1-r1 (parallel-axis) t1-r0",
+        "SUID" : 250,
+        "name" : "t1-r1 (parallel-axis) t1-r0"
+      }
+    }, {
+      "data" : {
+        "id" : "229",
+        "source" : "228",
+        "target" : "216",
+        "selected" : false,
+        "interaction" : "coincident",
+        "shared_interaction" : "coincident",
+        "shared_name" : "t1-r1 (coincident) t0-r0",
+        "SUID" : 229,
+        "name" : "t1-r1 (coincident) t0-r0"
+      }
+    }, {
+      "data" : {
+        "id" : "299",
+        "source" : "226",
+        "target" : "216",
+        "selected" : false,
+        "interaction" : "helical",
+        "shared_interaction" : "helical",
+        "shared_name" : "t1-r0 (helical) t0-r0",
+        "SUID" : 299,
+        "name" : "t1-r0 (helical) t0-r0"
+      }
+    }, {
+      "data" : {
+        "id" : "290",
+        "source" : "226",
+        "target" : "226",
+        "selected" : false,
+        "interaction" : "offset-angle",
+        "shared_interaction" : "offset-angle",
+        "shared_name" : "t1-r0 (offset-angle) t1-r0",
+        "SUID" : 290,
+        "name" : "t1-r0 (offset-angle) t1-r0"
+      }
+    }, {
+      "data" : {
+        "id" : "274",
+        "source" : "226",
+        "target" : "216",
+        "selected" : false,
+        "interaction" : "in-line",
+        "shared_interaction" : "in-line",
+        "shared_name" : "t1-r0 (in-line) t0-r0",
+        "SUID" : 274,
+        "name" : "t1-r0 (in-line) t0-r0"
+      }
+    }, {
+      "data" : {
+        "id" : "263",
+        "source" : "226",
+        "target" : "216",
+        "selected" : false,
+        "interaction" : "in-plane",
+        "shared_interaction" : "in-plane",
+        "shared_name" : "t1-r0 (in-plane) t0-r0",
+        "SUID" : 263,
+        "name" : "t1-r0 (in-plane) t0-r0"
+      }
+    }, {
+      "data" : {
+        "id" : "249",
+        "source" : "226",
+        "target" : "226",
+        "selected" : false,
+        "interaction" : "parallel-axis",
+        "shared_interaction" : "parallel-axis",
+        "shared_name" : "t1-r0 (parallel-axis) t1-r0",
+        "SUID" : 249,
+        "name" : "t1-r0 (parallel-axis) t1-r0"
+      }
+    }, {
+      "data" : {
+        "id" : "227",
+        "source" : "226",
+        "target" : "216",
+        "selected" : false,
+        "interaction" : "coincident",
+        "shared_interaction" : "coincident",
+        "shared_name" : "t1-r0 (coincident) t0-r0",
+        "SUID" : 227,
+        "name" : "t1-r0 (coincident) t0-r0"
+      }
+    }, {
+      "data" : {
+        "id" : "298",
+        "source" : "224",
+        "target" : "216",
+        "selected" : false,
+        "interaction" : "helical",
+        "shared_interaction" : "helical",
+        "shared_name" : "th-rh (helical) t0-r0",
+        "SUID" : 298,
+        "name" : "th-rh (helical) t0-r0"
+      }
+    }, {
+      "data" : {
+        "id" : "289",
+        "source" : "224",
+        "target" : "216",
+        "selected" : false,
+        "interaction" : "offset-angle",
+        "shared_interaction" : "offset-angle",
+        "shared_name" : "th-rh (offset-angle) t0-r0",
+        "SUID" : 289,
+        "name" : "th-rh (offset-angle) t0-r0"
+      }
+    }, {
+      "data" : {
+        "id" : "286",
+        "source" : "224",
+        "target" : "216",
+        "selected" : false,
+        "interaction" : "offset-axis",
+        "shared_interaction" : "offset-axis",
+        "shared_name" : "th-rh (offset-axis) t0-r0",
+        "SUID" : 286,
+        "name" : "th-rh (offset-axis) t0-r0"
+      }
+    }, {
+      "data" : {
+        "id" : "273",
+        "source" : "224",
+        "target" : "216",
+        "selected" : false,
+        "interaction" : "in-line",
+        "shared_interaction" : "in-line",
+        "shared_name" : "th-rh (in-line) t0-r0",
+        "SUID" : 273,
+        "name" : "th-rh (in-line) t0-r0"
+      }
+    }, {
+      "data" : {
+        "id" : "262",
+        "source" : "224",
+        "target" : "216",
+        "selected" : false,
+        "interaction" : "in-plane",
+        "shared_interaction" : "in-plane",
+        "shared_name" : "th-rh (in-plane) t0-r0",
+        "SUID" : 262,
+        "name" : "th-rh (in-plane) t0-r0"
+      }
+    }, {
+      "data" : {
+        "id" : "248",
+        "source" : "224",
+        "target" : "216",
+        "selected" : false,
+        "interaction" : "parallel-axis",
+        "shared_interaction" : "parallel-axis",
+        "shared_name" : "th-rh (parallel-axis) t0-r0",
+        "SUID" : 248,
+        "name" : "th-rh (parallel-axis) t0-r0"
+      }
+    }, {
+      "data" : {
+        "id" : "225",
+        "source" : "224",
+        "target" : "216",
+        "selected" : false,
+        "interaction" : "coincident",
+        "shared_interaction" : "coincident",
+        "shared_name" : "th-rh (coincident) t0-r0",
+        "SUID" : 225,
+        "name" : "th-rh (coincident) t0-r0"
+      }
+    }, {
+      "data" : {
+        "id" : "285",
+        "source" : "222",
+        "target" : "220",
+        "selected" : false,
+        "interaction" : "offset-axis",
+        "shared_interaction" : "offset-axis",
+        "shared_name" : "t0-r3 (offset-axis) t0-r2",
+        "SUID" : 285,
+        "name" : "t0-r3 (offset-axis) t0-r2"
+      }
+    }, {
+      "data" : {
+        "id" : "272",
+        "source" : "222",
+        "target" : "218",
+        "selected" : false,
+        "interaction" : "in-line",
+        "shared_interaction" : "in-line",
+        "shared_name" : "t0-r3 (in-line) t0-r1",
+        "SUID" : 272,
+        "name" : "t0-r3 (in-line) t0-r1"
+      }
+    }, {
+      "data" : {
+        "id" : "261",
+        "source" : "222",
+        "target" : "220",
+        "selected" : false,
+        "interaction" : "in-plane",
+        "shared_interaction" : "in-plane",
+        "shared_name" : "t0-r3 (in-plane) t0-r2",
+        "SUID" : 261,
+        "name" : "t0-r3 (in-plane) t0-r2"
+      }
+    }, {
+      "data" : {
+        "id" : "247",
+        "source" : "222",
+        "target" : "218",
+        "selected" : false,
+        "interaction" : "parallel-axis",
+        "shared_interaction" : "parallel-axis",
+        "shared_name" : "t0-r3 (parallel-axis) t0-r1",
+        "SUID" : 247,
+        "name" : "t0-r3 (parallel-axis) t0-r1"
+      }
+    }, {
+      "data" : {
+        "id" : "223",
+        "source" : "222",
+        "target" : "218",
+        "selected" : false,
+        "interaction" : "coincident",
+        "shared_interaction" : "coincident",
+        "shared_name" : "t0-r3 (coincident) t0-r1",
+        "SUID" : 223,
+        "name" : "t0-r3 (coincident) t0-r1"
+      }
+    }, {
+      "data" : {
+        "id" : "271",
+        "source" : "220",
+        "target" : "216",
+        "selected" : false,
+        "interaction" : "in-line",
+        "shared_interaction" : "in-line",
+        "shared_name" : "t0-r2 (in-line) t0-r0",
+        "SUID" : 271,
+        "name" : "t0-r2 (in-line) t0-r0"
+      }
+    }, {
+      "data" : {
+        "id" : "260",
+        "source" : "220",
+        "target" : "218",
+        "selected" : false,
+        "interaction" : "in-plane",
+        "shared_interaction" : "in-plane",
+        "shared_name" : "t0-r2 (in-plane) t0-r1",
+        "SUID" : 260,
+        "name" : "t0-r2 (in-plane) t0-r1"
+      }
+    }, {
+      "data" : {
+        "id" : "246",
+        "source" : "220",
+        "target" : "216",
+        "selected" : false,
+        "interaction" : "parallel-axis",
+        "shared_interaction" : "parallel-axis",
+        "shared_name" : "t0-r2 (parallel-axis) t0-r0",
+        "SUID" : 246,
+        "name" : "t0-r2 (parallel-axis) t0-r0"
+      }
+    }, {
+      "data" : {
+        "id" : "221",
+        "source" : "220",
+        "target" : "216",
+        "selected" : false,
+        "interaction" : "coincident",
+        "shared_interaction" : "coincident",
+        "shared_name" : "t0-r2 (coincident) t0-r0",
+        "SUID" : 221,
+        "name" : "t0-r2 (coincident) t0-r0"
+      }
+    }, {
+      "data" : {
+        "id" : "297",
+        "source" : "218",
+        "target" : "216",
+        "selected" : false,
+        "interaction" : "helical",
+        "shared_interaction" : "helical",
+        "shared_name" : "t0-r1 (helical) t0-r0",
+        "SUID" : 297,
+        "name" : "t0-r1 (helical) t0-r0"
+      }
+    }, {
+      "data" : {
+        "id" : "288",
+        "source" : "218",
+        "target" : "216",
+        "selected" : false,
+        "interaction" : "offset-angle",
+        "shared_interaction" : "offset-angle",
+        "shared_name" : "t0-r1 (offset-angle) t0-r0",
+        "SUID" : 288,
+        "name" : "t0-r1 (offset-angle) t0-r0"
+      }
+    }, {
+      "data" : {
+        "id" : "282",
+        "source" : "218",
+        "target" : "216",
+        "selected" : false,
+        "interaction" : "offset-axis",
+        "shared_interaction" : "offset-axis",
+        "shared_name" : "t0-r1 (offset-axis) t0-r0",
+        "SUID" : 282,
+        "name" : "t0-r1 (offset-axis) t0-r0"
+      }
+    }, {
+      "data" : {
+        "id" : "270",
+        "source" : "218",
+        "target" : "216",
+        "selected" : false,
+        "interaction" : "in-line",
+        "shared_interaction" : "in-line",
+        "shared_name" : "t0-r1 (in-line) t0-r0",
+        "SUID" : 270,
+        "name" : "t0-r1 (in-line) t0-r0"
+      }
+    }, {
+      "data" : {
+        "id" : "259",
+        "source" : "218",
+        "target" : "216",
+        "selected" : false,
+        "interaction" : "in-plane",
+        "shared_interaction" : "in-plane",
+        "shared_name" : "t0-r1 (in-plane) t0-r0",
+        "SUID" : 259,
+        "name" : "t0-r1 (in-plane) t0-r0"
+      }
+    }, {
+      "data" : {
+        "id" : "245",
+        "source" : "218",
+        "target" : "216",
+        "selected" : false,
+        "interaction" : "parallel-axis",
+        "shared_interaction" : "parallel-axis",
+        "shared_name" : "t0-r1 (parallel-axis) t0-r0",
+        "SUID" : 245,
+        "name" : "t0-r1 (parallel-axis) t0-r0"
+      }
+    }, {
+      "data" : {
+        "id" : "219",
+        "source" : "218",
+        "target" : "216",
+        "selected" : false,
+        "interaction" : "coincident",
+        "shared_interaction" : "coincident",
+        "shared_name" : "t0-r1 (coincident) t0-r0",
+        "SUID" : 219,
+        "name" : "t0-r1 (coincident) t0-r0"
+      }
+    }, {
+      "data" : {
+        "id" : "296",
+        "source" : "216",
+        "target" : "216",
+        "selected" : false,
+        "interaction" : "helical",
+        "shared_interaction" : "helical",
+        "shared_name" : "t0-r0 (helical) t0-r0",
+        "SUID" : 296,
+        "name" : "t0-r0 (helical) t0-r0"
+      }
+    }, {
+      "data" : {
+        "id" : "287",
+        "source" : "216",
+        "target" : "216",
+        "selected" : false,
+        "interaction" : "offset-angle",
+        "shared_interaction" : "offset-angle",
+        "shared_name" : "t0-r0 (offset-angle) t0-r0",
+        "SUID" : 287,
+        "name" : "t0-r0 (offset-angle) t0-r0"
+      }
+    }, {
+      "data" : {
+        "id" : "281",
+        "source" : "216",
+        "target" : "216",
+        "selected" : false,
+        "interaction" : "offset-axis",
+        "shared_interaction" : "offset-axis",
+        "shared_name" : "t0-r0 (offset-axis) t0-r0",
+        "SUID" : 281,
+        "name" : "t0-r0 (offset-axis) t0-r0"
+      }
+    }, {
+      "data" : {
+        "id" : "269",
+        "source" : "216",
+        "target" : "216",
+        "selected" : false,
+        "interaction" : "in-line",
+        "shared_interaction" : "in-line",
+        "shared_name" : "t0-r0 (in-line) t0-r0",
+        "SUID" : 269,
+        "name" : "t0-r0 (in-line) t0-r0"
+      }
+    }, {
+      "data" : {
+        "id" : "258",
+        "source" : "216",
+        "target" : "216",
+        "selected" : false,
+        "interaction" : "in-plane",
+        "shared_interaction" : "in-plane",
+        "shared_name" : "t0-r0 (in-plane) t0-r0",
+        "SUID" : 258,
+        "name" : "t0-r0 (in-plane) t0-r0"
+      }
+    }, {
+      "data" : {
+        "id" : "244",
+        "source" : "216",
+        "target" : "216",
+        "selected" : false,
+        "interaction" : "parallel-axis",
+        "shared_interaction" : "parallel-axis",
+        "shared_name" : "t0-r0 (parallel-axis) t0-r0",
+        "SUID" : 244,
+        "name" : "t0-r0 (parallel-axis) t0-r0"
+      }
+    }, {
+      "data" : {
+        "id" : "217",
+        "source" : "216",
+        "target" : "216",
+        "selected" : false,
+        "interaction" : "coincident",
+        "shared_interaction" : "coincident",
+        "shared_name" : "t0-r0 (coincident) t0-r0",
+        "SUID" : 217,
+        "name" : "t0-r0 (coincident) t0-r0"
+      }
+    } ]
+  }
+}

@@ -279,7 +279,7 @@ Plan fragment:
 
   2t-1r/p-p(?link, ?point, ?plane,
     ?axis, ?axis_1, ?axis_2,
-    gmp(?M_0), R[2], ?lf, q_0);
+    gmp(?M_1), R[2], ?lf, q_0);
 
   R[3] = plane(?point, ?axis);
   R[4] = intersect(R[0], R[3], 0);

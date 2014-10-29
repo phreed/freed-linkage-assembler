@@ -153,7 +153,7 @@ Explanation:
          gmz1 (ga/gmz m1 kb)
          gmz2 (ga/gmz m2 kb)
 
-         axis (ga/outer-prod gmz1 gmz2)
+         axis (ga/bivector-normal gmz1 gmz2)
          angle (ga/vec-angle gmz1 gmz2 axis) ]
     (dosync
      (alter m2-link merge

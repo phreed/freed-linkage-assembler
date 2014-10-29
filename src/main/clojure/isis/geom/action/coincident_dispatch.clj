@@ -33,7 +33,6 @@
   :default nil)
 
 
-
 (defmethod ms/constraint-attempt?
   :coincident
   [kb constraint]
@@ -41,9 +40,14 @@
         precon (precondition kb m1 m2) ]
     (if-not precon
       :pre-condition-not-met
-      (let [[kb ma1 ma2] precon]
-        (pp/fresh-line)
-        (pp/pprint (str "coincident" (assemble-dispatch kb ma1 ma2)))
-        (assemble! kb ma1 ma2) ))))
+      (let [[kb+ m1+ m2+] precon]
+        (try
+          (ms/show-constraint kb+ "coincident:    "
+                              assemble-dispatch m1+ m2+)
+          (assemble! kb+ m1+ m2+)
+          (catch Exception ex
+            (ms/dump ex assemble-dispatch
+                     "coincident" kb+ m1+ m2+)
+            :exception-thrown))))))
 
 (ms/defmethod-symetric-transform assemble!)

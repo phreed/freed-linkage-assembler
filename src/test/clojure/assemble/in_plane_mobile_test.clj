@@ -385,6 +385,7 @@
 
  (tt/fact "precondition satisfied" precon =not=> nil?)
  (tt/fact "about motive" motive => :mobile)
+
  (tt/fact
   "about dispatch"
   (in-plane-mobile/assemble-dispatch kb m1 m2 motive) =>

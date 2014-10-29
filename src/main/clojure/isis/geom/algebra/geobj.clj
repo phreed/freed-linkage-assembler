@@ -145,19 +145,6 @@
       nil
       (mapv #(/ % weight) vect))))
 
-(defn ptwist
-  "twist a vector making an arbitrary perpendicular vector.
-  There are any number of solutions to this problem.
-  Using the fact that a zero dot-product is a sign of
-  perpendicularity, three solutions are [-y x 0], [0 z -y]
-  and [-z 0 x].  We are looking for a solution that
-  is insensitive to zeros in the input vector, this
-  can be achieved via a linear combination of these
-  three primitive solutions. "
-  [vect]
-  (let [[x y z] vect] [(- (+ y z)) (+ x z) (- x y)]))
-
-
 (defn quat-normalize
   "Take a quaternion and normalize it to a unit quaternion."
   [[q0 q1 q2 q3]]
@@ -438,6 +425,23 @@
   (mapv (fn [a b]
           (let [ab (+ a b)]
             (if (tol/near-zero? :tiny ab) 0.0 ab))) vector-1 vector-2))
+
+(defn bivector-normal
+  "Obtain a unit vector normal to the two provided vectors.
+  Twist a vector making an arbitrary perpendicular vector.
+  There are any number of solutions to this problem.
+  Using the fact that a zero dot-product is a sign of
+  perpendicularity, three solutions are [-y x 0], [0 z -y]
+  and [-z 0 x].  We are looking for a solution that
+  is insensitive to zeros in the input vector, this
+  can be achieved via a linear combination of these
+  three primitive solutions. "
+  [v1 v2]
+  (let [perp (outer-prod v1 v2)]
+    (normalize
+     (if-not (tol/near-zero? :tiny perp)
+       perp
+       (let [[x y z] v1] [(- (+ y z)) (+ x z) (- x y)])) )))
 
 (defn vec-angle
   "The angle between vector-1 and vector-2,

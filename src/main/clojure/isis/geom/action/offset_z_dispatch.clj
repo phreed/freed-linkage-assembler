@@ -30,7 +30,6 @@
   :default nil)
 
 
-
 (defmethod ms/constraint-attempt?
   :offset-z
   [kb constraint]
@@ -38,17 +37,16 @@
         precon (precondition kb m1 m2) ]
     (if-not precon
       :pre-condition-not-met
-      (let [[ma1 ma2] precon]
-      (try
-        (pp/fresh-line)
-        (pp/pprint (str "offset-z"
-                        (assemble-dispatch kb ma1 ma2)))
-        (assemble! kb ma1 ma2)
-
-        (catch Exception ex
-            (ms/dump ex (assemble-dispatch kb ma1 ma2)
-                     "offset-z" kb ma1 ma2)
-          :exception-thrown ) )))) )
+      (let [[kb+ m1+ m2+] precon]
+        (try
+          (ms/show-constraint kb+ "offset-axis: "
+                           assemble-dispatch
+                           m1+ m2+)
+          (assemble! kb+ m1+ m2+)
+          (catch Exception ex
+            (ms/dump ex assemble-dispatch
+                     "offset-z" kb+ m1+ m2+)
+            :exception-thrown ) )))) )
 
 
 (ms/defmethod-symetric-transform assemble!)

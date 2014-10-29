@@ -46,11 +46,16 @@
         precon (precondition kb point line) ]
     (if-not precon
       :pre-condition-not-met
-      (let [[kb point line motive] precon]
-        (pp/fresh-line)
-        (pp/pprint (str "in-line"
-                        (assemble-dispatch kb point line motive)))
-        (assemble! kb point line motive)))))
+      (let [[kb+ point line motive] precon]
+        (try
+          (ms/show-constraint kb+ "in-line:       "
+                              assemble-dispatch
+                              point line motive)
+          (assemble! kb point line motive)
+          (catch Exception ex
+            (ms/dump ex assemble-dispatch
+                     "coincident" kb+ point line motive)
+            :exception-thrown))))))
 
 
 (ms/defmethod-asymetric-transform assemble!)

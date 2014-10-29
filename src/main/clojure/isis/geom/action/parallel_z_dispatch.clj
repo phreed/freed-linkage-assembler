@@ -46,14 +46,12 @@
       :pre-condition-not-met
       (let [[kb+ m1+ m2+] precon]
         (try
-          (pp/fresh-line)
-          (pp/pprint (str "parallel-z"
-                          (assemble-dispatch kb+ m1+ m2+)))
+          (ms/show-constraint kb+ "parallel-axis: "
+                           assemble-dispatch
+                           m1+ m2+)
           (assemble! kb+ m1+ m2+)
-
           (catch Exception ex
-            (ms/dump ex
-                     (assemble-dispatch kb+ m1+ m2+)
+            (ms/dump ex assemble-dispatch
                      "parallel-z" kb+ m1+ m2+)
             :exception-thrown))))))
 

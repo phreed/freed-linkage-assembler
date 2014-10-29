@@ -59,16 +59,14 @@
     (if-not precon
       :pre-condition-not-met
       (let [[kb+ m1+ m2+ motive] precon]
-        (pp/fresh-line)
         (try
-          (pp/pprint (str "in-plane"
-                          (assemble-dispatch kb+ m1+ m2+ motive)))
+          (ms/show-constraint kb+ "in-plane:      "
+                              assemble-dispatch
+                              m1+ m2+ motive)
           (assemble! kb+ m1+ m2+ motive)
-
           (catch Exception ex
-            (ms/dump ex
-                     (assemble-dispatch kb+ m1+ m2+ motive)
-                     "in-plane" kb+ m1+ m2+)
+            (ms/dump ex assemble-dispatch
+                     "in-plane" kb+ m1+ m2+ motive)
             :exception-thrown))))))
 
 

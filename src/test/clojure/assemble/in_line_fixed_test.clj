@@ -9,7 +9,7 @@
 (defn test-t2-r1 []
   (let
     [m1-link-name "{CARRIAGE}"
-     m2-link-name "{627ab157-62e1-485c-b797-8139c8f6c133}"
+     m2-link-name "{CARRIAGE-BOOM-LOWER-PIN}"
      [kb m1 m2 motive :as precon]
      (in-line/precondition
       {:invar
@@ -38,7 +38,6 @@
        {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 1.0]}])]
 
     (tt/fact "precondition satisfied" precon =not=> nil?)
-
     (tt/fact "about motive" motive => :fixed)
 
     (tt/incipient-fact

@@ -1,0 +1,107 @@
+primitive t1-r2
+primitive t2-r2
+primitive t3-r2
+
+primitive t0-r0 coincident t0-r0
+primitive t0-r1 coincident t0-r0
+primitive t0-r2 coincident t0-r0
+primitive t0-r3 coincident t0-r1
+
+primitive th-rh coincident t0-r0
+
+primitive t1-r0 coincident t0-r0
+primitive t1-r1 coincident t0-r0
+primitive t1-r3 coincident t0-r1
+
+primitive t2-r0 coincident t0-r0
+primitive t2-r1 coincident t0-r0
+primitive t2-r3 coincident t0-r2
+
+primitive t3-r0 coincident t0-r0
+primitive t3-r1 coincident t0-r1
+primitive t3-r3 coincident t3-r1
+
+
+primitive t0-r0 parallel-axis t0-r0
+primitive t0-r1 parallel-axis t0-r0
+primitive t0-r2 parallel-axis t0-r0
+primitive t0-r3 parallel-axis t0-r1
+
+primitive th-rh parallel-axis t0-r0
+
+primitive t1-r0 parallel-axis t1-r0
+primitive t1-r1 parallel-axis t1-r0
+primitive t1-r3 parallel-axis t1-r1
+
+primitive t2-r0 parallel-axis t2-r0
+primitive t2-r1 parallel-axis t2-r0
+primitive t2-r3 parallel-axis t2-r0
+
+primitive t3-r0 parallel-axis t3-r0
+primitive t3-r1 parallel-axis t3-r0
+primitive t3-r3 parallel-axis t3-r1
+
+
+primitive t0-r0 in-plane t0-r0
+primitive t0-r1 in-plane t0-r0
+primitive t0-r2 in-plane t0-r1
+primitive t0-r3 in-plane t0-r2
+
+primitive th-rh in-plane t0-r0
+
+primitive t1-r0 in-plane t0-r0
+primitive t1-r1 in-plane th-rh
+
+primitive t2-r0 in-plane t1-r0
+
+primitive t3-r0 in-plane t2-r0
+primitive t3-r1 in-plane t2-r1
+primitive t3-r3 in-plane t2-r3
+
+
+primitive t0-r0 in-line t0-r0
+primitive t0-r1 in-line t0-r0
+primitive t0-r2 in-line t0-r0
+primitive t0-r3 in-line t0-r1
+
+primitive th-rh in-line t0-r0
+
+primitive t1-r0 in-line t0-r0
+primitive t1-r1 in-line t0-r0
+
+primitive t2-r0 in-line t0-r0
+primitive t2-r1 in-line th-rh
+
+primitive t3-r0 in-line t1-r0
+primitive t3-r1 in-line t1-r1
+primitive t3-r3 in-line t1-r3
+
+
+primitive t0-r0 offset-axis t0-r0
+primitive t0-r1 offset-axis t0-r0
+primitive t0-r2 offset-axis ?
+primitive t0-r3 offset-axis t0-r2
+primitive th-rh offset-axis t0-r0
+
+
+primitive t0-r0 offset-angle t0-r0
+primitive t0-r1 offset-angle t0-r0
+primitive th-rh offset-angle t0-r0
+
+primitive t1-r0 offset-angle t1-r0
+primitive t1-r1 offset-angle t1-r0
+
+primitive t2-r0 offset-angle t2-r0
+primitive t2-r1 offset-angle t2-r0
+
+primitive t3-r0 offset-angle t3-r0
+primitive t3-r1 offset-angle t3-r1
+
+
+primitive t0-r0 helical t0-r0
+primitive t0-r1 helical t0-r0
+primitive th-rh helical t0-r0
+primitive t1-r0 helical t0-r0 
+primitive t1-r1 helical th-rh
+
+

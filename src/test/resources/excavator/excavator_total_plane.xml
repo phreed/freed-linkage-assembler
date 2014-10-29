@@ -541,13 +541,13 @@
           </CADParameter>
         </ParametricParameters>
       </CADComponent>
-      <CADComponent ComponentID="{627ab157-62e1-485c-b797-8139c8f6c133}" Name="PIN" DisplayName="Pin142" Type="PART" SpecialInstruction="" MaterialID="" Representation="" Classification="Unknown" _id="id1799">
+      <CADComponent ComponentID="{CARRIAGE-BOOM-LOWER-PIN}" Name="PIN" DisplayName="Pin142" Type="PART" SpecialInstruction="" MaterialID="" Representation="" Classification="Unknown" _id="id1799">
         <Constraint _id="id1553">
           <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="SURFACE" FeatureAlignmentType="ALIGN" _id="id1554">
             <ConstraintFeature ComponentID="{CARRIAGE}" FeatureName="CENTER_PLANE" FeatureOrientationType="SIDE_A" _id="id1555">
               <GeometryMarker x="0" y="0" z="-1636.32" i="0" j="0" k="1" pi="0" _id="id1556" />
             </ConstraintFeature>
-            <ConstraintFeature ComponentID="{627ab157-62e1-485c-b797-8139c8f6c133}" FeatureName="CENTER_PLANE" FeatureOrientationType="SIDE_A" _id="id1557">
+            <ConstraintFeature ComponentID="{CARRIAGE-BOOM-LOWER-PIN}" FeatureName="CENTER_PLANE" FeatureOrientationType="SIDE_A" _id="id1557">
               <GeometryMarker x="0" y="0" z="684" i="0" j="0" k="-1" pi="0" _id="id1558" />
             </ConstraintFeature>
           </Pair>
@@ -555,7 +555,7 @@
             <ConstraintFeature ComponentID="{CARRIAGE}" FeatureName="LOWER_AXIS" FeatureOrientationType="NONE" _id="id1560">
               <GeometryMarker x="825" y="5444.8" z="98.6836" i="0" j="0" k="-1" pi="0" _id="id1561" />
             </ConstraintFeature>
-            <ConstraintFeature ComponentID="{627ab157-62e1-485c-b797-8139c8f6c133}" FeatureName="CENTER_AXIS" FeatureOrientationType="NONE" _id="id1562">
+            <ConstraintFeature ComponentID="{CARRIAGE-BOOM-LOWER-PIN}" FeatureName="CENTER_AXIS" FeatureOrientationType="NONE" _id="id1562">
               <GeometryMarker x="0" y="0" z="0" i="0" j="0" k="1" pi="0" _id="id1563" />
             </ConstraintFeature>
           </Pair>
@@ -572,10 +572,10 @@
           </CADParameter>
         </ParametricParameters>
       </CADComponent>
-      <CADComponent ComponentID="{9f6b7815-51f1-466a-bd56-bcd988333c05}" Name="PIN" DisplayName="Pin143" Type="PART" SpecialInstruction="" MaterialID="" Representation="" Classification="Unknown" _id="id1807">
+      <CADComponent ComponentID="{CARRIAGE-BOOM-UPPER-PIN}" Name="PIN" DisplayName="Pin143" Type="PART" SpecialInstruction="" MaterialID="" Representation="" Classification="Unknown" _id="id1807">
         <Constraint _id="id1564">
           <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="SURFACE" FeatureAlignmentType="ALIGN" _id="id1565">
-            <ConstraintFeature ComponentID="{9f6b7815-51f1-466a-bd56-bcd988333c05}" FeatureName="CENTER_PLANE" FeatureOrientationType="SIDE_A" _id="id1566">
+            <ConstraintFeature ComponentID="{CARRIAGE-BOOM-UPPER-PIN}" FeatureName="CENTER_PLANE" FeatureOrientationType="SIDE_A" _id="id1566">
               <GeometryMarker x="0" y="0" z="684" i="0" j="0" k="-1" pi="0" _id="id1567" />
             </ConstraintFeature>
             <ConstraintFeature ComponentID="{CARRIAGE}" FeatureName="CENTER_PLANE" FeatureOrientationType="SIDE_A" _id="id1568">
@@ -583,7 +583,7 @@
             </ConstraintFeature>
           </Pair>
           <Pair FeatureInterfaceType="CAD_DATUM" FeatureGeometryType="AXIS" FeatureAlignmentType="ALIGN" _id="id1570">
-            <ConstraintFeature ComponentID="{9f6b7815-51f1-466a-bd56-bcd988333c05}" FeatureName="CENTER_AXIS" FeatureOrientationType="NONE" _id="id1571">
+            <ConstraintFeature ComponentID="{CARRIAGE-BOOM-UPPER-PIN}" FeatureName="CENTER_AXIS" FeatureOrientationType="NONE" _id="id1571">
               <GeometryMarker x="0" y="0" z="0" i="0" j="0" k="1" pi="0" _id="id1572" />
             </ConstraintFeature>
             <ConstraintFeature ComponentID="{CARRIAGE}" FeatureName="UPPER_AXIS" FeatureOrientationType="NONE" _id="id1573">

@@ -98,16 +98,28 @@
           (emsg/dim-oc ?from-point ?to-point ?center nil)
 
           :else
-          (let [axis (ga/outer-prod from-dir to-dir)]
+          (let [axis (ga/bivector-normal from-dir to-dir)]
             (r1:p->p ?link ?center ?from-point ?to-point
-                     (ga/normalize
-                      (if-not (tol/near-zero? :default axis)
-                        axis
-                        (ga/ptwist from-dir)) )
-                     nil nil)))))
+                     axis nil nil)))))
 
-(defn t2-r1:p->p
-  [?link ?point ?plane ?axis ?axis-1 ?axis-2 ?from-point ?to-point ?branch]
+(defmulti t2-r1:p->p
+  "Procedure to rotate body ?link about ?axis and translate
+  body ?link along ?plane, thus moving ?from-point on
+  ?link to globally-fixed  ?to-point.  Rotation is done so
+  as to not violate restrictions imposed by ?axis-1 and
+  ?axis-2, if they exist.
+  There are two cases:
+  (1) ?point is on ?link and ?plane is invariant [:pnt]
+  (2) ?plane is on ?link and ?point is invariant [:plane]  "
+  (fn [?link ?point ?plane ?axis ?axis-1 ?axis-2
+       ?from-pnt ?to-pnt ?lf ?branch]
+    (if (tol/near-equal? :tiny ?point ?lf) [:point] [:plane])) )
+
+
+(defmethod t2-r1:p->p [:point]
+  [?link ?point ?plane ?axis ?axis-1 ?axis-2
+   ?from-point ?to-point ?lf ?branch]
+
   (let [r0 (ga/vec-diff ?to-point ?from-point)
         _ (ga/translate ?link r0)
         r1 (ga/line ?to-point ?axis)
@@ -117,4 +129,22 @@
     (if-not (ga/point? r4)
       (emsg/mark-place-ic (ga/rejection ?plane r3))
       (r1:p->p ?link ?from-point ?point r4 ?axis ?axis-1 ?axis-2))))
+
+
+(defmethod t2-r1:p->p [:plane]
+  [?link ?point ?plane ?axis ?axis-1 ?axis-2
+   ?from-point ?to-point ?lf ?branch]
+
+  (let [r0 (ga/vec-diff ?to-point ?from-point)
+        _ (ga/translate ?link r0)
+        r1 (ga/normal ?plane)
+        r2 (ga/plane ?point r1)
+        r3 (ga/rejection ?from-point ?point)
+        r4 (ga/circle ?from-point ?axis r3)
+        r5 (ga/meet r2 r4 ?branch)]
+    (if-not (ga/point? r5)
+      (emsg/mark-place-ic (ga/rejection r2 r4))
+      ;; (error (perp-dist r2 r4) estring-7)
+      ;;; ERRATA the ?point below was point?
+      (r1:p->p ?link ?from-point r5 ?point ?axis ?axis-1 ?axis-2))))
 

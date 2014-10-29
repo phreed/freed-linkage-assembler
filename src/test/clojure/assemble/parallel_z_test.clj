@@ -367,3 +367,61 @@
             :plane {:e [0.0 0.0 0.0], :n [0.0 0.0 1.0]},
             :point [0.0 0.0 0.0]},
      :versor {:rotate [1.0 0.0 0.0 0.0], :xlate [0.0 0.0 0.0]}} ))
+
+
+(defn test-t2-r3 []
+ (let
+  [m1-link-name "{CARRIAGE}"
+   m2-link-name "{CARRIAGE-BOOM-LOWER-PIN}"
+   [kb m1 m2 :as precon]
+   (parallel-z/precondition
+    {:invar
+     {:dir (ref #{m1-link-name}),
+      :twist (ref #{m1-link-name}),
+      :loc (ref #{m1-link-name})},
+     :link
+     {m1-link-name
+      (ref
+       {:name "UPPER_BODY",
+        :tdof {:# 0, :point [0.0 0.0 0.0]},
+        :rdof {:# 0},
+        :versor {:xlate [0.0 0.0 0.0], :rotate [1.0 0.0 0.0 0.0]}}),
+      m2-link-name
+      (ref
+       {:name "PIN",
+        :tdof {:# 2,
+         :point [0.0 0.0 -1636.32],
+         :plane [0.0 0.0 -1636.3199999999997]},
+        :rdof {:# 3},
+        :versor
+        {:xlate [0.0 0.0 -2320.3199999999997],
+         :rotate [1.0 0.0 0.0 0.0]}})}}
+    [[m1-link-name "CENTER_PLANE"]
+     {:e [0.0 0.0 -1636.32], :pi 0.0, :q [0.0 0.0 1.0]}]
+    [[m2-link-name "CENTER_PLANE"]
+     {:e [0.0 0.0 684.0], :pi 0.0, :q [0.0 0.0 -1.0]}])]
+
+  (tt/fact "precondition satisfied" precon =not=> nil?)
+
+  (parallel-z/assemble! kb m1 m2)
+
+  (tt/fact
+   "parallel-z t2-r3 m1"
+   (-> kb :link (get m1-link-name) deref) =>
+   {:name "UPPER_BODY", :rdof {:# 0},
+    :tdof {:# 0, :point [0.0 0.0 0.0]},
+    :versor {:rotate [1.0 0.0 0.0 0.0],
+             :xlate [0.0 0.0 0.0]}})
+
+  (tt/fact
+   "parallel-z t2-r3 m2"
+   (-> kb :link (get m2-link-name) deref) =>
+   {:name "PIN", :rdof {:# 1, :axis [0.0 0.0 1.0]},
+    :tdof {:# 2, :plane [0.0 0.0 -1636.3199999999997],
+           :point [0.0 0.0 -1636.32]},
+    :versor {:rotate [6.123233995736766E-17 0.7071067811865476
+                      -0.7071067811865476 0.0],
+             :xlate [0.0 0.0 -952.32]}}) ))
+
+
+(test-t2-r3)
