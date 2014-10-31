@@ -28,11 +28,6 @@
              [offset-z-dispatch]
              [parallel-z-dispatch]]))
 
-(defn unref
-  "takes an arbitrary tree and replaces all futures
-  with agnostic strings."
-  [form]
-  (clojure.walk/postwalk #(if (misc/reference? %) @% %) form))
 
 (with-open [fis (-> "excavator/excavator_total_plane.xml"
                     jio/resource jio/input-stream)]
@@ -320,12 +315,13 @@
        :versor {:rotate [1.0 0.0 0.0 0.0],
                 :xlate [0.0 0.0 0.0]}} )
 
+
      (tt/fact
-      "about the initial marker invariants" (unref (:invar kb)) =>
+      "about the initial marker invariants"
+      (into {} (map (fn [[k v]] [k @v]) (:invar kb))) =>
       {:loc #{["{ASSY}|1"]}
        :dir #{["{ASSY}|1"]}
        :twist #{["{ASSY}|1"]}} )  )
-
 
 
     (let [result (pa/position-analysis kb constraints-lower)
