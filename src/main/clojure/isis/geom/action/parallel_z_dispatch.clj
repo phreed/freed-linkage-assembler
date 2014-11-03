@@ -46,7 +46,7 @@
       :pre-condition-not-met
       (let [[kb+ m1+ m2+] precon]
         (try
-          (ms/show-constraint kb+ "parallel-axis: "
+          (ms/show-constraint kb+ "parallel-axis"
                            assemble-dispatch
                            m1+ m2+)
           (assemble! kb+ m1+ m2+)

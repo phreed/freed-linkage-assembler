@@ -60,7 +60,7 @@
       :pre-condition-not-met
       (let [[kb+ m1+ m2+ motive] precon]
         (try
-          (ms/show-constraint kb+ "in-plane:      "
+          (ms/show-constraint kb+ "in-plane"
                               assemble-dispatch
                               m1+ m2+ motive)
           (assemble! kb+ m1+ m2+ motive)

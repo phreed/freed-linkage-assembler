@@ -42,7 +42,7 @@
       :pre-condition-not-met
       (let [[kb+ m1+ m2+] precon]
         (try
-          (ms/show-constraint kb+ "coincident:    "
+          (ms/show-constraint kb+ "coincident"
                               assemble-dispatch m1+ m2+)
           (assemble! kb+ m1+ m2+)
           (catch Exception ex

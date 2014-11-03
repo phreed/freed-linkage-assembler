@@ -48,7 +48,7 @@
       :pre-condition-not-met
       (let [[kb+ point line motive] precon]
         (try
-          (ms/show-constraint kb+ "in-line:       "
+          (ms/show-constraint kb+ "in-line"
                               assemble-dispatch
                               point line motive)
           (assemble! kb point line motive)

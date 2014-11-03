@@ -102,23 +102,22 @@
   ([kb nspace dispatch-fn m1 m2]
    (pp/fresh-line)
    (println
-    (str (format "%16s: " nspace)
+    (str (format "%-17s: " nspace)
          (dispatch-fn kb m1 m2)
-         (format " static: [%12s %12s] " (ffirst m1) (second (first m1)))
-         (format " mobile: [%12s %12s] " (ffirst m2) (second (first m2))) )))
+         (format " mobile: [%12s %12s] " (ffirst m2) (second (first m2)))
+         (format " static: [%12s %12s] " (ffirst m1) (second (first m1))) )))
 
   ([kb nspace dispatch-fn m1 m2 motive]
    (let [dispatch (select-keys (dispatch-fn kb m1 m2 motive) [:rdof :tdof])
          [ms-n mm-n mo] (condp = motive
-                       :fixed [(first m1) (first m2) "object"]
-                       :mobile [(first m2) (first m1) "point"]) ]
+                       :fixed [(first m1) (first m2) "o->p"]
+                       :mobile [(first m2) (first m1) "p->o"]) ]
      (pp/fresh-line)
      (println
-      (str (format "%16s: " nspace)
+      (str (format "%-12s %-4s: " nspace mo)
            dispatch
-           (format " static: [%12s %12s] " (first ms-n) (second ms-n))
            (format " mobile: [%12s %12s] " (first mm-n) (second mm-n))
-           mo) ))))
+           (format " static: [%12s %12s] " (first ms-n) (second ms-n)) ) ))))
 
 (defn dump
   "Print a message building a test for this call. "

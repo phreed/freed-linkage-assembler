@@ -39,7 +39,7 @@
       :pre-condition-not-met
       (let [[kb+ m1+ m2+] precon]
         (try
-          (ms/show-constraint kb+ "offset-axis: "
+          (ms/show-constraint kb+ "offset-axis"
                            assemble-dispatch
                            m1+ m2+)
           (assemble! kb+ m1+ m2+)
