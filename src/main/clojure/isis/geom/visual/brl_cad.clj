@@ -1,8 +1,12 @@
 (ns isis.geom.visual.brl-cad
-  "http://brlcad.org/"
+  "http://brlcad.org/
+  There are some problems building a sample
+  BRL-CAD model. This activity will have to
+  be postponed until an acceptable model is
+  available. "
   (:require [clojure.pprint :as pp] ))
 
-(defn primitive "some geometry for brl-cad")
+(def primitive "some geometry for brl-cad")
 
 (defn write-knowledge
   "write the knowledge about position to brl-cad.

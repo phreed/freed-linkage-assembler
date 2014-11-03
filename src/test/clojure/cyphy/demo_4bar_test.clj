@@ -314,14 +314,19 @@
        "about the failure result" result-failure =>
        [] )
 
-      #_(with-open [fis (-> "demo/four_bar_csys.xml"
+      (let [temp-dirs
+            (filter #(.isDirectory (jio/as-file %))
+                    ["/tmp" "/temp"])]
+        (with-open [fis (-> "demo/four_bar_csys.xml"
                             jio/resource jio/input-stream)
-                    fos (-> "/tmp/four_bar_csys_aug.xml"
+                    fos (-> (first temp-dirs)
+                            (jio/file "four_bar_csys_aug.xml")
                             jio/output-stream)]
-          (cyphy/update-cad-assembly-using-knowledge fis fos kb) )
+          (stax/update-cad-assembly-using-knowledge fis fos kb) )
 
-      (with-open [fos (-> "/temp/four_bar_csys.scad"
-                          jio/output-stream)]
-        (openscad/write-knowledge fos kb) ) ) )))
+        (with-open [fos (-> (first temp-dirs)
+                            (jio/file "four_bar_csys.scad")
+                            jio/output-stream)]
+          (openscad/write-knowledge fos kb) ) ) ))))
 
 
