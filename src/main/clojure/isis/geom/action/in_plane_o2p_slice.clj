@@ -1,4 +1,4 @@
-(ns isis.geom.action.in-plane-fixed-slice
+(ns isis.geom.action.in-plane-o2p-slice
   "The table of rules for the in-plane constraint where
   the point marker, ?M_1, is FIXED and the plane marker, ?M_2, is mobile."
   (:require [isis.geom.position-dispatch :as ms]
@@ -93,7 +93,7 @@
   No checks are required.
   "
   [kb m1 m2]
-  ;; (pp/pprint ["t3r3 - in-plane-fixed-slice" "m1" m1 "m2" m2])
+  ;; (pp/pprint ["t3r3 - in-plane-o2p-slice" "m1" m1 "m2" m2])
   (let [[[m2-link-name m2-proper-name] _] m2
         m2-link (get-in kb [:link m2-link-name])
         m1-gmp (ga/gmp m1 kb)

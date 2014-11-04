@@ -1,4 +1,4 @@
-(ns isis.geom.action.in-plane-mobile-slice
+(ns isis.geom.action.in-plane-p2o-slice
   "The table of rules for the in-plane constraint where
   the point marker is MOBILE and the plane is fixed."
   (:require [clojure.pprint :as pp]
@@ -33,7 +33,7 @@
   Geom ?link is fixed, so the in-plane constraint
   can only be checked for consistency.
   "[kb m1 m2]
-  ;; (pp/pprint ["t0r0 - in-plane-mobile-slice" "m1" m1 "m2" m2])
+  ;; (pp/pprint ["t0r0 - in-plane-p2o-slice" "m1" m1 "m2" m2])
   (let [ gmp2 (ga/gmp m2 kb)
          gmz2 (ga/gmz m2 kb)
          line2 (ga/line gmp2 gmz2)

@@ -1,4 +1,4 @@
-(ns isis.geom.action.in-line-fixed-slice
+(ns isis.geom.action.in-line-o2p-slice
   "The table of rules for the in-line constraint where
   the point marker is FIXED and the line is mobile."
   (:require [clojure.pprint :as pp]
@@ -7,7 +7,7 @@
             [isis.geom.action [auxiliary :as dof]]
             [isis.geom.model [invariant :as invariant]]))
 
-(def slicer "in-line-fixed")
+(def slicer "in-line-o2p")
 
 (defn assemble!->t0-r0
 "PFT entry: (0,0,in-line)  (M_1 is fixed)
@@ -91,14 +91,19 @@ Explanation:
   Therefore it must be translated along its
   known ?m2-plane and rotated about its known ?m2-axis.
   This effect is achieved by translating ?m2-link to make the
-  markers coincident, and then attempting to move ?m2-point back onto ?m2-plane.
+  markers coincident, and then attempting to move ?m2-point
+  back onto ?m2-plane by moving along the ?m2-axis.
   In general, there are two distinct solutions to this problem,
   so a branch variable q_0 is used to select the desired solution."
   [kb m1 m2]
-  #_(let [[[m2-link-name m2-proper-name] _] m2
+  (let [[[m2-link-name m2-proper-name] _] m2
         m2-link (get-in kb [:link m2-link-name])
-        m2-point (:point @m2-link)
-        m2-plane (:plane @m2-link)
+        m2-point (-> @m2-link :tdof :point)
+        m2-plane (-> @m2-link :tdof :plane)
+        m2-lf (-> @m2-link :tdof :lf)
+        m2-axis (-> @m2-link :rdof :axis)
+        m2-axis-1 (-> @m2-link :rdof :axis-1)
+        m2-axis-2 (-> @m2-link :rdof :axis-2)
 
         m1-gmp (ga/gmp m1 kb)
         m2-gmp (ga/gmp m2 kb)
@@ -107,9 +112,11 @@ Explanation:
         m2-line (ga/line m2-gmp m2-gmz)
         or-plane (ga/plane m1-gmp (ga/normal m2-plane))
         on-point (ga/meet m2-line or-plane)
-        ;; on-point (if on-point on-point m2-gmp)
+        on-point (if (nil? on-point) m2-gmp on-point)
 
-        ;; t2-r1:p->p:pnt
+        new-link (dof/t2-r1:p->p @m2-link m2-point m2-plane
+                                 m2-axis m2-axis-1 m2-axis-2
+                                 on-point m1-gmp m2-lf :right)
 
 
         reject (ga/rejection m1-gmp m2-plane) ]
@@ -117,10 +124,9 @@ Explanation:
      (alter m2-link merge
             (ga/translate @m2-link ga/vec-sum reject))
      (alter m2-link assoc
-            :tdof {:# 2
-                   :point m1-gmp
-                   :plane (ga/gmp m2 kb)}
-            :rdof {:# 3 } ) ))
+            :tdof {:# (/ 1 2)
+                   :point center :plane locus  :lf center}
+            :rdof (into {:# (/ 1 2)} (-> @m2-link :rdof)))))
   :progress-made)
 
 

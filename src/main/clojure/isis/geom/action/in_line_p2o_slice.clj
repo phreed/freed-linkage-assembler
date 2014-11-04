@@ -1,4 +1,4 @@
-(ns isis.geom.action.in-line-mobile-slice
+(ns isis.geom.action.in-line-p2o-slice
   "The table of rules for the in-line constraint where
   the point marker is MOBILE and the line is fixed."
   (:require [isis.geom.position-dispatch :as ms]
@@ -138,7 +138,7 @@ Explanation:
   vector is measured and the ?m1-link is moved.
   No checks are required. "
   [kb m1 m2]
-  ;; (pp/pprint ["t3r3 - in-line-mobile-slice" "m1" m1 "m2" m2])
+  ;; (pp/pprint ["t3r3 - in-line-p2o-slice" "m1" m1 "m2" m2])
   (let [ gmp2 (ga/gmp m2 kb)
          gmz2 (ga/gmz m2 kb)
          line2 (ga/line gmp2 gmz2)

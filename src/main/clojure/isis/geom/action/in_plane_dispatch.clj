@@ -6,8 +6,8 @@
   (:require [isis.geom.position-dispatch :as ms]
             [isis.geom.model.invariant :as invariant]
             [isis.geom.action
-             [in-plane-fixed-slice :as fixed]
-             [in-plane-mobile-slice :as mobile]]
+             [in-plane-o2p-slice :as fixed]
+             [in-plane-p2o-slice :as mobile]]
             [clojure.pprint :as pp]))
 
 

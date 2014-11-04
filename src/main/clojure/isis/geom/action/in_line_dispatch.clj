@@ -3,8 +3,8 @@
   (:require [isis.geom.position-dispatch :as ms]
             [isis.geom.model.invariant :as invariant]
             [isis.geom.action
-             [in-line-fixed-slice :as fixed]
-             [in-line-mobile-slice :as mobile]]
+             [in-line-o2p-slice :as fixed]
+             [in-line-p2o-slice :as mobile]]
             [clojure.pprint :as pp]))
 
 
