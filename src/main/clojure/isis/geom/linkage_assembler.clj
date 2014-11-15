@@ -29,9 +29,9 @@
              [helical-dispatch]
              [in-line-dispatch]
              [in-plane-dispatch]
-             [offset-x-dispatch]
+             [offset-angle-dispatch]
              [offset-z-dispatch]
-             [parallel-z-dispatch]]))
+             [parallel-axis-dispatch]]))
 
 
 (def ^{:private true} parse-options
@@ -41,6 +41,11 @@
     :default "CADAssembly.xml"
     :parse-fn #(jio/as-file %)
     :validate [#(.exists  %) "Must be a valid file path"]]
+   ["-c" "--components COMPONENT" "directory containing component designs"
+    :id :components
+    :default "SVN"
+    :parse-fn #(jio/as-file %)
+    :validate [#(.isDirectory  %) "Must be a valid directory path"]]
    ["-o" "--output OUTPUT" "cyphy2cad file (CADAssembly.xml) augmented with versors"
     :id :output
     :default "CADAssembly_augmented.xml"
@@ -91,8 +96,9 @@
     (when (< 2 (:verbosity options))
       (println " java version = "(System/getProperty "java.vm.version")) )
 
-    (println " input file = "  (.toString (:input options)))
-    (println " output file = "  (.toString (:output options)))
+    (println " input file     = "  (.toString (:input options)))
+    (println " component path = "  (.toString (:components options)))
+    (println " output file    = "  (.toString (:output options)))
     (with-open [fis (-> (:input options) jio/input-stream)]
       ;; (let [kb (graph-from-cyphy-input-stream is)
       (let [kb (cyphy/knowledge-via-input-stream fis)
@@ -111,6 +117,6 @@
           (stax/update-cad-assembly-using-knowledge fis fos kb) )
 
         (with-open [fos (-> (:openscad options) jio/output-stream)]
-          (openscad/write-knowledge fos kb) ) ) )))
+          (openscad/write-knowledge fos kb (.toString (:components options))) ) ) )))
 
 

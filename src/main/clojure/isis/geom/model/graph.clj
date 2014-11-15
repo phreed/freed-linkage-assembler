@@ -106,7 +106,7 @@
                     (map #(hash-map
                            %
                            (if (= % base-link-name)
-                             (invariant/init-link :fixed)
+                             (invariant/init-link :o2p)
                              (invariant/init-link :free)
                              )) (keys links)))} ]
      (invariant/anchor-link! kb base-link-name))))

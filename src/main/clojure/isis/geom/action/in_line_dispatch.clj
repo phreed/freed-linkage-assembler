@@ -3,27 +3,28 @@
   (:require [isis.geom.position-dispatch :as ms]
             [isis.geom.model.invariant :as invariant]
             [isis.geom.action
-             [in-line-o2p-slice :as fixed]
-             [in-line-p2o-slice :as mobile]]
+             [in-line-o2p-slice :as o2p]
+             [in-line-p2o-slice :as p2o]]
             [clojure.pprint :as pp]))
 
+(defn the-alias [name] (get (ns-aliases *ns*) name))
 
 (defn precondition
   "Associated with each constraint type is a function which
   checks the preconditions and returns the marker which
   is underconstrained."
   [kb point line]
-  (cond (invariant/marker-position? kb line)  [kb point line :mobile]
+  (cond (invariant/marker-position? kb line)  [kb point line :p2o]
         (and (invariant/marker-position? kb point)
-             (invariant/marker-direction? kb point)) [kb point line :fixed]
+             (invariant/marker-direction? kb point)) [kb point line :o2p]
         :else nil))
 
 
 (defn assemble-dispatch
   [kb point line motive]
   (let [[[link-name _] _] (case motive
-                            :fixed line
-                            :mobile point)
+                            :o2p line
+                            :p2o point)
         link @(get (:link kb) link-name)
         tdof (get-in link [:tdof :#])
         rdof (get-in link [:rdof :#]) ]
@@ -54,9 +55,9 @@
           (assemble! kb point line motive)
           (catch Exception ex
             (ms/dump ex assemble-dispatch
-                     "coincident" kb+ point line motive)
+                     "in-line" kb+ point line motive)
             :exception-thrown))))))
 
 
-(ms/defmethod-asymetric-transform assemble!)
+(ms/defmethod-transform assemble! {:o2p 'o2p :p2o 'p2o})
 

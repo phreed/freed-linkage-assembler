@@ -1,9 +1,9 @@
-(ns isis.geom.action.offset-x-slice
+(ns isis.geom.action.offset-angle-slice
   "The table of rules."
   (:require [clojure.pprint :as pp]
             [isis.geom.position-dispatch :as ms]
             [isis.geom.model.invariant :as invariant]
-            [isis.geom.action [offset-x-slice :as xlice]]))
+            [isis.geom.action [offset-angle-slice :as xlice]]))
 
 
 (defn precondition
@@ -51,4 +51,4 @@
                    "offset-x" kb+ m1+ m2+)
           :exception-thrown ))))) )
 
-(ms/defmethod-symetric-transform assemble!)
+(ms/defmethod-transform assemble! 'xlice)

@@ -1,4 +1,4 @@
-(ns assemble.in-line-fixed-test
+(ns assemble.in-line-o2p-test
   "Test the in-line-fixed assembly"
   (:require [midje.sweet :as tt]
             [clojure.pprint :as pp]
@@ -38,7 +38,7 @@
        {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 1.0]}])]
 
     (tt/fact "precondition satisfied" precon =not=> nil?)
-    (tt/fact "about motive" motive => :fixed)
+    (tt/fact "about motive" motive => :o2p)
 
     (tt/incipient-fact
      "about dispatch"

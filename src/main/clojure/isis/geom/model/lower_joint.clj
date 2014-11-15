@@ -53,7 +53,7 @@
 
 (defmethod expand :linear [constraint] (expand-trivial constraint))
 (defmethod expand :universal [constraint] (expand-trivial constraint))
-(defmethod expand :fixed [constraint] (expand-trivial constraint))
+(defmethod expand :o2p [constraint] (expand-trivial constraint))
 
 (def lower-joint-map
   "Joints are conveniently specified at a higher level
@@ -69,7 +69,7 @@
    :ball [:coincident]
    :planar [:in-plane :parallel-z]
    :universal [:coincident :perpendicular-z]
-   :fixed [:coincident :in-plane :offset-x] })
+   :o2p [:coincident :in-plane :offset-x] })
 
 (defmethod expand :coincident [constraint] [constraint])
 (defmethod expand :parallel-z [constraint] [constraint])

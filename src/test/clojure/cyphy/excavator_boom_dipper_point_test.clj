@@ -22,9 +22,9 @@
              [helical-dispatch]
              [in-line-dispatch]
              [in-plane-dispatch]
-             [offset-x-dispatch]
+             [offset-angle-dispatch]
              [offset-z-dispatch]
-             [parallel-z-dispatch]]))
+             [parallel-axis-dispatch]]))
 
 
 (def assy-name "{059166f0-b3c0-474f-9dcb-d5e865754d77}|1")

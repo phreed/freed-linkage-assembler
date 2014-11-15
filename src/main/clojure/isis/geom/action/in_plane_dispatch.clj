@@ -6,8 +6,8 @@
   (:require [isis.geom.position-dispatch :as ms]
             [isis.geom.model.invariant :as invariant]
             [isis.geom.action
-             [in-plane-o2p-slice :as fixed]
-             [in-plane-p2o-slice :as mobile]]
+             [in-plane-o2p-slice :as o2p]
+             [in-plane-p2o-slice :as p2o]]
             [clojure.pprint :as pp]))
 
 
@@ -17,25 +17,25 @@
   is under-constrained followed by the marker that is fully-constrained.
   The :motive refers to the first marker, the point, thus
 
-  :mobile indicates that the point *is-not* fully-constrained
+  :p2o indicates that the point *is-not* fully-constrained
   but the plane *is* fully-constrained.
 
-  :fixed indicates that the plane *is-not* fully-constrained
+  :o2p indicates that the plane *is-not* fully-constrained
   but the point *is* fully-constrained.
 
   nil indicates that there are insufficient constraints to
   make any inference."
   [kb point plane]
-  (cond (invariant/marker-position? kb plane) [kb point plane :mobile]
+  (cond (invariant/marker-position? kb plane) [kb point plane :p2o]
         (and (invariant/marker-position? kb point)
-             (invariant/marker-direction? kb point)) [kb point plane :fixed]
+             (invariant/marker-direction? kb point)) [kb point plane :o2p]
         :else nil))
 
 (defn assemble-dispatch
   [kb point plane motive]
   (let [[[link-name _] _] (case motive
-                            :fixed plane
-                            :mobile point)
+                            :o2p plane
+                            :p2o point)
         link @(get (:link kb) link-name)
         tdof (get-in link [:tdof :#])
         rdof (get-in link [:rdof :#]) ]
@@ -70,5 +70,5 @@
             :exception-thrown))))))
 
 
-(ms/defmethod-asymetric-transform assemble!)
+(ms/defmethod-transform assemble! {:o2p 'o2p :p2o 'p2o})
 

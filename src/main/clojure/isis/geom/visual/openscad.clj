@@ -19,11 +19,11 @@
   "write the knowledge about position to a scad file.
   Process all of the links.
   Writing their names and versors."
-  [fos kb]
+  [fos kb component-path]
   (doseq [link (-> kb :link vals)]
     (when-not (nil? (:name @link))
       (->>
-       (model/import (str (:name @link) ".stl"))
+       (model/import (str component-path (:name @link) ".stl"))
        (model/rotate (-> @link :versor :rotate first Math/acos (* 2))
                      (-> @link :versor :rotate rest) )
        (model/translate (-> @link :versor :xlate))

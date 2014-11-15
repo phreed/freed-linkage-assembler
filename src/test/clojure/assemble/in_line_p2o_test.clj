@@ -1,4 +1,4 @@
-(ns assemble.in-line-mobile-test
+(ns assemble.in-line-p2o-test
   "Test the in-line-mobile assembly"
   (:require [midje.sweet :as tt]
             [clojure.pprint :as pp]
@@ -43,7 +43,7 @@
        {:e [1457.0 4436.8 98.6836], :pi 0.0, :q [0.0 0.0 -1.0]}])]
 
     (tt/fact "precondition satisfied" precon =not=> nil?)
-    (tt/fact "what is the motive" motive => :mobile)
+    (tt/fact "what is the motive" motive => :p2o)
 
     (in-line/assemble! kb m1 m2 motive)
 

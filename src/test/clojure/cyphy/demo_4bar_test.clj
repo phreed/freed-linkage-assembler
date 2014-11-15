@@ -25,9 +25,9 @@
              [helical-dispatch]
              [in-line-dispatch]
              [in-plane-dispatch]
-             [offset-x-dispatch]
+             [offset-angle-dispatch]
              [offset-z-dispatch]
-             [parallel-z-dispatch]]))
+             [parallel-axis-dispatch]]))
 
 
 (with-open [fis (-> "demo/four_bar_csys_a.xml"
@@ -327,6 +327,6 @@
         (with-open [fos (-> (first temp-dirs)
                             (jio/file "four_bar_csys.scad")
                             jio/output-stream)]
-          (openscad/write-knowledge fos kb) ) ) ))))
+          (openscad/write-knowledge fos kb "STL\") ) ) ))))
 
 

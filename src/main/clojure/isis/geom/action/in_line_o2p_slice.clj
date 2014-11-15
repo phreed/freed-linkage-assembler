@@ -114,18 +114,25 @@ Explanation:
         on-point (ga/meet m2-line or-plane)
         on-point (if (nil? on-point) m2-gmp on-point)
 
-        new-link (dof/t2-r1:p->p @m2-link m2-point m2-plane
-                                 m2-axis m2-axis-1 m2-axis-2
-                                 on-point m1-gmp m2-lf :right)
+        new-link (dof/t2-r1:p->p
+                  @m2-link m2-point m2-plane
+                  m2-axis m2-axis-1 m2-axis-2
+                  on-point m1-gmp m2-lf :right)
 
-
-        reject (ga/rejection m1-gmp m2-plane) ]
+        locus (as->
+                (ga/plane m2-point m2-axis) $
+                (ga/meet m2-line $ 0)
+                (ga/vec-diff m2-point $)
+                (ga/cylinder m2-line m2-axis (ga/norm $))
+                (ga/meet $ m2-plane 0) )
+        center (ga/a-point locus)
+        motor (ga/ellipse+r locus m2-axis
+                            (ga/rejection center m2-point))]
     (dosync
-     (alter m2-link merge
-            (ga/translate @m2-link ga/vec-sum reject))
+     (alter m2-link merge new-link)
      (alter m2-link assoc
             :tdof {:# (/ 1 2)
-                   :point center :plane locus  :lf center}
+                   :point center :motor motor  :lf center}
             :rdof (into {:# (/ 1 2)} (-> @m2-link :rdof)))))
   :progress-made)
 

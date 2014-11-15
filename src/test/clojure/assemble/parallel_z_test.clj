@@ -1,10 +1,10 @@
-(ns assemble.parallel-z-test
+(ns assemble.parallel-axis-test
   "Test the parallel-z assembly"
   (:require [midje.sweet :as tt]
             [clojure.pprint :as pp]
             [isis.geom.algebra [geobj :as ga]]
             [isis.geom.action
-             [parallel-z-dispatch :as parallel-z]]))
+             [parallel-axis-dispatch :as parallel-z]]))
 
 (defn kb-three-fixed-planes-w-mobile-link []
   (let
@@ -155,7 +155,7 @@
 
 ;; a sample from a full model
 
-(comment "in-plane :mobile :t3-r3")
+(comment "in-plane :p2o :t3-r3")
 (let
   [m1-link-name "{CARRIAGE}"
    m2-link-name "{ASSY}|1"

@@ -1,4 +1,4 @@
-(ns assemble.in-plane-mobile-test
+(ns assemble.in-plane-p2o-test
   "Test the in-plane-mobile assembly"
   (:require [midje.sweet :as tt]
             [clojure.pprint :as pp]
@@ -384,7 +384,7 @@
    [[m2-link-name "RIGHT"] {:e [0.0 0.0 0.0], :pi 0.0, :q [0.0 0.0 0.0]}] )]
 
  (tt/fact "precondition satisfied" precon =not=> nil?)
- (tt/fact "about motive" motive => :mobile)
+ (tt/fact "about motive" motive => :p2o)
 
  (tt/fact
   "about dispatch"

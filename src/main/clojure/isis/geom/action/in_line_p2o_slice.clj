@@ -1,7 +1,8 @@
 (ns isis.geom.action.in-line-p2o-slice
   "The table of rules for the in-line constraint where
   the point marker is MOBILE and the line is fixed."
-  (:require [isis.geom.position-dispatch :as ms]
+  (:require [clojure.pprint :as pp]
+            [isis.geom.position-dispatch :as ms]
             [isis.geom.algebra [geobj :as ga]]
             [isis.geom.action [auxiliary :as dof]]
             [isis.geom.model [invariant :as invariant]]))
@@ -71,7 +72,7 @@ Explanation:
   so a branch variable q_0 is used to select the desired solution."
 
   [kb m1 m2]
-  ;; (pp/pprint ["t2r1 - in-line-mobile" "m1" m1 "m2" m2])
+  (pp/pprint ["t2r1 - in-line-mobile" "m1" m1 "m2" m2])
   (let [[[m1-link-name m1-proper-name] _] m1
          m1-link (-> kb :link (get m1-link-name))
 

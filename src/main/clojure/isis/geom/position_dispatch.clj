@@ -24,38 +24,33 @@
     (pp/pprint "constraint-attempt-default")
     nil))
 
-(defmacro defmethod-asymetric-transform
-  "Generate the asymetric defmethods for the multifn.
+(defmacro defmethod-transform
+  "Generate the defmethods for the multifn.
   e.g.
   (defmethod assemble!
-  {:tdof 0 :rdof 0 :motive :fixed}
+  {:tdof 0 :rdof 0 :motive :o2p}
   [kb point line motive] (fixed/assemble!->t0-r0 kb m1 m2))"
-  [multifn]
-  `(do
-     ~@(for [tdof [0 1 2 3]
-             rdof [0 1 2 3]
-             motive [:fixed :mobile]]
-         `(defmethod ~multifn
-            {:tdof ~tdof :rdof ~rdof :motive ~motive}
-            [~'kb ~'m1 ~'m2 ~'motive]
-            (~(symbol (str (name motive) "/assemble!->t" tdof "-r" rdof))
-              ~'kb ~'m1 ~'m2 )))))
-
-(defmacro defmethod-symetric-transform
-  "Generate the symetric defmethods for the multifn.
-  e.g.
-  (defmethod assemble!
-  {:tdof 0 :rdof 0}
-  [kb point line motive] (xlice/assemble!->t0-r0 kb m1 m2))"
-  [multifn]
-  `(do
-     ~@(for [tdof [0 1 2 3]
-             rdof [0 1 2 3]]
-         `(defmethod ~multifn
-            {:tdof ~tdof :rdof ~rdof}
-            [~'kb ~'m1 ~'m2]
-            (~(symbol (str "xlice/assemble!->t" tdof "-r" rdof))
-              ~'kb ~'m1 ~'m2 )))))
+  [multifn nspaces]
+  (cond
+   (map? nspaces)
+   `(do
+      ~@(for [tdof [0 1 2 3] rdof [0 1 2 3]
+              [motive nspace] (seq nspaces)]
+          `(defmethod ~multifn
+             {:tdof ~tdof :rdof ~rdof :motive ~motive}
+             [kb# m1# m2# motive#]
+             (~(symbol (str (eval nspace))
+                       (str "assemble!->t" tdof "-r" rdof))
+               kb# m1# m2# ))))
+   :else
+   `(do
+      ~@(for [tdof [0 1 2 3] rdof [0 1 2 3] ]
+          `(defmethod ~multifn
+             {:tdof ~tdof :rdof ~rdof}
+             [kb# m1# m2#]
+             (~(symbol (str (eval nspaces))
+                       (str "assemble!->t" tdof "-r" rdof))
+               kb# m1# m2# ))))) )
 
 
 (defn- test-template
@@ -104,20 +99,20 @@
    (println
     (str (format "%-17s: " nspace)
          (dispatch-fn kb m1 m2)
-         (format " mobile: [%12s %12s] " (ffirst m2) (second (first m2)))
-         (format " static: [%12s %12s] " (ffirst m1) (second (first m1))) )))
+         (format " mobile: [%-12s %12s] " (ffirst m2) (second (first m2)))
+         (format " static: [%-12s %12s] " (ffirst m1) (second (first m1))) )))
 
   ([kb nspace dispatch-fn m1 m2 motive]
    (let [dispatch (select-keys (dispatch-fn kb m1 m2 motive) [:rdof :tdof])
          [ms-n mm-n mo] (condp = motive
-                       :fixed [(first m1) (first m2) "o->p"]
-                       :mobile [(first m2) (first m1) "p->o"]) ]
+                       :o2p [(first m1) (first m2) "o2p"]
+                       :p2o [(first m2) (first m1) "p2o"]) ]
      (pp/fresh-line)
      (println
       (str (format "%-12s %-4s: " nspace mo)
            dispatch
-           (format " mobile: [%12s %12s] " (first mm-n) (second mm-n))
-           (format " static: [%12s %12s] " (first ms-n) (second ms-n)) ) ))))
+           (format " mobile: [%-12s %12s] " (first mm-n) (second mm-n))
+           (format " static: [%-12s %12s] " (first ms-n) (second ms-n)) ) ))))
 
 (defn dump
   "Print a message building a test for this call. "

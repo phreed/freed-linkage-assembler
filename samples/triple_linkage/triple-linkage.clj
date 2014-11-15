@@ -22,7 +22,7 @@
 
       :joints
       { "joint-fixed-0"
-        { :type :fixed :specified false
+        { :type :o2p :specified false
           :constraint #{"csys-1"}
           :marker {:x 0.0 :y 0.0 :z 0.0 :pi 0.0 :i 1.0 :j 1.0 :k 1.0} }
         "joint-revolute-1"

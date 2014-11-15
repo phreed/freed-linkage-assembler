@@ -16,9 +16,9 @@
              [helical-dispatch]
              [in-line-dispatch]
              [in-plane-dispatch]
-             [offset-x-dispatch]
+             [offset-angle-dispatch]
              [offset-z-dispatch]
-             [parallel-z-dispatch]]))
+             [parallel-axis-dispatch]]))
 
 
 (defn ref->str

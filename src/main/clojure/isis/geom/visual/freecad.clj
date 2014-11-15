@@ -3,5 +3,5 @@
 
 (defn write-knowledge
   "write the knowledge about position to a freecad file."
-  [fos kb]
+  [fos kb component-path]
   )

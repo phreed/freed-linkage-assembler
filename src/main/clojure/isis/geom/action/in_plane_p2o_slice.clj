@@ -207,8 +207,6 @@
   No checks are required.
   "
   [kb m1 m2]
-  ;; (ms/dump nil {:tdof 3 :rdof 3 :motive :mobile} "in-plane-mobile" kb m1 m2)
-
   (let [ gmp2 (ga/gmp m2 kb)
          gmz2 (ga/gmz m2 kb)
          gmp1 (ga/gmp m1 kb)

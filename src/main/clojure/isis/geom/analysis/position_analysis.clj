@@ -15,7 +15,7 @@
 (defn- pick-loop [all-loops redundant])
 (defn- solve-loop [graph conn constrained non-rigid aloop])
 
-(defn- found-parallel-z-sets? [])
+(defn- found-parallel-axis-sets? [])
 (defn- found-coincident-markers-on-links? [])
 (defn- found-spherical-sub-chains? [])
 
@@ -49,7 +49,7 @@
         init-conn (model->connectivity model)
         init-constrained (graph->constrained init-graph input)
         init-non-rigid (graph->non-rigid init-graph degen)]
-    (cond (found-parallel-z-sets?) false
+    (cond (found-parallel-axis-sets?) false
           (found-coincident-markers-on-links?) false
           (found-spherical-sub-chains?) false
           :else

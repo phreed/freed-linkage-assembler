@@ -50,4 +50,4 @@
                      "coincident" kb+ m1+ m2+)
             :exception-thrown))))))
 
-(ms/defmethod-symetric-transform assemble!)
+(ms/defmethod-transform assemble! 'xlice)

@@ -90,7 +90,7 @@
      :# - the number of dof remaining."
   [type]
   (case type
-    :fixed (ref {:tdof {:# 0} :rdof {:# 0}
+    :o2p (ref {:tdof {:# 0} :rdof {:# 0}
             :versor {:xlate [0.0 0.0 0.0] :rotate [1.0 0.0 0.0 0.0] }})
 
     :free (ref {:tdof {:# 3} :rdof {:# 3}

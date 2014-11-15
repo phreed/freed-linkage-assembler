@@ -1,8 +1,8 @@
-(ns isis.geom.action.parallel-z-dispatch
+(ns isis.geom.action.parallel-axis-dispatch
   "The table of rules."
   (:require [isis.geom.position-dispatch :as ms]
             [isis.geom.model.invariant :as invariant]
-            [isis.geom.action.parallel-z-slice :as xlice]
+            [isis.geom.action.parallel-axis-slice :as xlice]
             [clojure.pprint :as pp]))
 
 
@@ -55,4 +55,4 @@
                      "parallel-z" kb+ m1+ m2+)
             :exception-thrown))))))
 
-(ms/defmethod-symetric-transform assemble!)
+(ms/defmethod-transform assemble! 'xlice)

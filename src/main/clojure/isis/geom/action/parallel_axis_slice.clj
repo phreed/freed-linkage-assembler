@@ -1,4 +1,4 @@
-(ns isis.geom.action.parallel-z-slice
+(ns isis.geom.action.parallel-axis-slice
   "The table of rules."
   (:require [clojure.pprint :as pp]
             [isis.geom.position-dispatch :as ms]
