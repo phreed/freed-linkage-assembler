@@ -96,6 +96,7 @@ Explanation:
   In general, there are two distinct solutions to this problem,
   so a branch variable q_0 is used to select the desired solution."
   [kb m1 m2]
+  #_(pp/pprint ["m1" m1 "m2" m2])
   (let [[[m2-link-name m2-proper-name] _] m2
         m2-link (get-in kb [:link m2-link-name])
         m2-point (-> @m2-link :tdof :point)
@@ -113,11 +114,12 @@ Explanation:
         or-plane (ga/plane m1-gmp (ga/normal m2-plane))
         on-point (ga/meet m2-line or-plane)
         on-point (if (nil? on-point) m2-gmp on-point)
+        attractor m2-point ;; pick something better
 
         new-link (dof/t2-r1:p->p
                   @m2-link m2-point m2-plane
                   m2-axis m2-axis-1 m2-axis-2
-                  on-point m1-gmp m2-lf :right)
+                  on-point m1-gmp m2-lf attractor)
 
         locus (as->
                 (ga/plane m2-point m2-axis) $

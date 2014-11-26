@@ -107,7 +107,8 @@
      (alter m2-link assoc
             :tdof {:# 2
                    :point m1-gmp
-                   :plane (ga/gmp m2 kb)}
+                   :plane m2-plane
+                   :lf m2-plane}
             :rdof {:# 3 } ) ))
   :progress-made)
 

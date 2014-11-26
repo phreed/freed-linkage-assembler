@@ -109,42 +109,50 @@
   as to not violate restrictions imposed by ?axis-1 and
   ?axis-2, if they exist.
   There are two cases:
-  (1) ?point is on ?link and ?plane is invariant [:pnt]
+  (1) ?point is on ?link and ?plane is invariant [:point]
   (2) ?plane is on ?link and ?point is invariant [:plane]  "
   (fn [?link ?point ?plane ?axis ?axis-1 ?axis-2
        ?from-pnt ?to-pnt ?lf ?branch]
-    (if (tol/near-equal? :tiny ?point ?lf) [:point] [:plane])) )
+    ;; (pp/pprint ["point" ?point "lf" ?lf])
+    (cond (ga/plane? ?lf) [:plane]
+          :else [:point])))
+;;    (if (tol/near-equal? :tiny ?point ?lf) [:point] [:plane])) )
 
 
+(comment
+  "There will probably be multiple intercepts from the meet.
+  The attractor is used to select just one.")
 (defmethod t2-r1:p->p [:point]
   [?link ?point ?plane ?axis ?axis-1 ?axis-2
-   ?from-point ?to-point ?lf ?branch]
+   ?from-point ?to-point ?lf ?attractor]
 
-  (let [r0 (ga/vec-diff ?to-point ?from-point)
-        _ (ga/translate ?link r0)
-        r1 (ga/line ?to-point ?axis)
-        r2 (ga/projection ?point r1)
-        r3 (ga/circle r2 ?axis (ga/rejection ?point r2))
-        r4 (ga/meet ?plane r3 ?branch)]
-    (if-not (ga/point? r4)
-      (emsg/mark-place-ic (ga/rejection ?plane r3))
-      (r1:p->p ?link ?from-point ?point r4 ?axis ?axis-1 ?axis-2))))
+  (let [delta (ga/vec-diff ?to-point ?from-point)
+        _ (ga/translate ?link ga/vec-sum delta)
+        axel (ga/line ?to-point ?axis)
+        base (ga/projection ?point axel)
+        arc (ga/circle base ?axis (ga/separation ?point base))
+        intercept (ga/meet ?plane arc)
+        solution (ga/peribolo ?attractor intercept)]
+    (if-not solution
+      (emsg/mark-place-ic 0 ?plane arc)
+      (r1:p->p ?link ?from-point ?point solution ?axis ?axis-1 ?axis-2))))
 
-
+(comment
+  "There will probably be multiple intercepts from the meet.
+  The attractor is used to select just one.")
 (defmethod t2-r1:p->p [:plane]
   [?link ?point ?plane ?axis ?axis-1 ?axis-2
-   ?from-point ?to-point ?lf ?branch]
+   ?from-point ?to-point ?lf ?attractor]
 
-  (let [r0 (ga/vec-diff ?to-point ?from-point)
-        _ (ga/translate ?link r0)
-        r1 (ga/normal ?plane)
-        r2 (ga/plane ?point r1)
-        r3 (ga/rejection ?from-point ?point)
-        r4 (ga/circle ?from-point ?axis r3)
-        r5 (ga/meet r2 r4 ?branch)]
-    (if-not (ga/point? r5)
-      (emsg/mark-place-ic (ga/rejection r2 r4))
+  (let [delta (ga/vec-diff ?to-point ?from-point)
+        _ (ga/translate ?link ga/vec-sum delta)
+        locus-plane (ga/plane ?point (ga/normal ?plane))
+        arc (ga/circle ?from-point ?axis (ga/separation ?from-point ?point))
+        intercept (ga/meet locus-plane arc)
+        solution (ga/peribolo ?attractor intercept)]
+    (if-not solution
+      (emsg/mark-place-ic 0 locus-plane arc)
       ;; (error (perp-dist r2 r4) estring-7)
       ;;; ERRATA the ?point below was point?
-      (r1:p->p ?link ?from-point r5 ?point ?axis ?axis-1 ?axis-2))))
+      (r1:p->p ?link ?from-point solution ?point ?axis ?axis-1 ?axis-2))))
 

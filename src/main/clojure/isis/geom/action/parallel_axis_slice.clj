@@ -103,8 +103,10 @@ Explanation:
 
      (invariant/anchor-marker! kb [m2-link-name m2-proper-name] :dir)
      (alter m2-link assoc
-            :tdof {:# 2, :point m2-point,
-                   :plane m2-plane, :lf m2-lf}
+            :tdof {:# 2,
+                   :point m2-point,
+                   :plane m2-plane,
+                   :lf m2-lf}
             :rdof {:# 0} ) ))
   :progress-made)
 
@@ -149,6 +151,7 @@ Explanation:
          m2-link (get-in kb [:link m2-link-name])
          m2-point (get-in @m2-link [:tdof :point])
          m2-plane (get-in @m2-link [:tdof :plane])
+         m2-lf (get-in @m2-link [:tdof :lf])
 
          gmz1 (ga/gmz m1 kb)
          gmz2 (ga/gmz m2 kb)
@@ -162,7 +165,8 @@ Explanation:
      (alter m2-link assoc
             :tdof {:# 2
                    :point m2-point
-                   :plane m2-plane}
+                   :plane m2-plane
+                   :lf m2-lf}
             :rdof {:# 1
                    :axis (ga/gmz m1 kb)} ) ))
   :progress-made)

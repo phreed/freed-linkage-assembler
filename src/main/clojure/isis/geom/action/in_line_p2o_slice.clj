@@ -92,10 +92,11 @@ Explanation:
 
          meet-pnt (ga/meet line2 m1-plane)
          meet-pnt (if (nil? meet-pnt) gmp2 meet-pnt)
+         attractor m1-point ;; pick something better
 
          new-link (dof/t2-r1:p->p m1-link m1-point m1-plane
                                   m1-axis m1-axis-1 m1-axis-2
-                                  gmp1 meet-pnt m1-lf :q1) ]
+                                  gmp1 meet-pnt m1-lf attractor) ]
     (dosync
      (alter m1-link merge new-link)
      (alter m1-link assoc

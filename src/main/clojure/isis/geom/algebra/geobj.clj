@@ -23,6 +23,9 @@
   ""
   [ss1 ss2 & sss] (mapv class [ss1 ss2] ))
 
+(defmulti parallel?
+  "determine if the two objects are parallel."
+  subspace-dispatch-2)
 
 (defmulti outer-prod
   "compute the subspace that is the outer product
@@ -79,6 +82,12 @@
   The surfaces may be zero-, one-, or two-dimensional."
   subspace-dispatch-n)
 
+(defmulti peribolo
+  "select the point from a set that is closest to
+  meeting other set.  This is closely related to
+  'meet' as a 0 distance is clearly the closest approach.
+  From the latin peri (near) bolo (suitable)."
+  subspace-dispatch-2)
 
 
 (defprotocol Conformal
@@ -117,8 +126,8 @@
 
 (defrecord Direction [e])
 (defrecord Plane [e n])
-(defrecord Circle [e n r])
-(defrecord Sphere [e r])
+(defrecord Circle [e axis radius])
+(defrecord Sphere [e radius])
 
 (defrecord Univector [])
 (defrecord Bivector [])
@@ -325,7 +334,7 @@
 (defn plane?
   "Returns 'true' if object is a 'plane'."
   [object]
-  (= :plane (:type object)))
+  (instance? Plane object))
 
 
 (defn a-point
@@ -353,12 +362,12 @@
   "Returns a circle object with its center at point, and with
   specified axis vector and radius."
   [point axis radius]
-  {:type :circle :e point :a axis :r radius})
+  (->Circle point axis radius) )
 
 (defn circle?
   "Returns 'true' if object is a circle."
   [object]
-  (= :circle (:type object)))
+  (instance? Circle object))
 
 (defn copy
   "Returns a copy of a geometric object, fixed in the
@@ -533,7 +542,7 @@
   In most cases the :q value is the axis of rotation.
   In the special case where :q is zero the z-axis is [0 0 1]."
   [marker kb]
-  ;; (pp/pprint ["gmz" marker])
+  #_(pp/pprint ["gmz" marker])
   (let [[[link-name _] marker-place] marker
         marker-axis (get marker-place :q [0.0 0.0 1.0])
         link @(get-in kb [:link link-name])
@@ -591,9 +600,7 @@
 
 (defn normal
   "Returns the normal of a plane."
-  [plane]
-  (println "normal unimpl")
-  )
+  [plane] (:n plane) )
 
 (defn null?
   "Returns 'true' if quantity has the nil value."
@@ -622,7 +629,7 @@
 (comment "Calculates the intersection of three planes.")
 (defmethod meet [Plane Plane Plane]
   [s1 s2 & xs]
-  ;; (pp/pprint ["s1" s1 "s2" s2 "xs" xs])
+  #_(pp/pprint ["s1" s1 "s2" s2 "xs" xs])
   (let [ a s1, b s2, c (first xs)
          det-helper (fn [v1 v2 v3]
                       (let [ [v11 v12 v13] v1
@@ -666,14 +673,44 @@
   (let [ln-axis (outer-prod n1 n2)]
     (if (tol/near-zero? :tiny ln-axis)
       (do
-        (pp/pprint ["degenerate/contradictory" ln-axis "s1" s1 "s2" s2])
-        ;; FIXME What to do about parallel planes?
+        (pp/pprint ["parallel planes" ln-axis "s1" s1 "s2" s2])
         ;; The parallel planes can be detected when ln-axis has a 0 norm.
-        :degenerate )
+        :parallel-planes )
       (as-> ln-axis $       ; the axis of the line-of-intersection
             (plane e1 $)    ; an arbitrary orthogonal plane
             (meet $ s1 s2)  ; point on the line-of-intersection
             (line $ ln-axis) ))))  ; the line-of-intersection
+
+(comment "Calculates the intersection of a plane and a circle.
+  In general there are two solutions, but there may be an
+  infinite number (if the circle lies on the plane), or one
+  it the plane is tangent to the circle or none if the circle
+  does not intersect the plane.")
+(defmethod meet [Plane Circle]
+  [{e1 :e, n1 :n, :as s1}
+   {e2 :e, axel :axis, radius :radius :as c2}]
+  (let [cir-plane (plane e2 axel)
+        _ (pp/pprint ["s1" s1 "cp" cir-plane])
+        intercept-line (meet s1 cir-plane)]
+    (if (keyword? intercept-line)
+      (do
+        (pp/pprint ["circle parallel to plane" intercept-line "s1" s1 "c2" c2])
+        ;; the plane of the circle is probably parallel to
+        ;; the plane of intersection.
+        intercept-line )
+      (let [center-projection (projection e2 intercept-line)
+            center-separation (norm (vec-diff e2 center-projection))]
+        (if (center-separation > radius)
+          (do
+            (pp/pprint ["circle does not intersect plane" center-separation "s1" s1 "c2" c2])
+            ;; the circle is to far from the plane to intersect.
+            :non-intersecting )
+          (let [rad-square (* radius radius)
+                rise-square (* center-separation center-separation)
+                base-len (Math/sqrt (- rad-square rise-square))
+                delta-vec (outer-prod (normal intercept-line) base-len)]
+            [(vec-sum center-projection delta-vec)
+             (vec-diff center-projection delta-vec)] ))))))
 
 
 (comment "Calculates the intersection of a line and a plane.
@@ -687,8 +724,21 @@
         (outer-prod $ n2)   ; vector from plane to point-on-line
         (vec-diff e1 $)))   ; intersection point
 
+(comment "what is the nearest point ")
+(defmethod peribolo [Point clojure.lang.PersistentVector]
+  [{e1 :e, d1 :d, :as attractor} locus]
+  locus )
+
+(comment "what is the nearest point ")
+(defmethod peribolo [clojure.lang.PersistentVector clojure.lang.Keyword]
+  [attractor locus]
+  (pp/pprint ["no solution"]) )
 
 (defmethod rejection [Point Point]
+  [pnt1 pnt1] (println "rejection of a point onto a point is undefined. "))
+
+(defmethod rejection [clojure.lang.PersistentVector
+                      clojure.lang.PersistentVector]
   [pnt1 pnt1] (println "rejection of a point onto a point is undefined. "))
 
 (defmethod rejection [clojure.lang.PersistentVector Line]
@@ -699,6 +749,7 @@
           (scalar-prod $ dl)   ; projection of hypo onto line
           (vec-diff hypo $)))) ; shortest vector from point to line
 
+
 (defmethod rejection [clojure.lang.PersistentVector Plane]
   [pnt {ep :e, np :n, :as pln}]
   (as-> (vec-diff pnt ep) $  ; vector from point-on-plane to point
@@ -707,6 +758,10 @@
 
 
 (defmethod separation [Point Point]
+  [pnt1 pnt1] (norm (vec-diff pnt1 pnt1)))
+
+(defmethod separation [clojure.lang.PersistentVector
+                       clojure.lang.PersistentVector]
   [pnt1 pnt1] (norm (vec-diff pnt1 pnt1)))
 
 (defmethod separation [clojure.lang.PersistentVector Line]
@@ -725,16 +780,26 @@
   [?point ?surface]
   (zero? (rejection ?point ?surface)) )
 
-(defn parallel?
-  "Returns 'true' if ?axis-1 and ?axis-2 are parallel.
+(comment "Returns 'true' if ?axis-1 and ?axis-2 are parallel.
   If ?direction-matters is 'true', then the axis
   must also be pointed in the same direction.
   If ?direction-maters is 'false', then the axis
-  may be either parallel or anti-parallel."
-  [?axis-1 ?axis-2 ?direction-matters]
-  (let [size (norm (outer-prod (normalize ?axis-1) (normalize ?axis-2)))]
+  may be either parallel or anti-parallel.")
+
+(defmethod parallel? [clojure.lang.PersistentVector
+                      clojure.lang.PersistentVector]
+  [axis-1 axis-2 direction-matters]
+  (let [size (norm (outer-prod (normalize axis-1) (normalize axis-2)))]
     (cond (not (tol/near-zero? :default size)) false
-          (not ?direction-matters) true
+          (not direction-matters) true
+          (pos? size) true
+          :else false )))
+
+(defmethod parallel? [Plane Plane]
+  [surf-1 surf-2 direction-matters]
+  (let [size (norm (outer-prod (normal surf-1) (normal surf-2)))]
+    (cond (not (tol/near-zero? :default size)) false
+          (not direction-matters) true
           (pos? size) true
           :else false )))
 
