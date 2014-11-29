@@ -1,8 +1,8 @@
 
 // This indicates the in-plane
-// joint-primitive constraint. 
-// 
-// Here we have a case where a point on 
+// joint-primitive constraint.
+//
+// Here we have a case where a point on
 // the red component must be found
 // on a plane in the green component.
 
