@@ -89,5 +89,4 @@ rotational+translational DoF remaining.
 
 
 lf is introduced in a number of places.
-
-lf is used in coincident->t2-r3 to make a decision.
+It is used in coincident->t2-r3 to make a decision.
