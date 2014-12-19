@@ -88,10 +88,12 @@ New status:
 
 Explanation:
   Geom ?m2-link has one rotational and two translational degrees of freedom.
-  Therefore it must be translated along its
+  Therefore it may only be translated along its
   known ?m2-plane and rotated about its known ?m2-axis.
-  This effect is achieved by translating ?m2-link to make the
-  markers coincident, and then attempting to move ?m2-point
+  This effect is achieved by translating ?m2-plane (?m2-point)
+  while maintaining ?m1-point on that plane until
+  the m2-line and m1-point markers are coincident,
+  then attempting to move ?m2-point
   back onto ?m2-plane by moving along the ?m2-axis.
   In general, there are two distinct solutions to this problem,
   so a branch variable q_0 is used to select the desired solution."
