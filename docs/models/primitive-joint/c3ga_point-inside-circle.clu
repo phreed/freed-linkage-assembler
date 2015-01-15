@@ -1,0 +1,30 @@
+ 
+ 
+_BGColor = White;
+:OPNS;
+:DRAW_POINT_AS_SPHERE;
+:N3_SOLID;
+SetPointSize(10);
+SetLineWidth(4);
+
+DefVarsN3();
+Tau = 2*Pi;
+
+:e1 :Black :OPNS;
+:e2 :Color(0.4, 0.4, 0.4) :OPNS;
+:e3 :Color(0.8, 0.8, 0.8) :OPNS;
+
+// Make some basic points
+:A = VecN3(-0.5, 0.0, 1.0) :Red :IPNS;
+:B = VecN3(1.0, -0.5, 2.0) :Blue :IPNS;
+:C = VecN3(0.0, 1.5, 3.0) :Green :IPNS;
+
+:X = VecN3(0.0, 2.0, 0.0) :Black :IPNS;
+?X;
+
+:Circle = A^B^C :Magenta :OPNS;
+Plane = A^B^C^einf;
+
+:Sphere = *Circle * *Plane :Orange :IPNS;
+?Sphere;
+?Distance = Sphere . X;

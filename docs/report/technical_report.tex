@@ -1,11 +1,16 @@
 \documentclass[]{report}
 
+\usepackage[utf8]{inputenc}
+\usepackage{natbib}
+
 \usepackage{graphicx}
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage{xfrac}
 \usepackage{subfigure}
 \usepackage{url}
+\usepackage{epigraph}
+\usepackage{csquotes}
 
 \usepackage{listings}
 \usepackage{color}
@@ -51,12 +56,23 @@
 		As part of this effort, the most capable open-source CAD packages available today were evaluated, 
 		but unfortunately none had a geometric constraint solver capable of structurally 
 		composing CyPhy designs comparable to the success we had with commercial offerings (i.e. Creo).  
-		To this end, the freed-linkage-assembler (FLA) is a Java virtual machine 
+		To this end, the freed-linkage-assembler 
+		(FLA \footnote{This is a Vanderbilt open-source project \url{https://github.com/phreed/freed-linkage-assembler}.}) 
+		is a Java virtual machine 
 		executable written by Vanderbilt as an open-source software. 
 		This program solves the geometric constraint problem specified in CyPhy and 
 		produces a set of metric preserving translations and rotations (i.e. versors) over the assembly’s components. 
 		This artifact is useful to the designer and is critical in the analysis of assemblies. 
 		As a side benefit, the complexity of assembly is a good match with design complexity.
+
+	\end{abstract}
+
+\chapter{Motivation}
+
+\epigraph{Because primarily of the power of the Internet, 
+people of modest means can band together and amass 
+vast sums of money that can change the world 
+for some public good if they all agree.}{William J. Clinton}
 
 \begin{figure}[h!]
 	\centering
@@ -66,10 +82,9 @@
 \end{figure}
 
 The primary goal of the geometric constraint engine is to demonstrate the feasibility of an open-source assembly composition. In particular, to support those constraints required for the program projects. A secondary goal is to provide an unambiguous complexity measure and a means for augmenting the system to allow for assembly of greater complexity.
-	\end{abstract}
-
 
 \section{Objective}
+
 The purpose of this software, FLA,  is to provide an open-source alternative to commercial and proprietary offerings, 
 an entry and exit ramp to the structural design freeway that is CyPhy.  
 Generally, the problem addressed here is the same as that of the CAD Assembler (CreateAssembly Program),
@@ -88,7 +103,7 @@ The most significant part of this task was the development of a geometric constr
 
 \begin{figure}[h!]
 	\centering
-	\includegraphics[scale=0.7]{images/image11}
+	\includegraphics[scale=0.7]{images/image11.png}
 	\caption{A representative sample of the open-source CAD systems}
 	\label{fig:foss-cad}
 \end{figure}
@@ -96,18 +111,21 @@ The most significant part of this task was the development of a geometric constr
 Several open-source CAD systems were evaluated as possible targets.  
 Each was found to have suitable means for visualizing assembles and for loading and placement. 
 The packages we evaluated extensively and their mechanisms evaluated are: 
-OpenCascade (http://www.opencascade.org/), a geometric model library; 
-BRL-CAD (http://brlcad.org/); and OpenSCAD (http://www.openscad.org/). 
-OpenCascade has an third- party interactive interface, 
-FreeCAD (http://sourceforge.net/projects/free-cad). 
+OpenCascade \footnote{\url{http://www.opencascade.org/}}, a geometric model library; 
+BRL-CAD \footnote{\url{http://brlcad.org/}}; and 
+OpenSCAD \footnote{\url{http://www.openscad.org/}}. 
+OpenCascade has more than one third-party interactive interface, 
+FreeCAD \footnote{\url{http://sourceforge.net/projects/free-cad}} and
+NaroCAD \footnote{\url{http://narocad.com/}}. 
 OpenCascade has mechanisms for loading STEP files into a feature tree along with placement. 
 It also has an API which is expressed in several programming languages: 
 Python, Java, Tcl and C++. BRL-CAD and OpenSCAD models are both updated 
 through textual interfaces, which makes them suitable for automatic control.  
 BRL-CAD and OpenCascade can read many formats, including STEP and STL; 
 OpenSCAD can import STL files.  
-Due to its lightweight footprint and availability in browsers, 
-http://openjscad.org/, OpenSCAD was selected as the target visualization environment.
+Due to its lightweight footprint and availability in browsers 
+\footnote{\url{http://openjscad.org/}}
+OpenSCAD was selected as the primary target visualization environment.
 
 \section{Data Flow}
 
@@ -164,7 +182,7 @@ The supplemental geometry represents the component datum objects as well as the 
             <GeometryMarker 
                  x="0" y="0" z="0" 
                  i="0" j="0" k="1" pi="0" _id="id30" />
-          </ConstraintFeature> …
+          </ConstraintFeature> ...
 \end{lstlisting}
 \caption{\texttt{CAD\_Assembly.xml} (from CyPhy)}
 \end{figure}
@@ -221,7 +239,7 @@ useful for providing an initial configuration to CAD systems that use numerical 
             <GeometryMarker 
                    x="0" y="0" z="0" 
                    i="0" j="0" k="1" pi="0" _id="id30" />
-          </ConstraintFeature> …
+          </ConstraintFeature> 
 \end{lstlisting}
 \caption{CyPhy Output file augmented with versors}
 \end{figure}
@@ -261,7 +279,8 @@ which are then rotated and translated into their proper positions.
 The linkage assembler computes these rotations and translations from the constraints. 
 The linkage also produces an assembly plan, an ordered list of 
 the functions and the constraints which they satisfy. 
-This linkage assembly plan is itself an important artifact 
+This linkage assembly plan is itself an important artifact
+\footnote{\url{Not yet written to a file by FLA.}} 
 that is not exposed by commercial CAD products.
 
 \section{Detailed Description}
@@ -301,16 +320,16 @@ The successful application of FLA results in a well formed design assembly of co
 \subsection{Algorithmic Approach}
 
 The general geometric constraint problem consists of a finite set 
-of geometric elements, links, and  a finite set of constraints between them [Hoffmann].  
+of geometric elements, links, and  a finite set of constraints between them \citep{hoffmann1998gcd}.  
 The constraints are logical constraints, such as coincidence, parallelism, etc., 
 or metric constraints, such as distance or angle offsets. 
 A solution is one where all the constraints are satisfied (not violated). 
 Clearly, for a set of constraints there may be a multitude of solutions. 
 In general, any geometric constraint problem can be transformed into a set of non-linear equations. 
 Solving these systems generally results in algorithms of 
-at least exponential time complexity [Hoffmann] or worse. 
+at least exponential time complexity \citep{hoffmann1998gcd} or worse. 
 Strict numerical approaches suffer from problems of convergence.  
-Even simple problems such as the <Fig. Two Stick Problem> [Kramer] 
+Even simple problems such as the Figure \ref{fig:two-stick-problem} \citep{kramer1991sgcs}
 have convergence issues due to the presence of multiple solutions. 
 
 \begin{figure}[h!]
@@ -322,9 +341,8 @@ have convergence issues due to the presence of multiple solutions.
 
 Equally troublesome are issues of meaning. 
 For example, when an under-constrained system produces no solution, 
-there is little indication as to the system’s deficiencies.
-The FLA is based on “Solving Geometric Constraint Systems”, 
-by Glenn A. Kramer (1991) and the approach of solving constraint 
+there is little indication as to the system's deficiencies.
+The FLA is based on \citep{kramer1991sgcs} and the approach of solving constraint 
 systems by decreasing the degrees-of-freedom, DOF, of the system.  
 This approach makes progress by repeatedly making passes over the 
 system of constraints so long as the the DOF decreases on the last pass. 
@@ -355,7 +373,7 @@ This conventional approach effectively casts away this critical choice.
 \subsubsection{Anchored Analysis}
 
 An anchored constraint is a constraint that has one link that is fully constrained. 
-This is a well known sub-problem addressed in [Kramer]. 
+This is a well known sub-problem addressed in \citep{kramer1991sgcs}. 
 Assuming a finite number of primitive constraints there are a finite number of functions. 
 There are a finite number of functions which reduce 
 the degrees-of-freedom for a linkage using these primitive constraints. 
@@ -368,7 +386,7 @@ There is also the potential for there to be constraints that are not applied.
 In this case no function is yet provided. 
 If no function is provided, it is possible for the engineer to propose 
 and contribute such a function, thereby extending the system and resolving the additional constraints.
-The basic set of primitive anchored constraints are defined between two links (e.g. ‘A’ and ‘B)’. 
+The basic set of primitive anchored constraints are defined between two links (e.g. 'A' and 'B'). 
 Compounds of these primitive joints are used to describe many lower joints, 
 such as revolute, prismatic, screw, cylindrical, fixed, spherical, planar and universal. 
 (Higher joints are also composites which are only partially described with primitives.) 
@@ -379,11 +397,11 @@ As this is an anchored analysis, only the interaction of the mobile link
 with the fixed link over the primitive needs to be considered. 
 As an example, one definition of complexity is as a psychological model 
 of the number of atomic ideas the designer needs to consider simultaneously. 
-The reduction in the system’s degrees-of-freedom associated with the application 
+The reduction in the system's degrees-of-freedom associated with the application 
 of a primitive provides a metric indicating these atomic ideas. 
 A lower joint, such as the revolute-joint, is composed of two primitives 
 and reduces the degrees-of-freedom (DOFs) by five, 
-the revolute’s primitive coincident-point joint and 
+the revolute's primitive coincident-point joint and 
 parallel-axis-joint reducing the DOFs by three and two respectively.
 The primitives may be placed such that the DOFs of the system are not reduced. 
 In these cases, they serve to reinforce or contradict the rules 
@@ -543,7 +561,7 @@ A set of problems with characteristics of those problems seen during the AVM pro
 Many of the tests associated with these problems currently pass. 
 These include coincident coordinate systems, coincident planes, and coincident points.
  
-\subsection{Alternatives/Tradeoffs}
+\subsection{Alternatives/Trade-offs}
 
 One good design practice is to select designs that lend themselves to deterministic solutions. 
 This approach is to emphasize constraints having clear analytic solutions. 
@@ -561,7 +579,7 @@ The individual functions exist in the public domain, as the relevant patents exp
 
 The current project, through the introduction of an open-source reference implementation, 
 has demonstrated the capability to generate input for additional visualizers. 
-Work has already begun to produce input for BRL-CAD, FreeCAD and  https://github.com/ghemingway/cad.js. 
+Work has already begun to produce input for BRL-CAD, FreeCAD and cad.js \footnote{\url{https://github.com/ghemingway/cad.js}}. 
 Compatible proprietary visualizers are welcome.
 
 \subsubsection{Collaborative Design}
@@ -579,12 +597,13 @@ The current environment for FLA is synchronous batch, but
 the tool is capable of being placed in an asynchronous distributed 
 collaborative environment such as that enabled by the Meta-Link Exchange.
 
-\begin{figure}[h!]
-	\centering
-	\includegraphics[scale=0.7]{images/image08.png}
-	\caption{METALink Enabled Asynchronous Environment}
-	\label{fig:async-metalink}
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.7\linewidth]{images/image08}
+\caption[Asynchronous METALink Federation]{METALink Enabled Asynchronous Federated Environment}
+\label{fig:async-metalink}
 \end{figure}
+
 
 \subsubsection{Kinematics}
 
@@ -609,7 +628,7 @@ These structural designs can be studied and evaluated.
 	\centering
 	\includegraphics[scale=0.7]{images/image17.png}
 	\caption{Federated Assembly Functions}
-	\label{fig:async-metalink}
+	\label{fig:federated-metalink}
 \end{figure}
 
 \subsection{AVM Involvement}
@@ -619,11 +638,13 @@ Even though enough capabilities are available to have been used for AVM, it is s
 
 \subsection{Summary/Conclusion} 
 
-“The substantial time advantage which stands to be gained from META and iFAB is 
+\blockquote[Paul Eremenko]{
+The substantial time advantage which stands to be gained from META and iFAB is 
 predicated on the existence of detailed models of components, of the environment (contexts),
 and of manufacturing equipment and processes. 
-"This requires significantly more information than exists in most present-day component models, 
-which are typically little more than performance curves and interface specifications..." --Paul Eremenko. 
+This requires significantly more information than exists in most present-day component models, 
+which are typically little more than performance curves and interface specifications...}.
+ 
 The development of a linkage assembler that can assemble 
 common-off-the-shelf  (“catalog”), parametric (“rubber”), and 
 theoretical (“ghost”) components is critical to improving systems engineering 
@@ -634,5 +655,29 @@ OpenMETA is extended with a simple island grammar which provides constraint port
 In CyPhy these ports may be joined to form fixed and kinematic joints. 
 Composition of assemblies with fixed joints is currently supported, while kinematic joint construction from constraints is ongoing.
 
+\chapter{Federation}
+
+\epigraph{The public good is in nothing more essentially interested, 
+than in the protection of every individual's private rights.}{William Blackstone}
+
+
+%% something about sandstorm, webgme, assembly plan graph analysis.
+
+\chapter{Implementation}
+
+%% something about extension of the system by federation partners
+
+\chapter{Complexity}
+
+%% what are the types of complexity analysis that can be done
+%% given an assembly plan graph.
+
+\chapter{Kinematics}
+
+%% inverse kinematics, interferance studies, dynamic forces.
+
+	
+	\bibliographystyle{plain}
+	\bibliography{references}
 	
 \end{document} 

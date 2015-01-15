@@ -121,7 +121,7 @@
   This is for anticommutivity.
   It checks the relative positions of the bits
   and determines whether the result needs to be flipped.
-  (see GAfCS fig. 19.1"
+  (see geometric-algebra fig. 19.1"
   [a b]
   (loop [a (bit-shift-right a 1), sum 0]
     (if (= 0 a)
@@ -131,7 +131,7 @@
 
 (defn gp-bb
   "Geometric product of basis blades.
-  (see GAfCS fig. 19.2"
+  (see geometric-algebra fig. 19.2"
   [a b]
   (let [a-blade (:blade a), b-blade (:blade b)]
     (->bb (bit-xor a-blade b-blade)
@@ -140,7 +140,7 @@
 (defn op-bb
   "Outer product of basis blades.
   Check for dependencies.
-  (see GAfCS fig. 19.2"
+  (see geometric-algebra fig. 19.2"
   [a b] (if (= 0 (bit-and a b)) (gp-bb a b) (->bb 0.0)))
 
 

@@ -1,0 +1,66 @@
+ 
+ 
+_BGColor = White;
+:OPNS;
+:DRAW_POINT_AS_SPHERE;
+:N3_SOLID;
+SetPointSize(6);
+SetLineWidth(4);
+
+DefVarsN3();
+Tau = 2*Pi;
+
+:e1 :Black;
+:e2 :Color(0.8, 0.8, 0.8);
+:e3 :Color(0.6, 0.6, 0.6);
+:2*e0 :Magenta;
+
+// First the grade 1 objects...
+// Make a basic sphere
+:S = SphereN3(2, 1, 1, 1) :Blue :OPNS;
+?"sphere: " + -*S + ".";
+
+// Make a basic point (degenerate sphere s5 = 1 & s4 = 1/2 |x|)
+:N = VecN3(1,2,3) :Black :IPNS;
+?N;
+
+// Make a plane (degenerate sphere s5 = 0)
+:P = e2 + e3 + 6*einf :Red :IPNS;
+?P;
+
+// Next the grade 2 objects...
+// We need some points.
+:Red;
+:a = VecN3(0.0, -0.5, -0.5);
+:b = VecN3(0.0, 0.5, 0.5);
+:c = VecN3(0.5, 0.5, 0.5);
+
+// Make a circle
+:C = a^b^c :Yellow :OPNS;
+?C;
+
+// Make a line (degenerate circle)
+:L = a^b^einf :Orange :OPNS;
+?L;
+
+    //:Black;
+	//:a = e1;
+	//:Red;
+	//:b = sqrt(2)/2 * (e1 + e2);
+	
+// Build the rotor from the two vectors.
+	//:Green;
+//	:R_v = b * a;
+//	?R_v;
+
+// Rotate a.
+//	:MBlue;
+//	:a_v = R_v * a / R_v;
+//	?a_v;
+	
+// Specify rotation using bivector-angle (axis-angle).
+//	:Orange;
+//	:R_a = exp(-(e1^e3) * (Tau/8)/2);
+//	:Red;
+//	:a_a = R_a * a / R_a;
+    

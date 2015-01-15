@@ -1,0 +1,22 @@
+ 
+ 
+_BGColor = White;
+    :OPNS;
+    :DRAW_POINT_AS_SPHERE;
+    SetPointSize(6);
+    SetLineWidth(4);
+
+    DefVarsE3();
+
+// Construct a plane and a vector.
+	:Black;
+	:M = e1^(e1+e2);
+	:Red;
+	:v = 1.5*e1 + 1/3*e2 + e3;
+	
+// Reflect the vector in the plane.
+	:Green;
+	:v_reflect = M * v * M;
+	?v_reflect;
+
+    

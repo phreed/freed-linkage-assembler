@@ -1,0 +1,13 @@
+_BGColor = White;
+:OPNS;
+:DRAW_POINT_AS_SPHERE;
+:N3_SOLID;
+SetPointSize(6);
+SetLineWidth(4);
+
+DefVarsN3();
+Tau = 2*Pi;
+
+:e1 :Black;
+:e2 :Color(0.8, 0.8, 0.8);
+:e3 :Color(0.6, 0.6, 0.6);

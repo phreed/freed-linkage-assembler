@@ -1,0 +1,33 @@
+ 
+ 
+_BGColor = White;
+:OPNS;
+:DRAW_POINT_AS_SPHERE;
+:N3_SOLID;
+SetPointSize(10);
+SetLineWidth(4);
+
+SetTextMagStep( 12 );
+SetImageAlign( 0.5, 0.5 );
+
+    
+// ?sText = String( @"Vector ({1:TF.2})^\alpha, List {2:TF.1}", [ VecE3(1.234,2.567,3.123), [ 2.345, VecE3(1,2,3)] ] );
+//:GetTextImage( sText ) :Black;
+
+		
+DefVarsN3();
+Tau = 2*Pi;
+
+:e1 :Black :OPNS;
+:e2 :Color(0.4, 0.4, 0.4) :OPNS;
+:e3 :Color(0.8, 0.8, 0.8) :OPNS;
+
+// Grade 1 objects - make sliders
+?S_e0 = Slider("e0:", -10, 10, 0.1, 0.0, "The e0 coefficient");
+?S_e1 = Slider("e1:", -10, 10, 0.1, 1.0, "The e1 coefficient");
+?S_e3 = Slider("e3:", -10, 10, 0.1, 4.0, "The e3 coefficient");
+?S_e12 = Slider("e12:", -10, 10, 0.1, 0, "the e12 coefficient");
+?S_einf = Slider("einf:", -10, 10, 0.1, 0.0, "The einf coefficient");
+
+:ip = S_e0*e0 + S_e1*e1 + S_e12*(e1^e2) + S_e3*e3 + S_einf*einf :Color(1.0, 0.7, 0.0, 0.5) :IPNS;
+:op = ip :Blue :OPNS;

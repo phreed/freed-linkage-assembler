@@ -1,0 +1,36 @@
+ 
+ 
+_BGColor = White;
+    :OPNS;
+    :DRAW_POINT_AS_SPHERE;
+    SetPointSize(6);
+    SetLineWidth(4);
+
+    DefVarsE3();
+
+// Construct a plane and a vector.
+	:Black;
+	:B = e1^(e1+e2);
+	:Red;
+	:v = 1.5*e1 + 1/3*e2 + e3;
+	
+// Eliminate the basis of the vector from the plane.
+	:Green;
+	:v_perp = v.B;
+	?v_perp;
+
+// Obtain the projection of the vector on the plane.
+	:Blue;
+	:v_projection = (v.B)/B;
+	?v_projection;
+	
+// Obtain the rejection of the vector against the plane.
+	:Orange;
+	:v_rejection = (v^B)/B;
+	?v_rejection;
+	
+// Reflect the vector in the plane.
+	:Yellow;
+	:v_reflect = B * v * B;
+	?v_reflect;
+    

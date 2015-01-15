@@ -1,5 +1,8 @@
 This is BibTeX, Version 0.99dThe top-level auxiliary file: technical_report.aux
-I found no \citation commands---while reading file technical_report.aux
-I found no \bibdata command---while reading file technical_report.aux
-I found no \bibstyle command---while reading file technical_report.aux
-(There were 3 error messages)
+The style file: plain.bst
+Database file #1: references.bib
+Warning--empty publisher in hoffmann1998gcd
+Warning--empty year in hoffmann1998gcd
+Warning--empty publisher in kramer1991sgcs
+Warning--empty year in kramer1991sgcs
+(There were 4 warnings)

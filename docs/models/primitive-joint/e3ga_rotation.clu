@@ -1,0 +1,33 @@
+ 
+ 
+_BGColor = White;
+    :OPNS;
+    :DRAW_POINT_AS_SPHERE;
+    SetPointSize(6);
+    SetLineWidth(4);
+
+	DefVarsE3();
+	Tau = 2*Pi;
+
+// Make a couple of unit vectors.
+    :Black;
+	:a = e1;
+	:Red;
+	:b = sqrt(2)/2 * (e1 + e2);
+	
+// Build the rotor from the two vectors.
+	:Green;
+	:R_v = b * a;
+	?R_v;
+
+// Rotate a.
+	:MBlue;
+	:a_v = R_v * a * ~R_v;
+	?a_v;
+	
+// Specify rotation using bivector-angle (axis-angle).
+	:Orange;
+	:R_a = exp(-(e1^e3) * (Tau/8)/2);
+	:Red;
+	:a_a = R_a * a * ~R_a;
+    
