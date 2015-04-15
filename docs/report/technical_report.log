@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9) (preloaded format=pdflatex 2014.12.17)  9 JAN 2015 10:36
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9) (preloaded format=pdflatex 2014.12.17)  15 APR 2015 15:40
 entering extended mode
 **technical_report.tex
 
@@ -986,25 +986,9 @@ File: images/image17.png Graphic file (type png)
 Package pdftex.def Info: images/image17.png used on input line 629.
 (pdftex.def)             Requested size: 295.10048pt x 212.8939pt.
  [18 <C:/Users/feisele/Desktop/github/freed-linkage-assembler/docs/report/image
-s/image17.png>] [19]
-Chapter 2.
-[20
-
-]
-Chapter 3.
-[21
-
-]
-Chapter 4.
-[22
-
-]
-Chapter 5.
-
+s/image17.png>]
 (C:\Users\feisele\Desktop\github\freed-linkage-assembler\docs\report\technical_
-report.bbl [23
-
-]) [24
+report.bbl [19]) [20
 
 ]
 (C:\Users\feisele\Desktop\github\freed-linkage-assembler\docs\report\technical_
@@ -1032,9 +1016,9 @@ iles (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr8.pfb><C:/Program Files
 /MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmtt10.pfb><C:/Program Files (x86)/M
 iKTeX 2.9/fonts/type1/public/amsfonts/cm/cmtt8.pfb><C:/Program Files (x86)/MiKT
 eX 2.9/fonts/type1/public/amsfonts/cm/cmtt9.pfb>
-Output written on technical_report.pdf (26 pages, 841160 bytes).
+Output written on technical_report.pdf (22 pages, 807398 bytes).
 PDF statistics:
- 177 PDF objects out of 1000 (max. 8388607)
+ 164 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
  81 words of extra memory for PDF output out of 10000 (max. 10000000)
 

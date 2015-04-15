@@ -11,3 +11,10 @@ Tau = 2*Pi;
 :e1 :Black;
 :e2 :Color(0.8, 0.8, 0.8);
 :e3 :Color(0.6, 0.6, 0.6);
+
+:eon = e0 * e;
+?eon;
+?e11 = e1 * e1;
+?e12 = e1 * e2;
+?eoo = e0 * e0;
+?enn = e * e;

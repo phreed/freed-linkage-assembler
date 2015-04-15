@@ -22,16 +22,9 @@
   [exp] (if (even? exp) +1 -1))
 
 
-(defn bit-count-kernigan
-  "Kernigan's bit counting algorithm."
-  [n0]
-  (loop [count 0, n n0]
-    (if (zero? n)
-      count
-      (recur (inc count) (bit-and n (dec n))))))
-
-(defn bit-count-faster
-  "Faster bit count, from numerous sources.
+(defn bit-count
+  "Faster bit count than that proposed by
+  Kernigan, from numerous sources.
   I have some doubts that this is faster
   when working with a maximum of five bits."
   [a]
@@ -41,8 +34,6 @@
         e (+ d (bit-shift-right d 8))
         f (+ e (bit-shift-right e 16))]
     (bit-and f 16r0000003F)))
-
-(def bit-count bit-count-kernigan)
 
 
 ;;;;========= Basis-blades are represented by a bitmap (blade) and a weight

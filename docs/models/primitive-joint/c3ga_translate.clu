@@ -1,7 +1,7 @@
  
  
 _BGColor = White;
-:OPNS;
+:IPNS;
 :DRAW_POINT_AS_SPHERE;
 :N3_SOLID;
 SetPointSize(10);
@@ -12,19 +12,27 @@ Tau = 2*Pi;
 
 :e1 :Black :OPNS;
 :e2 :Color(0.4, 0.4, 0.4) :OPNS;
-:e3 :Color(0.8, 0.8, 0.8) :OPNS;
+:e3 :Color(0.6, 0.6, 0.6) :OPNS;
 
 // Make some basic points
-:A = VecN3(-0.5, 0.0, 1.0) :Red :IPNS;
-:B = VecN3(1.0, -0.5, 2.0) :Blue :IPNS;
-:C = VecN3(0.0, 1.5, 3.0) :Green :IPNS;
+:A = VecN3(1.0, -1.0, 0.0) :Red :IPNS;
+?A;
+:B = VecN3(1.0, 3.0, 3.0) :Blue :IPNS;
+?B;
 
-:X = VecN3(0.0, 2.0, 0.0) :Black :IPNS;
-?X;
+// build a translation versor from B to A
+// :C = VecN3(0.0, 1.5, 3.0) :Green :IPNS;
+scale = 0.5;
+?tv = (einf ^ A) * (einf ^ B);
+?tvi = ~tv;
+?ta = (A ^einf) * (einf ^ B);
+?tb = (A ^einf) * (B ^ einf);
+?tc = (A ^einf) / (einf ^ B);
 
-:Circle = A^B^C :Magenta :OPNS;
-Plane = A^B^C^einf;
+?tvh =  1.0 + scale * (tv - 1.0);
+:C = (tvh * B * ~tvh) - 0.02*einf :Color(0.0, 1.0, 0.0, 0.5);
+?C;
 
-:Sphere = (*Circle) * (*Plane) :Orange :IPNS;
-?Sphere;
-?Distance = Sphere . X;
+// and how far was the movement?
+// (s - p)^2 = -2(P.S)
+?d = sqrt(-2.0*(B.A));
